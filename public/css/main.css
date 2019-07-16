@@ -1,0 +1,24 @@
+footer {
+    display: flex;
+}
+#resurse {
+    display: flex;
+    flex-wrap: wrap;
+    /* flex-flow: row wrap;
+    justify-content: space-around; */
+    justify-content: center;
+    width: 100%;
+}
+
+.card {
+    width: 15em;
+    margin: 0.2em;
+}
+
+.card-body {
+    padding: .2em;
+}
+
+#resurse, #licenta {
+    justify-content: center;
+}

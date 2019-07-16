@@ -1,0 +1,44 @@
+{
+  "articles": [
+    {
+      "id": 1,
+      "title": "Un punct de lucru comun",
+      "creator": "Nicolaie Constantinescu",
+      "created": "22.06.2019",
+      "description": "Mă bucur că ai ajuns aici. Acesta este un loc în care o parte din materialele de învățare și studiu le expun public cu scopul de a ajuta și de a învăța de la ceilalți.",
+      "identifier": "kosson",
+      "language": "ro_ro",
+      "relation": "2c758a26-94f1-11e9-bc42-526af7764f64"
+    },
+    {
+      "id": 2,
+      "title": "Alt art de test",
+      "creator": "Nicolaie Constantinescu",
+      "created": "22.06.2019",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      "identifier": "kosson",
+      "language": "ro_ro",
+      "relation": "39de27ae-94f1-11e9-bc42-526af7764f64"
+    },
+    {
+      "id": 3,
+      "title": "Teste în continuare",
+      "creator": "Nicolaie Constantinescu",
+      "created": "22.06.2019",
+      "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
+      "identifier": "kosson",
+      "language": "ro_ro",
+      "relation": "445ac048-94f1-11e9-bc42-526af7764f64"
+    },
+    {
+      "id": 4,
+      "title": "Ceva peste trei",
+      "creator": "Nicolaie Constantinescu",
+      "created": "22.06.2019",
+      "description": "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?",
+      "identifier": "kosson",
+      "language": "ro_ro",
+      "relation": "5bfaad12-94f1-11e9-bc42-526af7764f64"
+    }
+  ]
+}

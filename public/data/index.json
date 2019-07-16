@@ -1,0 +1,28 @@
+{
+    "carti": [
+        {
+            "cover": "CopertaJSinvatEuInvetiSiTu1-500px.png",
+            "coveralt": "Este coperta primului volumului dedicat bazelor JavaScript. Reprezintă un dreptunghi cu un dreptunghi a cărui fond este un degrade de la galben (lumina soarelui), la alb și roz în partea inferioară. În cartierul sud-vestic este preprezentat un cireș în floare.",
+            "Titlu": "JavaScript. Învăț eu, înveți și tu",
+            "Editură": "Armanis",
+            "An": "2019",
+            "ver": "1.0"
+        },
+        {
+            "cover": "prelucrareaDatelor.png",
+            "coveralt": "Aici va sta coperta celui de-al doilea volum dedicat prelucrării datelor",
+            "Titlu": "Prelucrarea datelor cu JavaScript",
+            "Editură": "La momentul potrivit",
+            "An": "20--",
+            "ver": ""
+        },
+        {
+            "cover": "vizualizareaDatelor.jpg",
+            "coveralt": "Aici va sta coperta celui de-al treilea volum dedicat vizualizării datelor",
+            "Titlu": "Vizualizarea datelor cu JavaScript",
+            "Editură": "La momentul potrivit",
+            "An": "20--",
+            "ver": ""
+        }
+    ]
+}
