@@ -4,7 +4,7 @@
   "description": "Aplicația pentru colectare de RED-uri",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodemon --exec 'mocha -R min'"
   },
   "repository": {
     "type": "git",
