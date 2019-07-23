@@ -6,7 +6,7 @@ describe('Actualizarea unei înregistrări din baza de date', () => {
     beforeEach((done) => {
         comp = new Comp({
             nume: 'Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate',
-            nrRED: 0
+            contor: 0
         });
         comp.save().then(() => {
             done();
@@ -23,15 +23,15 @@ describe('Actualizarea unei înregistrări din baza de date', () => {
         });
     });
     it('Actualizarea unui model instanțiat deja', (done) => {
-        // poți face bulk updates
-        comp.update({
+        // poți face bulk updates; Am optat pentru `updateOne` pentru a elimina mesajele Deprecation 
+        comp.updateOne({
             nume: 'Acesta este titlul în variantă actualizată'
         });
         done();
     });
     it('Un update folosind clasa', (done) => {
         // caută toate înregistrările având un câmp cu valoarea specificată, înlocuindu-le cu cel nou.
-        Comp.update({nume:'Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate'}, {nume: 'Teste diverse 01'}).then(() => {
+        Comp.updateOne({nume:'Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate'}, {nume: 'Teste diverse 01'}).then(() => {
             Comp.find({}).then((competentele) => {
                 assert(competentele.length === 1);
                 assert(competentele[0].nume === 'Teste diverse 01');
@@ -58,9 +58,9 @@ describe('Actualizarea unei înregistrări din baza de date', () => {
         });
     });
     it('Găsește o anumită competență pe care să o incrementezi atunci când unui RED i se atașează tag-ul specific', (done) => {
-        Comp.update({nume: 'Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate'}, {$inc: {nrRED: 1}}).then(() => {
+        Comp.updateOne({nume: 'Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate'}, {$inc: {contor: 1}}).then(() => {
             Comp.findOne({nume: 'Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate'}).then((competenta) => {
-                assert(competenta.nrRED === 1);
+                assert(competenta.contor === 1);
                 done();
             });
         });

@@ -1,0 +1,147 @@
+<div class="container">
+  {{>messages}}
+  <form id="form01adres">
+    <div class="form-group">
+      <label name="limba" for="limba">Limba resurselor formularului:</label>
+      <select multiple class="form-control" id="limba">
+        <option selected>Română</option>
+        <option>Germană</option>
+        <option>Maghiară</option>
+        <option>Rusă</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="title">Titlul resursei:</label>
+      <input name="titlu" type="text" class="form-control" id="title" aria-describedby="titluHelp" placeholder="ex: Bătălia de la Călugăreni">
+      <small id="titluHelp" class="form-text text-muted">Este un element absolut necesar</small>
+    </div>
+    <div class="form-group">
+      <label for="creator">Autor:</label>
+      <input name="creator" type="text" class="form-control" id="creator" aria-describedby="numeprenumeHelp" placeholder="ex: Adriana Vasilescu">
+      <small id="numeprenumeHelp" class="form-text text-muted">Este un element absolut necesar</small>
+      <button type="button" name="plusAltiAutori" id="addAuthor" class="btn btn-primary btn-lg btn-block">+1</button>
+    </div>
+    <div class="form-group">
+      <label for="descriere">Descriere:</label>
+      <input name="descriere" type="text" class="form-control" id="descriere" aria-describedby="descriereHelp" placeholder="">
+      <small id="descriereHelp" class="form-text text-muted">Este un element absolut necesar</small>
+    </div>
+    {{!-- <div class="form-group">
+      <label for="identificator">Identificator:</label>
+      <input name="identificator" type="text" class="form-control" id="identificator" aria-describedby="identificatorHelp" placeholder="">
+      <small id="identificatorHelp" class="form-text text-muted">Este un element absolut necesar</small>
+      <button type="button" name="plusAltIdentitificator" id="addId" class="btn btn-primary btn-lg btn-block">+1</button>
+    </div> --}}
+
+    <div class="form-group">
+      <label for="arieCurri">Selectează aria curriculară:</label>
+      <select name="arieCurr" id="arieCurri" multiple>
+        <option value="LbCom">Limbă și comunicare</option>
+        <option value="MatStNat">Matematică și științe ale naturii</option>
+        <option value="OmSoc">Om și societate</option>
+        <option value="EdFizSpSan">Educație fizică, sport și sănătate</option>
+        <option value="Arte">Arte</option>
+        <option value="Tec">Tehnologii</option>
+        <option value="ConsOri">Consiliere și orientare </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="competente">Selectează competențele țintite:</label>
+      <select name="comptente" id="competente" multiple>
+        {{!-- Se vor genera automat în funcție de aria curriculară specificată --}}
+        <option value="LbCom">Limbă și comunicare</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="scopMaterial">Scopul materialului propus</label>
+      <select name="scop-material" class="form-control" id="scopMaterial">
+        <option>didactic</option>
+        <option>pentru elev</option>
+        <option>documentare cadre didactice</option>
+      </select>
+      <label for="alteScopuri">Alte scopuri</label>
+      <input name="alt-scop" type="text" class="form-control" id="alteScopuri" aria-describedby="alteScopuriHelp" placeholder="">
+      <small id="alteScopuriHelp" class="form-text text-muted"></small>
+      <button disabled="disabled">Adaugă scop nou</button>
+    </div>
+    <div class="form-group">
+      <label name="nivel-invatamant" for="nivelInvatamant">Nivel Învățământ</label>
+      <select multiple class="form-control" id="nivelInvatamant">
+        <option>Clasa 1</option>
+        <option>Clasa a II-a</option>
+        <option>Clasa a III-a</option>
+        <option>Clasa a IV-a</option>
+        <option>Clasa a V-a</option>
+        <option>Clasa a VI-a</option>
+        <option>Clasa a VII-a</option>
+        <option>Clasa a VIII-a</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="arieCurriculara">Arie curiculară</label>
+      <select multiple name="arie-curriculara" class="form-control" id="arieCurriculara">
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="competenteVizate">Competențe vizate</label>
+      <select multiple name="competente-vizate" class="form-control" id="competenteVizate">
+        <option>X</option>
+        <option>Y</option>
+        <option>Z</option>
+      </select>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="materialExtraCurr">
+      <label name="material-extrac" class="form-check-label" for="materialExtraCurr">
+        Material extracurricular?
+      </label>
+    </div>
+    <div class="form-group">
+      <label for="adaugaPachet">Adaugă arhivă zip</label>
+      <input type="file" name="arhiva" class="form-control-file" id="adaugaPachet">
+    </div>
+    <button type="submit" id="addresbtn" class="btn btn-primary">Trimite</button>
+  </form>
+</div>
+<script>
+  // EVENIMENT la încărcarcarea completă a DOM-ului
+document.addEventListener('DOMContentLoaded', init);
+function init () {
+    document.getElementById('addresbtn').addEventListener('click', upload);
+}
+function upload (evt) {
+    evt.preventDefault();
+
+    // Constituirea headerelor
+    let headers = new Headers();
+    headers.append('Accept', 'application/json'); // Accept un răspuns de tip JSON
+    
+    // Culegerea datelor din form
+    let form01adres = new FormData();   // Obiectul de colectare a tuturor datelor din formular
+    form01adres.append('nume-prenume', document.querySelector('#numeprenume'));
+
+
+    let arhiva = document.querySelector('#adaugaPachet').files[0];
+    form01adres.append('arhiva', arhiva, 'arhiva.zip');
+
+    var url = document.location;
+    let req = new Request(url, {
+        method: 'POST',
+        headers: headers,
+        mode: 'cors',
+        body: form01adres
+    });
+
+    fetch(req).then((response) => {
+        document.querySelector('#confirmare').textContent = "Mesaj de la server: ";
+    }).catch((error) => {
+        console.log('ERROR', err.message);
+    });
+
+}
+</script>

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false);    // va folosi driverul original al MongoDB - vezi https://mongoosejs.com/docs/deprecations.html
 
 // hook necesar pentru execuția fix o singură dată în setul de test mocha
 before((done) => {
@@ -17,7 +18,8 @@ before((done) => {
 
 // Înainte de a face orice cu baza de date, mai întâi rulează ce este în beforeEach
 beforeEach((done) => {
-    mongoose.connection.collections.competentaspecificas.drop(() => {
-      done();
-    });
+    mongoose.connection.collections.competentaspecificas.drop(() => {});   
+    // mongoose.connection.collections.disciplinas.drop(() => {});
+    mongoose.connection.collections.resursedus.drop(() => {});
+    done();
 });

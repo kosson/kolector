@@ -12,7 +12,7 @@ describe('Ștergerea unei înregistrări din baza de date', () => {
         });
     });
     it('Ștergere folosind metoda remove din model', (done) => {
-        comp.remove().then((r) => { // (node:20763) DeprecationWarning: collection.remove is deprecated. Use deleteOne, deleteMany, or bulkWrite instead.
+        comp.deleteOne().then((r) => {
             // console.log(r); // trebuie să ai un `deletedCount: 1`
             Comp.findOne({nume: 'Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate'});
         }).then((inregistrare) => {
@@ -22,7 +22,7 @@ describe('Ștergerea unei înregistrări din baza de date', () => {
         });
     });
     it('Ștergere folosind metoda remove din clasă', (done) => {
-        Comp.remove().then((r) => { // (node:20763) DeprecationWarning: collection.remove is deprecated. Use deleteOne, deleteMany, or bulkWrite instead.
+        Comp.deleteOne().then((r) => { // (node:20763) DeprecationWarning: collection.remove is deprecated. Use deleteOne, deleteMany, or bulkWrite instead.
             // console.log(r); // trebuie să ai un `deletedCount: 1`
             Comp.findOne({nume: 'Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate'});
         }).then((inregistrare) => {
@@ -42,7 +42,7 @@ describe('Ștergerea unei înregistrări din baza de date', () => {
         });
     });
     it('Ștergere folosind metoda findByIdAndRemove din clasă', (done) => {
-        Comp.findByIdAndRemove(comp._id).then((r) => { // (node:20763) DeprecationWarning: collection.remove is deprecated. Use deleteOne, deleteMany, or bulkWrite instead.
+        Comp.findByIdAndRemove(comp._id).then((r) => {
             // console.log(r); // trebuie să ai un `deletedCount: 1`
             Comp.findOne({nume: 'Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate'});
         }).then((inregistrare) => {

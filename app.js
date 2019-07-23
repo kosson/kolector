@@ -60,31 +60,9 @@ app.use(bodyParser.json());
 // Instanțiază Passport și restaurează starea sesiunii dacă aceasta există
 app.use(passport.initialize());
 app.use(passport.session());
+
 // Setarea unei strategii de lucru cu API-urile GOOGLE
-// Definirea unei scheme necesare verificării existenței utilizatorului.
-var Schema = mongoose.Schema;
-var User = new Schema({
-    email:    String,
-    googleID: String,
-    googleProfile: {
-        name:          String,
-        given_name:    String,
-        family_name:   String,
-        picture:       String,
-        token:         String,
-        refresh_token: String,
-        token_type:    String,
-        expires_in:    String
-    },
-    roles: {
-        admin:     Boolean,
-        rolInCRED: [],
-        unitate:   [],
-        setRED:    []
-    },
-    created: Date
-});
-var userModel = mongoose.model('User', User);
+var userModel = require('./models/user');   // adu un model al userului
 
 function cbStrategy (request, accessToken, refreshToken, params, profile, done) {
     // popularea modelului cu date
@@ -107,7 +85,7 @@ function cbStrategy (request, accessToken, refreshToken, params, profile, done) 
         created: Date.now()
     };
     // numără câte înregistrări sunt în colecție.
-    // var noRecs = userModel.find().estimatedDocumentCount( (err, count) => { // FIXME: Folosește secvența când faci upgrade la MonoDB peste 4.0.3
+    // var noRecs = userModel.find().estimatedDocumentCount( (err, count) => { // FIXME: Folosește secvența când faci upgrade la MongoDB 4.0.3 sau peste
     userModel.find().count( (err, count) => {
         // DACĂ nu găsește nicio înregistrare, creează direct pe prima care a fi și admin
         if (count == 0) {
@@ -141,12 +119,12 @@ function cbStrategy (request, accessToken, refreshToken, params, profile, done) 
 
 // Strategia de access pentru conturile de Google
 passport.use(new GoogleStrategy({
-    clientID:     process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL:  "http://localhost:8080/callback",
-    prompt:       'select_account',
-    passReqToCallback   : true
-  }, cbStrategy
+        clientID:     process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL:  "http://localhost:8080/callback",
+        prompt:       'select_account',
+        passReqToCallback   : true
+    }, cbStrategy
 ));
 
 // Pentru a putea susține sesiuni de login persistent, 

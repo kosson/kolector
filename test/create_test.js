@@ -4,7 +4,6 @@ const Comp = require('../models/competenta-specifica');
 
 describe('Creează competență specifică - test', () => {
     it('Creează o competență', (done) => {
-        // fă un assertion
         const comp = new Comp({
             nume: 'Identificarea semnificaţiei unui mesaj oral, pe teme accesibile, rostit cu claritate',
             ids: '1.1',
@@ -20,19 +19,18 @@ describe('Creează competență specifică - test', () => {
                 'decodificarea mesajului încifrat în ghicitori',
                 'audierea unor povestiri simple, ilustrate, despre istoria scrisului'
             ],
-            disciplina: 'comunicare în limba română',
+            disciplina: 'Comunicare în limba română',
             nivel: [
                 'clasa I'
             ],
             ref: 'Ordin al ministrului Nr. 3418/19.03.2013',
+            parteA: 'Receptarea de mesaje orale în contexte de comunicare cunoscute',
             din: Date(),
             nrRED: 1
         });
         comp.save().then(() => {
             assert(!comp.isNew); // dacă a fost salvat în bază valoarea pasată lui assert va fi false. Pentru a trece testul o facem truthy
             done();
-        }).catch((err) => {
-            if(err) throw new Error('Zice: ', err.message);
         });
     });
 });

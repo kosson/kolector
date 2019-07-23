@@ -17,8 +17,15 @@ let CompetentaS = new mongoose.Schema({
     disciplina: String, // COMUNICARE ÎN LIMBA ROMÂNĂ
     nivel:      [],     // toate acestea sunt cuvinte cheie. Sintagma în document este „Clasa pregătitoare, clasa I şi clasa a II-a”. Cheile: „clasa pregătitoare”, „clasa I”, „clasa a II-a”
     ref:        [],     // De ex: „Ordin al ministrului Nr. 3418/19.03.2013” sau poate fi link către ordin sau orice URI care poate identifica sursa informației sau orice asemenea
+    parteA:     String, // Se introduce numele grupei de competențe specifice. De ex: „Receptarea de mesaje orale în contexte de comunicare cunoscute” 
+    REDuri:     [],     // Este setul de identificatori. Fiecare identificator este o resursă care este în setul modelului resursei ca element în setul `target.value`. Dacă în `target.value` este adăugat id-ul unei competențe, id-ul respectivei resurse va fi adăugat acestui set.
     din:        Date,
-    nrRED:      Number  // numărul de resurse care vizează această competență   
+    contor:     Number  // Este un număr folosit în bateria de teste, dar poate fi utilizat în posibile scenarii.
 });
-let Competentaspecifica = new mongoose.model('competentaspecifica', CompetentaS);
-module.exports = Competentaspecifica;
+
+// definim un virtual care va calcula automat numărul de RED-uri care menționează o anumită competență.
+CompetentaS.virtual('nrREDuri').get(function () {
+    return this.REDuri.length;
+});
+
+module.exports = new mongoose.model('competentaspecifica', CompetentaS);
