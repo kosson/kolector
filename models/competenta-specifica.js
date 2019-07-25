@@ -5,7 +5,7 @@ let CompetentaS = new mongoose.Schema({
         type: String,
         validate: {
             validator: (nume) => {                
-                return nume.length > 2; // este absolut necesar să returnaze true sau false
+                return nume.length > 2; // este absolut necesar să returneze true sau false
             },
             message: 'Numele resursei trebuie să fie mai mare de trei caractere'
         },

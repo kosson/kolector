@@ -18,8 +18,16 @@ before((done) => {
 
 // Înainte de a face orice cu baza de date, mai întâi rulează ce este în beforeEach
 beforeEach((done) => {
-    mongoose.connection.collections.competentaspecificas.drop(() => {});   
-    // mongoose.connection.collections.disciplinas.drop(() => {});
-    mongoose.connection.collections.resursedus.drop(() => {});
-    done();
+    const {resursedus, etichetas, competentaspecificas, coments} = mongoose.connection.collections;
+    // ștergerea bazelor de date cu totul!!! A nu se încărca seturile de date inițiale.
+    competentaspecificas.drop(() => {
+        resursedus.drop(() => {
+            etichetas.drop(() => {
+                coments.drop(() => {
+                    done();
+                });
+            });
+        });
+    });
+    // done();
 });

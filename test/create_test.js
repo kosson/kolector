@@ -25,7 +25,7 @@ describe('Creează competență specifică - test', () => {
             ],
             ref: 'Ordin al ministrului Nr. 3418/19.03.2013',
             parteA: 'Receptarea de mesaje orale în contexte de comunicare cunoscute',
-            din: Date(),
+            din: Date.now(),
             nrRED: 1
         });
         comp.save().then(() => {

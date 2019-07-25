@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+// const User     = require('./user');
 
 let Coment = new mongoose.Schema({
     continut: String,
     user: {
-        type: Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     }
 });

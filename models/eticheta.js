@@ -1,11 +1,16 @@
 const mongoose = require('mongoose');
 
 let Eticheta = new mongoose.Schema({
-    nume:    String,
+    nume: {
+        type:      String,
+        lowercase: true, // normalizează toate etichetele
+        // index:     true,
+        trim:      true
+    },
     uri:     String,
     context: [],
     reduri: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'resursedu'
     }]
 });

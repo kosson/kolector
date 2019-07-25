@@ -1,8 +1,18 @@
 const mongoose = require('mongoose');
+// const User     = require('./user');
+// const Comp     = require('./competenta-specifica');
+// const Coment   = require('./coment');
+// const Eticheta = require('./eticheta');
 
 var softwareSchema = new mongoose.Schema({
-    nume:     String,
-    versiune: String,
+    nume:     {
+        type: String,
+        trim: true
+    },
+    versiune: {
+        type: String,
+        trim: true
+    },
     homepage: String,
     logoUri:  String
 });
@@ -29,12 +39,13 @@ var Resursa = new mongoose.Schema({
         // validate: {
         //     required: [true, 'Titlul este absolut necesar']
         // }
+        trim: true
     },
     titleI18n: [],  // Un titlu poate fi tradus în mai multe limbi. Modelul este: {ro:'Numele RED-ului',de:'Titel der RED'}. Cheia va fi o valoare conform ISO 639-1.
     titleContext: ['http://purl.org/dc/elements/1.1/title', 'https://schema.org/name'],
     creator:   [{   // este ceea ce numim autor / autori ai resursei. Poate fi unul sau mai mulți. Este o colecție de id-uri de utilizatori.
-        type: Schema.Types.ObjectId,
-        ref: 'user'    
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
     }],
     creatorContext: ['http://purl.org/dc/elements/1.1/creator', 'https://schema.org/creator'],
     
@@ -62,25 +73,16 @@ var Resursa = new mongoose.Schema({
     disciplinaLegataDe: [],    // [valoare din vocabular] Sunt disciplinele pentru care se poate folosi această resursă, dar propuse intern. Este un array de coduri aferente disciplinelor. Codurile acestora devin etichete automat
     disciplinePropuse:  [],    // Aici vor intra sugestiile publicului. I se va oferi un câmp de introducere etichete, cu autocompletare primele sugestii fiind disciplinele din vocabularul controlat. Codurile acestora devin automat etichete
     disciplineContext:  ['http://purl.org/dcx/lrmi-vocabs/alignmentType/educationalSubject', 'https://schema.org/identifier'],
-    competentaS:        [],    // [valoare din vocabular] Set de competențe specifice. Este ținta de învățare specificată ca obiectiv clar identificabil într-un vocabular controlat al elementelor stabilite de specialiști, dar codate. Sunt cele care sunt alese inițial la selecția când resursa a fost încărcată. Codurile acestora devin automat etichete. Când identficatorul unei comptențe specifice este introdus în acest set, automat, va fi actualizat setul `REDuri` cu id-ul resursei constituite. Astfel, o competență va ști mereu de care REDuri este referită.
-    competentaSAlte:    [],    // [valoare din vocabular] Sunt alte competențe interdisciplinare pe care creatorul sau evaluatorul le crede necesare a fi menționate.
-    competentaSRelAnte: [{     // se va completa automat cu, codul de competență specifică anterior. Primul va fi cel din ierarhie, restul vor fi cele care sunt propuse (public sau experți).
-        type: Schema.Types.ObjectId,    // va lua id-uri din altă colecție
+    competentaS:        [{     // Primul va fi cel din ierarhie, restul vor fi cele care sunt propuse (public sau experți).
+        type: mongoose.Schema.Types.ObjectId,    // va lua id-uri din altă colecție
         ref: 'competentaspecifica'      // este numele modelului de competență specifică, în cazul de față (ceea ce exporți din modul)
-    }],
-    competentaSRelPost: [{     // se va completa automat prima cu, codul de competență specifică de după din ierarhie. Restul din array, vor fi codurile competențelor propuse (public sau experți).
-        type: Schema.Types.ObjectId,
-        ref: 'competentaspecifica'
-    }],
+    }],    // [valoare din vocabular] Set de competențe specifice. Este ținta de învățare specificată ca obiectiv clar identificabil într-un vocabular controlat al elementelor stabilite de specialiști, dar codate. Sunt cele care sunt alese inițial la selecția când resursa a fost încărcată. Codurile acestora devin automat etichete. Când identficatorul unei comptențe specifice este introdus în acest set, automat, va fi actualizat setul `REDuri` cu id-ul resursei constituite. Astfel, o competență va ști mereu de care REDuri este referită.
     competentaSContext: ['https://schema.org/targetName', 'http://purl.org/dcx/lrmi-vocabs/alignmentType/teaches'],
     prerequisite:       [],    // sunt toate competențele necesare celui care accesează resursa . Gândește-te la nivelurile de cunoaștere a unei limbi (A1, B2, etc). Aici va sta valoarea sau valorile pentru limba primară în care au fost introduse informațiile. La un moment dat este posibilă o interfațare cu Open Badges ca prerequisite în scop de gamificare.
     prerequisiteContext:['http://purl.org/dcx/lrmi-vocabs/alignmentType/prerequisite', 'https://schema.org/targetName'],
 
     // #4. ADMINISTRATIV
-    administrator:      [{     // indică numele persoanei care a evaluat și validat resursa.
-        type: Schema.Types.ObjectId,
-        ref: 'user'
-    }],
+    administrator:      [], // indică numele persoanei/lor care au evaluat și validat resursa.
     administratorContext: ['http://purl.org/dcx/lrmi-vocabs/educationalAudienceRole/administrator'],
     educationalFramework: {
         type: String   // [valoare din vocabular] este numele documentului cadru care reglementează disciplina. De ex: „Programa şcolară pentru disciplina COMUNICARE ÎN LIMBA ROMÂNĂ. Clasa pregătitoare, clasa I şi clasa a II-a”. Este identificatorul actului normativ emis de organul de resort. De ex: „Ordin al ministrului Nr. 3418/19.03.2013”.
@@ -104,7 +106,7 @@ var Resursa = new mongoose.Schema({
     licentaURI:    String,
     contextLicenta:['http://purl.org/dcx/lrmi-terms/useRightsUrl'],
     comentarii:    [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'coment'
     }],     // este o listă de identificatori pentru comentariile aduse unei anumite resurse.
     recomandare:   [recomSchema], // este o listă cu identificatori pentru recomandările făcute de experți creatorului înainte de a valida resursa pentru publicare. Aceste date nu vor fi afișate public, ci în baza regulilor de ACL
@@ -115,7 +117,7 @@ var Resursa = new mongoose.Schema({
     generalPublic:    Boolean, // o valoare 'true' semnifică faptul că prezenta resursă intră în zona publică
     contorDescarcare: Number,  // de câte ori a fost descărcată resursa
     etichete:         [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'eticheta'
     }],      // Sunt toate etichetele primite la momentul introducerii resursei la care se vor adăuga cele introduse ulterior de public
     utilMie:          Number,  // Este echivalentul lui „Like” pentru un utilizator indiferent de rangul ACL. Acesta va cumula cu cele date de public.
