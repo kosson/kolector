@@ -20,7 +20,7 @@ let CompetentaS = new mongoose.Schema({
     parteA:     String, // Se introduce numele grupei de competențe specifice. De ex: „Receptarea de mesaje orale în contexte de comunicare cunoscute” 
     REDuri:     [],     // Este setul de identificatori. Fiecare identificator este o resursă care este în setul modelului resursei ca element în setul `target.value`. Dacă în `target.value` este adăugat id-ul unei competențe, id-ul respectivei resurse va fi adăugat acestui set.
     din:        Date,
-    contor:     Number  // Este un număr folosit în bateria de teste, dar poate fi utilizat în posibile scenarii.
+    contor:     Number  // ATENȚIE!!! Este un număr folosit doar în bateria de teste, dar poate fi utilizat în posibile scenarii.
 });
 
 // definim un virtual care va calcula automat numărul de RED-uri care menționează o anumită competență.

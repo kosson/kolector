@@ -25,8 +25,9 @@ describe('Creează competență specifică - test', () => {
             ],
             ref: 'Ordin al ministrului Nr. 3418/19.03.2013',
             parteA: 'Receptarea de mesaje orale în contexte de comunicare cunoscute',
+            REDuri: '',
             din: Date.now(),
-            nrRED: 1
+            contor: 1
         });
         comp.save().then(() => {
             assert(!comp.isNew); // dacă a fost salvat în bază valoarea pasată lui assert va fi false. Pentru a trece testul o facem truthy
