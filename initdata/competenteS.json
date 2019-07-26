@@ -3,7 +3,7 @@
         "nume": "Identificarea semnificaţiei unui mesaj oral, pe teme accesibile, rostit cu claritate",
         "ids" : ["1.1"],
         "cod" : "LbComRoComLbRomClI01Spec1.1",
-        "token": [
+        "activitati": [
             "utilizarea imaginilor pentru indicarea semnificaţiei unui mesaj audiat",
             "realizarea unui desen care corespunde subiectului textului audiat",
             "oferirea de răspunsuri la întrebarea: „Despre ce este vorba... (în acest fragment de poveste/ în acest text) ?”",
@@ -28,7 +28,7 @@
         "nume": "Identificarea unor informaţii variate dintr-un mesaj rostit cu claritate",
         "ids" : ["1.2"],
         "cod" : "LbComRoComLbRomClI01Spec1.2",
-        "token": [
+        "activitati": [
             "identificarea personajelor/ personajului unui text audiat",
             "oferirea unor răspunsuri la întrebări de genul: „Cine? Ce? Când? Unde? Cum? De ce?”",
             "formularea unor întrebări şi răspunsuri referitoare la conţinutul unui mesaj/ text audiat",

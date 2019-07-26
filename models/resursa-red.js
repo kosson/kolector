@@ -125,4 +125,14 @@ var Resursa = new mongoose.Schema({
     // o resursă educațională va avea cel puțin o referință, care să indice prin textul introdus de expert acordul la publicare în baza algoritmului de validare. Câta vreme expertCheck este false, resursa nu va fi publicată
 });
 
+// HOOKS
+// Stergerea comentariilor asociate utiliatorului atunci când acesta este șters din baza de date.
+Resursa.pre('remove', function hRemoveCb() {
+    const Coment = monoose.model('coment'); // acces direct la model fără require
+    Coment.remove({ // -> Parcurge întreaga colecție a comentariilor
+        // -> iar dacă un `_id`  din întreaga colecție de comentarii se potrivește cu id-urile de comentariu din întregistrarea resursei (`$in: this.Coment`), șterge-le. 
+        _id: {$in: this.Coment} // se va folosi operatorul de query `in` pentru a șterge înregistrările asociate
+    }).then(() => next()); // -> acesta este momentul în care putem spune că înregistrarea a fost eliminată complet.
+});
+
 module.exports = mongoose.model('resursedu', Resursa);
