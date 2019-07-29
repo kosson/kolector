@@ -8,6 +8,8 @@ const passport       = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const express        = require('express');
 const session        = require('express-session');
+const fileUpload     = require('express-fileupload');
+const acl            = require('express-acl');
 const RedisStore     = require('connect-redis')(session);
 const router         = express.Router();
 const app            = express();
@@ -53,6 +55,7 @@ app.use(session({
     saveUninitialized: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(fileUpload());
 app.use(favicon(path.join(__dirname,  'public', 'favicon.ico')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -101,7 +104,7 @@ function cbStrategy (request, accessToken, refreshToken, params, profile, done) 
             userModel.findOne({ email: profile._json.email }, (err, user) => {
                 if (err) throw new Error(err);    
                 if(user) {
-                    done(null, user); // TODO: explorează ce poți face mai mult cu done()
+                    done(null, user);
                     // TODO: trimite token-ul din bază catre browser. 
                 } else {
                     record.roles.admin = false;
@@ -159,6 +162,8 @@ app.set('view engine', 'hbs');
 var index   = require('./routes/index');
 var login   = require('./routes/login');
 var resurse = require('./routes/resurse');
+var admin   = require('./routes/administrator');
+
 // LANDING
 app.get('/', index);
 // LOGIN
@@ -181,9 +186,11 @@ app.get('/profile',
         res.render('profile', { user: req.user });
     }
 );
-// // RUTA PROFILULUI PROPRIU - Gestionarea resurselor de sistem alocate
-app.get('/profile/admin', ensureAuthenticated, () => {});
-// TODO: RUTA ADMIN
+// RUTA ADMINISTRATIVĂ A APLICAȚIEI
+app.get('/administrator', ensureAuthenticated, admin);
+// TODO: RUTA ADMINISTRATOR:
+// -- verifică daca este autentificat și dacă este administrator.
+
 // RESURSELE
 app.get('/resurse', ensureAuthenticated, resurse);
 // ADAUGĂ RESURSA

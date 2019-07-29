@@ -25,7 +25,7 @@ describe('Teste de middleware cu hook-uri', () => {
     });
     it('testează ștergerea unei resurse cu toate comentariile asociate', (done) => {
         resursa.remove().then(() => {
-            return Coment.count(); // numără câte documente se află într-o colecție - este o operațiune asincronă
+            return Coment.countDocuments(); // numără câte documente se află într-o colecție - este o operațiune asincronă. Foloseste `countDocuments` pentru eliminare deprecations
         }).then((numardocumente) => {
             assert(numardocumente === 0);
             done();

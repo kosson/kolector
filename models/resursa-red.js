@@ -1,8 +1,4 @@
 const mongoose = require('mongoose');
-// const User     = require('./user');
-// const Comp     = require('./competenta-specifica');
-// const Coment   = require('./coment');
-// const Eticheta = require('./eticheta');
 
 var softwareSchema = new mongoose.Schema({
     nume:     {
@@ -63,7 +59,7 @@ var Resursa = new mongoose.Schema({
     arieCurricularaId:  String,
     arieCurricularaUri: String,
     level:              [],    // menționează clasa. Ex: Clasa I. În form, un select
-    levelRelated:       [],    // menționează la care alte clase mai ajută prezenta resursă. În form un select cu multiple
+    levelRelated:       [],    // menționează la care alte clase mai ajută prezenta resursă. În form, un select cu multiple
     levelContext:       ['http://purl.org/dcx/lrmi-vocabs/alignmentType/educationalLevel', 'https://schema.org/alignmentType'],
     grupCompetente: {   // Este grupul mare de competențe specifice. Acel 1.Nume grup competențe
         type: String    // [valoare din vocabular] Aceste valori se vor încărca dinamic în funcție de opțiunea de la arie.
