@@ -1,4 +1,4 @@
-const mongoose = require('../mongoose.config');
+const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);    // va folosi driverul original al MongoDB - vezi https://mongoosejs.com/docs/deprecations.html
 
 // hook necesar pentru execuția fix o singură dată în setul de test mocha
@@ -9,6 +9,12 @@ before((done) => {
 
 // Înainte de a face orice cu baza de date, mai întâi rulează ce este în beforeEach
 beforeEach((done) => {
+    mongoose.connect('mongodb://localhost/redcolectortest');
+    mongoose.connection.once('open', (done) => {
+        return done();
+    }).on('error', (error) => {
+        console.warn('Atenție:', error);
+    });
     const {resursedus, etichetas, competentaspecificas, coments} = mongoose.connection.collections;
     // ștergerea bazelor de date cu totul!!! A nu se încărca seturile de date inițiale.
     competentaspecificas.drop(() => {
