@@ -1,6 +1,6 @@
 # RED Colector
 
-![](public/img/rED-logo512.png)
+<img src:"public/img/rED-logo192.png" width="200">
 
 RED Colector este aplicația care gestionează Resurse Educaționale Deschise. Această aplicație este integrată fluxului de lucru din proiectul CRED în Educație.
 
