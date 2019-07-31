@@ -4,7 +4,10 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var User = new Schema({
     created:  Date,
-    email:    String,
+    email:    {
+        type: String,
+        index: true
+    },
     googleID: String,
     googleProfile: {
         name:          String,

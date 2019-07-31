@@ -34,7 +34,8 @@ var Resursa = new mongoose.Schema({
         type: String,  // Aici se introduce titlul lucrării în limba de elaborare
         // validate: {
         //     required: [true, 'Titlul este absolut necesar']
-        // }
+        // },
+        index: true,
         trim: true
     },
     titleI18n: [],  // Un titlu poate fi tradus în mai multe limbi. Modelul este: {ro:'Numele RED-ului',de:'Titel der RED'}. Cheia va fi o valoare conform ISO 639-1.
@@ -58,10 +59,11 @@ var Resursa = new mongoose.Schema({
     },
     arieCurricularaId:  String,
     arieCurricularaUri: String,
-    level:              [],    // menționează clasa. Ex: Clasa I. În form, un select
+    ariiCurriculare:    [],    // vor fi id-uri pentru ariile curriculare diferite de cea primară pentru care resursa se califică în opțiunea specialistului sau a publicului. 
+    level:              [],    // menționează clasa. Ex: Clasa I. În form, va fi un range. În înregistrare va fi un array de numere de la 0 la 8. Vezi colecția „niveluri-gimnaziu” din initdata
     levelRelated:       [],    // menționează la care alte clase mai ajută prezenta resursă. În form, un select cu multiple
     levelContext:       ['http://purl.org/dcx/lrmi-vocabs/alignmentType/educationalLevel', 'https://schema.org/alignmentType'],
-    grupCompetente: {   // Este grupul mare de competențe specifice. Acel 1.Nume grup competențe
+    grupCompetente: {   // Este grupul mare de competențe specifice. Acel 1. Nume grup competențe
         type: String    // [valoare din vocabular] Aceste valori se vor încărca dinamic în funcție de opțiunea de la arie.
     },
     grupCompetenteId:   String,

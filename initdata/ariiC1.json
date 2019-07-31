@@ -1,0 +1,32 @@
+[
+    {
+        "nume": "Limbi materne",
+        "cod": "LbComLbMat",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 0
+    },
+    {
+        "nume": "Limbi moderne",
+        "cod": "LbComLbMod",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 1
+    },
+    {
+        "nume": "Istorie minorități",
+        "cod": "OmSiSocIstMin",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 2
+    },
+    {
+        "nume": "Istorie minorități",
+        "cod": "OmSiSocRel",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 3
+    },
+    {
+        "nume": "Pregătire sportivă practică",
+        "cod": "EdFizSiSpPrSpPra",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 4
+    }
+]

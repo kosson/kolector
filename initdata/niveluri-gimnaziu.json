@@ -1,0 +1,56 @@
+[
+    {
+        "nume": "Clasa pregătitoare",
+        "cod": "Cl0",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 0
+    },
+    {
+        "nume": "Clasa I",
+        "cod": "Cl1",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 1
+    },
+    {
+        "nume": "Clasa a II-a",
+        "cod": "Cl2",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 2
+    },
+    {
+        "nume": "Clasa a III-a",
+        "cod": "Cl3",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 3
+    },
+    {
+        "nume": "Clasa a IV-a",
+        "cod": "Cl4",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 4
+    },
+    {
+        "nume": "Clasa a V-a",
+        "cod": "Cl5",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 5
+    },
+    {
+        "nume": "Clasa a VI-a",
+        "cod": "Cl6",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 6
+    },
+    {
+        "nume": "Clasa a VII-a",
+        "cod": "Cl7",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 7
+    },
+    {
+        "nume": "Clasa a VIII-a",
+        "cod": "Cl8",
+        "ref": "Ordin 3393/28.02.2017",
+        "nivel": 8
+    }
+]
