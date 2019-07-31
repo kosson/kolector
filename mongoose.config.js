@@ -1,4 +1,4 @@
-const mongoose       = require('mongoose');
+const mongoose = require('mongoose');
 // MONGOOSE - Conectare la MongoDB
 mongoose.set('useCreateIndex', true); // Deprecation warning
 mongoose.connect(process.env.MONGO_LOCAL_CONN, {useNewUrlParser: true});

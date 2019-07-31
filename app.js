@@ -6,8 +6,8 @@ const cookies        = require('cookie-parser');
 const express        = require('express');
 const session        = require('express-session');
 const fileUpload     = require('express-fileupload');
+const passport       = require('passport');
 const RedisStore     = require('connect-redis')(session);
-// const router         = express.Router();
 const app            = express();
 const acl            = require('express-acl');
 const hbs            = require('express-hbs');
@@ -55,16 +55,19 @@ app.engine('hbs', hbs.express4({
 app.set('views', __dirname + '/views');
 app.set('view engine', 'hbs');
 
+// Instanțiază Passport și restaurează starea sesiunii dacă aceasta există
+app.use(passport.initialize());
+app.use(passport.session());
 // GESTIONAREA RUTELOR
-const routes = require('./routes/routes');
-routes(app);
+const routes = require('./routes/routes')(app, passport);
 
 app.use(function (err, req, res, next) {
     console.error(err.stack);
     res.status(500).send('Serverul are o eroare!');
 });
 
-http.listen(8080, '127.0.0.1', function cbConnection () {
+let port  = process.env.PORT || 8080;
+http.listen(port, '127.0.0.1', function cbConnection () {
     console.log('Server pornit pe 8080 -> binded pe 127.0.0.1');
 });
 

@@ -1,0 +1,35 @@
+<div class="container">
+    <!-- LOGIN FORM -->
+    <div>
+        <h1>Punct de acces <span class="fa fa-sign-in"></span></h1>
+        <p>Este necesară logarea pentru a avea acces la resursele proprii și pentru a interacționa cu cele existente.</p>
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" class="form-control" name="email">
+            </div>
+            <div class="form-group">
+                <label>Parolă</label>
+                <input type="password" class="form-control" name="password">
+            </div>
+            <button type="submit" class="btn btn-warning btn-lg">Login</button>
+        </form>
+        <hr>
+        <aside>
+            <p>Vrei să-ți faci cont?
+                <a href="/signup">Signup</a>
+            </p>
+            <p>Sau mergi la
+                <a href="/">prima pagină</a>.
+            </p>
+        </aside>
+    </div>
+
+    <div id="authblock">
+        {{!-- <button type="" class="btn">Google</button> --}}
+        <p>Dacă ai cont EDUCRED, te rog, autentifică-te apăsând logo-ul</p>
+        <a href="/auth/google">
+            <img src="{{credlogo}}" alt="" srcset="" width="150">
+        </a>
+    </div>
+</div>

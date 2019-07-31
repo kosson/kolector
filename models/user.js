@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require('../mongoose.config');
 // const resursedu = require('./resursa-red');
 // Definirea unei scheme necesare verificării existenței utilizatorului.
 var Schema = mongoose.Schema;
 var User = new Schema({
     created:  Date,
-    email:    {
+    email: {
         type: String,
         index: true
     },
