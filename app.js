@@ -2,17 +2,16 @@ require('dotenv').config();
 const path           = require('path');
 const bodyParser     = require('body-parser');
 const logger         = require('morgan');
-const mongoose       = require('mongoose');
 const cookies        = require('cookie-parser');
 const passport       = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const express        = require('express');
 const session        = require('express-session');
 const fileUpload     = require('express-fileupload');
-const acl            = require('express-acl');
 const RedisStore     = require('connect-redis')(session);
 const router         = express.Router();
 const app            = express();
+const acl            = require('express-acl');
 const hbs            = require('express-hbs');
 const http           = require('http').createServer(app);
 const cors           = require('cors');
@@ -26,17 +25,6 @@ pubComm.on('connect', function pubCommCon (socket) {
     socket.on('mesaje', function cbMesaje (mesaj) {
         console.log(mesaj);
     });
-});
-
-// MONGOOSE - Conectare la MongoDB
-mongoose.set('useCreateIndex', true); // Deprecation warning
-mongoose.connect(process.env.MONGO_LOCAL_CONN, {useNewUrlParser: true});
-mongoose.connection.on('error', function () {
-    console.warn('Database connection failure');
-    process.exit();
-});
-mongoose.connection.once('open', function () {
-    console.log("Database connection succeded");
 });
 
 // MIDDLEWARE-UL aplicației
@@ -64,8 +52,18 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Use `.hbs` for extensions and find partials in `views/partials`.
+app.engine('hbs', hbs.express4({
+    partialsDir: __dirname + '/views/partials',
+    layoutsDir:  __dirname + '/views/layouts',
+    beautify: true
+}));
+app.set('views', __dirname + '/views');
+app.set('view engine', 'hbs');
+
 // Setarea unei strategii de lucru cu API-urile GOOGLE
-var userModel = require('./models/user');   // adu un model al userului
+const mongoose = require('./mongoose.config');
+let userModel = require('./models/user');   // adu un model al userului
 
 function cbStrategy (request, accessToken, refreshToken, params, profile, done) {
     // popularea modelului cu date
@@ -148,15 +146,6 @@ function ensureAuthenticated (req, res, next) {
     res.redirect('/login');
 }
 
-// Use `.hbs` for extensions and find partials in `views/partials`.
-app.engine('hbs', hbs.express4({
-    partialsDir: __dirname + '/views/partials',
-    layoutsDir:  __dirname + '/views/layouts',
-    beautify: true
-}));
-app.set('views', __dirname + '/views');
-app.set('view engine', 'hbs');
-
 /* GESTIONAREA RUTELOR */
 // IMPORTUL CONTROLLERELOR DE RUTE
 var index   = require('./routes/index');
@@ -205,4 +194,4 @@ http.listen(8080, '127.0.0.1', function cbConnection () {
     console.log('Server pornit pe 8080 -> binded pe 127.0.0.1');
 });
 
-module.exports = userModel;
+module.exports = app;

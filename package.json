@@ -4,7 +4,8 @@
   "description": "Aplicația pentru colectare de RED-uri",
   "main": "app.js",
   "scripts": {
-    "test": "nodemon --exec 'mocha -R min'"
+    "test": "nodemon --exec 'mocha --recursive -R min'",
+    "test-win": "nodemon --exec mocha --recursive -R min"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-oauth": "^1.0.0",
     "serve-favicon": "^2.5.0",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "supertest": "^4.0.2"
   }
 }

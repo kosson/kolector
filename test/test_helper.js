@@ -1,19 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require('../mongoose.config');
 mongoose.set('useFindAndModify', false);    // va folosi driverul original al MongoDB - vezi https://mongoosejs.com/docs/deprecations.html
 
 // hook necesar pentru execuția fix o singură dată în setul de test mocha
 before((done) => {
-    // MONGOOSE - Conectare la MongoDB
-    mongoose.set('useCreateIndex', true); // Deprecation warning
-    mongoose.connect('mongodb://localhost/redcolector', {useNewUrlParser: true});
-    mongoose.connection.on('error', function () {
-        console.warn('Database connection failure');
-        process.exit();
-    });
-    mongoose.connection.once('open', function () {
-        console.log('Database connection succeded');
-        done(); // este specific doar pentru testare cu mocha
-    });
+    // în cazul în care ai nevoie de a executa orice înainte de orice test -> PREQUISITE
+    done();
 });
 
 // Înainte de a face orice cu baza de date, mai întâi rulează ce este în beforeEach
