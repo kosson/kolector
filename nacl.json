@@ -13,7 +13,7 @@
         "group": "user",
         "permissions": [
             {
-                "resource": "resurse",
+                "resource": "resursepublice",
                 "methods": ["POST", "GET", "PUT"],
                 "action": "allow"
             }

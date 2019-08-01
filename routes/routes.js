@@ -49,7 +49,7 @@ module.exports = (app, passport) => {
         res.status(401);
         res.render('nepermis', {
             title:    "401",
-            logoimg:  "img/rED-logo192.png",
+            logoimg:  "img/red-logo-small30.png",
             mesaj:    "Încă nu ești autorizat pentru acestă zonă"
         });
     }); // 401 Unauthorized
@@ -73,16 +73,18 @@ module.exports = (app, passport) => {
     // -- verifică daca este autentificat și dacă este administrator.
 
     // RESURSELE
+    app.get('/resursepublice', resurse);
     app.get('/resurse', User.ensureAuthenticated, resurse);
     // ADAUGĂ RESURSA
     app.get('/resurse/adauga', User.ensureAuthenticated, resurse);
 
     // SERVEȘTE 404 pentru ceea ce nu există
-    app.use(function(req, res, next) {
+    app.use('*',function(req, res, next) {
         res.render('negasit', {
             title:    "404",
-            logoimg:  "img/red-logo-small30.png",
-            mesaj: "Nu am gasit pagina căutată. Verifică linkul!"
+            logoimg:  "/img/red-logo-small30.png",
+            imaginesplash: "/img/theseAreNotTheDroids.jpg",
+            mesaj:    "Nu am gasit pagina căutată. Verifică linkul!"
         });
         // next();
     });

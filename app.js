@@ -26,7 +26,7 @@ pubComm.on('connect', function pubCommCon (socket) {
 });
 
 // MIDDLEWARE-UL aplicației
-app.use(logger('combined'));
+// app.use(logger('combined')); // TODO: Dă-i drumu în producție și creează un mecanism de rotire a logurilor.
 app.use(cors());
 app.use(cookies());
 app.use(session({

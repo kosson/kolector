@@ -22,9 +22,10 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
     };
     // numără câte înregistrări sunt în colecție.
     // var noRecs = userModel.find().estimatedDocumentCount( (err, count) => { // FIXME: Folosește secvența când faci upgrade la MongoDB 4.0.3 sau peste
-    userModel.find().count( (err, count) => {
-        // DACĂ nu găsește nicio înregistrare, creează direct pe prima care a fi și admin
+    userModel.find().countDocuments( (err, count) => {
+        // DACĂ nu găsește nicio înregistrare, creează direct pe prima care va fi și admin
         if (count == 0) {
+            record.roles.rolInCRED = ["validator", "user"]; // TODO: !!!! 000 rafineaza datele cu care pornește adminul
             record.roles.admin = true;
             const userObj = new userModel(record);
             userObj.save(function (err, user) {
@@ -37,9 +38,11 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
             userModel.findOne({ email: profile._json.email }, (err, user) => {
                 if (err) throw new Error(err);    
                 if(user) {
+                    console.log(user.roles);
                     done(null, user);
                     // TODO: trimite token-ul din bază catre browser. 
                 } else {
+                    // dacă cu există acest user în bază, va fi adăugat fără a fi admin.
                     record.roles.admin = false;
                     const newUserObj = new userModel(record);
                     newUserObj.save(function (err, user) {
