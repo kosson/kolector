@@ -1,6 +1,14 @@
 footer {
     display: flex;
 }
+
+img {
+    width: 100%;
+}
+
+#logo-small {
+    width: 20%;
+}
 #resurse {
     display: flex;
     flex-wrap: wrap;

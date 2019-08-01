@@ -25,11 +25,40 @@ module.exports = (app, passport) => {
         res.redirect('/resurse');
     });
 
+    // RUTE USER
+    /* Este ruta care încarcă resursele atribuite utilizatorului, fie proprii, fie asignate */
+    app.get('/user/resurse', User.resAtribuite, function(req, res) {
+        res.render('red-atribuite', {
+            title:    "RED Atribuite",
+            logoimg:  "../img/rED-logo192.png",
+            credlogo: "../img/CREDlogo.jpg"
+        });
+    });
+
+    app.get('/user/resurse/cred', User.resAtribuite, function(req, res) {
+        res.render('red-in-cred', {
+            title:    "RED Atribuite",
+            logoimg:  "../img/rED-logo192.png",
+            credlogo: "../img/CREDlogo.jpg"
+        });
+    });
+
+    // RUTA NEPERMIS
+    app.get('/401', function(req, res){
+        res.status(401);
+        res.render('nepermis', {
+            title:    "401",
+            logoimg:  "img/rED-logo192.png",
+            mesaj:    "Încă nu ești autorizat pentru acestă zonă"
+        });
+    }); // 401 Unauthorized
+
     // RUTA LOGOUT
     app.get('/logout', function(req, res){
         req.logout();
         res.redirect('/');
     });
+
     // RUTA PROFILULUI PROPRIU
     app.get('/profile',
         require('connect-ensure-login').ensureLoggedIn(),
@@ -46,4 +75,14 @@ module.exports = (app, passport) => {
     app.get('/resurse', User.ensureAuthenticated, resurse);
     // ADAUGĂ RESURSA
     app.get('/resurse/adauga', User.ensureAuthenticated, resurse);
+
+    // SERVEȘTE 404 pentru ceea ce nu există
+    app.use(function(req, res, next) {
+        res.render('negasit', {
+            title:    "404",
+            logoimg:  "img/red-logo-small30.png",
+            mesaj: "Nu am gasit pagina căutată. Verifică linkul!"
+        });
+        // next();
+    });
 };

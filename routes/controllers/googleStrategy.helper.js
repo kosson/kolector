@@ -44,7 +44,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
                     const newUserObj = new userModel(record);
                     newUserObj.save(function (err, user) {
                         if (err) throw err;
-                        console.log("Salvez user în bază!");
+                        // console.log("Salvez user în bază!");
                         done(null, user);
                     });
                 }

@@ -1,4 +1,5 @@
 const GoogleStrategy   = require('passport-google-oauth20').Strategy;
+//TODO: implementează restul strategiilor!!!
 const LocalStrategy    = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy  = require('passport-twitter').Strategy;
@@ -41,10 +42,16 @@ module.exports = (passport) => {
             });
         },
         ensureAuthenticated(req, res, next){
-            if (req.isAuthenticated()) {
+            if(req.isAuthenticated()){
                 return next();
             }
-            res.redirect('/auth');
+            res.redirect('/401');
+        },
+        resAtribuite(req, res, next){
+            if(req.isAuthenticated()){
+                return next();
+            }
+            res.redirect('/401');
         }
-    }
+    };
 };
