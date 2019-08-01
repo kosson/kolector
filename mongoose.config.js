@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 // MONGOOSE - Conectare la MongoDB
 mongoose.set('useCreateIndex', true); // Deprecation warning
-mongoose.connect(process.env.MONGO_LOCAL_CONN, {useNewUrlParser: true});
+if(process.env.NODE_ENV !== "test"){
+    mongoose.connect(process.env.MONGO_LOCAL_CONN, {useNewUrlParser: true});
+};
 mongoose.connection.on('error', function () {
     console.warn('Database connection failure');
     process.exit();

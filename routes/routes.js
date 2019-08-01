@@ -2,13 +2,14 @@ module.exports = (app, passport) => {
     /* GESTIONAREA RUTELOR */
     // IMPORTUL CONTROLLERELOR DE RUTE
     var index   = require('./index');
-    // var login   = require('./login');
+    // var login   = require('./login'); FIXME: elimină toate fișierele de tratare a rutelor
     var resurse = require('./resurse');
     var admin   = require('./administrator');
 
     // LANDING
     app.get('/', index);
 
+    // Încarcă controlerul necesar tratării rutelor de autentificare
     const User = require('./controllers/user.ctrl')(passport);
     // LOGIN
     app.get('/login', User.login);

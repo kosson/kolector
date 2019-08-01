@@ -14,7 +14,7 @@ module.exports = (passport) => {
     passport.deserializeUser(function(obj, cb) {
         cb(null, obj);
     });
-
+    // Încarcă funcția care tratează autentificarea cu Google pentru strategia dedicată
     let cbGoogleStrategy = require('./googleStrategy.helper');
     // Strategia de access pentru conturile de Google
     passport.use(new GoogleStrategy({
@@ -25,7 +25,7 @@ module.exports = (passport) => {
             passReqToCallback: true
         }, cbGoogleStrategy
     ));
-
+    // returnează un obiect ale cărui metode vor fi tot atâtea middleware-uri
     return {
         auth(req, res){
             res.render('auth', {

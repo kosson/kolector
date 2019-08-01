@@ -60,10 +60,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 // GESTIONAREA RUTELOR
 const routes = require('./routes/routes')(app, passport);
-
+// colectarea erorilor de pe toate middleware-urile
 app.use(function (err, req, res, next) {
     console.error(err.stack);
-    res.status(500).send('Serverul are o eroare!');
+    res.status(500).send('În lanțul de prelucrare a cererii, a apărut o eroare');
 });
 
 let port  = process.env.PORT || 8080;
