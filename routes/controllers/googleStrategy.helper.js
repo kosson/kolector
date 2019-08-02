@@ -16,7 +16,8 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
             expires_in:    params.expires_in
         },
         roles: {
-            admin: false
+            admin: false,
+            rolInCRED: [],
         },
         created: Date.now()
     };
@@ -25,7 +26,6 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
     userModel.find().countDocuments( (err, count) => {
         // DACĂ nu găsește nicio înregistrare, creează direct pe prima care va fi și admin
         if (count == 0) {
-            record.roles.rolInCRED = ["validator", "user"]; // TODO: !!!! 000 rafineaza datele cu care pornește adminul
             record.roles.admin = true;
             const userObj = new userModel(record);
             userObj.save(function (err, user) {
@@ -38,11 +38,11 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
             userModel.findOne({ email: profile._json.email }, (err, user) => {
                 if (err) throw new Error(err);    
                 if(user) {
-                    console.log(user.roles);
-                    done(null, user);
-                    // TODO: trimite token-ul din bază catre browser. 
+                    // console.log(user.roles);
+                    done(null, user); 
                 } else {
                     // dacă cu există acest user în bază, va fi adăugat fără a fi admin.
+                    record.roles.rolInCRED.push("user"); // în afară de admin, toți cei care se vor loga ulterior vor porni ca useri simpli
                     record.roles.admin = false;
                     const newUserObj = new userModel(record);
                     newUserObj.save(function (err, user) {
@@ -53,6 +53,6 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
                 }
             });
         }
-    });    
+    });
 }
 module.exports = googleStrategy;

@@ -23,7 +23,7 @@
         "group": "validator",
         "permissions": [
             {
-                "resource": "resurse",
+                "resource": "/resurse",
                 "methods": ["POST", "GET", "PUT"],
                 "action": "allow"
             }

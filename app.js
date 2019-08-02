@@ -58,7 +58,13 @@ app.set('view engine', 'hbs');
 // Instanțiază Passport și restaurează starea sesiunii dacă aceasta există
 app.use(passport.initialize());
 app.use(passport.session());
+
 // GESTIONAREA RUTELOR
+// acl.config({
+//     filename: 'nacl.json',
+//     baseUrl: '/'
+// });
+// app.use(acl.authorize);
 const routes = require('./routes/routes')(app, passport);
 // colectarea erorilor de pe toate middleware-urile
 app.use(function (err, req, res, next) {

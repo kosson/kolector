@@ -14,7 +14,8 @@ function verificaAuth (req, res, next) {
 
 // TODO: Această rută are nevoie de autentificare
 router.get('/resurse', verificaAuth, function (req, res) {
-    console.log(req.user.roles);
+    // console.log(req.user.roles);
+    console.log(req.session.passport.user.roles); // { rolInCRED: [], unit: [], admin: true }
     res.render('resurse', {
         title: "Resurse",
         logoimg: "/img/rED-logo192.png",

@@ -18,8 +18,8 @@ module.exports = (app, passport) => {
         failureRedirect: '/login' // dacă a apărut o eroare, reîncarcă userului pagina de login TODO: Fă să apară un mesaj de eroare!!!
     }));
     // AUTH
-    app.get('/auth', User.auth);
-    // RUTA BUTONULUI CATRE SERVERUL DE AUTORIZARE (trebuie să ai deja ClientID și Secretul)
+    app.get('/auth', User.auth); // Încarcă template-ul hbs pentru afișarea butonului de autorizare
+    // AUTH/GOOGLE -> RUTA BUTONULUI CATRE SERVERUL DE AUTORIZARE (trebuie să ai deja ClientID și Secretul)
     app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email']}));
     // RUTA PE CARE VINE RĂSPUNSUL SERVERULUI DE AUTORIZARE
     app.get('/callback', passport.authenticate('google', { failureRedirect: '/auth'}), function(req, res) {
