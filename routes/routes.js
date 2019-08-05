@@ -29,8 +29,7 @@ module.exports = (app, passport) => {
     // RUTE USER
     /* Este ruta care încarcă resursele atribuite utilizatorului, fie proprii, fie asignate */
     app.get('/user/resurse', User.resAtribuite, function(req, res) {
-        //TODO: verifică ce credențiale are
-        console.log('Ce există în headerul de autorizare', req.get('authorization'));
+        // console.log('Ce există în headerul de autorizare', req.get('authorization'));
         res.render('red-atribuite', {
             title:    "RED Atribuite",
             logoimg:  "../img/rED-logo192.png",
@@ -54,19 +53,29 @@ module.exports = (app, passport) => {
             logoimg:  "img/red-logo-small30.png",
             mesaj:    "Încă nu ești autorizat pentru acestă zonă"
         });
-    }); // 401 Unauthorized
+    });
 
     // RUTA LOGOUT
     app.get('/logout', function(req, res){
         req.logout();
+        // req.session.destroy(function (err) {
+        //     if (err) throw new Error('A apărut o eroare la logout: ', err);
+        //     res.redirect('/');
+        // });
         res.redirect('/');
     });
-
+    
+    let makeSureLoggedIn = require('connect-ensure-login');
     // RUTA PROFILULUI PROPRIU
     app.get('/profile',
-        require('connect-ensure-login').ensureLoggedIn(),
+        makeSureLoggedIn.ensureLoggedIn(),
         function(req, res){
-            res.render('profile', { user: req.user });
+            console.dir(req.user);
+            res.render('profile', {
+                user:    req.user,
+                title:   "Profil",
+                logoimg: "/img/red-logo-small30.png",
+            });
         }
     );
     // RUTA ADMINISTRATIVĂ A APLICAȚIEI
@@ -81,7 +90,7 @@ module.exports = (app, passport) => {
     app.get('/resurse/adauga', User.ensureAuthenticated, resurse);
 
     // SERVEȘTE 404 pentru ceea ce nu există
-    app.use('*',function(req, res, next) {
+    app.use('*', function (req, res, next) {
         res.render('negasit', {
             title:    "404",
             logoimg:  "/img/red-logo-small30.png",

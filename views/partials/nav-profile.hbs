@@ -1,13 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: bisque;">
     <a class="navbar-brand" href="#">
-        <img src="{{{logoimg}}}" height="30" alt="rED colector logo"> RED Colector
+        <img id="logo-small" src="{{{logoimg}}}" alt="rED colector logo"> RED Colector
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <span>Salut {{user}}</span>
+        <span>Salut <img class="avatar-ico" src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" /></span>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="/">Acasă <span class="sr-only">(current)</span></a>

@@ -15,6 +15,7 @@ const http           = require('http').createServer(app);
 const cors           = require('cors');
 const io             = require('socket.io')(http);
 const favicon        = require('serve-favicon');
+const uuidv1         = require('uuid/v1');
 
 // TODO: creează un socket namespace
 var pubComm = io.of('/redcol');
@@ -31,13 +32,16 @@ app.use(cors());
 app.use(cookies());
 app.use(session({
     secret: '19cR3D_aPP_Kosson', 
-    name:   'redcolector', 
+    // name:   'redcolector',
+    genid: function(req) {
+        return uuidv1(); // use UUIDs for session IDs
+    },
     store:  new RedisStore({
 		host: '127.0.0.1',
 		port: 6379
-	}),
+    }),
 	proxy:  true,
-    resave: true, 
+    resave: false, 
     saveUninitialized: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));

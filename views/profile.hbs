@@ -1,3 +1,12 @@
 {{!< layout}}
 {{> nav-profile}}
 {{> messages}}
+<div>
+    <h1>{{user.googleProfile.name}}</h1>
+    <img src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" width="50">
+    <p>Adresa email: {{user.email}}</p>
+    <p>Administrator: {{#if user.roles.admin}}confirmat{{else}}încă nu!{{/if}}</p>
+    <p>Roluri: {{#each user.roles.rolInCRED}},{{/each}}</p>
+    <p>Unități: {{#each user.roles.unit}},{{/each}}</p>
+    <p>Ecusoane: {{#each user.ecusoane}},{{/each}}</p>
+</div>

@@ -10,6 +10,11 @@ img {
 #logo-small {
     width: 20%;
 }
+
+.avatar-ico {
+    width: 10%;
+}
+
 #resurse {
     display: flex;
     flex-wrap: wrap;

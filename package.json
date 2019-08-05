@@ -49,6 +49,7 @@
     "passport-twitter": "^1.0.4",
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.2.0",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "uuid": "^3.3.2"
   }
 }
