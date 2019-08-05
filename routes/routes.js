@@ -29,6 +29,8 @@ module.exports = (app, passport) => {
     // RUTE USER
     /* Este ruta care încarcă resursele atribuite utilizatorului, fie proprii, fie asignate */
     app.get('/user/resurse', User.resAtribuite, function(req, res) {
+        //TODO: verifică ce credențiale are
+        console.log('Ce există în headerul de autorizare', req.get('authorization'));
         res.render('red-atribuite', {
             title:    "RED Atribuite",
             logoimg:  "../img/rED-logo192.png",
