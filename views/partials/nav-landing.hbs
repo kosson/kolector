@@ -15,7 +15,7 @@
                 <a class="nav-link" href="/">Acasă <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/resurse">Resurse</a>
+                <a class="nav-link" href="/resursepublice">Resurse</a>
             </li>
             {{#if user}}
                 {{#if user.roles.admin}}
@@ -23,6 +23,9 @@
                         <a class="nav-link" href="/administrator">Administrare</a>
                     </li>                
                 {{/if}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/resurse">Resurse CRED</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Logout</a>
                 </li>

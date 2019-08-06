@@ -3,21 +3,22 @@ module.exports = (app, passport) => {
     // IMPORTUL CONTROLLERELOR DE RUTE
     var index   = require('./index');
     // var login   = require('./login'); FIXME: elimină toate fișierele de tratare a rutelor
-    var resurse = require('./resurse');
     var admin   = require('./administrator');
 
-    // LANDING
+    // ========== / ==========
     app.get('/', index);
 
     // Încarcă controlerul necesar tratării rutelor de autentificare
     const User = require('./controllers/user.ctrl')(passport);
-    // LOGIN
+
+    // ========== LOGIN ==========
     app.get('/login', User.login);
     app.post('/login', passport.authenticate('local-login', {
         successRedirect: '/resurse', // redirectează userul logat cu succes către resurse
-        failureRedirect: '/login' // dacă a apărut o eroare, reîncarcă userului pagina de login TODO: Fă să apară un mesaj de eroare!!!
+        failureRedirect: '/login'    // dacă a apărut o eroare, reîncarcă userului pagina de login TODO: Fă să apară un mesaj de eroare!!!
     }));
-    // AUTH
+
+    // ========== AUTH ==========
     app.get('/auth', User.auth); // Încarcă template-ul hbs pentru afișarea butonului de autorizare
     // AUTH/GOOGLE -> RUTA BUTONULUI CATRE SERVERUL DE AUTORIZARE (trebuie să ai deja ClientID și Secretul)
     app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email']}));
@@ -26,7 +27,7 @@ module.exports = (app, passport) => {
         res.redirect('/resurse');
     });
 
-    // RUTE USER
+    // ========== USER ==========
     /* Este ruta care încarcă resursele atribuite utilizatorului, fie proprii, fie asignate */
     app.get('/user/resurse', User.resAtribuite, function(req, res) {
         // console.log('Ce există în headerul de autorizare', req.get('authorization'));
@@ -45,17 +46,7 @@ module.exports = (app, passport) => {
         });
     });
 
-    // RUTA NEPERMIS
-    app.get('/401', function(req, res){
-        res.status(401);
-        res.render('nepermis', {
-            title:    "401",
-            logoimg:  "img/red-logo-small30.png",
-            mesaj:    "Încă nu ești autorizat pentru acestă zonă"
-        });
-    });
-
-    // RUTA LOGOUT
+    //  ========== LOGOUT ==========
     app.get('/logout', function(req, res){
         req.logout();
         // req.session.destroy(function (err) {
@@ -66,7 +57,8 @@ module.exports = (app, passport) => {
     });
     
     let makeSureLoggedIn = require('connect-ensure-login');
-    // RUTA PROFILULUI PROPRIU
+    
+    // ========== PROFILUL PROPRIU ==========
     app.get('/profile',
         makeSureLoggedIn.ensureLoggedIn(),
         function(req, res){
@@ -78,18 +70,29 @@ module.exports = (app, passport) => {
             });
         }
     );
-    // RUTA ADMINISTRATIVĂ A APLICAȚIEI
+    // ========== ADMINISTRATOR ==========
     app.get('/administrator', User.ensureAuthenticated, admin);
     // TODO: RUTA ADMINISTRATOR:
     // -- verifică daca este autentificat și dacă este administrator.
 
-    // RESURSELE
+    // ========== RESURSE ================
+    const resurse = require('./resurse');
     app.get('/resursepublice', resurse);
     app.get('/resurse', User.ensureAuthenticated, resurse);
     // ADAUGĂ RESURSA
     app.get('/resurse/adauga', User.ensureAuthenticated, resurse);
 
-    // SERVEȘTE 404 pentru ceea ce nu există
+    // ========== 401 - NEPERMIS ==========
+    app.get('/401', function(req, res){
+        res.status(401);
+        res.render('nepermis', {
+            title:    "401",
+            logoimg:  "img/red-logo-small30.png",
+            mesaj:    "Încă nu ești autorizat pentru acestă zonă"
+        });
+    });
+
+    //========== 404 - NEGĂSIT ==========
     app.use('*', function (req, res, next) {
         res.render('negasit', {
             title:    "404",

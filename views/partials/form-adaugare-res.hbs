@@ -1,6 +1,16 @@
 <div class="container">
   {{>messages}}
-  <form id="form01adres">
+
+  <section id="tabular">
+    <div id="inputDataTable"></div>
+  </section>
+  {{!-- <script src="js/json2form.js"></script> --}}
+  {{#each scripts}}
+    <script src="{{script}}"></script>
+  {{/each}}
+
+</div>
+  {{!-- <form id="form01adres">
     <div class="form-group">
       <label for="numeprenume">Nume Prenume autor:</label>
       <input name="nume-prenume" type="text" class="form-control" id="numeprenume" aria-describedby="numeprenumeHelp" placeholder="ex: Adriana Vasilescu">
@@ -69,8 +79,8 @@
     </div>
     <button type="submit" id="addresbtn" class="btn btn-primary">Trimite</button>
   </form>
-</div>
-<script>
+</div> --}}
+{{!-- <script>
   // EVENIMENT la încărcarcarea completă a DOM-ului
 document.addEventListener('DOMContentLoaded', init);
 function init () {
@@ -104,6 +114,6 @@ function upload (evt) {
     }).catch((error) => {
         console.log('ERROR', err.message);
     });
-
 }
-</script>
+</script> --}}
+
