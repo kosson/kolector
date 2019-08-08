@@ -4,14 +4,55 @@
   <section id="tabular">
     <div id="inputDataTable"></div>
   </section>
-  {{!-- <script src="js/json2form.js"></script> --}}
   {{#each scripts}}
     <script src="{{script}}"></script>
   {{/each}}
 
 </div>
-  {{!-- <form id="form01adres">
-    <div class="form-group">
+  <form id="form01adres">
+
+    <div class="form-row">
+      <script type="application/javascript">
+        function addTitle (idSource, idTarget) {
+          document.querySelector(idSource).addEventListener('blur', (event) => {
+            let insertion = document.querySelector(idTarget);
+            let liElem = document.createElement('li');
+            const cls = ["list-group-item","d-flex","justify-content-between","align-items-center"];
+            liElem.classList.add(...cls);
+          });
+        }
+      </script>
+      <div class="col-md-6 mb-3">
+        <label for="title">Titlul resursei</label>
+        <input class="form-control" type="text" name="title" id="title" aria-describedby="titleHelp" placeholder="ex: Bătălia de la Călugăreni" required>
+        <small id="titleHelp" class="form-text text-muted">Este un element absolut necesar</small>
+      </div>
+      <div class="col-md-1 mb-1">
+        <label class="my-1 mr-2" for="limbaTitlu">Indică limba</label>
+        <select class="custom-select" id="limbaTitlu">
+          <option value="rum" selected>ro</option>
+          <option value="ger">ger</option>
+          <option value="hun">hun</option>
+          <option value="srp">srp</option>
+          <option value="rom">rom</option>
+          <option value="slo">slo</option>
+          <option value="cze">cze</option>
+          <option value="ukr">ukr</option>
+          <option value="bul">bul</option>
+          <option value="hrv">hrv</option> 
+          <option value="ita">ita</option> 
+          <option value="gre">gre</option>
+          <option value="rus">rus</option>
+          <option value="tur">tur</option>
+        </select>
+        <ul id="titluri" class="list-group">
+
+        </ul>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary">+ limba maternă</button>
+
+    {{!-- <div class="form-group">
       <label for="numeprenume">Nume Prenume autor:</label>
       <input name="nume-prenume" type="text" class="form-control" id="numeprenume" aria-describedby="numeprenumeHelp" placeholder="ex: Adriana Vasilescu">
       <small id="numeprenumeHelp" class="form-text text-muted">Este un element absolut necesar</small>
@@ -77,12 +118,12 @@
       <label for="adaugaPachet">Adaugă arhivă zip</label>
       <input type="file" name="arhiva" class="form-control-file" id="adaugaPachet">
     </div>
-    <button type="submit" id="addresbtn" class="btn btn-primary">Trimite</button>
+    <button type="submit" id="addresbtn" class="btn btn-primary">Trimite</button> --}}
   </form>
-</div> --}}
-{{!-- <script>
+</div>
+<script>
   // EVENIMENT la încărcarcarea completă a DOM-ului
-document.addEventListener('DOMContentLoaded', init);
+{{!-- document.addEventListener('DOMContentLoaded', init);
 function init () {
     document.getElementById('addresbtn').addEventListener('click', upload);
 }
@@ -114,6 +155,6 @@ function upload (evt) {
     }).catch((error) => {
         console.log('ERROR', err.message);
     });
-}
-</script> --}}
+} --}}
+</script>
 

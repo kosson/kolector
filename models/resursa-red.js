@@ -38,7 +38,7 @@ var Resursa = new mongoose.Schema({
         index: true,
         trim: true
     },
-    titleI18n: [],  // Un titlu poate fi tradus în mai multe limbi. Modelul este: {ro:'Numele RED-ului',de:'Titel der RED'}. Cheia va fi o valoare conform ISO 639-1.
+    titleI18n: [],  // Un titlu poate fi tradus în mai multe limbi. Modelul este: {ro:'Numele RED-ului',de:'Titel der RED'}. Cheia va fi o valoare conform ISO 639-2. Modificare la 639-2 pentru a permite și rromani - http://www.bibnat.ro/dyn-doc/Coduri%20de%20%20limba_639_2_2009_fin.pdf.
     titleContext: ['http://purl.org/dc/elements/1.1/title', 'https://schema.org/name'],
     creator:   [{   // este ceea ce numim autor / autori ai resursei. Poate fi unul sau mai mulți. Este o colecție de id-uri de utilizatori.
         type: mongoose.Schema.Types.ObjectId,
