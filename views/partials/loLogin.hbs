@@ -1,6 +1,8 @@
+{{> nav-landing}}
+{{> messages}}
 <div class="container">
     <!-- LOGIN FORM -->
-    <div>
+    {{!-- <div>
         <h1>Punct de acces <span class="fa fa-sign-in"></span></h1>
         <p>Este necesară logarea pentru a avea acces la resursele proprii și pentru a interacționa cu cele existente.</p>
         <form action="/login" method="post">
@@ -23,13 +25,31 @@
                 <a href="/">prima pagină</a>.
             </p>
         </aside>
-    </div>
+    </div> --}}
 
     <div id="authblock">
         {{!-- <button type="" class="btn">Google</button> --}}
-        <p>Dacă ai cont EDUCRED, te rog, autentifică-te apăsând logo-ul</p>
+        {{!-- <p>Dacă ai cont EDUCRED, te rog, autentifică-te apăsând logo-ul</p>
         <a href="/auth/google">
             <img src="{{credlogo}}" alt="" srcset="" width="150">
-        </a>
+        </a> --}}
+
+        <form class="form-signin">
+            <h3>Dacă ai cont EDUCRED (nume@educred.ro), te rog, autentifică-te apăsând logo-ul</h3>
+            <a href="/auth/google">
+                <img src="{{credlogo}}" alt="Acesta este logo-ul proiectului CRED în Educație">
+            </a>
+            <h3 class="h3 mb-3 font-weight-normal">Dacă ai cont pe platfoma RED Colector</h1>
+            <label for="inputEmail" class="sr-only">Adresa email</label>
+            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+            <label for="inputPassword" class="sr-only">Parola</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+
+
+
+
+
     </div>
 </div>

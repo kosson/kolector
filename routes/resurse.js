@@ -51,7 +51,8 @@ router.get('/resurse/adauga', function (req, res) {
     if(req.session.passport.user.roles.admin){
         // Dacă avem un admin, atunci oferă acces neîngrădit
         res.render('adauga-res', {
-            title: "Adauga",
+            user:    req.user,
+            title:   "Adauga",
             logoimg: "/img/rED-logo192.png",
             scripts
         });

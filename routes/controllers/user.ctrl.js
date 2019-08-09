@@ -31,14 +31,14 @@ module.exports = (passport) => {
             res.render('auth', {
                 title:    "auth",
                 logoimg:  "img/rED-logo192.png",
-                credlogo: "img/CREDlogo.jpg"
+                credlogo: "img/CREDlogo150.jpg"
             });
         },
         login(req, res){
             res.render('login', {
                 title:    "login",
                 logoimg:  "img/rED-logo192.png",
-                credlogo: "img/CREDlogo.jpg"
+                credlogo: "img/CREDlogo150.jpg"
             });
         },
         ensureAuthenticated(req, res, next){

@@ -1,56 +1,150 @@
 <div class="container">
   {{>messages}}
 
-  <section id="tabular">
+  {{!-- <section id="tabular">
     <div id="inputDataTable"></div>
-  </section>
+  </section> --}}
   {{#each scripts}}
     <script src="{{script}}"></script>
   {{/each}}
 
-</div>
+  {{!-- Inițiere form --}}
   <form id="form01adres">
+    {{!-- SECȚIUNEA - #2. TITLU ȘI RESPONSABILITATE (vezi modelul de date resursa-red.js) --}}
+    {{!-- Acționarea grupului de controale pentru #2 --}}
+    <button class="btn btn-primary btn-lg btn-block collapsed" data-toggle="collapse" data-target="#sec02" aria-expanded="true" aria-controls="sec02">
+      Titlu și responsabilitate
+    </button>
+    {{!-- Grupul controale Titlu și responsabilitate --}}
+    <div id="sec02" class="collapse">
+      <fieldset>
+        <legend></legend>
+        {{!-- Câmpul titlu --}}
+        <div class="input-group col-12 col-sm-6 col-lg-8">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="titlu-label">Titlul resursei</span>
+          </div>
+          <input class="form-control" type="text" name="title" id="title"  aria-label="Titlul resursei" aria-describedby="titlu-label" placeholder="ex: Bătălia de la Călugăreni" required>
+        </div>
 
-    <div class="form-row">
-      <script type="application/javascript">
-        function addTitle (idSource, idTarget) {
-          document.querySelector(idSource).addEventListener('blur', (event) => {
-            let insertion = document.querySelector(idTarget);
-            let liElem = document.createElement('li');
-            const cls = ["list-group-item","d-flex","justify-content-between","align-items-center"];
-            liElem.classList.add(...cls);
-          });
-        }
-      </script>
-      <div class="col-md-6 mb-3">
-        <label for="title">Titlul resursei</label>
-        <input class="form-control" type="text" name="title" id="title" aria-describedby="titleHelp" placeholder="ex: Bătălia de la Călugăreni" required>
-        <small id="titleHelp" class="form-text text-muted">Este un element absolut necesar</small>
-      </div>
-      <div class="col-md-1 mb-1">
-        <label class="my-1 mr-2" for="limbaTitlu">Indică limba</label>
-        <select class="custom-select" id="limbaTitlu">
-          <option value="rum" selected>ro</option>
-          <option value="ger">ger</option>
-          <option value="hun">hun</option>
-          <option value="srp">srp</option>
-          <option value="rom">rom</option>
-          <option value="slo">slo</option>
-          <option value="cze">cze</option>
-          <option value="ukr">ukr</option>
-          <option value="bul">bul</option>
-          <option value="hrv">hrv</option> 
-          <option value="ita">ita</option> 
-          <option value="gre">gre</option>
-          <option value="rus">rus</option>
-          <option value="tur">tur</option>
-        </select>
-        <ul id="titluri" class="list-group">
+        <div class="input-group col-6 col-lg-4">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="langselect-label">Indică limba</span>
+          </div>
+          <select class="custom-select" id="limbaTitlu" aria-describedby="langselect-label">
+            <option value="rum" selected>ro</option>
+            <option value="ger">ger</option>
+            <option value="hun">hun</option>
+            <option value="srp">srp</option>
+            <option value="rom">rom</option>
+            <option value="slo">slo</option>
+            <option value="cze">cze</option>
+            <option value="ukr">ukr</option>
+            <option value="bul">bul</option>
+            <option value="hrv">hrv</option> 
+            <option value="ita">ita</option> 
+            <option value="gre">gre</option>
+            <option value="rus">rus</option>
+            <option value="tur">tur</option>
+          </select>
+          <div class="input-group-prepend" id="button-add-tit-lang">
+            <button class="btn btn-outline-secondary" type="button">+ în altă limbă</button>
+          </div>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Nume și prenume</span>
+            </div>
+            <input type="text" aria-label="Nume și prenume" class="form-control">
+          </div>
+        </div>
+      </fieldset>
 
-        </ul>
-      </div>
+      <ul id="titluri" class="list-group">
+
+      </ul>
     </div>
-    <button type="button" class="btn btn-primary">+ limba maternă</button>
+
+    {{!-- SECȚIUNEA - #3. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI --}}
+    {{!-- Acționarea grupului de controale pentru #3 --}}
+    <button class="btn btn-primary btn-lg btn-block" data-toggle="collapse" data-target="#sec03" aria-expanded="true" aria-controls="sec03">
+      Încadrarea resursei
+    </button>
+    {{!-- Grupul controale Încadrarea resursei conform Planului Național --}}
+    <div id="sec03" class="collapse">
+      <fieldset>
+        <legend>Arie - Nivel - Disciplină</legend>
+        {{!-- ARIE - Selector --}}
+        <div class="input-group">
+          <select class="custom-select" id="arii-curr">
+            <optgroup label="Limbă și comunicare">
+              <option value="LbCom">Limbă și comunicare [general]</option>
+              <option value="LbComLbRomMin">» Limba și literatura romana (pt. elevi care învață în limba maternă)</option>
+              <option value="LbComLbMat">» Limbi materne</option>
+              <option value="LbComLbMod">» Limbi moderne</option>
+            </optgroup>
+            <option value="MatStNat">Matematică și științe ale naturii</option>
+            <optgroup label="Om și societate">
+              <option value="OmSiSoc">Om și societate [general]</option>
+              <option value="OmSiSocIstMin">» Istorie minorități</option>
+              <option value="OmSiSocRel">» Religii</option>
+            </optgroup>
+            <option value="Arte">Arte</option>
+            <optgroup label="Educație fizică și sport">
+              <option value="EdFizSiSp">Educație fizică și sport [general]</option>
+              <option value="EdFizSiSpPrSpPra">» Pregătire sportivă practică</option>              
+            </optgroup>
+            <option value="Teh">Tehnologii</option>
+            <option value="ConsOri">Consiliere și orientare</option>
+            <option value="CurrDecSco">Curriculum la decizia școlii</option>
+          </select>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button">Încadrează!</button>
+          </div>
+        </div>
+        {{!-- Selecție în caz de transdisciplinaritate --}}
+        <p>
+          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#transCurricular" aria-expanded="false" aria-controls="transCurricular">
+            Este în relație cu alte zone curriculare
+          </button>
+        </p>
+        <div class="collapse" id="transCurricular">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="LbComLbRomMin" id="LbComLbRomMin" autocomplete="off"> Limba și literatura romana (pt. elevi care învață în limba maternă)
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="LbComLbMat" id="LbComLbMat" autocomplete="off"> Limbi materne
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="LbComLbMod" id="LbComLbMod" autocomplete="off"> Limbi moderne
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="MatStNat" id="MatStNat" autocomplete="off"> Matematică și științe ale naturii
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="OmSiSocIstMin" id="OmSiSocIstMin" autocomplete="off"> Istorie minorități
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="OmSiSocRel" id="OmSiSocRel" autocomplete="off"> Religii
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="Arte" id="Arte" autocomplete="off"> Arte
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="EdFizSiSpPrSpPra" id="EdFizSiSpPrSpPra" autocomplete="off"> Pregătire sportivă practică
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="Teh" id="Teh" autocomplete="off"> Tehnologii
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="ConsOri" id="ConsOri" autocomplete="off"> Consiliere și orientare
+          </label>
+          <label class="btn btn-secondary">
+            <input type="checkbox" name="CurrDecSco" id="CurrDecSco" autocomplete="off"> Curriculum la decizia școlii
+          </label>
+        </div>
+      </fieldset>
+    </div>
 
     {{!-- <div class="form-group">
       <label for="numeprenume">Nume Prenume autor:</label>
@@ -156,5 +250,20 @@ function upload (evt) {
         console.log('ERROR', err.message);
     });
 } --}}
+  /**
+  * Funcția are rolul de a adăuga un titlu într-o listă de control
+  * De fapt, creează un nou element input și ul nou selector de limbă pentru elementul input:text nou creat
+  * @param {String} idSource este elementul input:text în care a fost introdus un titlu
+  * @param {String} idTraget este elementul ul în care apar titlurile
+  */
+  function addToList (idSource, idTarget) {
+    document.querySelector(idSource).addEventListener('blur', (event) => {
+      let insertion = document.querySelector(idTarget);
+      let liElem = document.createElement('li');
+      const cls = ["list-group-item","d-flex","justify-content-between","align-items-center"];
+      liElem.classList.add(...cls);
+      //TODO: Termină implementarea cândva, dacă mai este nevoie
+    });
+  }
 </script>
 

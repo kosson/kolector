@@ -47,13 +47,6 @@ var Resursa = new mongoose.Schema({
     creatorContext: ['http://purl.org/dc/elements/1.1/creator', 'https://schema.org/creator'],
     
     // #3. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI
-    description: {
-        type: String
-    },
-    descriptionI18n:    [], // Descrierea poate fi în mai multe limbi posibile. Modelul este: {ro:'Descriere',de:'Beschreibung'}. Cheia va fi o valoare conform ISO 639-1.
-    descriptionContext: ['http://purl.org/dc/elements/1.1/description', 'https://schema.org/description'],
-    identifier:         [], // poate fi orice string, fie text, nume fișier, fie url sau ISBN... Se generează automat la încărcare. Va apărea doar la momentul accesării! Nu este disponibil la momentul încărcării.
-    identifierContext:  ['http://purl.org/dc/elements/1.1/identifier', 'https://schema.org/identifier'],
     arieCurriculara: {
         type: String,   // [valoare din vocabular] Este o valoare dintr-un select care va declanșa subseturile de date încărcate ulterior la disciplina și apoi la competențe
     },
@@ -95,6 +88,15 @@ var Resursa = new mongoose.Schema({
     modelCognitiv:    [], // [valoare din vocabular] De ex. „descoperire”, „experimentare”
     spatii:           [], // [valoare din vocabular] De ex. „la clasă”, „acasă”, „în laborator”, „în aer liber”
     
+    // #5 DESCRIERE
+    description: {
+        type: String
+    },
+    descriptionI18n:    [], // Descrierea poate fi în mai multe limbi posibile. Modelul este: {ro:'Descriere',de:'Beschreibung'}. Cheia va fi o valoare conform ISO 639-2.
+    descriptionContext: ['http://purl.org/dc/elements/1.1/description', 'https://schema.org/description'],
+    identifier:         [], // poate fi orice string, fie text, nume fișier, fie url sau ISBN... Se generează automat la încărcare. Va apărea doar la momentul accesării! Nu este disponibil la momentul încărcării.
+    identifierContext:  ['http://purl.org/dc/elements/1.1/identifier', 'https://schema.org/identifier'],
+
     // #6. CONȚINUT
     dependinte:    [softwareSchema], // În cazul în care resursa are nevoie de un context de execuție, acesta va fi menționat aici.
     webContent:    String, // HTML encoded content. Acest conținut poate fi ceva de dimensiuni mici. Nu trebuie încurajată introducerea de volume mari de date folosind acest câmp. Platforma de colectare este gândită ca un agregator, nu ca un intrument de creație. Pe disk va fi un fișier de tip WARC file într-un bag creat de o implementare BagIt v.1.0.
