@@ -1,5 +1,5 @@
-{{> nav-landing}}
-{{> messages}}
+{{!-- {{> nav-landing}} --}}
+{{!-- {{> messages}} --}}
 <div class="container">
     <!-- LOGIN FORM -->
     {{!-- <div>
@@ -27,29 +27,35 @@
         </aside>
     </div> --}}
 
-    <div id="authblock">
-        {{!-- <button type="" class="btn">Google</button> --}}
-        {{!-- <p>Dacă ai cont EDUCRED, te rog, autentifică-te apăsând logo-ul</p>
-        <a href="/auth/google">
-            <img src="{{credlogo}}" alt="" srcset="" width="150">
-        </a> --}}
-
-        <form class="form-signin">
-            <h3>Dacă ai cont EDUCRED (nume@educred.ro), te rog, autentifică-te apăsând logo-ul</h3>
+    {{!-- AFIȘEAZĂ UN MODAL --}}
+    <div id="authblock" class="modal">
+        <span class="close cursor" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+                        {{!-- <button type="" class="btn">Google</button> --}}
+            {{!-- <p>Dacă ai cont EDUCRED, te rog, autentifică-te apăsând logo-ul</p>
             <a href="/auth/google">
-                <img src="{{credlogo}}" alt="Acesta este logo-ul proiectului CRED în Educație">
-            </a>
-            <h3 class="h3 mb-3 font-weight-normal">Dacă ai cont pe platfoma RED Colector</h1>
-            <label for="inputEmail" class="sr-only">Adresa email</label>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-            <label for="inputPassword" class="sr-only">Parola</label>
-            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        </form>
+                <img src="{{credlogo}}" alt="" srcset="" width="150">
+            </a> --}}
 
-
-
-
-
+            <form class="form-signin">
+                <h3>Dacă ai cont EDUCRED (nume@educred.ro), te rog, autentifică-te apăsând logo-ul</h3>
+                <a href="/auth/google">
+                    <img src="{{credlogo}}" alt="Acesta este logo-ul proiectului CRED în Educație">
+                </a>
+                <h3 class="h3 mb-3 font-weight-normal">Dacă ai cont pe platfoma RED Colector</h1>
+                <label for="inputEmail" class="sr-only">Adresa email</label>
+                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                <label for="inputPassword" class="sr-only">Parola</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            </form>
+        </div>
     </div>
+    <script>
+        // deschide modalul
+        function openModal() {
+            document.getElementById("authblock").style.display = "block";
+        }
+        openModal();
+    </script>
 </div>

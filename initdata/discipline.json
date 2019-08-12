@@ -1,0 +1,82 @@
+[
+  {
+    "nume": "Științe ale naturii, clasa a III-a- a IV-a",
+    "nivel": "cl3",
+    "cod": "stANat3"
+  },
+  {
+    "nume": "Științe ale naturii, clasa a III-a- a IV-a",
+    "nivel": "cl4",
+    "cod": "stANat4"
+  },
+  {
+    "nume": "Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a",
+    "nivel": "cl0",
+    "cod": "matExpMed0"
+  },
+  {
+    "nume": "Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a",
+    "nivel": "cl1",
+    "cod": "matExpMed1"
+  },
+  {
+    "nume": "Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a",
+    "nivel": "cl2",
+    "cod": "matExpMed2"
+  },
+  {
+    "nume": "Comunicare în limba română",
+    "nivel": "cl0",
+    "cod": "comLbRom0"
+  },
+  {
+    "nume": "Comunicare în limba română",
+    "nivel": "cl1",
+    "cod": "comLbRom1"
+  },
+  {
+    "nume": "Comunicare în limba română",
+    "nivel": "cl2",
+    "cod": "comLbRom2"
+  },
+  {
+    "nume": "Limba și literatura română",
+    "nivel": "cl3",
+    "cod": "comLbRom3"
+  },
+  {
+    "nume": "Limba și literatura română",
+    "nivel": "cl4",
+    "cod": "comLbRom4"
+  },
+  {
+    "nume": "Educaţie civică",
+    "nivel": "cl3",
+    "cod": "edCiv3"
+  },
+  {
+    "nume": "Educaţie civică",
+    "nivel": "cl4",
+    "cod": "edCiv4"
+  },
+  {
+    "nume": "Geografie",
+    "nivel": "cl4",
+    "cod": "geo4"
+  },
+  {
+    "nume": "Istorie",
+    "nivel": "cl4",
+    "cod": "ist4"
+  },
+  {
+    "nume": "Joc și mișcare",
+    "nivel": "cl3",
+    "cod": "jocMi3"
+  },
+  {
+    "nume": "Joc și mișcare",
+    "nivel": "cl4",
+    "cod": "jocMi4"
+  }
+]

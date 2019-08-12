@@ -43,7 +43,9 @@ router.get('/resurse', function (req, res) {
 /* ========== GET - Pe această rută se obține formularul de adăugare a resurselor doar dacă ești logat, având rolurile menționate */
 // Cere helperul `checkRole`
 router.get('/resurse/adauga', function (req, res) {
-    let scripts = [{script: '/js/json2form.js'}];
+    let scripts = [
+        {script: '/js/form01adres.js'}
+    ];
     let roles = ["user", "educred", "validator"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 

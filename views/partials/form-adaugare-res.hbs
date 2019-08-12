@@ -18,51 +18,55 @@
     {{!-- Grupul controale Titlu și responsabilitate --}}
     <div id="sec02" class="collapse">
       <fieldset>
-        <legend></legend>
-        {{!-- Câmpul titlu --}}
-        <div class="input-group col-12 col-sm-6 col-lg-8">
+        <legend>Titlul resursei</legend>
+        {{!-- Câmpul titlului col-12 col-sm-4 col-lg-8 --}}
+        <div id="titluRes" class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text" id="titlu-label">Titlul resursei</span>
           </div>
-          <input class="form-control" type="text" name="title" id="title"  aria-label="Titlul resursei" aria-describedby="titlu-label" placeholder="ex: Bătălia de la Călugăreni" required>
-        </div>
-
-        <div class="input-group col-6 col-lg-4">
+          <input class="form-control" type="text" name="title" aria-label="Titlul resursei" aria-describedby="titlu-label" placeholder="ex: Bătălia de la Călugăreni" required>
+          {{!-- Specifică limba titlului  col-6 col-lg-4 --}}
           <div class="input-group-prepend">
             <span class="input-group-text" id="langselect-label">Indică limba</span>
           </div>
-          <select class="custom-select" id="limbaTitlu" aria-describedby="langselect-label">
-            <option value="rum" selected>ro</option>
-            <option value="ger">ger</option>
-            <option value="hun">hun</option>
-            <option value="srp">srp</option>
-            <option value="rom">rom</option>
-            <option value="slo">slo</option>
-            <option value="cze">cze</option>
-            <option value="ukr">ukr</option>
-            <option value="bul">bul</option>
-            <option value="hrv">hrv</option> 
-            <option value="ita">ita</option> 
-            <option value="gre">gre</option>
-            <option value="rus">rus</option>
-            <option value="tur">tur</option>
+          {{!-- Opțiunile de selecție pentru limbă --}}
+          <select class="custom-select  col-6 col-lg-4" id="limbaTitlu" aria-describedby="langselect-label">
+            <option value="rum" selected>română</option>
+            <option value="ger">germană</option>
+            <option value="hun">maghiară</option>
+            <option value="srp">sârbă</option>
+            <option value="rom">rromani</option>
+            <option value="slo">slovenă</option>
+            <option value="cze">cehă</option>
+            <option value="ukr">ucraineană</option>
+            <option value="bul">bulgară</option>
+            <option value="hrv">croată</option> 
+            <option value="ita">italiană</option> 
+            <option value="gre">greacă</option>
+            <option value="rus">rusă</option>
+            <option value="tur">turcă</option>
           </select>
-          <div class="input-group-prepend" id="button-add-tit-lang">
-            <button class="btn btn-outline-secondary" type="button">+ în altă limbă</button>
-          </div>
-          <div class="input-group">
+        </div>
+        {{!-- Buton de adăugare câmpuri noi pentru variantele în alte limbi ale titlurilor [vezi form01adres.js] --}}
+        <button id="titluLangAdd" class="btn btn-outline-secondary" type="button" onclick="creeazaTitluAltenativ()">+ în altă limbă</button>
+        <div id="langAlternative">
+          {{!-- AICI SUNT INRODUSE TITLURILE ALTERNATIVE --}}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Responsabilitate (contribuitor)</legend>
+        <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text">Nume și prenume</span>
             </div>
             <input type="text" aria-label="Nume și prenume" class="form-control">
           </div>
-        </div>
       </fieldset>
-
       <ul id="titluri" class="list-group">
 
       </ul>
     </div>
+    </br>
 
     {{!-- SECȚIUNEA - #3. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI --}}
     {{!-- Acționarea grupului de controale pentru #3 --}}
@@ -72,7 +76,7 @@
     {{!-- Grupul controale Încadrarea resursei conform Planului Național --}}
     <div id="sec03" class="collapse">
       <fieldset>
-        <legend>Arie - Nivel - Disciplină</legend>
+        <legend>Arie</legend>
         {{!-- ARIE - Selector --}}
         <div class="input-group">
           <select class="custom-select" id="arii-curr">
@@ -102,47 +106,116 @@
           </div>
         </div>
         {{!-- Selecție în caz de transdisciplinaritate --}}
-        <p>
-          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#transCurricular" aria-expanded="false" aria-controls="transCurricular">
-            Este în relație cu alte zone curriculare
-          </button>
-        </p>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#transCurricular" aria-expanded="false" aria-controls="transCurricular">
+          Este în relație cu alte zone curriculare
+        </button>
         <div class="collapse" id="transCurricular">
           <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="LbComLbRomMin" id="LbComLbRomMin" autocomplete="off"> Limba și literatura romana (pt. elevi care învață în limba maternă)
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="LbComLbMat" id="LbComLbMat" autocomplete="off"> Limbi materne
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="LbComLbMod" id="LbComLbMod" autocomplete="off"> Limbi moderne
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="MatStNat" id="MatStNat" autocomplete="off"> Matematică și științe ale naturii
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="OmSiSocIstMin" id="OmSiSocIstMin" autocomplete="off"> Istorie minorități
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="OmSiSocRel" id="OmSiSocRel" autocomplete="off"> Religii
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="Arte" id="Arte" autocomplete="off"> Arte
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="EdFizSiSpPrSpPra" id="EdFizSiSpPrSpPra" autocomplete="off"> Pregătire sportivă practică
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="Teh" id="Teh" autocomplete="off"> Tehnologii
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="ConsOri" id="ConsOri" autocomplete="off"> Consiliere și orientare
-          </label>
-          <label class="btn btn-secondary">
-            <input type="checkbox" name="CurrDecSco" id="CurrDecSco" autocomplete="off"> Curriculum la decizia școlii
-          </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="LbComLbRomMin" id="LbComLbRomMin" autocomplete="off"> Limba și literatura romana (pt. elevi care învață în limba maternă)
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="LbComLbMat" id="LbComLbMat" autocomplete="off"> Limbi materne
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="LbComLbMod" id="LbComLbMod" autocomplete="off"> Limbi moderne
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="MatStNat" id="MatStNat" autocomplete="off"> Matematică și științe ale naturii
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="OmSiSocIstMin" id="OmSiSocIstMin" autocomplete="off"> Istorie minorități
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="OmSiSocRel" id="OmSiSocRel" autocomplete="off"> Religii
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="Arte" id="Arte" autocomplete="off"> Arte
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="EdFizSiSpPrSpPra" id="EdFizSiSpPrSpPra" autocomplete="off"> Pregătire sportivă practică
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="Teh" id="Teh" autocomplete="off"> Tehnologii
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="ConsOri" id="ConsOri" autocomplete="off"> Consiliere și orientare
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="CurrDecSco" id="CurrDecSco" autocomplete="off"> Curriculum la decizia școlii
+            </label>
+          </div>
         </div>
+      </fieldset>
+      <fieldset>
+        <legend>Nivel</legend>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="cl1">
+          <label class="form-check-label" for="inlineCheckbox1">Clasa I-a</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="cl2">
+          <label class="form-check-label" for="inlineCheckbox2">Clasa a II-a</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="cl3">
+          <label class="form-check-label" for="inlineCheckbox3">Clasa a III-a</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="cl4">
+          <label class="form-check-label" for="inlineCheckbox4">Clasa a IV-a</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="cl5">
+          <label class="form-check-label" for="inlineCheckbox5">Clasa a V-a</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox6" value="cl6">
+          <label class="form-check-label" for="inlineCheckbox6">Clasa a VI-a</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="cl7">
+          <label class="form-check-label" for="inlineCheckbox7">Clasa a VII-a</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox8" value="cl8">
+          <label class="form-check-label" for="inlineCheckbox8">Clasa a VIII-a</label>
+        </div>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#alteNiveluri" aria-expanded="false" aria-controls="alteNiveluri">
+          Este în relație cu alte niveluri
+        </button>
+        <div class="collapse" id="alteNiveluri">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="cls01" id="cls01alt" value="cl1"> Clasa I-a
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="cls02" id="cls02alt" value="cl2"> Clasa a II-a
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="cls03" id="cls03alt" value="cl3"> Clasa a III-a
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="cls04" id="cls04alt" value="cl4"> Clasa a IV-a
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="cls05" id="cls05alt" value="cl5"> Clasa a V-a
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="cls06" id="cls06alt" value="cl6"> Clasa a VI-a
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="cls07" id="cls07alt" value="cl7"> Clasa a VII-a
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="cls08" id="cls08alt" value="cl8"> Clasa a VIII-a
+            </label>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Disciplina</legend>
+
       </fieldset>
     </div>
 

@@ -6,7 +6,15 @@ let Disciplina = new mongoose.Schema({
     ids:         Array,       // sunt toți identificatorii, fie string, fie URI care adresează aria
     cod:         String,      // cod intern agreat (parte a vocabularului controlat)
     codArie:     String,      // motivul pentru care arie devine un descriptor al disciplinei este chiar pentru că este unul. De fapt, binomul de lucru este disciplină - competență
-    nivelScolar: [] // este un alt descriptor. Primul din array este cel corespondent programei, restul fiind completări după sugestiile specialiștilor sau ale publicului.
+    nivelScolar: [],          // este un alt descriptor. Primul din array este cel corespondent programei, restul fiind completări după sugestiile specialiștilor sau ale publicului.
+    resDirecte:  [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'resurseedu'
+    }],
+    resInRelatie:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'resurseedu'
+    }]
 });
 /*
 {

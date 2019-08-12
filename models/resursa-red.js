@@ -56,14 +56,14 @@ var Resursa = new mongoose.Schema({
     level:              [],    // menționează clasa. Ex: Clasa I. În form, va fi un range. În înregistrare va fi un array de numere de la 0 la 8. Vezi colecția „niveluri-gimnaziu” din initdata
     levelRelated:       [],    // menționează la care alte clase mai ajută prezenta resursă. În form, un select cu multiple
     levelContext:       ['http://purl.org/dcx/lrmi-vocabs/alignmentType/educationalLevel', 'https://schema.org/alignmentType'],
-    grupCompetente: {   // Este grupul mare de competențe specifice. Acel 1. Nume grup competențe
-        type: String    // [valoare din vocabular] Aceste valori se vor încărca dinamic în funcție de opțiunea de la arie.
-    },
-    grupCompetenteId:   String,
     disciplinaPrimara:  String,// [valoare din vocabular] sunt disciplinele care au fost alese în baza unui vocabular controlat de către specialist la momentul introducerii în bază
     disciplinaLegataDe: [],    // [valoare din vocabular] Sunt disciplinele pentru care se poate folosi această resursă, dar propuse intern. Este un array de coduri aferente disciplinelor. Codurile acestora devin etichete automat
     disciplinePropuse:  [],    // Aici vor intra sugestiile publicului. I se va oferi un câmp de introducere etichete, cu autocompletare primele sugestii fiind disciplinele din vocabularul controlat. Codurile acestora devin automat etichete
     disciplineContext:  ['http://purl.org/dcx/lrmi-vocabs/alignmentType/educationalSubject', 'https://schema.org/identifier'],
+    grupCompetente: {   // Este grupul mare de competențe specifice. Acel 1. Nume grup competențe
+        type: String    // [valoare din vocabular] Aceste valori se vor încărca dinamic în funcție de opțiunea de la arie.
+    },
+    grupCompetenteId:   String,
     competentaS:        [{     // Primul va fi cel din ierarhie, restul vor fi cele care sunt propuse (public sau experți).
         type: mongoose.Schema.Types.ObjectId,    // va lua id-uri din altă colecție
         ref: 'competentaspecifica'      // este numele modelului de competență specifică, în cazul de față (ceea ce exporți din modul)
