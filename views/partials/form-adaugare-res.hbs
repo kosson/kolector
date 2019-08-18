@@ -4,9 +4,7 @@
   {{!-- <section id="tabular">
     <div id="inputDataTable"></div>
   </section> --}}
-  {{#each scripts}}
-    <script src="{{script}}"></script>
-  {{/each}}
+
 
   {{!-- Inițiere form --}}
   <form id="form01adres">
@@ -48,7 +46,7 @@
           </select>
         </div>
         {{!-- Buton de adăugare câmpuri noi pentru variantele în alte limbi ale titlurilor [vezi form01adres.js] --}}
-        <button id="titluLangAdd" class="btn btn-outline-secondary" type="button" onclick="creeazaTitluAltenativ()">+ în altă limbă</button>
+        <button id="titluLangAdd" class="btn btn-outline-secondary" type="button" onclick="creeazaTitluAlternativ()">+ în altă limbă</button>
         <div id="langAlternative">
           {{!-- AICI SUNT INRODUSE TITLURILE ALTERNATIVE --}}
         </div>
@@ -101,9 +99,9 @@
             <option value="ConsOri">Consiliere și orientare</option>
             <option value="CurrDecSco">Curriculum la decizia școlii</option>
           </select>
-          <div class="input-group-append">
+          {{!-- <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button">Încadrează!</button>
-          </div>
+          </div> --}}
         </div>
         {{!-- Selecție în caz de transdisciplinaritate --}}
         <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#transCurricular" aria-expanded="false" aria-controls="transCurricular">
@@ -149,37 +147,59 @@
       </fieldset>
       <fieldset>
         <legend>Nivel</legend>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="cl1">
-          <label class="form-check-label" for="inlineCheckbox1">Clasa I-a</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="cl2">
-          <label class="form-check-label" for="inlineCheckbox2">Clasa a II-a</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="cl3">
-          <label class="form-check-label" for="inlineCheckbox3">Clasa a III-a</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="cl4">
-          <label class="form-check-label" for="inlineCheckbox4">Clasa a IV-a</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="cl5">
-          <label class="form-check-label" for="inlineCheckbox5">Clasa a V-a</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox6" value="cl6">
-          <label class="form-check-label" for="inlineCheckbox6">Clasa a VI-a</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="cl7">
-          <label class="form-check-label" for="inlineCheckbox7">Clasa a VII-a</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="inlineCheckbox8" value="cl8">
-          <label class="form-check-label" for="inlineCheckbox8">Clasa a VIII-a</label>
+        <div id="nivel">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1" autocomplete="off" 
+            data-matExpMed0="Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a" 
+            data-comLbRom0="Comunicare în limba română">
+            <label class="form-check-label" for="inlineCheckbox1">Clasa pregătitoare</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1" autocomplete="off" 
+            data-matExpMed1="Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a" 
+            data-comLbRom01="Comunicare în limba română">
+            <label class="form-check-label" for="inlineCheckbox1">Clasa I</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox2" value="cl2" autocomplete="off" 
+            data-matExpMed2="Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a" 
+            data-comLbRom2="Comunicare în limba română">
+            <label class="form-check-label" for="inlineCheckbox2">Clasa a II-a</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox3" value="cl3" autocomplete="off" 
+            data-stANat3="Științe ale naturii, clasa a III-a și a IV-a" 
+            data-comLbRom3="Limba și literatura română" 
+            data-edCiv3="Educaţie civică" 
+            data-jocMi3="Joc și mișcare">
+            <label class="form-check-label" for="inlineCheckbox3">Clasa a III-a</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox4" value="cl4" autocomplete="off" 
+            data-stANat4="Științe ale naturii, clasa a III-a și a IV-a" 
+            data-comLbRom4="Limba și literatura română" 
+            data-edCiv4="Educaţie civică" 
+            data-geo4="Geografie" 
+            data-ist4="Istorie" 
+            data-jocMi4="Joc și mișcare">
+            <label class="form-check-label" for="inlineCheckbox4">Clasa a IV-a</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox5" value="cl5" autocomplete="off" >
+            <label class="form-check-label" for="inlineCheckbox5">Clasa a V-a</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox6" value="cl6" autocomplete="off">
+            <label class="form-check-label" for="inlineCheckbox6">Clasa a VI-a</label>
+          </div>
+          <div class="form-check form-check-inline nivel">
+            <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="cl7" autocomplete="off" >
+            <label class="form-check-label" for="inlineCheckbox7">Clasa a VII-a</label>
+          </div>
+          <div class="form-check form-check-inline nivel">
+            <input class="form-check-input" type="checkbox" id="inlineCheckbox8" value="cl8" autocomplete="off" >
+            <label class="form-check-label" for="inlineCheckbox8">Clasa a VIII-a</label>
+          </div>
         </div>
         <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#alteNiveluri" aria-expanded="false" aria-controls="alteNiveluri">
           Este în relație cu alte niveluri
@@ -187,7 +207,10 @@
         <div class="collapse" id="alteNiveluri">
           <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary">
-              <input type="checkbox" name="cls01" id="cls01alt" value="cl1"> Clasa I-a
+              <input type="checkbox" name="cls0" id="cls02alt" value="cl0"> Clasa pregătitoare
+            </label>
+            <label class="btn btn-secondary">
+              <input type="checkbox" name="cls01" id="cls01alt" value="cl1"> Clasa I
             </label>
             <label class="btn btn-secondary">
               <input type="checkbox" name="cls02" id="cls02alt" value="cl2"> Clasa a II-a
@@ -214,8 +237,10 @@
         </div>
       </fieldset>
       <fieldset>
-        <legend>Disciplina</legend>
-
+        <legend>Alege disciplinele</legend>
+        <div id="discipline">
+          {{!-- dicsiplinele sunt adaugate programatic in functie de selectia clasei --}}
+        </div>
       </fieldset>
     </div>
 
@@ -288,6 +313,11 @@
     <button type="submit" id="addresbtn" class="btn btn-primary">Trimite</button> --}}
   </form>
 </div>
+
+{{#each scripts}}
+  <script src="{{script}}"></script>
+{{/each}}
+
 <script>
   // EVENIMENT la încărcarcarea completă a DOM-ului
 {{!-- document.addEventListener('DOMContentLoaded', init);
