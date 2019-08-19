@@ -208,7 +208,16 @@ niveluri.forEach(function (checkbox) {
     checkbox.addEventListener('click', (event) => {
         // TODO: Mai întâi verifică dacă elementele nu cumva se află în zona disciplinelor alese
         // fa un array cu toate valorile existente
-        if (discipline)
+        discExistente = [];
+        document.querySelectorAll("#discipline input[type='checkbox']").forEach(({value}) => {
+            discExistente.push(value);
+        });
+        // console.log(discExistente);
+        // verifică în niveluri cele care au fost debifate pentru a șterge disciplinele lor
+        document.querySelectorAll("#nivel input[type='checkbox']").forEach(({value}) => {
+            console.log(value.dataset);
+        });    
+
         // console.log(event.target.dataset);
         // var DOMScriptMap2Arr = Array.from(event.target.dataset);
         data = JSON.parse(JSON.stringify(event.target.dataset));
@@ -226,16 +235,15 @@ niveluri.forEach(function (checkbox) {
 });
 
 function disciplineBifate () {
-    // let values = [];
-    // discipline.addEventListener('click', ev => {
-    //     values = [];
-    //     document.querySelectorAll("#btnGroup input[type='checkbox']:checked").forEach((ev, {value}) => {
-    //         values.push(value);
-    //     });
+    let values = [];
+    document.querySelector("#cateSunt").addEventListener('click', ev => {
+        values = [];
+        document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
+            values.push(value);
+        });
         
-    //     console.log(values);
-    // });
-
+        console.log(values);
+    });
 }
 
-
+disciplineBifate();
