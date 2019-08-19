@@ -208,32 +208,40 @@ niveluri.forEach(function (checkbox) {
     checkbox.addEventListener('click', (event) => {
         // TODO: Mai întâi verifică dacă elementele nu cumva se află în zona disciplinelor alese
         // fa un array cu toate valorile existente
-        discExistente = [];
-        document.querySelectorAll("#discipline input[type='checkbox']").forEach(({value}) => {
-            discExistente.push(value);
-        });
+        // discExistente = [];
+        // document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
+        //     discExistente.push(value);
+        // });
         // console.log(discExistente);
-        // verifică în niveluri cele care au fost debifate pentru a șterge disciplinele lor
-        document.querySelectorAll("#nivel input[type='checkbox']").forEach(({value}) => {
-            console.log(value.dataset);
-        });    
-
-        // console.log(event.target.dataset);
-        // var DOMScriptMap2Arr = Array.from(event.target.dataset);
-        data = JSON.parse(JSON.stringify(event.target.dataset));
-        // console.log(data);
-        for (let [key, val] of Object.entries(data)) {
-            // crearea checkbox - urilor
-            let inputCheckBx = new createElement('input', '', ['form-check-input'], {type: "checkbox", autocomplete: "off", value: key}).creeazaElem();
-            let labelBtn = new createElement('label', '', ['btn', 'btn-success'], {}).creeazaElem(val);
-            let divBtnGroupToggle = new createElement('div', '', ['btn-group-toggle'], {"data-toggle": "buttons"}).creeazaElem();            
-            labelBtn.appendChild(inputCheckBx);
-            divBtnGroupToggle.appendChild(labelBtn);
-            discipline.appendChild(divBtnGroupToggle);
+        var data = JSON.parse(JSON.stringify(event.target.dataset)); // constituie un obiect cu toate datele din `data=*` a checkbox-ului
+        // verifică dacă nu cumva bifa nu mai este checked. În cazul acesta șterge toate disciplinele asociate
+        if(event.target.checked === false) {
+            // Pentru fiecare valoare din data, șterge elementul din discipline
+            for (let [k, v] of Object.entries(data)) {
+                let elemExistent = document.querySelector(`.${k}`); // k este codul disciplinei care a fost pus drept clasă pentru discipline
+                discipline.removeChild(elemExistent); // șterge disciplina
+            }
+        } else {
+            // dacă event.target.checked a fost bifat - avem `checked`, vom genera elementele checkbox.
+            for (let [key, val] of Object.entries(data)) {
+                // crearea checkbox - urilor
+                let inputCheckBx = new createElement('input', '', ['form-check-input'], {type: "checkbox", autocomplete: "off", value: key}).creeazaElem();
+                let labelBtn = new createElement('label', '', ['btn', 'btn-success'], {}).creeazaElem(val);
+                let divBtnGroupToggle = new createElement('div', '', ['btn-group-toggle', key], {"data-toggle": "buttons"}).creeazaElem();            
+                labelBtn.appendChild(inputCheckBx);
+                divBtnGroupToggle.appendChild(labelBtn);
+                discipline.appendChild(divBtnGroupToggle);
+            }
         }
     });
 });
 
+/**
+ * Funcția `diciplineBifate` are rolul de a extrage datele pentru disciplinele existente în vederea
+ * constituirii obiectului mare care să fie trimis spre baza de date. 
+ * Pentru că se folosește Bootstrap 4, aceasta este soluția corectă în cazul checkbox-urilor.
+ * TODO: Extinde suportul și pentru celelalte situații de checkbox-uri pentru concizie!!! (arii în relații, și niveluri în relație)
+ */
 function disciplineBifate () {
     let values = [];
     document.querySelector("#cateSunt").addEventListener('click', ev => {
@@ -246,4 +254,4 @@ function disciplineBifate () {
     });
 }
 
-disciplineBifate();
+// disciplineBifate();
