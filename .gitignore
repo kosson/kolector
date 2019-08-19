@@ -61,4 +61,4 @@ typings/
 .next
 
 # nu salva toate bibliotecile de cod aduse de bower
-public/
+public/lib
