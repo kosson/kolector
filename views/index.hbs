@@ -1,9 +1,57 @@
-{{!< layout}}
+{{!< landing}}
 {{> nav-landing}}
 {{> messages}}
-<div class="container">
-    {{> mainInfo}}
-    <div id="resurse" class="">
+{{!-- secțiunea landing --}}
+<div class="landing">
+    <div class="home-wrap">
+        <div class="home-inner">
+            {{!-- "Ants" by revolution540 is licensed under CC BY 2.0 --}}
+        </div>
+    </div>
+</div>
+{{!-- secțiune landing final --}}
+
+{{!-- secțiune întâmpinare --}}
+<div class="caption text-center">
+
+    <div class="os-animation" data-animation="bounceInUp" data-delay=".4s">
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link active" href="#"><img src="img/intrumentestructurale-1.png" alt="Instrumente Structurale logo."></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><img src="img/ue-1.png" alt="Uniunea Europeană logo."></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><img src="img/guvern-1.png" alt="Uniunea Europeană logo."></a>
+            </li>
+        </ul>
+    </div>
+    <div class="os-animation" data-animation="bounceInUp" data-delay=".6s">
+        <h1>Bine ai venit!</h1>
+    </div>
+
+    <div class="os-animation" data-animation="bounceInUp" data-delay=".8s">
+        <p>Colectorul de Resurse Educaționale Deschise este o aplicație creată în cadrul proiectului <em>CRED-Curriculum relevant, educație deschisă pentru toți</em>– cod SMIS 2014+:118327
+Proiect cofinanțat din Fondul Social European prin Programul Operațional Capital Uman 2014-2020</p>
+    </div>
+            
+    <div class="os-animation" data-animation="bounceInUp" data-delay="1s">
+        <a class="btn btn-outline-light btn-lg" href="/resurse">Vezi resursele</a>
+    </div>
+
+</div>
+{{!-- secțiune întâmpinare final--}}
+<!--- Indicator săgeată -->
+<a class="down-arrow" href="#resurse">
+    <div class="arrow bounce d-none d-md-block">
+        <i class="fas fa-angle-down" aria-hidden="true"></i>
+    </div>
+</a>
+{{!-- <div class="container"> --}}
+    {{!-- {{> mainInfo}} --}}
+
+    <div id="resurse" class="offset">
         <div class="card">
             {{!-- <img class="card-img-top" src="..." alt="Card image cap"> --}}
             <div class="card-body">
@@ -191,4 +239,4 @@
             </div>
         </div>
     </div>
-</div>
+{{!-- </div> --}}
