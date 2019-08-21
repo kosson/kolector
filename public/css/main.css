@@ -83,7 +83,7 @@ img {
     width: 100%;
     max-width: 100%;
     position: absolute;
-    top: 25%;
+    top: 20%;
     z-index: 1;
 }
 .caption h1 {
@@ -113,7 +113,13 @@ img {
     display: inline-block!important;
 }
 
-/*===== RESURSE =====*/
+/*===== RESURSE ALESE ... =====*/
+.narrow {
+    /* width: 75%; */
+    margin: 0 auto;
+    padding: 2rem;
+}
+
 #resurse {
     display: flex;
     flex-wrap: wrap;

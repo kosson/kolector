@@ -225,9 +225,9 @@ niveluri.forEach(function (checkbox) {
             // dacă event.target.checked a fost bifat - avem `checked`, vom genera elementele checkbox.
             for (let [key, val] of Object.entries(data)) {
                 // crearea checkbox - urilor
-                let inputCheckBx = new createElement('input', '', ['form-check-input'], {type: "checkbox", autocomplete: "off", value: key}).creeazaElem();
-                let labelBtn = new createElement('label', '', ['btn', 'btn-success'], {}).creeazaElem(val);
-                let divBtnGroupToggle = new createElement('div', '', ['btn-group-toggle', key], {"data-toggle": "buttons"}).creeazaElem();            
+                let inputCheckBx      = new createElement('input', '', ['form-check-input'],      {type: "checkbox", autocomplete: "off", value: key}).creeazaElem();
+                let labelBtn          = new createElement('label', '', ['btn', 'btn-success'],    {}).creeazaElem(val);
+                let divBtnGroupToggle = new createElement('div',   '', ['btn-group-toggle', key], {"data-toggle": "buttons"}).creeazaElem();            
                 labelBtn.appendChild(inputCheckBx);
                 divBtnGroupToggle.appendChild(labelBtn);
                 discipline.appendChild(divBtnGroupToggle);
