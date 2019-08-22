@@ -19,7 +19,6 @@ let CompetentaS = new mongoose.Schema({
     ref:        [],     // De ex: „Ordin al ministrului Nr. 3418/19.03.2013” sau poate fi link către ordin sau orice URI care poate identifica sursa informației sau orice asemenea
     parteA:     String, // Se introduce numele grupei de competențe specifice. De ex: „Receptarea de mesaje orale în contexte de comunicare cunoscute” 
     REDuri:     [],     // Este setul de identificatori. Fiecare identificator este o resursă care este în setul modelului resursei ca element în setul `target.value`. Dacă în `target.value` este adăugat id-ul unei competențe, id-ul respectivei resurse va fi adăugat acestui set.
-    din:        Date,
     contor:     Number  // ATENȚIE!!! Este un număr folosit doar în bateria de teste, dar poate fi utilizat în posibile scenarii.
 });
 
