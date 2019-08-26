@@ -1,28 +1,53 @@
 [
   {
-    "nume": "Științe ale naturii, clasa a III-a și a IV-a",
+    "nume": "Științele naturii",
     "nivel": "cl3",
     "cod": "stANat3"
   },
   {
-    "nume": "Științe ale naturii, clasa a III-a și a IV-a",
+    "nume": "Științele naturii",
     "nivel": "cl4",
     "cod": "stANat4"
   },
   {
-    "nume": "Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a",
+    "nume": "Arte vizuale și abilități practice",
+    "nivel": "cl0",
+    "cod": "arteViz0"
+  },
+  {
+    "nume": "Arte vizuale și abilități practice",
+    "nivel": "cl1",
+    "cod": "arteViz1"
+  },
+  {
+    "nume": "Arte vizuale și abilități practice",
+    "nivel": "cl2",
+    "cod": "arteViz2"
+  },
+  {
+    "nume": "Matematică și explorarea mediului",
     "nivel": "cl0",
     "cod": "matExpMed0"
   },
   {
-    "nume": "Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a",
+    "nume": "Matematică și explorarea mediului",
     "nivel": "cl1",
     "cod": "matExpMed1"
   },
   {
-    "nume": "Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a",
+    "nume": "Matematică și explorarea mediului",
     "nivel": "cl2",
     "cod": "matExpMed2"
+  },
+  {
+    "nume": "Matematică",
+    "nivel": "cl3",
+    "cod": "mat3"
+  },
+  {
+    "nume": "Matematică",
+    "nivel": "cl4",
+    "cod": "mat4"
   },
   {
     "nume": "Comunicare în limba română",
@@ -78,5 +103,55 @@
     "nume": "Joc și mișcare",
     "nivel": "cl4",
     "cod": "jocMi4"
+  },
+  {
+    "nume": "Religie cultul ortodox",
+    "nivel": "cl0",
+    "cod": "relClOrt0"
+  },
+  {
+    "nume": "Religie cultul ortodox",
+    "nivel": "cl0",
+    "cod": "relClOrt1"
+  },
+  {
+    "nume": "Religie cultul ortodox",
+    "nivel": "cl0",
+    "cod": "relClOrt2"
+  },
+  {
+    "nume": "Religie cultul ortodox",
+    "nivel": "cl0",
+    "cod": "relClOrt3"
+  },
+  {
+    "nume": "Religie cultul ortodox",
+    "nivel": "cl0",
+    "cod": "relClOrt4"
+  },
+  {
+    "nume": "Religie cultul catolic",
+    "nivel": "cl0",
+    "cod": "relClRomCat0"
+  },
+  {
+    "nume": "Religie cultul catolic",
+    "nivel": "cl1",
+    "cod": "relClRomCat1"
+  },
+  {
+    "nume": "Religie cultul catolic",
+    "nivel": "cl2",
+    "cod": "relClRomCat2"
+  },
+  {
+    "nume": "Religie cultul catolic",
+    "nivel": "cl3",
+    "cod": "relClRomCat3"
+  },
+  {
+    "nume": "Religie cultul catolic",
+    "nivel": "cl4",
+    "cod": "relClRomCat4"
   }
 ]

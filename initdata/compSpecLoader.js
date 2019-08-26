@@ -1,7 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const Papa = require('papaparse');
-const readF = fs.createReadStream('CSuri01.csv', 'utf8');
+const readF = fs.createReadStream('CSuri.csv', 'utf8');
 // const writeF = fs.createWriteStream('CSuriX.json', 'utf8');
 
 const mongoose = require('mongoose');
@@ -57,14 +57,14 @@ Papa.parse(readF, {
         }
         const folded = foldOneField(results.data); // apelează funcția de folding
         // scrie datele pe disc...
-        fs.writeFile('CSuriX.json', JSON.stringify(folded), 'utf8', (err) => {
+        fs.writeFile('CSuri.json', JSON.stringify(folded), 'utf8', (err) => {
             if (err) throw err;
         });
         
         // scrie datele în bază
         mongoose.connect(connectionString, { useNewUrlParser: true });
         const CSModel = require('../models/competenta-specifica');
-        mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție.
+        mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție la fiecare load!.
         
         CSModel.insertMany(folded, function cbInsMany (err, result) {
             if (err) {
