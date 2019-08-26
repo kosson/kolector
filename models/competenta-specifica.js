@@ -14,7 +14,7 @@ let CompetentaS = new mongoose.Schema({
     ids:        [],     // În programă este codat cu 1.1. Aici se poate trece orice secvență alfanumerică care să ofere o adresă rapidă către competența specifică
     cod:        String, // cod intern agreat (parte a vocabularului controlat)
     activitati: [],     // cunoștințe, abilități, atitudini: „utilizarea imaginilor pentru indicarea semnificaţiei unui mesaj audiat”, altul: „realizarea unui desen care corespunde subiectului textului audiat”
-    disciplina: String, // COMUNICARE ÎN LIMBA ROMÂNĂ
+    disciplina: [],     // COMUNICARE ÎN LIMBA ROMÂNĂ
     nivel:      [],     // toate acestea sunt cuvinte cheie. Sintagma în document este „Clasa pregătitoare, clasa I şi clasa a II-a”. Cheile: „clasa pregătitoare”, „clasa I”, „clasa a II-a”
     ref:        [],     // De ex: „Ordin al ministrului Nr. 3418/19.03.2013” sau poate fi link către ordin sau orice URI care poate identifica sursa informației sau orice asemenea
     parteA:     String, // Se introduce numele grupei de competențe specifice. De ex: „Receptarea de mesaje orale în contexte de comunicare cunoscute” 

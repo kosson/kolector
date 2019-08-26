@@ -1,7 +1,12 @@
+require('dotenv').config();
 const fs = require('fs');
 const Papa = require('papaparse');
 const readF = fs.createReadStream('CSuri01.csv', 'utf8');
 // const writeF = fs.createWriteStream('CSuriX.json', 'utf8');
+
+const mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true); // Deprecation warning
+const connectionString = `mongodb://localhost:27017/${process.env.MONGO_LOCAL_CONN}`;
 
 Papa.parse(readF, {
     header: true,
@@ -50,9 +55,25 @@ Papa.parse(readF, {
         if (results.errors) {
             console.log(results.errors);
         }
-        const folded = foldOneField(results.data);
+        const folded = foldOneField(results.data); // apelează funcția de folding
+        // scrie datele pe disc...
         fs.writeFile('CSuriX.json', JSON.stringify(folded), 'utf8', (err) => {
             if (err) throw err;
+        });
+        
+        // scrie datele în bază
+        mongoose.connect(connectionString, { useNewUrlParser: true });
+        const CSModel = require('../models/competenta-specifica');
+        mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție.
+        
+        CSModel.insertMany(folded, function cbInsMany (err, result) {
+            if (err) {
+                console.log(err);
+                process.exit();
+            }else{
+                console.log('Înregistrări inserate: ', result.length);
+                process.exit();
+            }
         });
     },
     error: function (err, file) {
@@ -70,16 +91,19 @@ Papa.parse(readF, {
 function foldOneField (data) {
     const arr = JSON.stringify(data);
     const folded = data.reduce((arrAcc, elemArrOrig, idx, srcArr) => {
+        // Inițial, acumulatorul este un array fără niciun element. Este necesară introducerea primului:
         if (arrAcc.length === 0) {
             arrAcc[idx] = elemArrOrig;
-            // console.log(arrAcc.slice(-1)[0].ids[0]);
-        } 
+        }
+        // Verifică câmpul `ids` al ultimului element din array (ultimul introdus)
         if (arrAcc.slice(-1)[0].ids[0] === elemArrOrig.ids[0]) {
+            // pentru toate activitățile existente în array-ul `activități`,
             elemArrOrig.activitati.forEach((act) => {
-                arrAcc.slice(-1)[0].activitati.push(act);
+                arrAcc.slice(-1)[0].activitati.push(act); // introdu-le în array-ul activități a înregistrării preexistente
             });
         } else {
-            arrAcc.push(srcArr[idx]);
+            // În cazul în care `ids` diferă, înseamnă că ai de-a face cu o nouă competență, care va constitui o nouă înregistrare
+            arrAcc.push(srcArr[idx]); // care la rândul ei va împături activități.
         }
         return arrAcc;
     }, []);
