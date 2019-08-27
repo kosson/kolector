@@ -236,6 +236,8 @@ niveluri.forEach(function (checkbox) {
     });
 });
 
+/* === Prezentarea competențelor specifice === */
+var compSpecPaginator = document.querySelector('#paginatorSec04');
 /**
  * Funcția `diciplineBifate` are rolul de a extrage datele pentru disciplinele existente în vederea
  * constituirii obiectului mare care să fie trimis spre baza de date. 
@@ -244,14 +246,19 @@ niveluri.forEach(function (checkbox) {
  */
 function disciplineBifate () {
     let values = [];
-    document.querySelector("#cateSunt").addEventListener('click', ev => {
-        values = [];
-        document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
-            values.push(value);
-        });
-        
-        console.log(values);
+    document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
+        values.push(value);
     });
+    // TODO: emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ])    
+    console.log(values);
+    pubComm.on('csuri', (mess) => {
+        // TODO: execută funcție care afișează mesajul
+        // broadcastMes(mess);
+        console.log(mess);
+    });
+    pubComm.emit('csuri', values);
 }
-
-// disciplineBifate();
+// adaugă un eveniment click pe evantaiul Bootstrap 4 pentru a popula tabelul cu date din mongo
+compSpecPaginator.addEventListener('click', (ev) => {
+    disciplineBifate();
+});

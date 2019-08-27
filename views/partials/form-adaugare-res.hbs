@@ -149,39 +149,44 @@
         <legend>Nivel</legend>
         <div id="nivel">
           <div class="form-check form-check-inline">
-            <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1" autocomplete="off" 
-            data-matExpMed0="Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a" 
-            data-comLbRom0="Comunicare în limba română">
+            <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl0" autocomplete="off" 
+            data-arteviz0="Arte vizuale și abilități practice" 
+            data-matexpmed0="Matematică și explorarea mediului" 
+            data-comlbrom0="Comunicare în limba română">
             <label class="form-check-label" for="inlineCheckbox1">Clasa pregătitoare</label>
           </div>
           <div class="form-check form-check-inline">
             <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1" autocomplete="off" 
-            data-matExpMed1="Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a" 
-            data-comLbRom01="Comunicare în limba română">
+            data-arteviz1="Arte vizuale și abilități practice" 
+            data-matexpmed1="Matematică și explorarea mediului" 
+            data-comlbrom01="Comunicare în limba română">
             <label class="form-check-label" for="inlineCheckbox1">Clasa I</label>
           </div>
           <div class="form-check form-check-inline">
             <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox2" value="cl2" autocomplete="off" 
-            data-matExpMed2="Matematică și explorarea mediului Clasă pregătitoare, clasa I și clasa a II-a" 
-            data-comLbRom2="Comunicare în limba română">
+            data-arteviz2="Arte vizuale și abilități practice" 
+            data-matexpmed2="Matematică și explorarea mediului" 
+            data-comlbrom2="Comunicare în limba română">
             <label class="form-check-label" for="inlineCheckbox2">Clasa a II-a</label>
           </div>
           <div class="form-check form-check-inline">
             <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox3" value="cl3" autocomplete="off" 
-            data-stANat3="Științe ale naturii, clasa a III-a și a IV-a" 
-            data-comLbRom3="Limba și literatura română" 
-            data-edCiv3="Educaţie civică" 
-            data-jocMi3="Joc și mișcare">
+            data-arteviz3="Arte vizuale și abilități practice" 
+            data-stanat3="Științele naturii" 
+            data-comlbrom3="Limba și literatura română" 
+            data-edciv3="Educaţie civică" 
+            data-jocmi3="Joc și mișcare">
             <label class="form-check-label" for="inlineCheckbox3">Clasa a III-a</label>
           </div>
           <div class="form-check form-check-inline">
             <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox4" value="cl4" autocomplete="off" 
-            data-stANat4="Științe ale naturii, clasa a III-a și a IV-a" 
-            data-comLbRom4="Limba și literatura română" 
-            data-edCiv4="Educaţie civică" 
+            data-arteviz4="Arte vizuale și abilități practice" 
+            data-stanat4="Științele naturii" 
+            data-comlbrom4="Limba și literatura română" 
+            data-edciv4="Educaţie civică" 
             data-geo4="Geografie" 
             data-ist4="Istorie" 
-            data-jocMi4="Joc și mișcare">
+            data-jocmi4="Joc și mișcare">
             <label class="form-check-label" for="inlineCheckbox4">Clasa a IV-a</label>
           </div>
           <div class="form-check form-check-inline">
@@ -243,7 +248,37 @@
         </div>
       </fieldset>
     </div>
-
+    {{!-- SECȚIUNEA - #4. Alegerea unei competențe specifice --}}
+    {{!-- Acționarea grupului de controale pentru #4 --}}
+    <button id="paginatorSec04" class="btn btn-primary btn-lg btn-block" data-toggle="collapse" data-target="#sec04" aria-expanded="true" aria-controls="sec04">
+      Alege comptențele specifice
+    </button>
+    {{!--Este tabelul cu toate competențele specifice pentru o anumită disciplină --}}
+    <fieldset>
+      <legend>Competențe specifice corespondente</legend>
+      <div id="sec04" class="collapse">
+        <table id="competenteS" class="display" width="100%">
+            <thead>
+              <tr>
+                  <th>Selectează</th>
+                  <th>Activitate</th>
+                  <th>Conținuturi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" name="select01" id="codActivitate"></td>
+              </tr>
+              <tr>
+                <td>Aici va sta numele activității</td>
+              </tr>
+              <tr>
+                <td><button>Conținut</button></td>
+              </tr>
+            </tbody>
+        </table>
+      </div>
+    </fieldset>
     {{!-- <div class="form-group">
       <label for="numeprenume">Nume Prenume autor:</label>
       <input name="nume-prenume" type="text" class="form-control" id="numeprenume" aria-describedby="numeprenumeHelp" placeholder="ex: Adriana Vasilescu">

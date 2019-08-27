@@ -2,42 +2,42 @@
   {
     "nume": "Științele naturii",
     "nivel": "cl3",
-    "cod": "stANat3"
+    "cod": "stanat3"
   },
   {
     "nume": "Științele naturii",
     "nivel": "cl4",
-    "cod": "stANat4"
+    "cod": "stanat4"
   },
   {
     "nume": "Arte vizuale și abilități practice",
     "nivel": "cl0",
-    "cod": "arteViz0"
+    "cod": "arteviz0"
   },
   {
     "nume": "Arte vizuale și abilități practice",
     "nivel": "cl1",
-    "cod": "arteViz1"
+    "cod": "arteviz1"
   },
   {
     "nume": "Arte vizuale și abilități practice",
     "nivel": "cl2",
-    "cod": "arteViz2"
+    "cod": "arteviz2"
   },
   {
     "nume": "Matematică și explorarea mediului",
     "nivel": "cl0",
-    "cod": "matExpMed0"
+    "cod": "matexpmed0"
   },
   {
     "nume": "Matematică și explorarea mediului",
     "nivel": "cl1",
-    "cod": "matExpMed1"
+    "cod": "matexpmed1"
   },
   {
     "nume": "Matematică și explorarea mediului",
     "nivel": "cl2",
-    "cod": "matExpMed2"
+    "cod": "matexpmed2"
   },
   {
     "nume": "Matematică",
@@ -52,37 +52,37 @@
   {
     "nume": "Comunicare în limba română",
     "nivel": "cl0",
-    "cod": "comLbRom0"
+    "cod": "comlbrom0"
   },
   {
     "nume": "Comunicare în limba română",
     "nivel": "cl1",
-    "cod": "comLbRom1"
+    "cod": "comlbrom1"
   },
   {
     "nume": "Comunicare în limba română",
     "nivel": "cl2",
-    "cod": "comLbRom2"
+    "cod": "comlbrom2"
   },
   {
     "nume": "Limba și literatura română",
     "nivel": "cl3",
-    "cod": "comLbRom3"
+    "cod": "comlbrom3"
   },
   {
     "nume": "Limba și literatura română",
     "nivel": "cl4",
-    "cod": "comLbRom4"
+    "cod": "comlbrom4"
   },
   {
     "nume": "Educaţie civică",
     "nivel": "cl3",
-    "cod": "edCiv3"
+    "cod": "edciv3"
   },
   {
     "nume": "Educaţie civică",
     "nivel": "cl4",
-    "cod": "edCiv4"
+    "cod": "edciv4"
   },
   {
     "nume": "Geografie",
@@ -97,61 +97,61 @@
   {
     "nume": "Joc și mișcare",
     "nivel": "cl3",
-    "cod": "jocMi3"
+    "cod": "jocmi3"
   },
   {
     "nume": "Joc și mișcare",
     "nivel": "cl4",
-    "cod": "jocMi4"
+    "cod": "jocmi4"
   },
   {
     "nume": "Religie cultul ortodox",
     "nivel": "cl0",
-    "cod": "relClOrt0"
+    "cod": "relclort0"
   },
   {
     "nume": "Religie cultul ortodox",
     "nivel": "cl0",
-    "cod": "relClOrt1"
+    "cod": "relclort1"
   },
   {
     "nume": "Religie cultul ortodox",
     "nivel": "cl0",
-    "cod": "relClOrt2"
+    "cod": "relclort2"
   },
   {
     "nume": "Religie cultul ortodox",
     "nivel": "cl0",
-    "cod": "relClOrt3"
+    "cod": "relclort3"
   },
   {
     "nume": "Religie cultul ortodox",
     "nivel": "cl0",
-    "cod": "relClOrt4"
+    "cod": "relclort4"
   },
   {
     "nume": "Religie cultul catolic",
     "nivel": "cl0",
-    "cod": "relClRomCat0"
+    "cod": "relclromcat0"
   },
   {
     "nume": "Religie cultul catolic",
     "nivel": "cl1",
-    "cod": "relClRomCat1"
+    "cod": "relclromcat1"
   },
   {
     "nume": "Religie cultul catolic",
     "nivel": "cl2",
-    "cod": "relClRomCat2"
+    "cod": "relclromcat2"
   },
   {
     "nume": "Religie cultul catolic",
     "nivel": "cl3",
-    "cod": "relClRomCat3"
+    "cod": "relclromcat3"
   },
   {
     "nume": "Religie cultul catolic",
     "nivel": "cl4",
-    "cod": "relClRomCat4"
+    "cod": "relclromcat4"
   }
 ]

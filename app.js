@@ -33,7 +33,25 @@ pubComm.on('connect', function pubCommCon (socket) {
     socket.on('mesaje', function cbMesaje (mesaj) {
         console.log(mesaj);
     });
+    socket.on('csuri', cbCsuri); // apel al funcția `cbCsuri` de mai jos
 });
+
+const mongoose = require('./mongoose.config');
+/**
+ * Funcția este callback al canalului `csuri` de pe sockeuri
+ * @param {Arrray} data sunt codurile disciplinelor selectate
+ */
+function cbCsuri (data) {
+    // console.log(data);// De ex: [ 'arteviz3', 'stanat3' ]
+    
+    const CSModel = require('./models/competenta-specifica');
+    // Proiecția se constituie pe același câmp, dar pe valorile primite prin socket.
+    CSModel.aggregate([{$match: {
+        coddisc: {$in: data}
+    }}]).then(rez => {
+        pubComm.emit('csuri', JSON.stringify(rez));
+    });
+}
 
 // MIDDLEWARE-UL aplicației
 // app.use(logger('combined')); // TODO: Dă-i drumu în producție și creează un mecanism de rotire a logurilor.

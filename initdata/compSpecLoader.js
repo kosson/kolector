@@ -1,12 +1,12 @@
 require('dotenv').config();
 const fs = require('fs');
 const Papa = require('papaparse');
-const readF = fs.createReadStream('CSuri.csv', 'utf8');
+const readF = fs.createReadStream('CSuri-arteViz3.csv', 'utf8');
 // const writeF = fs.createWriteStream('CSuriX.json', 'utf8');
 
 const mongoose = require('mongoose');
 mongoose.set('useCreateIndex', true); // Deprecation warning
-const connectionString = `mongodb://localhost:27017/${process.env.MONGO_LOCAL_CONN}`;
+const connectionString = `mongodb://localhost:27017/redcolector`;
 
 Papa.parse(readF, {
     header: true,
@@ -18,6 +18,7 @@ Papa.parse(readF, {
         if (header === 'cod') return 'cod';
         if (header === 'activitate') return 'activitati';
         if (header === 'disciplină') return 'disciplina';
+        if (header === 'coddisc') return 'coddisc';
         if (header === 'nivel') return 'nivel';
         if (header === 'act normativ') return 'ref';
         if (header === 'competență generală') return 'parteA';
@@ -38,6 +39,8 @@ Papa.parse(readF, {
             return value;
         } else if (headName === 'disciplina') {
             value = [].concat(value);
+            return value;           
+        } else if (headName === 'coddisc') {
             return value;           
         } else if (headName === 'nivel') {
             value = [].concat(value);
@@ -64,13 +67,13 @@ Papa.parse(readF, {
         // scrie datele în bază
         mongoose.connect(connectionString, { useNewUrlParser: true });
         const CSModel = require('../models/competenta-specifica');
-        mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție la fiecare load!.
+        // mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție la fiecare load!.
         
         CSModel.insertMany(folded, function cbInsMany (err, result) {
             if (err) {
                 console.log(err);
                 process.exit();
-            }else{
+            } else {
                 console.log('Înregistrări inserate: ', result.length);
                 process.exit();
             }
