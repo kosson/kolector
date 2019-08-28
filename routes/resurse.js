@@ -44,7 +44,9 @@ router.get('/resurse', function (req, res) {
 // Cere helperul `checkRole`
 router.get('/resurse/adauga', function (req, res) {
     let scripts = [
-        {script: '/js/form01adres.js'}
+        {script: '/js/form01adres.js'},
+        {script: '/js/lib/all.fine-uploader/all.fine-uploader.core.min.js'},
+        {script: '/js/lib/all.fine-uploader/all.fine-uploader.core.min.js.map'}
     ];
     let roles = ["user", "educred", "validator"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);

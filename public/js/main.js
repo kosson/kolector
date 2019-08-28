@@ -7,3 +7,7 @@ pubComm.on('mesaje', (mess) => {
     // broadcastMes(mess);
     console.log(text);
 });
+
+$(document).ready(function() {
+    $('#competenteS').DataTable();
+} );

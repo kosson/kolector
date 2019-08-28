@@ -8,6 +8,7 @@
 
   {{!-- Inițiere form --}}
   <form id="form01adres">
+
     {{!-- SECȚIUNEA - #2. TITLU ȘI RESPONSABILITATE (vezi modelul de date resursa-red.js) --}}
     {{!-- Acționarea grupului de controale pentru #2 --}}
     <button class="btn btn-primary btn-lg btn-block collapsed" data-toggle="collapse" data-target="#sec02" aria-expanded="true" aria-controls="sec02">
@@ -64,11 +65,10 @@
 
       </ul>
     </div>
-    </br>
 
     {{!-- SECȚIUNEA - #3. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI --}}
     {{!-- Acționarea grupului de controale pentru #3 --}}
-    <button class="btn btn-primary btn-lg btn-block" data-toggle="collapse" data-target="#sec03" aria-expanded="true" aria-controls="sec03">
+    <button class="btn btn-primary btn-lg btn-block collapsed" data-toggle="collapse" data-target="#sec03" aria-expanded="true" aria-controls="sec03">
       Încadrarea resursei
     </button>
     {{!-- Grupul controale Încadrarea resursei conform Planului Național --}}
@@ -248,37 +248,33 @@
         </div>
       </fieldset>
     </div>
+
     {{!-- SECȚIUNEA - #4. Alegerea unei competențe specifice --}}
     {{!-- Acționarea grupului de controale pentru #4 --}}
-    <button id="paginatorSec04" class="btn btn-primary btn-lg btn-block" data-toggle="collapse" data-target="#sec04" aria-expanded="true" aria-controls="sec04">
-      Alege comptențele specifice
+    <button id="paginatorSec04" class="btn btn-primary btn-lg btn-block collapsed" data-toggle="collapse" data-target="#sec04" aria-expanded="true" aria-controls="sec04">
+      Alege competențele specifice
+    </button>
+    <div id="sec04" class="collapse"></div>
+      {{!--Este tabelul cu toate competențele specifice pentru o anumită disciplină --}}
+      <fieldset>
+        <legend>Competențe specifice corespondente</legend>
+          <table id="competenteS" class="table table-striped table-bordered" style="width:100%"><table>
+      </fieldset>
+    </div>
+
+    {{!-- SECȚIUNEA - #5. Încărcarea resursei--}}
+    {{!-- Acționarea grupului de controale pentru #5 --}}
+    <button class="btn btn-primary btn-lg btn-block collapsed" data-toggle="collapse" data-target="#sec05" aria-expanded="true" aria-controls="sec05">
+      Încărcare resurse
     </button>
     {{!--Este tabelul cu toate competențele specifice pentru o anumită disciplină --}}
-    <fieldset>
-      <legend>Competențe specifice corespondente</legend>
-      <div id="sec04" class="collapse">
-        <table id="competenteS" class="display" width="100%">
-            <thead>
-              <tr>
-                  <th>Selectează</th>
-                  <th>Activitate</th>
-                  <th>Conținuturi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><input type="checkbox" name="select01" id="codActivitate"></td>
-              </tr>
-              <tr>
-                <td>Aici va sta numele activității</td>
-              </tr>
-              <tr>
-                <td><button>Conținut</button></td>
-              </tr>
-            </tbody>
-        </table>
-      </div>
-    </fieldset>
+    <div id="sec05" class="collapse"></div>
+      <fieldset>
+        <legend>Încărcarea resurselor</legend>          
+        <p>TODO: Mecanismul de încărcare</p>
+      </fieldset>
+    </div>
+
     {{!-- <div class="form-group">
       <label for="numeprenume">Nume Prenume autor:</label>
       <input name="nume-prenume" type="text" class="form-control" id="numeprenume" aria-describedby="numeprenumeHelp" placeholder="ex: Adriana Vasilescu">
@@ -355,39 +351,39 @@
 
 <script>
   // EVENIMENT la încărcarcarea completă a DOM-ului
-{{!-- document.addEventListener('DOMContentLoaded', init);
-function init () {
-    document.getElementById('addresbtn').addEventListener('click', upload);
-}
-function upload (evt) {
-    evt.preventDefault();
+  {{!-- document.addEventListener('DOMContentLoaded', init);
+  function init () {
+      document.getElementById('addresbtn').addEventListener('click', upload);
+  }
+  function upload (evt) {
+      evt.preventDefault();
 
-    // Constituirea headerelor
-    let headers = new Headers();
-    headers.append('Accept', 'application/json'); // Accept un răspuns de tip JSON
-    
-    // Culegerea datelor din form
-    let form01adres = new FormData();   // Obiectul de colectare a tuturor datelor din formular
-    form01adres.append('nume-prenume', document.querySelector('#numeprenume'));
+      // Constituirea headerelor
+      let headers = new Headers();
+      headers.append('Accept', 'application/json'); // Accept un răspuns de tip JSON
+      
+      // Culegerea datelor din form
+      let form01adres = new FormData();   // Obiectul de colectare a tuturor datelor din formular
+      form01adres.append('nume-prenume', document.querySelector('#numeprenume'));
 
 
-    let arhiva = document.querySelector('#adaugaPachet').files[0];
-    form01adres.append('arhiva', arhiva, 'arhiva.zip');
+      let arhiva = document.querySelector('#adaugaPachet').files[0];
+      form01adres.append('arhiva', arhiva, 'arhiva.zip');
 
-    var url = document.location;
-    let req = new Request(url, {
-        method: 'POST',
-        headers: headers,
-        mode: 'cors',
-        body: form01adres
-    });
+      var url = document.location;
+      let req = new Request(url, {
+          method: 'POST',
+          headers: headers,
+          mode: 'cors',
+          body: form01adres
+      });
 
-    fetch(req).then((response) => {
-        document.querySelector('#confirmare').textContent = "Mesaj de la server: ";
-    }).catch((error) => {
-        console.log('ERROR', err.message);
-    });
-} --}}
+      fetch(req).then((response) => {
+          document.querySelector('#confirmare').textContent = "Mesaj de la server: ";
+      }).catch((error) => {
+          console.log('ERROR', err.message);
+      });
+  } --}}
   /**
   * Funcția are rolul de a adăuga un titlu într-o listă de control
   * De fapt, creează un nou element input și ul nou selector de limbă pentru elementul input:text nou creat

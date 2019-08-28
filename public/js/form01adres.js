@@ -250,11 +250,116 @@ function disciplineBifate () {
         values.push(value);
     });
     // TODO: emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ])    
-    console.log(values);
-    pubComm.on('csuri', (mess) => {
-        // TODO: execută funcție care afișează mesajul
+    // console.log(values);
+    pubComm.on('csuri', (csuri) => {
+        // TODO: execută funcție care generează conținutul tabelului.
+        const tabelComps = document.querySelector('#competenteS'); // selectează tabelul țintă
+        
+        const CSlist = JSON.parse(csuri);   // transformă stringul în array JS
+        
+        // generează headerul tabelului
+        const theadElem = document.createElement('thead');  // crează elementul thead
+        const obiSketch = CSlist[0];                        // extrage primul obiect pentru a extrage cheile.
+        const numeChei = Object.keys(obiSketch);            // extrage cheile obiectului care vor constitui textele din header
+
+        // creează primul element thead
+        const thElem1 = document.createElement('th');
+        const headNume = document.createTextNode(numeChei[7]);  // această cheie este `nume`
+        thElem1.appendChild(headNume);  // adaugă textul în elementul `<thead>`
+
+        // creează al doilea element thead
+        const thElem2 = document.createElement('th');
+        const headCompGen = document.createTextNode(numeChei[10]); // această cheie este `parteA`
+        thElem2.appendChild(headCompGen);  // adaugă textul în elementul `<thead>`
+
+        // creează al treilea element thead
+        const thElem3 = document.createElement('th');
+        const headDisc = document.createTextNode(numeChei[3]);  // această cheie este `disciplina`
+        thElem3.appendChild(headDisc);  // adaugă textul în elementul `<thead>`
+
+        // creează al patrulea element thead
+        const thElem4 = document.createElement('th');
+        const headActivs = document.createTextNode(numeChei[2]);  // această cheie este `actvitati`
+        thElem4.appendChild(headActivs);  // adaugă textul în elementul `<thead>`
+
+        // creează al cincilea element thead
+        const thElem5 = document.createElement('th');
+        const headCheckB = document.createTextNode('selecteaza'); // adaugă selectorul
+        thElem5.appendChild(headCheckB); // adaugă textul în elementul `<thead`
+
+        theadElem.appendChild(thElem1); // adaugă în `<thead>` primul `<th>`      nume.
+        theadElem.appendChild(thElem2); // adaugă în `<thead>` al doilea `<th>`   parteA.
+        theadElem.appendChild(thElem3); // adaugă în `<thead>` al treilea `<th>`  disciplina.
+        theadElem.appendChild(thElem4); // adaugă în `<thead>` al patrulea `<th>` activitati.
+        theadElem.appendChild(thElem5); // adaugă în `<thead>` al cicilea `<th>`  selecteaza.
+
+        tabelComps.appendChild(theadElem); // adaugă elementul thead în tabel
+
+        // creează corpul tabelului
+        const corp = document.createElement('tbody');
+
+        // populează corpul tabelului
+        for (let obi of CSlist) {
+            // console.log(obi);
+            const genTr = document.createElement('tr'); // creează <tr>-ul
+
+            const genTdNume = document.createElement('td');       // creează <td>-ul
+            const genTdParteA = document.createElement('td');     // creează <td>-ul
+            const genTdDisciplina = document.createElement('td'); // creează <td>-ul
+
+            const nume = document.createTextNode(`${obi.nume}`);            // creează textul din td
+            const parteA = document.createTextNode(`${obi.parteA}`);        // creează textul din td
+            const disciplina = document.createTextNode(`${obi.disciplina}`);// creează textul din td
+
+            genTdNume.appendChild(nume);            // adaugă în DOM nume
+            genTdParteA.appendChild(parteA);        // adaugă în DOM parteA
+            genTdDisciplina.appendChild(disciplina);// adaugă în DOM disciplina
+
+            // crearea combo-ului de activități
+            const genTdActivitati = document.createElement('td'); // creează <td>-ul
+            const ulActivitati = document.createElement('ul');
+            genTdActivitati.appendChild(ulActivitati);
+            
+            for (let activ of obi.activitati) {
+                // console.log(obi.activitati);
+                let liActiv = document.createElement('li');
+                let txtActiv = document.createTextNode(`${activ}`);
+                liActiv.appendChild(txtActiv);
+                ulActivitati.appendChild(liActiv);
+            }
+
+            // crearea checkbox-ului de selecție
+            const genTdSelect = document.createElement('td'); // creează <td>-ul
+            const selectCheckB = document.createElement('input');
+            // Atributele
+            selectCheckB.type = "checkbox"; 
+            selectCheckB.name = `${obi.cod}`; 
+            selectCheckB.value = `${obi.cod}`; 
+            selectCheckB.id = `${obi.cod}`; 
+
+            // creating label for checkbox 
+            var label = document.createElement('label'); 
+            label.htmlFor = `${obi.cod}`;
+            label.appendChild(document.createTextNode(' selectează')); 
+
+            genTdSelect.appendChild(selectCheckB); 
+            genTdSelect.appendChild(label); 
+
+            // adaugă <td> -ul `nume` la <tr>
+            genTr.appendChild(genTdNume);
+            genTr.appendChild(genTdParteA);
+            genTr.appendChild(genTdDisciplina);
+            genTr.appendChild(genTdActivitati);
+            genTr.appendChild(genTdSelect);
+
+            // adaugă <tr>-ul generat la corpul tabelului
+            corp.appendChild(genTr);
+        }
+
+
+        tabelComps.appendChild(corp); // Încheie construcția tabelului prin adaugarea corpului și conținutului său la elementul `<table>`
         // broadcastMes(mess);
-        console.log(mess);
+        // console.log(csuri);
     });
     pubComm.emit('csuri', values);
 }
@@ -262,3 +367,4 @@ function disciplineBifate () {
 compSpecPaginator.addEventListener('click', (ev) => {
     disciplineBifate();
 });
+
