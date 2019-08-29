@@ -238,6 +238,45 @@ niveluri.forEach(function (checkbox) {
 
 /* === Prezentarea competențelor specifice === */
 var compSpecPaginator = document.querySelector('#paginatorSec04');
+
+/**
+ * Funcție helper pentru prezentarea informațiilor privind activitățile în row separat
+ * De funcția aceasta are nevoie `disciplineBifate()`
+ * @param {Object} data 
+ */
+function tabelFormater (data) {
+    // data sunt datele originare ale tabelului
+    // console.log(data);
+    var activitati = [];
+    data.activitati.forEach((elem) => {
+        let rehash = `
+            <li class="list-group-item">
+                <div class="form-check">
+                    <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="${elem}" aria-label="...">
+                    ${elem}
+                </div>
+            </li>
+        `;
+        activitati.push(rehash);
+    });
+
+    let htmlString = `
+        <table id="${data.cod}">
+            <tr>
+                <td>
+                    <p>Activități</p>
+                    <button type="button" class="btn btn-success">Adaugă activitate</button>
+                </td>
+                <td class="activitateCS">
+                    <ul id="${data.cod}-add" class="list-group list-group-flush">
+                        ${activitati.join('')}
+                    <ul>
+                </td>
+            </tr>
+        </table>
+    `;
+    return htmlString;
+}
 /**
  * Funcția `diciplineBifate` are rolul de a extrage datele pentru disciplinele existente în vederea
  * constituirii obiectului mare care să fie trimis spre baza de date. 
@@ -249,121 +288,85 @@ function disciplineBifate () {
     document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
         values.push(value);
     });
-    // TODO: emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ])    
-    // console.log(values);
-    pubComm.on('csuri', (csuri) => {
-        // TODO: execută funcție care generează conținutul tabelului.
-        const tabelComps = document.querySelector('#competenteS'); // selectează tabelul țintă
-        
+    // ori de câte ori va fi apăsată o disciplină, se vor aduce date noi. Deficiența este că baza de date este atinsă la fiecare selecție
+    pubComm.emit('csuri', values);
+    // TODO: emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ])
+    // FIXME: șterge conținutul tabelului la apel
+    const tabelComps = document.querySelector('#competenteS'); // selectează tabelul țintă
+    
+    /* ==== GENEREAZA TABELUL ===== */
+    pubComm.on('csuri', (csuri) => {        
         const CSlist = JSON.parse(csuri);   // transformă stringul în array JS
         
-        // generează headerul tabelului
-        const theadElem = document.createElement('thead');  // crează elementul thead
-        const obiSketch = CSlist[0];                        // extrage primul obiect pentru a extrage cheile.
-        const numeChei = Object.keys(obiSketch);            // extrage cheile obiectului care vor constitui textele din header
+        // modelarea tabelului 
+        $(document).ready(function() {
+            var table = $('#competenteS').DataTable({
+                "order": [[ 0, "asc" ]],
+                "dom": '<"toolbar">frtip',
+                data: CSlist,
+                columnDefs: [{
+                    orderable: false,
+                    targets: [1]
+                }],
+                columns: [
+                    {
+                        "className":      'details-control',
+                        "orderable":      false,
+                        "data":           null,
+                        "defaultContent": ''
+                    },
+                    {
+                        "title":          "alege",
+                        "className":      'select-control',
+                        "orderable":      false,
+                        "data":           "cod",
+                        "render": function (data, type, row, meta) {
+                            return '<input type="checkbox" value="' + data + '"></input>';
+                        }
+                    },
+                    {title: "cod", data: "cod"},
+                    {title: "disciplina", "data": "disciplina"},
+                    {title: "Competența specifică", "data": "nume"},
+                    {title: "Competența generală", "data": "parteA" }
+                    // {title: "activitati", "data": "activitati[, * ]"}
+                ]
+            });
+            // Adăugarea de informații în toolbar
+            $("div.toolbar").html('<strong>Pentru a încadra corect activitățile (cunoștințe, abilități, atitudini) fiecărei competențe, apăsați semnul plus.</strong>');
 
-        // creează primul element thead
-        const thElem1 = document.createElement('th');
-        const headNume = document.createTextNode(numeChei[7]);  // această cheie este `nume`
-        thElem1.appendChild(headNume);  // adaugă textul în elementul `<thead>`
+            // TODO: În cazul în care te decizi să introduci fontawesome
+            // $(this).find('[data-fa-i2svg]').toggleClass('fa-minus-square').toggleClass('fa-plus-square');
 
-        // creează al doilea element thead
-        const thElem2 = document.createElement('th');
-        const headCompGen = document.createTextNode(numeChei[10]); // această cheie este `parteA`
-        thElem2.appendChild(headCompGen);  // adaugă textul în elementul `<thead>`
+            // Add event listener for opening and closing details
+            $('#competenteS tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row( tr );
+        
+                if ( row.child.isShown() ) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    // tr.find('svg').attr('data-icon', 'plus-circle');    // FontAwesome 5
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    row.child( tabelFormater(row.data()) ).show();
+                    tr.addClass('shown');
+                    // tr.find('svg').attr('data-icon', 'minus-circle'); // FontAwesome 5
+                    $('button').on('click', () => {
+                        alert('am event');
+                        // TODO: creează interfață de adăugare a noi elemente <li>
+                    });
+                }
+            });
 
-        // creează al treilea element thead
-        const thElem3 = document.createElement('th');
-        const headDisc = document.createTextNode(numeChei[3]);  // această cheie este `disciplina`
-        thElem3.appendChild(headDisc);  // adaugă textul în elementul `<thead>`
-
-        // creează al patrulea element thead
-        const thElem4 = document.createElement('th');
-        const headActivs = document.createTextNode(numeChei[2]);  // această cheie este `actvitati`
-        thElem4.appendChild(headActivs);  // adaugă textul în elementul `<thead>`
-
-        // creează al cincilea element thead
-        const thElem5 = document.createElement('th');
-        const headCheckB = document.createTextNode('selecteaza'); // adaugă selectorul
-        thElem5.appendChild(headCheckB); // adaugă textul în elementul `<thead`
-
-        theadElem.appendChild(thElem1); // adaugă în `<thead>` primul `<th>`      nume.
-        theadElem.appendChild(thElem2); // adaugă în `<thead>` al doilea `<th>`   parteA.
-        theadElem.appendChild(thElem3); // adaugă în `<thead>` al treilea `<th>`  disciplina.
-        theadElem.appendChild(thElem4); // adaugă în `<thead>` al patrulea `<th>` activitati.
-        theadElem.appendChild(thElem5); // adaugă în `<thead>` al cicilea `<th>`  selecteaza.
-
-        tabelComps.appendChild(theadElem); // adaugă elementul thead în tabel
-
-        // creează corpul tabelului
-        const corp = document.createElement('tbody');
-
-        // populează corpul tabelului
-        for (let obi of CSlist) {
-            // console.log(obi);
-            const genTr = document.createElement('tr'); // creează <tr>-ul
-
-            const genTdNume = document.createElement('td');       // creează <td>-ul
-            const genTdParteA = document.createElement('td');     // creează <td>-ul
-            const genTdDisciplina = document.createElement('td'); // creează <td>-ul
-
-            const nume = document.createTextNode(`${obi.nume}`);            // creează textul din td
-            const parteA = document.createTextNode(`${obi.parteA}`);        // creează textul din td
-            const disciplina = document.createTextNode(`${obi.disciplina}`);// creează textul din td
-
-            genTdNume.appendChild(nume);            // adaugă în DOM nume
-            genTdParteA.appendChild(parteA);        // adaugă în DOM parteA
-            genTdDisciplina.appendChild(disciplina);// adaugă în DOM disciplina
-
-            // crearea combo-ului de activități
-            const genTdActivitati = document.createElement('td'); // creează <td>-ul
-            const ulActivitati = document.createElement('ul');
-            genTdActivitati.appendChild(ulActivitati);
-            
-            for (let activ of obi.activitati) {
-                // console.log(obi.activitati);
-                let liActiv = document.createElement('li');
-                let txtActiv = document.createTextNode(`${activ}`);
-                liActiv.appendChild(txtActiv);
-                ulActivitati.appendChild(liActiv);
-            }
-
-            // crearea checkbox-ului de selecție
-            const genTdSelect = document.createElement('td'); // creează <td>-ul
-            const selectCheckB = document.createElement('input');
-            // Atributele
-            selectCheckB.type = "checkbox"; 
-            selectCheckB.name = `${obi.cod}`; 
-            selectCheckB.value = `${obi.cod}`; 
-            selectCheckB.id = `${obi.cod}`; 
-
-            // creating label for checkbox 
-            var label = document.createElement('label'); 
-            label.htmlFor = `${obi.cod}`;
-            label.appendChild(document.createTextNode(' selectează')); 
-
-            genTdSelect.appendChild(selectCheckB); 
-            genTdSelect.appendChild(label); 
-
-            // adaugă <td> -ul `nume` la <tr>
-            genTr.appendChild(genTdNume);
-            genTr.appendChild(genTdParteA);
-            genTr.appendChild(genTdDisciplina);
-            genTr.appendChild(genTdActivitati);
-            genTr.appendChild(genTdSelect);
-
-            // adaugă <tr>-ul generat la corpul tabelului
-            corp.appendChild(genTr);
-        }
-
-
-        tabelComps.appendChild(corp); // Încheie construcția tabelului prin adaugarea corpului și conținutului său la elementul `<table>`
-        // broadcastMes(mess);
-        // console.log(csuri);
+        });
     });
-    pubComm.emit('csuri', values);
 }
-// adaugă un eveniment click pe evantaiul Bootstrap 4 pentru a popula tabelul cu date din mongo
+
+/**
+ * Populează cu date reprezentând competențele specifice pentru disciplinele selectate
+ */
 compSpecPaginator.addEventListener('click', (ev) => {
     disciplineBifate();
 });

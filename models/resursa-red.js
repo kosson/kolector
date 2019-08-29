@@ -69,6 +69,7 @@ var Resursa = new mongoose.Schema({
         ref: 'competentaspecifica'      // este numele modelului de competență specifică, în cazul de față (ceea ce exporți din modul)
     }],    // [valoare din vocabular] Set de competențe specifice. Este ținta de învățare specificată ca obiectiv clar identificabil într-un vocabular controlat al elementelor stabilite de specialiști, dar codate. Sunt cele care sunt alese inițial la selecția când resursa a fost încărcată. Codurile acestora devin automat etichete. Când identficatorul unei comptențe specifice este introdus în acest set, automat, va fi actualizat setul `REDuri` cu id-ul resursei constituite. Astfel, o competență va ști mereu de care REDuri este referită.
     competentaSContext: ['https://schema.org/targetName', 'http://purl.org/dcx/lrmi-vocabs/alignmentType/teaches'],
+    activitati:         [],    // sunt activitățile selectate de contribuitor și/sau adăugate de acesta suplimentar.
     prerequisite:       [],    // sunt toate competențele necesare celui care accesează resursa . Gândește-te la nivelurile de cunoaștere a unei limbi (A1, B2, etc). Aici va sta valoarea sau valorile pentru limba primară în care au fost introduse informațiile. La un moment dat este posibilă o interfațare cu Open Badges ca prerequisite în scop de gamificare.
     prerequisiteContext:['http://purl.org/dcx/lrmi-vocabs/alignmentType/prerequisite', 'https://schema.org/targetName'],
 

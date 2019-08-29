@@ -1,5 +1,4 @@
 /*========== NAVBAR TRANSPARENT TO SOLID ==========*/
-
 $(document).ready(function() { //when document(DOM) loads completely. 
     // Transition effect for navbar 
     $(window).scroll(function() { //function is called while you scrolls 
@@ -13,7 +12,6 @@ $(document).ready(function() { //when document(DOM) loads completely.
 });
 
 /*========== CLOSE MOBILE NAV ON CLICK ==========*/
-
 $(document).ready(function () { //when document loads completely.
 $(document).click(function (event) { //click anywhere
     var clickover = $(event.target); //get the target element where you clicked
@@ -25,7 +23,6 @@ $(document).click(function (event) { //click anywhere
 });
 
 /*========== SMOOTH SCROLLING TO LINKS ==========*/
-
 $(document).ready(function(){ //document is loaded
   // Add smooth scrolling to all links
   $("a").on('click', function(event) {//click on any link;anchor tag;

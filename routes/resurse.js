@@ -47,6 +47,7 @@ router.get('/resurse/adauga', function (req, res) {
         {script: '/js/form01adres.js'},
         {script: '/js/lib/all.fine-uploader/all.fine-uploader.core.min.js'},
         {script: '/js/lib/all.fine-uploader/all.fine-uploader.core.min.js.map'}
+        // {script: }
     ];
     let roles = ["user", "educred", "validator"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
