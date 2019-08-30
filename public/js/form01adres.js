@@ -371,3 +371,6 @@ compSpecPaginator.addEventListener('click', (ev) => {
     disciplineBifate();
 });
 
+function addActivitate () {
+    
+}
