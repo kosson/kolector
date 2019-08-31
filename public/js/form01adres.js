@@ -1,9 +1,9 @@
 /**
  * Clasa `createElement` va creea elemente HTML
  * @param {String} tag este un și de caractere care indică ce tip de element va fi creat
- * @param {String} id este un șir de caractere care indică un id pentru element
- * @param {String} cls este un șir de caractere care indică clasele elementului
- * @param {Object} attrs este un obiect de configurare a elementului care permite definirea de atribute
+ * @param {String} [id] este un șir de caractere care indică un id pentru element
+ * @param {String} [cls] este un șir de caractere care indică clasele elementului
+ * @param {Object} [attrs] este un obiect de configurare a elementului care permite definirea de atribute
  */
 class createElement {
     constructor(tag, id, cls, attrs){
@@ -237,18 +237,19 @@ niveluri.forEach(function (checkbox) {
 });
 
 /* === Prezentarea competențelor specifice === */
+// Locul de inserție a tabeleului
 var compSpecPaginator = document.querySelector('#paginatorSec04');
-
 /**
  * Funcție helper pentru prezentarea informațiilor privind activitățile în row separat
  * De funcția aceasta are nevoie `disciplineBifate()`
- * @param {Object} data 
+ * @param {Object} data sunt datele originare ale tabelului
  */
 function tabelFormater (data) {
-    // data sunt datele originare ale tabelului
-    // console.log(data);
+    // constituie un array al tuturor activităților arondate unei competențe specifice pentru a genera o listă din acestea
     var activitati = [];
     data.activitati.forEach((elem) => {
+        // pentru fiecare activitate, generează câte un `<li>` care să fie in form check a cărui valoare este chiar textul activității
+        // această soluție este necesară pentru a putea culege datele la final din formular.
         let rehash = `
             <li class="list-group-item">
                 <div class="form-check">
@@ -259,16 +260,15 @@ function tabelFormater (data) {
         `;
         activitati.push(rehash);
     });
-
+    // array-ul de li-uri cu activități va popula un nou tabel al acestora
     let htmlString = `
         <table id="${data.cod}">
             <tr>
                 <td>
                     <p>Activități</p>
-                    <button type="button" class="btn btn-success">Adaugă activitate</button>
                 </td>
                 <td class="activitateCS">
-                    <ul id="${data.cod}-add" class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush">
                         ${activitati.join('')}
                     <ul>
                 </td>
@@ -337,10 +337,11 @@ function disciplineBifate () {
             // TODO: În cazul în care te decizi să introduci fontawesome
             // $(this).find('[data-fa-i2svg]').toggleClass('fa-minus-square').toggleClass('fa-plus-square');
 
-            // Add event listener for opening and closing details
-            $('#competenteS tbody').on('click', 'td.details-control', function () {
+            // Adaugă eveniment pe deschiderea detaliilor și închidere (butonul verde)
+            $('#competenteS tbody').on('click', 'td.details-control', function (evt) {
+                evt.preventDefault();
                 var tr = $(this).closest('tr');
-                var row = table.row( tr );
+                var row = table.row(tr);
         
                 if ( row.child.isShown() ) {
                     // This row is already open - close it
@@ -349,18 +350,15 @@ function disciplineBifate () {
                     tr.removeClass('shown');
                 }
                 else {
+                    evt.stopPropagation(); // oprește propagarea evenimentului original pe buton.
                     // Open this row
-                    row.child( tabelFormater(row.data()) ).show();
+                    row.child(tabelFormater(row.data())).show(); // apelează funcția helper `tabelFormater()` căreia îi trimiți datele din row
                     tr.addClass('shown');
                     // tr.find('svg').attr('data-icon', 'minus-circle'); // FontAwesome 5
-                    $('button').on('click', () => {
-                        alert('am event');
-                        // TODO: creează interfață de adăugare a noi elemente <li>
-                    });
                 }
             });
-
         });
+        // modelarea tabelului END
     });
 }
 
@@ -371,6 +369,11 @@ compSpecPaginator.addEventListener('click', (ev) => {
     disciplineBifate();
 });
 
-function addActivitate () {
-    
+function genNoiCampuri(evt) {
+    // console.log(evt.target);
+    // console.log(this); // în cazul acesta este Window
+    // $(evt.target).show();
+    // if ($(''))
+
+    console.log($(this));
 }
