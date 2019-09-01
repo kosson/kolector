@@ -29,9 +29,9 @@ img {
     height:auto;
 }
 
-#logo-small {
+/* #logo-small {
     width: 20%;
-}
+} */
 
 .avatar-ico {
     width: 10%;
@@ -128,10 +128,10 @@ img {
     width: 100%;
 }
 
-.card {
+/* .card {
     width: 15em;
     margin: 0.2em;
-}
+} */
 
 .card-body {
     padding: .2em;
@@ -204,4 +204,10 @@ td.details-control {
 
 tr.shown td.details-control {
     background: url('../img/details_close.png') no-repeat center center;
+}
+
+/* GESTIONAREA FORMULARULUI DE DEPUNERE RESURSĂ */
+
+#doi, #trei, #patru {
+    display: none;
 }

@@ -87,3 +87,90 @@ $(function(){ // a self calling function
   onScrollInit( $('.os-animation') ); //function call with only items
   onScrollInit( $('.staggered-animation'), $('.staggered-animation-container') ); //function call with items and trigger
 });
+
+/* ===== GESTIONAREA FORMULARULUI DE INTRODUCERE A RESURSELOR ====== */
+$(document).ready(function () {
+
+  // Avans către pasul doi al formularului
+  $('#next-1').click(function (e) {
+    e.preventDefault();
+
+    // o mică validate pe titlul resursei
+    if ($('#titlu-res').val() == '') {
+      // $('#titluErr').text('Trebuie neapărat să denumești resursa!!!');
+      $('#titluErr').toastmessage('showToast', {
+        text: "Trebuie neapărat să denumești resursa!!!",
+        position: 'top-center', 
+        type: 'error', 
+        sticky: true,
+        stayTime: 10000,
+      });
+      return false;
+    } else if ($('#responsabil').val() == '') {
+      $('#titluErr').toastmessage('showToast', {
+        text: "Introdu numele celui care propune resursa.",
+        position: 'top-center', 
+        type: 'error', 
+        sticky: true,
+        stayTime: 10000,
+      });
+    } else {
+      // arată divul cu id-ul `doi` și ascunde div-ul primului pas din formular `unu`
+      $('#doi').show();
+      $('#unu').hide();
+      // incrementează width-ul bar-ului care indică progresul
+      $('#progressBar').css("width", "50%");
+      $('#progressText').text('Pasul 2');
+    }
+  });
+
+  //Mergi înapoi la pasul unu al formularului
+  $('#next-2').click(function () {
+    // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `unu`
+    $('#doi').hide();
+    $('#unu').show();
+    // decrementează width-ul bar-ului care indică progresul
+    $('#progressBar').css("width", "25%");
+    $('#progressText').text('Pasul 1');
+  });
+
+  //Avansează la pasul trei al formularului
+  $('#next-3').click(function () {
+    // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `trei`
+    $('#doi').hide();
+    $('#trei').show();
+    // decrementează width-ul bar-ului care indică progresul
+    $('#progressBar').css("width", "75%");
+    $('#progressText').text('Pasul 3');
+  });
+
+    //Mergi înapoi la pasul doi al formularului
+    $('#next-4').click(function () {
+      // ascunde divul cu id-ul `trei și arată-l pe cel cu id-ul `doi`
+      $('#trei').hide();
+      $('#doi').show();
+      // decrementează width-ul bar-ului care indică progresul
+      $('#progressBar').css("width", "50%");
+      $('#progressText').text('Pasul 2');
+    });
+
+    //Mergi la pasul patru al formularului
+    $('#next-5').click(function () {
+      // ascunde divul cu id-ul `trei și arată-l pe cel cu id-ul `patru`
+      $('#trei').hide();
+      $('#patru').show();
+      // incrementează width-ul bar-ului care indică progresul
+      $('#progressBar').css("width", "100%");
+      $('#progressText').text('Pasul 4');
+    });
+
+    //Mergi înapoi la pasul trei al formularului
+    $('#next-6').click(function () {
+      // ascunde divul cu id-ul `patru și arată-l pe cel cu id-ul `trei`
+      $('#patru').hide();
+      $('#trei').show();
+      // decrementează width-ul bar-ului care indică progresul
+      $('#progressBar').css("width", "75%");
+      $('#progressText').text('Pasul 3');
+    });
+});

@@ -1,3 +1,46 @@
+/* ======== Integrarea lui EditorJS ======== https://editorjs.io */
+const editorX = new EditorJS({
+    placeholder: 'Introdu conținutul nou sau copiază-l pe cel pe care îl ai într-un material.',
+    /**
+    * onReady callback
+    */
+    onReady: () => {
+        console.log('Editor.js is ready to work!');
+    },
+    /**
+     * Id of Element that should contain Editor instance
+     */
+    holder: 'codex-editor',
+    /**
+     * Enable autofocus
+     */ 
+    autofocus: true,
+    /** 
+   * Available Tools list. 
+   * Pass Tool's class or Settings object for each Tool you want to use 
+   */ 
+    tools: { 
+        header: {
+            class: Header,
+            inlineToolbar: true
+        }, 
+        list: List,
+        table: {
+            class: Table,
+        },
+        attaches: {
+            class: AttachesTool,
+            config: {
+                endpoint: 'http://localhost:8080/uploadFile'
+            }
+        }
+    },
+    /**
+     * Previously saved data that should be rendered
+     */
+    // data: {}
+});
+
 /**
  * Clasa `createElement` va creea elemente HTML
  * @param {String} tag este un și de caractere care indică ce tip de element va fi creat
@@ -239,6 +282,7 @@ niveluri.forEach(function (checkbox) {
 /* === Prezentarea competențelor specifice === */
 // Locul de inserție a tabeleului
 var compSpecPaginator = document.querySelector('#paginatorSec04');
+var activitatiSelectate = []; // array-ul care va colecta activitățile selectate.
 /**
  * Funcție helper pentru prezentarea informațiilor privind activitățile în row separat
  * De funcția aceasta are nevoie `disciplineBifate()`
@@ -246,37 +290,41 @@ var compSpecPaginator = document.querySelector('#paginatorSec04');
  */
 function tabelFormater (data) {
     // constituie un array al tuturor activităților arondate unei competențe specifice pentru a genera o listă din acestea
-    var activitati = [];
+    // var activitati = [];
+    var activitati = $(`<ul id="${data.cod}"></ul>`);
+
     data.activitati.forEach((elem) => {
         // pentru fiecare activitate, generează câte un `<li>` care să fie in form check a cărui valoare este chiar textul activității
-        // această soluție este necesară pentru a putea culege datele la final din formular.
-        let rehash = `
-            <li class="list-group-item">
-                <div class="form-check">
-                    <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="${elem}" aria-label="...">
-                    ${elem}
-                </div>
-            </li>
-        `;
-        activitati.push(rehash);
+        let divElem = $('<div class="form-check"></div>').wrap('<li class="list-group-item"><li>');
+        divElem.append(`<input class="form-check-input position-static" type="checkbox" value="${elem}"> ${elem}`);
+        activitati.append(divElem);
     });
-    // array-ul de li-uri cu activități va popula un nou tabel al acestora
-    let htmlString = `
-        <table id="${data.cod}">
-            <tr>
-                <td>
-                    <p>Activități</p>
-                </td>
-                <td class="activitateCS">
-                    <ul class="list-group list-group-flush">
-                        ${activitati.join('')}
-                    <ul>
-                </td>
-            </tr>
-        </table>
-    `;
-    return htmlString;
+
+    var wrapper = $(`<div class="input-group mb-3">`);
+    var frmAddAct = $(`<input type="text" aria-label="descrierea noii activități propuse" class="form-control ${data.cod}-add" placeholder="Aici vei introduce descrierea noii activități propuse" aria-describedby="basic-addon2"></input>`);
+    var btnWrap = $('<div class="input-group-append">');
+    var btnAdd = $(`<buton type="button" id="${data.cod}-add" class="btn btn-warning">Adaugă o nouă activitate</div>`).wrap(`<div class="input-group-append">`);
+    btnWrap.append(btnAdd);
+    wrapper.append(frmAddAct);
+    wrapper.append(btnWrap);
+    activitati.append(wrapper);
+
+    $(btnAdd).on('click', function () {
+        console.log('hat');
+        console.log($(frmAddAct).val());
+
+        let divElem = $('<div class="form-check"></div>').wrap('<li class="list-group-item"><li>');
+        divElem.append(`<input class="form-check-input position-static" type="checkbox" value="${$(frmAddAct).val()}" checked> ${$(frmAddAct).val()}`);
+        activitati.append(divElem);
+    });
+
+    $('#arteviz3-1.1-add').on('click', function () {
+        console.log('este');
+    });
+
+    return activitati;
 }
+
 /**
  * Funcția `diciplineBifate` are rolul de a extrage datele pentru disciplinele existente în vederea
  * constituirii obiectului mare care să fie trimis spre baza de date. 
@@ -344,13 +392,14 @@ function disciplineBifate () {
                 var row = table.row(tr);
         
                 if ( row.child.isShown() ) {
-                    // This row is already open - close it
+                    // Înainte de a închide rândul, este necesarară culegerea activităților care sunt bifate!!! În array-ul `activitatiSelectate`
+                    
+                    // Rândul cu detaliile activităților este deschis. Închide-l!
                     row.child.hide();
                     // tr.find('svg').attr('data-icon', 'plus-circle');    // FontAwesome 5
                     tr.removeClass('shown');
-                }
-                else {
-                    evt.stopPropagation(); // oprește propagarea evenimentului original pe buton.
+                } else {
+                    // evt.stopPropagation(); // oprește propagarea evenimentului original pe buton.
                     // Open this row
                     row.child(tabelFormater(row.data())).show(); // apelează funcția helper `tabelFormater()` căreia îi trimiți datele din row
                     tr.addClass('shown');
@@ -369,11 +418,8 @@ compSpecPaginator.addEventListener('click', (ev) => {
     disciplineBifate();
 });
 
-function genNoiCampuri(evt) {
-    // console.log(evt.target);
-    // console.log(this); // în cazul acesta este Window
-    // $(evt.target).show();
-    // if ($(''))
+/* ========== COLECTAREA DATELOR DIN FORM ============= */
+let form = document.getElementById('form01adres');
+var dateRED = new FormData(form);
 
-    console.log($(this));
-}
+dateRED.append('nume-prenume', document.querySelector('#numeprenume'));

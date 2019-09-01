@@ -7,7 +7,7 @@
     </button>
     
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <span>Salut {{user}}</span>
+        <span>Salut, {{user.googleProfile.name}} <img data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" class="avatar-ico" src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" /></span>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="/">Acasă<span class="sr-only">(current)</span></a>

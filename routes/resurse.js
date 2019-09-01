@@ -44,10 +44,7 @@ router.get('/resurse', function (req, res) {
 // Cere helperul `checkRole`
 router.get('/resurse/adauga', function (req, res) {
     let scripts = [
-        {script: '/js/form01adres.js'},
-        {script: '/js/lib/all.fine-uploader/all.fine-uploader.core.min.js'},
-        {script: '/js/lib/all.fine-uploader/all.fine-uploader.core.min.js.map'}
-        // {script: }
+        {script: '/js/form01adres.js'}
     ];
     let roles = ["user", "educred", "validator"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
@@ -61,6 +58,8 @@ router.get('/resurse/adauga', function (req, res) {
             logoimg: "/img/rED-logo192.png",
             scripts
         });
+        // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
+        
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
         res.render('adauga-res', {
             title: "Adauga",

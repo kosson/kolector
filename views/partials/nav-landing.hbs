@@ -9,7 +9,7 @@
         
         <div class="collapse navbar-collapse" id="navbarResponsive">
             {{#if user}}
-                <span>Salut <img class="avatar-ico" src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" /></span>
+                <span>Salut, {{user.googleProfile.name}} <img data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" class="avatar-ico" src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" /></span>
             {{/if}}
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">

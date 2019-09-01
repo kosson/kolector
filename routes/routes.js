@@ -32,6 +32,7 @@ module.exports = (app, passport) => {
     app.get('/user/resurse', User.resAtribuite, function(req, res) {
         // console.log('Ce există în headerul de autorizare', req.get('authorization'));
         res.render('red-atribuite', {
+            user:     req.user,
             title:    "RED Atribuite",
             logoimg:  "../img/rED-logo192.png",
             credlogo: "../img/CREDlogo.jpg"
@@ -62,7 +63,7 @@ module.exports = (app, passport) => {
     app.get('/profile',
         makeSureLoggedIn.ensureLoggedIn(),
         function(req, res){
-            console.dir(req.user);
+            // console.dir(req.user);
             res.render('profile', {
                 user:    req.user,
                 title:   "Profil",
