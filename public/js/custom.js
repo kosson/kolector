@@ -115,6 +115,8 @@ $(document).ready(function () {
         stayTime: 10000,
       });
     } else {
+      pas1();
+      console.log(RED);
       // arată divul cu id-ul `doi` și ascunde div-ul primului pas din formular `unu`
       $('#doi').show();
       $('#unu').hide();
@@ -124,8 +126,10 @@ $(document).ready(function () {
     }
   });
 
-  //Mergi înapoi la pasul unu al formularului
+  // Mergi înapoi la pasul unu al formularului
   $('#next-2').click(function () {
+    pas2();
+    console.log(RED);
     // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `unu`
     $('#doi').hide();
     $('#unu').show();
@@ -134,8 +138,10 @@ $(document).ready(function () {
     $('#progressText').text('Pasul 1');
   });
 
-  //Avansează la pasul trei al formularului
+  // Avansează la pasul trei al formularului
   $('#next-3').click(function () {
+    pas2();
+    console.log(RED);
     // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `trei`
     $('#doi').hide();
     $('#trei').show();

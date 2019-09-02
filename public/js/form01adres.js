@@ -79,7 +79,7 @@ class createElement {
         if (requiredElem) element.required = true;
         return element;
     }
-}
+} 
 // este setul opțiunilor pentru selecție de limbă în cazul minorităților
 let langsMin = new Map([
     ['rum', 'română'],
@@ -186,13 +186,16 @@ function creeazaTitluAlternativ () {
         let lastAlternativeTitle = Array.from(arrAlternative).slice(-1); // fă o referință către ultimul introdus în alternative
         let idOfLastElem = lastAlternativeTitle[0].id;  // extrage id-ul acelui element
         let contorIdxIds = parseInt(idOfLastElem.slice(-1)); // din id, extrage numarul de incrementare (pentru primul element adăugat în alternative este 1).
+
         creeazaTitluAlternativHelper(`${primulTitlu}-${++contorIdxIds}`, insertie); // adaugă titluri alternative după primul alternativ existent!!!
         
         // Pentru a atașa evenimentul, extrage id-ul ultimului element introdus în alternative
         var id2Nr = parseInt(idOfLastElem.slice(-1));
         let idElement = `#${primulTitlu}-${++id2Nr}`;
         let butRemove = document.querySelector(idElement);
-        butRemove.addEventListener('click', (event) => {
+        let butonLastElem = butRemove.querySelector('button');
+
+        butonLastElem.addEventListener('click', (event) => {
             insertie.removeChild(document.querySelector(`${idElement}`));
         });
     } else {
@@ -248,14 +251,9 @@ function creeazaTitluAlternativHelper (id, insertie) {
 var niveluri = document.querySelectorAll('.nivel');
 var discipline = document.querySelector('#discipline');
 niveluri.forEach(function (checkbox) {
+    // pentru fiecare nivel de școlarizare apăsat, se vor genera butoane pentru fiecare disciplină
     checkbox.addEventListener('click', (event) => {
-        // TODO: Mai întâi verifică dacă elementele nu cumva se află în zona disciplinelor alese
-        // fa un array cu toate valorile existente
-        // discExistente = [];
-        // document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
-        //     discExistente.push(value);
-        // });
-        // console.log(discExistente);
+        // FIXME: La un moment dat, adu-mi dinamic datele, nu din `data=*`. Gândește-te la numărul de atingeri ale bazei. Merită?!
         var data = JSON.parse(JSON.stringify(event.target.dataset)); // constituie un obiect cu toate datele din `data=*` a checkbox-ului
         // verifică dacă nu cumva bifa nu mai este checked. În cazul acesta șterge toate disciplinele asociate
         if(event.target.checked === false) {
@@ -270,7 +268,7 @@ niveluri.forEach(function (checkbox) {
                 // crearea checkbox - urilor
                 let inputCheckBx      = new createElement('input', '', ['form-check-input'],      {type: "checkbox", autocomplete: "off", value: key}).creeazaElem();
                 let labelBtn          = new createElement('label', '', ['btn', 'btn-success'],    {}).creeazaElem(val);
-                let divBtnGroupToggle = new createElement('div',   '', ['btn-group-toggle', key], {"data-toggle": "buttons"}).creeazaElem();            
+                let divBtnGroupToggle = new createElement('div',   '', ['btn-group-toggle', key], {"data-toggle": "buttons"}).creeazaElem();          
                 labelBtn.appendChild(inputCheckBx);
                 divBtnGroupToggle.appendChild(labelBtn);
                 discipline.appendChild(divBtnGroupToggle);
@@ -286,17 +284,18 @@ var activitatiSelectate = []; // array-ul care va colecta activitățile selecta
 /**
  * Funcție helper pentru prezentarea informațiilor privind activitățile în row separat
  * De funcția aceasta are nevoie `disciplineBifate()`
- * @param {Object} data sunt datele originare ale tabelului
+ * singura formulă de a adăuga interactivtate inputurilor este prin atașarea unui listener cu `onclick`
+ * FIXME: Vreodată dacă ai timp, curăță JQuery-ul
+ * @param {Object} data sunt datele originale ale tabelului
  */
 function tabelFormater (data) {
     // constituie un array al tuturor activităților arondate unei competențe specifice pentru a genera o listă din acestea
-    // var activitati = [];
     var activitati = $(`<ul id="${data.cod}"></ul>`);
 
     data.activitati.forEach((elem) => {
         // pentru fiecare activitate, generează câte un `<li>` care să fie in form check a cărui valoare este chiar textul activității
         let divElem = $('<div class="form-check"></div>').wrap('<li class="list-group-item"><li>');
-        divElem.append(`<input class="form-check-input position-static" type="checkbox" value="${elem}"> ${elem}`);
+        divElem.append(`<input class="form-check-input position-static" type="checkbox" value="${elem}" onclick="manageInputClick()"> ${elem}`);
         activitati.append(divElem);
     });
 
@@ -309,33 +308,98 @@ function tabelFormater (data) {
     wrapper.append(btnWrap);
     activitati.append(wrapper);
 
+    // aici se creează butonuk care permite adăugarea de elemente noi la lista de activități
     $(btnAdd).on('click', function () {
-        console.log('hat');
-        console.log($(frmAddAct).val());
-
         let divElem = $('<div class="form-check"></div>').wrap('<li class="list-group-item"><li>');
-        divElem.append(`<input class="form-check-input position-static" type="checkbox" value="${$(frmAddAct).val()}" checked> ${$(frmAddAct).val()}`);
+        divElem.append(`<input class="form-check-input position-static" type="checkbox" value="${$(frmAddAct).val()}" onclick="manageInputClick()"> ${$(frmAddAct).val()}`);
         activitati.append(divElem);
     });
 
-    $('#arteviz3-1.1-add').on('click', function () {
-        console.log('este');
-    });
-
+    watchRow(data);
     return activitati;
 }
+
+/* ======== MAGIE PE RÂNDUL CREAT DINAMIC ====== */
+// O clasă menită să ofere datele rândului activ care cuprinde toate activitățile
+class Act {
+    constructor (row) {
+        this.row = row;
+    }
+    getData () {
+        return this.row;
+    }
+}
+// referință către obiectul care înmagazinează datele. Inițial null.
+var XY = null;
+
+/**
+ * Funcția are rolul să creeze un obiect în baza clasei `Act`. Acesta va înmagazina datele rândului creat pentru activități
+ * @param {Obiect} data 
+ */
+function watchRow (data) {
+    // instanțiază obiectul inception prin pasarea datelor curente în constructorul clasei.
+    let inception = new Act(data);
+    XY = inception;
+}
+
+/**
+ * Funcția este event handler pentru click-urile de pe inputurile create dinamic în rândul, care la rândul său este creat dinamic.
+ * Are acces la obiectul `XY`, care oferă datele rândului.
+ * Aici se verifică bifele și se crează un `Map` cu datele care trebuie inroduse în obiectul `RED`
+ */
+var activitatiSelectate = new Map();
+function manageInputClick () {
+    let rowData = XY.getData();
+    // $(`#arteviz3\\-1\\.1`).show(); MEMENTO!!!! Bittes like fuckin sheet!
+    // $(`#arteviz3\\-1\\.1`).css('background-color', 'salmon');
+
+    // selectează `<ul>`-ul care ține toate inputurile
+    var listaID = document.getElementById(`${rowData.cod}`);
+    // constituie un array cu toate elementele input
+    var arr = Array.from(listaID.getElementsByTagName('input'));
+    // pentru fiecare dintre elementele din array, verifică dacă a fost bifat.
+    // dacă a fost bifat, adaugă-l în WeakMap
+
+    arr.forEach(function cbFrAc (inpElem) {
+        if (inpElem.checked && activitatiSelectate.has(inpElem.value)) {
+            activitatiSelectate.delete(inpElem.value);
+        } else if (inpElem.checked) {
+            activitatiSelectate.set(inpElem.value, rowData.cod);
+        } else {
+            activitatiSelectate.delete(inpElem.value);
+        }
+    });
+
+    // selectează tabelul mare din care vei ținti checkboxul de pe rândul competenței specifice
+    // ceea ce se dorește este ca atunci când există cel puțin un element bifat, să fie bifat și rândul competenței specifice
+    if (activitatiSelectate.size) {
+        document.getElementById('competenteS').querySelector(`input[value="${rowData.cod}"]`).checked = true;
+        console.log(activitatiSelectate);
+    } else {
+        document.getElementById('competenteS').querySelector(`input[value="${rowData.cod}"]`).checked = false;
+    }
+    // TODO: cazul în care este bifată competența specifică dar niciuna dintre activități. În cazul acesta va fi adaugata doar referința către competență considerandu-se ca include toate activitățile.
+
+    // TODO: Fă prepopulare la redeschidere? AIASTA-I cam MAAAAAAD! Dar ține-o acolo pe vine.
+
+    console.log(activitatiSelectate.size);
+}
+/* ======== MAGIA ESTE GATA, APLAUZE pentru o mare măgărie, care... FUNCȚIONEAZĂ :)))))) ======= */
 
 /**
  * Funcția `diciplineBifate` are rolul de a extrage datele pentru disciplinele existente în vederea
  * constituirii obiectului mare care să fie trimis spre baza de date. 
  * Pentru că se folosește Bootstrap 4, aceasta este soluția corectă în cazul checkbox-urilor.
  * TODO: Extinde suportul și pentru celelalte situații de checkbox-uri pentru concizie!!! (arii în relații, și niveluri în relație)
+ * Încarcă și obiectul `RED` care colectează datele de formular: `RED.discipline` și `RED.etichete`
  */
 function disciplineBifate () {
     let values = [];
+    // selectează toate checkbox-urile checked.
     document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
         values.push(value);
     });
+
     // ori de câte ori va fi apăsată o disciplină, se vor aduce date noi. Deficiența este că baza de date este atinsă la fiecare selecție
     pubComm.emit('csuri', values);
     // TODO: emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ])
@@ -388,12 +452,11 @@ function disciplineBifate () {
             // Adaugă eveniment pe deschiderea detaliilor și închidere (butonul verde)
             $('#competenteS tbody').on('click', 'td.details-control', function (evt) {
                 evt.preventDefault();
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
+
+                var tr = $(this).closest('tr'); // this este butonul. closest('tr') este randul în care se află. Caută rândul pe care este butonul și fă-i o referință
+                var row = table.row(tr); // row() este o metodă de-a lui data table. Transformă tr-ul JQuery în row de data-table
         
                 if ( row.child.isShown() ) {
-                    // Înainte de a închide rândul, este necesarară culegerea activităților care sunt bifate!!! În array-ul `activitatiSelectate`
-                    
                     // Rândul cu detaliile activităților este deschis. Închide-l!
                     row.child.hide();
                     // tr.find('svg').attr('data-icon', 'plus-circle');    // FontAwesome 5
@@ -409,6 +472,7 @@ function disciplineBifate () {
         });
         // modelarea tabelului END
     });
+    return values;
 }
 
 /**
@@ -419,7 +483,103 @@ compSpecPaginator.addEventListener('click', (ev) => {
 });
 
 /* ========== COLECTAREA DATELOR DIN FORM ============= */
-let form = document.getElementById('form01adres');
-var dateRED = new FormData(form);
+// let form = document.getElementById('form01adres');
+// var dateRED = new FormData(form);
+var RED = {
+    langRED: '',
+    title: '',
+    titleI18n: [],
+    idContributor: '',
+    description: '',
+    licenta: '',
+    // pas 2
+    arieCurriculara: '',
+    level: [],
+    discipline: [],
+    etichete: []
+};
 
-dateRED.append('nume-prenume', document.querySelector('#numeprenume'));
+/* ====== Pasul 1 ====== */
+/**
+ * Funcția are rolul de a popula obiectul `RED` cu datele din formular de la `Pas 1`.
+ */
+function pas1 () {
+    // Gestionarea titlului și ale celor în alte limbi
+    var title = document.querySelector('#titlu-res').value; // titlul în limba română
+    RED.title = title; // adaugă în obiect
+    // Stabilirea limbii RED-ului
+    var limbaRed = document.querySelector('#langRED');
+    var langRED = limbaRed.options[limbaRed.selectedIndex].value;
+    RED.langRED = langRED;
+    // verifică dacă nu cumva au fost adăugate titluri alternative. Dacă da, constituie datele necesare
+    var titluriAltele = document.querySelector('#langAlternative');
+    if (titluriAltele) {
+        // var inputs = titluriAltele..getElementsByTagName('input'); // modul tradițional de a crea un NodeList
+        // Creează un NodeList cu toate elementele input
+        var inputs = titluriAltele.querySelectorAll('input');
+        // Creează un NodeList cu toate elementele select
+        var selects = titluriAltele.querySelectorAll('select');
+        
+        for (index = 0; index < inputs.length; ++index) {
+            // console.log(inputs[index]);
+            var obi = {}; // obiect care să colecteze datele
+            // Obține id-ul
+            var nameInput = inputs[index].name;
+            // Pentru fiecare input colectat, trebuie adusă și limba corespunzătoare din select.
+            selects.forEach( selectElem => {
+                // verifică dacă id-ul elementul select este egal cu id-ul elementului input plus `-select`
+                if (selectElem.id === `${nameInput}-select`) {
+                    // constituie înregistrarea în obi
+                    obi[`${selectElem.options[selectElem.selectedIndex].value}`] = inputs[index].value;
+                }
+            });
+            RED.titleI18n.push(obi); // adaugă obiectul care conține titlul alternativ.
+        }
+    }
+    // Adaugă emailul 
+    var email = document.querySelector('#emailUser').value;
+    RED.idContributor = email;
+    // Adaugă descrierea
+    var descriere = document.querySelector('#descriereRed').value;
+    RED.description = descriere;
+    // Adaugă licența pentru care s-a optat
+    var licenta = document.querySelector('#licente');
+    var licOpt = licenta.options[licenta.selectedIndex].value;
+    RED.licenta = licOpt;
+}
+
+/* ====== Pasul 2 ====== */
+/**
+ * Funcția are rolul de a completa cu date obiectul `RED` cu datele de la `Pas2`.
+ */
+function pas2 () {
+    // introducerea arie curiculare selectare din options
+    var arie = document.querySelector('#arii-curr');
+    var optArie = arie.options[arie.selectedIndex].value;
+    RED.arieCurriculara = optArie;
+    // Obținerea valorilor pentru nivel
+    var niveluriScolare = document.querySelector('#nivel');
+    var noduriInputNiveluri = niveluriScolare.querySelectorAll('input');
+    noduriInputNiveluri.forEach(input => {
+        if (input.checked) {
+            RED.level.push(input.value);
+        }
+    });
+    // disciplinele și etichetele sunt încărcate din funcția `disciplineBifate()`
+    // selectează toate checkbox-urile checked.
+    document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
+        RED.discipline.push(value);
+        RED.etichete.push(value);
+    });
+}
+
+// var primaDisciplina = [];
+// var disCS = document.getElementById('discipline');
+// discipline.addEventListener('click', adaugPrimaDisciplina);
+// var disInputuri = disCS.getElementsByTagName('input');
+// console.log(disInputuri);
+// var disCSchildren = disCS.childNodes;
+// disInputuri.forEach((dis) => {
+//     console.log(dis);
+//     dis.addEventListener('click', adaugPrimaDisciplina);
+// });

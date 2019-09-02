@@ -3,6 +3,7 @@ const mongoose = require('../mongoose.config');
 // Definirea unei scheme necesare verificării existenței utilizatorului.
 var Schema = mongoose.Schema;
 var User = new Schema({
+    _id: Schema.Types.ObjectId,
     created:  Date,
     email: {
         type: String,
