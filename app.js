@@ -3,7 +3,6 @@ const path           = require('path');
 const bodyParser     = require('body-parser');
 const logger         = require('morgan');
 const cookies        = require('cookie-parser');
-const multer         = require('multer');
 const express        = require('express');
 const cookieParser   = require('cookie-parser');
 const session        = require('express-session');
@@ -55,7 +54,7 @@ function cbCsuri (data) {
 }
 
 // MIDDLEWARE-UL aplicației
-// app.use(logger('combined')); // TODO: Dă-i drumu în producție și creează un mecanism de rotire a logurilor.
+app.use(logger('dev')); // TODO: Dă-i drumu în producție și creează un mecanism de rotire a logurilor. (combined)
 app.use(cors());
 // SESIUNI
 app.use(cookies());
@@ -101,12 +100,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // GESTIONAREA RUTELOR
-// acl.config({
-//     filename: 'nacl.json',
-//     baseUrl: '/'
-// });
-// app.use(acl.authorize);
-const routes = require('./routes/routes')(app, passport);
+const routes = require('./routes/routes')(express, app, passport);
+
 // colectarea erorilor de pe toate middleware-urile
 app.use(function (err, req, res, next) {
     console.error(err.stack);

@@ -1,4 +1,4 @@
-module.exports = (app, passport) => {
+module.exports = (express, app, passport) => {
     /* GESTIONAREA RUTELOR */
     // IMPORTUL CONTROLLERELOR DE RUTE
     var index   = require('./index');
@@ -77,11 +77,34 @@ module.exports = (app, passport) => {
     // -- verifică daca este autentificat și dacă este administrator.
 
     // ========== RESURSE ================
-    const resurse = require('./resurse');
-    app.get('/resursepublice', resurse);
-    app.get('/resurse', User.ensureAuthenticated, resurse);
-    // ADAUGĂ RESURSA
-    app.get('/resurse/adauga', User.ensureAuthenticated, resurse);
+    const resurse = require('./resurse')(express.Router());
+    app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
+    
+    // ========== ÎNCĂRCAREA UNEI IMAGINI =========
+    var multer  = require('multer');
+    var storage = multer.diskStorage({
+        destination: function (req, file, callback) {
+            callback(null, '../repo');
+        },
+        filename: function (req, file, callback) {
+            console.log(file.fieldname);
+            callback(null, file.fieldname + '-' + Date.now());
+        }
+    });
+    var upload = multer({ storage : storage}).single('userPhoto');
+    
+    app.post('/upload', User.ensureAuthenticated, function(req, res, next){
+        console.log(req.files.image.name);
+        // const file = req.file;
+        upload(req, res,function(err) {
+            if(err) {
+                return res.end("Error uploading file.");
+            }
+            console.log(req.files.image);
+            res.send(req.files.image.data);
+            // res.end("File is uploaded");
+        });
+    });
 
     // ========== 401 - NEPERMIS ==========
     app.get('/401', function(req, res){
@@ -103,4 +126,6 @@ module.exports = (app, passport) => {
         });
         // next();
     });
+
+    return app;
 };

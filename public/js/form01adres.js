@@ -22,16 +22,28 @@ const editorX = new EditorJS({
     tools: { 
         header: {
             class: Header,
-            inlineToolbar: true
+            inlineToolbar: ['link']
         }, 
-        list: List,
+        list: {
+            class: List,
+            inlineToolbar: true
+        },
         table: {
             class: Table,
         },
         attaches: {
             class: AttachesTool,
             config: {
-                endpoint: 'http://localhost:8080/uploadFile'
+                endpoint: 'http://localhost:8080/upload'
+            }
+        },
+        image: {
+            class: ImageTool,
+            config: {
+                endpoints: {
+                    byFile: 'http://localhost:8080/upload', // Your backend file uploader endpoint
+                    byUrl: 'http://localhost:8080/fetch', // Your endpoint that provides uploading by Url
+                }
             }
         }
     },
@@ -39,6 +51,16 @@ const editorX = new EditorJS({
      * Previously saved data that should be rendered
      */
     // data: {}
+});
+
+var saveContinutRes = document.querySelector('#continutRes');
+saveContinutRes.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    editorX.save().then((content) => {
+        console.log(content);
+    }).catch((e) => {
+        console.log(e);
+    });
 });
 
 /**
