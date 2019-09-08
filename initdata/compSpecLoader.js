@@ -8,6 +8,80 @@ const mongoose = require('mongoose');
 mongoose.set('useCreateIndex', true); // Deprecation warning
 const connectionString = `mongodb://localhost:27017/redcolector`;
 
+// TODO: DEZVOLTĂ MAI DEPARTE ÎNTR-UN AUTOMATOR!!!
+/* ============ OBȚINEREA CĂILOR TUTUROR FIȘIERELOR =============== */
+// De la https://gist.github.com/kethinov/6658166
+var dir = 'csvuri';
+var csvUri = async function walk(dir, fileList = []) {
+
+    const files = await fs.readdir(dir);
+
+    for (const file of files) {
+        const stat = await fs.stat(path.join(dir, file));
+        if (stat.isDirectory()) fileList = await walk(path.join(dir, file), fileList);
+        else fileList.push(path.join(dir, file));
+    }
+
+    return fileList;
+}
+
+walk('/csuri/').then((res) => {
+    console.log(res);
+});
+
+/* ======== CONCATENAREA TUTUROR CSV-urilor în unul singur ================ */
+/**
+ * De la https://stackoverflow.com/questions/50905202/how-to-merge-two-csv-files-rows-in-node-js
+ * @param {Array} csvFilePaths 
+ * @param {String} outputFilePath 
+ */
+function concatCSVAndOutput(csvFilePaths, outputFilePath) {
+    // construiești un array de promisiuni
+    const promises = csvFilePaths.map((path) => {
+        return new Promise((resolve) => {
+            const dataArray = [];
+            return csv
+                .fromPath(path, {
+                    headers: true
+                })
+                .on('data', function (data) {
+                    dataArray.push(data);
+                })
+                .on('end', function () {
+                    resolve(dataArray);
+                });
+        });
+    });
+
+    return Promise.all(promises)
+        .then((results) => {
+
+            const csvStream = csv.format({
+                headers: true
+            });
+            const writableStream = fs.createWriteStream(outputFilePath);
+
+            writableStream.on('finish', function () {
+                console.log('DONE!');
+            });
+
+            csvStream.pipe(writableStream);
+            results.forEach((result) => {
+                result.forEach((data) => {
+                    csvStream.write(data);
+                });
+            });
+            csvStream.end();
+
+        });
+}
+
+concatCSVAndOutput(read(csvUri), 'toateCSurile.csv')
+.then(() => {
+    // Aici ar trebui integrată prelucrarea cu Papaparse-ul
+});
+
+/* ======= PRELUCRAREA CSV-ului ============  */
 Papa.parse(readF, {
     header: true,
     encoding: 'utf8',

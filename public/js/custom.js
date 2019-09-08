@@ -95,9 +95,10 @@ $(document).ready(function () {
   $('#next-1').click(function (e) {
     e.preventDefault();
 
-    // o mică validate pe titlul resursei
+    /*===== PAS 1 Formular ====== */
+    // Validare pe titlul resursei
     if ($('#titlu-res').val() == '') {
-      // $('#titluErr').text('Trebuie neapărat să denumești resursa!!!');
+      // $('#titluErr').text('Trebuie neapărat să denumești resursa!!!'); // Folosește dacă revii la texte afișate
       $('#titluErr').toastmessage('showToast', {
         text: "Trebuie neapărat să denumești resursa!!!",
         position: 'top-center', 
@@ -115,7 +116,7 @@ $(document).ready(function () {
         stayTime: 10000,
       });
     } else {
-      pas1();
+      pas1(); // funcție care culege datele introduse la pasul 1
       console.log(RED);
       // arată divul cu id-ul `doi` și ascunde div-ul primului pas din formular `unu`
       $('#doi').show();
@@ -126,9 +127,10 @@ $(document).ready(function () {
     }
   });
 
+  /*===== PAS 2 Formular ====== */
   // Mergi înapoi la pasul unu al formularului
   $('#next-2').click(function () {
-    pas2();
+    pas2(); // funcție care culege datele introduse la pasul 2
     console.log(RED);
     // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `unu`
     $('#doi').hide();
@@ -138,9 +140,10 @@ $(document).ready(function () {
     $('#progressText').text('Pasul 1');
   });
 
-  // Avansează la pasul trei al formularului
+  // Avansează la pasul trei al formularului -> Validarea selectului cu arii curiculare l-am trecut direct în form01adres.js
   $('#next-3').click(function () {
-    pas2();
+    // testează dacă a fost selectată vreo opțiune din selectul ariilor curriculare
+    pas2(); // colectează datele de la pasul 2 al formularului.
     console.log(RED);
     // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `trei`
     $('#doi').hide();
@@ -150,6 +153,7 @@ $(document).ready(function () {
     $('#progressText').text('Pasul 3');
   });
 
+  /*===== PAS 3 Formular ====== */
     //Mergi înapoi la pasul doi al formularului
     $('#next-4').click(function () {
       // ascunde divul cu id-ul `trei și arată-l pe cel cu id-ul `doi`

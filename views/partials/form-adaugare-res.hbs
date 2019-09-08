@@ -47,7 +47,7 @@
                 {{!-- INPUT - TITLU --}}
                 <input id="titlu-res" class="form-control" type="text" name="titlu" aria-label="Titlul resursei" aria-describedby="titlu-label" placeholder="ex: Bătălia de la Călugăreni" required >
                 {{!-- Validare -Helper afisare text direct / Am ales să folosesc toastmessage [plugin]--}}
-                {{!-- <strong id="titluErr" class="form-text text-danger"></strong> --}}
+                <strong id="titluErr" class="form-text text-danger"></strong>
 
                 {{!-- Specifică limba titlului --}}
                 <div class="input-group-prepend">
@@ -156,6 +156,7 @@
               <legend>Arie curriculară</legend>
               {{!-- ARIE - Selector În caz de selecție multiplă, avem un caz de transdisciplinaritate--}}
               <div class="form-group">
+                <p>Selectarea corectă a arie este primul criteriu de încadrare a resursei. Se poate opta pentru mai multe arii curriculare atunci când resursa are un caracter transversal.</p>
                 <select id="arii-curr" class="form-control custom-select" multiple>
                   <optgroup label="Limbă și comunicare">
                     <option value="LbCom">Limbă și comunicare [general]</option>
@@ -179,6 +180,8 @@
                   <option value="CurrDecSco">Curriculum la decizia școlii</option>
                 </select>
               </div>
+              {{!-- Validare arie curriculară --}}
+              <strong id="currErr" class="form-text text-danger"></strong>
             </fieldset>
             {{!-- Selectări arie - END --}}
 
@@ -257,19 +260,25 @@
             <fieldset>
               <legend>Alege disciplinele</legend>
               <h4>Selectarea disciplinei sau a mai multora încarcă competențele specifice</h4>
-              <p>De îndată ce se va face selecția, nu se mai poate reveni decât prin reîncărcarea formularului.</p>
+              <p>Pentru a avea acces la comptențele specifice și implicit la activitățile proprii, cât și pentru a propune noi activități inexistente, se va alege unul din nivelurile de școlarizare.</p>
+              <p>Odată selectat nivelul, se vor încărca disciplinele aferente acelui nivel, dintre care se vor alege cele pentru care resursa propusă răspunde</p>
+              
+              {{!-- Încărcarea DISCIPLINELOR --}}
               <div id="discipline">
-                {{!-- disciplinele sunt adaugate programatic in functie de selectia clasei --}}
+                {{!-- disciplinele sunt adaugate programatic in functie de selectia nivelului de școlarizare --}}
               </div>
+              {{!-- Încărcarea DISCIPLINELOR END --}}
             </fieldset>
             {{!-- Alegerea dinamică a disciplinelor în funcție de selectarea nivelului școlar END--}}
 
-            {{!-- Încărcarea tabelului cu, competențele specifice alese în funcție de opțiunea disciplinelor --}}
-            <button id="paginatorSec04" class="btn btn-warning" type="button" data-toggle="collapse" data-target="#csuri" aria-expanded="false" aria-controls="csuri">Alege competențele specifice</button>
+            {{!-- Butonul de afișare a competențelor specifice va fi ascuns până când nu este selectată o disciplină. Previne erorile de apăsare fără selecție disc. --}}
+            <button id="actTable" class="d-none btn btn-warning" type="button" data-toggle="collapse" data-target="#csuri" aria-expanded="false" aria-controls="csuri">Alege competențele specifice</button>
+            
+            {{!-- TABEL competențele specifice alese în funcție de opțiunea disciplinelor --}}
             <div class="collapse" id="csuri">
               <table id="competenteS" class="table table-striped table-bordered" style="width:100%"></table>
             </div>
-            {{!-- Încărcarea tabelului cu, competențele specifice alese în funcție de opțiunea disciplinelor END--}}
+            {{!-- TABEL competențele specifice alese în funcție de opțiunea disciplinelor END--}}
           </div>
           {{!-- Încadrarea resursei conform Planului Național [form-group] END --}}
 

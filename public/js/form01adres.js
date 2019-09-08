@@ -255,6 +255,7 @@ niveluri.forEach(function (checkbox) {
     checkbox.addEventListener('click', (event) => {
         // FIXME: La un moment dat, adu-mi dinamic datele, nu din `data=*`. Gândește-te la numărul de atingeri ale bazei. Merită?!
         var data = JSON.parse(JSON.stringify(event.target.dataset)); // constituie un obiect cu toate datele din `data=*` a checkbox-ului
+
         // verifică dacă nu cumva bifa nu mai este checked. În cazul acesta șterge toate disciplinele asociate
         if(event.target.checked === false) {
             // Pentru fiecare valoare din data, șterge elementul din discipline
@@ -268,7 +269,7 @@ niveluri.forEach(function (checkbox) {
                 // crearea checkbox - urilor
                 let inputCheckBx      = new createElement('input', '', ['form-check-input'],      {type: "checkbox", autocomplete: "off", value: key}).creeazaElem();
                 let labelBtn          = new createElement('label', '', ['btn', 'btn-success'],    {}).creeazaElem(val);
-                let divBtnGroupToggle = new createElement('div',   '', ['btn-group-toggle', key], {"data-toggle": "buttons"}).creeazaElem();          
+                let divBtnGroupToggle = new createElement('div',   '', ['btn-group-toggle', key], {"data-toggle": "buttons", onclick: "actSwitcher()"}).creeazaElem();          
                 labelBtn.appendChild(inputCheckBx);
                 divBtnGroupToggle.appendChild(labelBtn);
                 discipline.appendChild(divBtnGroupToggle);
@@ -278,8 +279,21 @@ niveluri.forEach(function (checkbox) {
 });
 
 /* === Prezentarea competențelor specifice === */
-// Locul de inserție a tabeleului
-var compSpecPaginator = document.querySelector('#paginatorSec04');
+// Locul de inserție al tabelului
+var compSpecPaginator = document.querySelector('#actTable');
+// Pentru a preveni orice erori izvorâte din apăsarea prematură a butonului „Alege comptetențe specifice”, am ales să-l ascund până când nu este selectată o disciplină
+/**
+ * Rolul funcției este de a face ca butonul de selecție să apară doar dacă a fost apăsată vreo disciplină
+ */
+function actSwitcher () {
+    if (compSpecPaginator.classList.contains('d-none')) {
+        compSpecPaginator.classList.remove('d-none');
+    } else {
+        compSpecPaginator.classList.add('d-block');
+    }
+}
+
+
 var activitatiSelectate = []; // array-ul care va colecta activitățile selectate.
 /**
  * Funcție helper pentru prezentarea informațiilor privind activitățile în row separat
@@ -439,15 +453,11 @@ function manageInputClick () {
     // ceea ce se dorește este ca atunci când există cel puțin un element bifat, să fie bifat și rândul competenței specifice
     if (activitatiSelectate.size) {
         document.getElementById('competenteS').querySelector(`input[value="${rowData.cod}"]`).checked = true;
-        console.log(activitatiSelectate);
+        // console.log(activitatiSelectate);
     } else {
         document.getElementById('competenteS').querySelector(`input[value="${rowData.cod}"]`).checked = false;
     }
-    // TODO: cazul în care este bifată competența specifică dar niciuna dintre activități. În cazul acesta va fi adaugata doar referința către competență considerandu-se ca include toate activitățile.
-
-    // TODO: Fă prepopulare la redeschidere? AIASTA-I cam MAAAAAAD! Dar ține-o acolo pe vine.
-
-    console.log(activitatiSelectate.size);
+    // console.log(activitatiSelectate.size);
 }
 
 function addMeDeleteMe () {
@@ -565,7 +575,7 @@ var RED = {
     description: '',
     licenta: '',
     // pas 2
-    arieCurriculara: '',
+    arieCurriculara: [],
     level: [],
     discipline: [],
     etichete: []
@@ -598,7 +608,7 @@ function pas1 () {
             // Obține id-ul
             var nameInput = inputs[index].name;
             // Pentru fiecare input colectat, trebuie adusă și limba corespunzătoare din select.
-            selects.forEach( selectElem => {
+            selects.forEach((selectElem) => {
                 // verifică dacă id-ul elementul select este egal cu id-ul elementului input plus `-select`
                 if (selectElem.id === `${nameInput}-select`) {
                     // constituie înregistrarea în obi
@@ -626,32 +636,55 @@ function pas1 () {
  */
 function pas2 () {
     // introducerea arie curiculare selectare din options
-    var arie = document.querySelector('#arii-curr');
-    var optArie = arie.options[arie.selectedIndex].value;
-    RED.arieCurriculara = optArie;
+    var arie = document.getElementById('arii-curr');
+    // RED.arieCurriculara = arie.options[arie.selectedIndex].value; // aduce doar ultima care a fost selectată
+
+    // introdu un nivel de verificare compatibilitate. Dacă browserul nu are suport pentru .selectedOptions, optează pentru un nivel suplimentar de asigurare a compatibilității
+    var optSelectate = arie.selectedOptions || [].filter.call(arie.options, option => option.selected);
+    var valAriiSelectate = [].map.call(optSelectate, option => option.value);
+    // RED.arieCurriculara = [].map.call(optSelectate, option => option.value);
+
+    // Verifică dacă valorile din array-ul `RED.arieCurriculara`. Dacă valoarea există deja, nu o mai adăuga de fiecare dată când `pas2()` este executat.
+    valAriiSelectate.forEach((valoare) => {
+        // Verifica cu indexOf existența valorii. Dacă nu e, adaug-o!
+        if (RED.arieCurriculara.indexOf(valoare) === -1) {
+            RED.arieCurriculara.push(valoare);
+        }
+    });
+
+    // RED.arieCurriculara = Array.prototype.map.call(arie.selectedOptions, function (elem) {
+    //     return elem.value;
+    // });
+
+    if (RED.arieCurriculara.length === 0) {
+        $('#currErr').toastmessage('showToast', {
+            text: "Fă alegerea corectă în ariile curriculare. Este un element absolut necesar!!!",
+            position: 'top-center', 
+            type: 'error', 
+            sticky: true,
+            stayTime: 10000,
+        });
+    }
+
     // Obținerea valorilor pentru nivel
     var niveluriScolare = document.querySelector('#nivel');
     var noduriInputNiveluri = niveluriScolare.querySelectorAll('input');
     noduriInputNiveluri.forEach(input => {
-        if (input.checked) {
+        if (input.checked && RED.level.indexOf(input.value) === -1) {
             RED.level.push(input.value);
         }
     });
+
     // disciplinele și etichetele sunt încărcate din funcția `disciplineBifate()`
     // selectează toate checkbox-urile checked.
-    document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
-        RED.discipline.push(value);
-        RED.etichete.push(value);
+    document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach((element) => {
+        if (RED.discipline.indexOf(element.value) === -1) {
+            RED.discipline.push(element.value);
+            RED.etichete.push(element.value);
+        }
     });
 }
 
-// var primaDisciplina = [];
-// var disCS = document.getElementById('discipline');
-// discipline.addEventListener('click', adaugPrimaDisciplina);
-// var disInputuri = disCS.getElementsByTagName('input');
-// console.log(disInputuri);
-// var disCSchildren = disCS.childNodes;
-// disInputuri.forEach((dis) => {
-//     console.log(dis);
-//     dis.addEventListener('click', adaugPrimaDisciplina);
-// });
+function pas3 () {
+    // colectează datele din formular de la pasul 3. În cazul în care te întorci la pasul 2, introdu activitățile selectate anterior într-un list.
+}
