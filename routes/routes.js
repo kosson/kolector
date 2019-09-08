@@ -83,25 +83,33 @@ module.exports = (express, app, passport) => {
     // ========== ÎNCĂRCAREA UNEI IMAGINI =========
     var multer  = require('multer');
     var storage = multer.diskStorage({
-        destination: function (req, file, callback) {
-            callback(null, '../repo');
+        destination: function (req, file, cb) {
+            callback(null, './public/img');
         },
-        filename: function (req, file, callback) {
-            console.log(file.fieldname);
-            callback(null, file.fieldname + '-' + Date.now());
+        filename: function (req, file, cb) {
+            console.log(file);
+            var fileObj = {
+                "image/png": ".png",
+                "image/jpeg": ".jpeg",
+                "image/jpg": ".jpg"
+            };
+            if (fileObj[file.mimetype] == undefined) {
+                cb(new Error("file format not valid"));
+            } else {
+                cb(null, file.fieldname + '-' + Date.now() + fileObj[file.mimetype]);
+                // cb(null, file.originalname) //File name after saving
+            }
         }
     });
-    var upload = multer({ storage : storage}).single('userPhoto');
-    
+    var upload = multer({ storage : storage}).single('photo');
+
     app.post('/upload', User.ensureAuthenticated, function(req, res, next){
-        console.log(req.files.image.name);
-        // const file = req.file;
+        console.log(req.files);
         upload(req, res,function(err) {
             if(err) {
                 return res.end("Error uploading file.");
             }
-            console.log(req.files.image);
-            res.send(req.files.image.data);
+            res.send(req.files);
             // res.end("File is uploaded");
         });
     });
