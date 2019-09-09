@@ -34,14 +34,14 @@ const editorX = new EditorJS({
         attaches: {
             class: AttachesTool,
             config: {
-                endpoint: 'http://localhost:8080/upload'
+                endpoint: 'http://localhost:8080/repo'
             }
         },
         image: {
             class: ImageTool,
             config: {
                 endpoints: {
-                    byFile: 'http://localhost:8080/upload', // Your backend file uploader endpoint
+                    byFile: 'http://localhost:8080/repo', // Your backend file uploader endpoint
                     byUrl: 'http://localhost:8080/fetch', // Your endpoint that provides uploading by Url
                 }
             }
@@ -52,6 +52,21 @@ const editorX = new EditorJS({
      */
     // data: {}
 });
+
+// colectorul datelor din form
+var RED = {
+    langRED: '',
+    title: '',
+    titleI18n: [],
+    idContributor: '',
+    description: '',
+    licenta: '',
+    // pas 2
+    arieCurriculara: [],
+    level: [],
+    discipline: [],
+    etichete: []
+};
 
 var saveContinutRes = document.querySelector('#continutRes');
 saveContinutRes.addEventListener('click', function (evt) {
@@ -587,23 +602,9 @@ compSpecPaginator.addEventListener('click', (ev) => {
 });
 
 /* ========== COLECTAREA DATELOR DIN FORM ============= */
-// let form = document.getElementById('form01adres');
-// var dateRED = new FormData(form);
-var RED = {
-    langRED: '',
-    title: '',
-    titleI18n: [],
-    idContributor: '',
-    description: '',
-    licenta: '',
-    // pas 2
-    arieCurriculara: [],
-    level: [],
-    discipline: [],
-    etichete: []
-};
 
 /* ====== Pasul 1 ====== */
+
 /**
  * Funcția are rolul de a popula obiectul `RED` cu datele din formular de la `Pas 1`.
  */

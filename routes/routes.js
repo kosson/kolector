@@ -1,3 +1,10 @@
+require('dotenv').config();
+const fs         = require(`fs`);
+const fsPromises = require(`fs`).promises;
+const path       = require(`path`);
+var BagIt        = require('bagit-fs');
+const uuidv1     = require('uuid/v1');
+
 module.exports = (express, app, passport) => {
     /* GESTIONAREA RUTELOR */
     // IMPORTUL CONTROLLERELOR DE RUTE
@@ -79,40 +86,62 @@ module.exports = (express, app, passport) => {
     // ========== RESURSE ================
     const resurse = require('./resurse')(express.Router());
     app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
-    
+
+
     // ========== ÎNCĂRCAREA UNEI IMAGINI =========
+    // app.use(express.static(path.join(__dirname, 'repo')));  // static pe repo
     var multer  = require('multer');
     var storage = multer.diskStorage({
+        // unde stochezi fișierul
+        
         destination: function (req, file, cb) {
-            callback(null, './public/img');
-        },
-        filename: function (req, file, cb) {
-            console.log(file);
-            var fileObj = {
-                "image/png": ".png",
-                "image/jpeg": ".jpeg",
-                "image/jpg": ".jpg"
-            };
-            if (fileObj[file.mimetype] == undefined) {
-                cb(new Error("file format not valid"));
-            } else {
-                cb(null, file.fieldname + '-' + Date.now() + fileObj[file.mimetype]);
-                // cb(null, file.originalname) //File name after saving
+
+            // TODO: Verifică dacă directorul userului există
+            let firstData = process.env.REPO_REL_PATH + req.user.email + '/' + uuidv1() + '/data';
+
+            // directorul utilizatorului nu există. Va trebui creat
+            if (!fs.existsSync(firstData)) {
+                fsPromises.mkdir(firstData, { recursive: true }).then(() => {
+                    cb(null, firstData);
+                }).catch((error) => {
+                    if (error) throw error;
+                });
             }
+            // cb(null, process.env.REPO_REL_PATH);
+        },
+        // cum denumești fișierul
+        filename: function (req, file, cb) {
+            cb(null, file.originalname + '-' + Date.now());
         }
     });
-    var upload = multer({ storage : storage}).single('photo');
+    // Funcție helper pentru filtrarea extensiilor acceptare
+    let fileFilter = function fileFltr (req, file, cb) {
+        var fileObj = {
+            "image/png": ".png",
+            "image/jpeg": ".jpeg",
+            "image/jpg": ".jpg"
+        };
+        if (fileObj[file.mimetype] == undefined) {
+            cb(new Error("file format not valid"), false); // nu stoca fișierul și trimite eroarea
+        } else {
+            cb(null, true); // acceptă fișierul pentru a fi stocat
+        }
+    };
+    // crearea mecanismului de stocare pentru ca multer să știe unde să trimită
+    var upload = multer({
+        storage: storage,
+        limits: {
+            // fileSize: 1024 * 1024 * 5 // limitarea dimensiunii fișierelor la 5MB
+            fileSize: process.env.FILE_LIMIT_UPL_RES
+        },
+        // fileFilter: fileFilter
+    }).any(); // multer() inițializează pachetul
 
-    app.post('/upload', User.ensureAuthenticated, function(req, res, next){
-        console.log(req.files);
-        upload(req, res,function(err) {
-            if(err) {
-                return res.end("Error uploading file.");
-            }
-            res.send(req.files);
-            // res.end("File is uploaded");
-        });
+    app.post('/repo', User.ensureAuthenticated, upload, function(req, res){
+        console.log(req.user, req.files);
+        res.send(req.files.path);
     });
+
 
     // ========== 401 - NEPERMIS ==========
     app.get('/401', function(req, res){

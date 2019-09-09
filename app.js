@@ -6,7 +6,7 @@ const cookies        = require('cookie-parser');
 const express        = require('express');
 const cookieParser   = require('cookie-parser');
 const session        = require('express-session');
-const fileUpload     = require('express-fileupload');
+// const fileUpload     = require('express-fileupload');
 const passport       = require('passport');
 const RedisStore     = require('connect-redis')(session);
 const app            = express();
@@ -54,7 +54,7 @@ function cbCsuri (data) {
 }
 
 // MIDDLEWARE-UL aplicației
-app.use(logger('dev')); // TODO: Dă-i drumu în producție și creează un mecanism de rotire a logurilor. (combined)
+// app.use(logger('dev')); // TODO: Dă-i drumu în producție și creează un mecanism de rotire a logurilor. (combined)
 app.use(cors());
 // SESIUNI
 app.use(cookies());
@@ -73,8 +73,9 @@ app.use(session({
     resave: false, 
     saveUninitialized: true
 }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(fileUpload());
+app.use(express.static(path.join(__dirname, 'public'))); // Static pe public
+app.use('/repo', express.static(path.join(__dirname, 'repo')));  // static pe repo
+// app.use(fileUpload());
 app.use(favicon(path.join(__dirname,  'public', 'favicon.ico')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

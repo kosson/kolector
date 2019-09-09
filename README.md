@@ -39,3 +39,17 @@ Pentru a face un test general, a fost creată o baterie de testare care va fi ru
 
 Strategia Passport pentru Google: http://www.passportjs.org/packages/passport-google-oauth20/
 Motorul de templating:https://www.npmjs.com/package/express-hbs
+
+## Fișierul `.env`
+
+Are următoarele câmpuri:
+
+```text
+MONGO_LOCAL_CONN=mongodb://localhost:27017/redcolector
+GOOGLE_CLIENT_ID=xsdkkdfkjkuf8s9df9sdfsf9sdfhsvp84.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=fdsao09sad99s0fuajfas
+REPO_REL_PATH=./repo/
+FILE_LIMIT_UPL_RES=5242880
+```
+
+unde `GOOGLE_CLIENT_ID` și `GOOGLE_CLIENT_SECRET` sunt proprii administratorului care face instalarea

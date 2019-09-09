@@ -27,7 +27,7 @@
 
     {{!-- Inițiere FORM --}}
     <form id="form01adres" class="" method="post" enctype="multipart/form-data">
-      {{!-- ÎNCEPUT ACCORDION --}}
+      {{!-- ÎNCEPUT FORM --}}
       <div id="accordionFrm" class="p-4 rounded">
 
         {{!-- SECȚIUNEA - #1. TITLU ȘI RESPONSABILITATE (vezi modelul de date resursa-red.js) --}}
@@ -306,64 +306,6 @@
           
           {{!-- Încărcarea fișierelor sau a fragmentului [form-group] --}}
           <div id="sec03" class="form-group card-body" aria-labelledby="heading03" data-parent="#accordionFrm">
-            {{!-- EDITOR pentru introducerea letrică --}}
-            <fieldset>
-              <legend>Editorul materialelor care constituie RED-ul</legend>
-              {{!-- Integrarea editorului de text --}}
-              <div id="codex-editor"></div>
-              <button id="continutRes">Salvează conținutul introdus</button>
-              <input type="file" name="userPhoto" />
-              <input type="submit" value="Upload Image" name="submit">
-            </fieldset>
-            {{!-- EDITOR pentru introducerea letrică END --}}
-
-            {{!-- Bibliografie --}}
-            <fieldset>
-              <legend>Introducerea bibliografiei</legend>
-              <p>Fiecare referință bibliografică va ocupa un singur rând.</p>
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Bibliografie (APA6)</span>
-                </div>
-                <textarea id="bibliografie" class="form-control" aria-label="Bibliografia" rows="3"></textarea>
-              </div>
-            </fieldset>
-            {{!-- Bibliografie END --}}
-            <fieldset>
-              <legend>Încarcă resurse</legend>
-              {{!-- <!--  SINGLE FILE -->
-              <input type="file" name="myFile" />
-              <input type="submit" value="Upload a file"/>
-
-              <!-- MULTIPLE FILES -->
-              Select images: <input type="file" name="myFiles" multiple>
-              <input type="submit" value="Upload your files"/>
-
-              <!--   PHOTO-->
-              <input type="file" name="myImage" accept="image/*" />
-              <input type="submit" value="Upload Photo"/> --}}
-            </fieldset>
-          </div>
-          {{!-- Încărcarea fișierelor sau a fragmentului [form-group] END--}}
-
-          {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group]--}}
-          <div class="form-group align-self-center m-4">
-            <a href="#" id="next-4" class="btn btn-success card-link">Înapoi la pasul 2</a>
-            <a href="#" id="next-5" class="btn btn-success card-link">Mergi la pasul 4</a>
-          </div>
-          {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group] END --}}
-        </div>
-        {{!-- SECȚIUNEA - #3 Încarcă materialele END --}}
-
-        {{!-- SECȚIUNEA - #4 Verifică fișa și trimite resursa --}}
-        <div id="patru" class="card">
-          {{!-- Acționarea grupului de controale pentru #2 --}}
-          <div class="card-header" id="heading04">
-            <h5 class="text-light rounded text-center bg-danger p-2">Verificarea fișei</h5>
-          </div>
-
-          {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
-          <div id="sec04" class="form-group card-body" aria-labelledby="heading04" data-parent="#accordionFrm">
             {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI --}}
             <fieldset>
               <legend>Elemente obligatorii pentru validarea resursei</legend>
@@ -456,35 +398,77 @@
 
             </fieldset>
             {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI END --}}
-          </div>
-          {{!-- Verificarea fișei și constituirea înregistrării [form-group] END--}}
 
+            {{!-- Bibliografie --}}
+            <fieldset>
+              <legend>Introducerea bibliografiei</legend>
+              <p>Fiecare referință bibliografică va ocupa un singur rând.</p>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Bibliografie (APA6)</span>
+                </div>
+                <textarea id="bibliografie" class="form-control" aria-label="Bibliografia" rows="3"></textarea>
+              </div>
+            </fieldset>
+            {{!-- Bibliografie END --}}
+          </div>
+          {{!-- Încărcarea fișierelor sau a fragmentului [form-group] END--}}
+          
           {{!-- ETICHETE --}}
           <div id="etichete"></div>
           {{!-- ETICHETE END --}}
 
-          {{!-- Înapoi la pasul 4 [form-group]--}}
+          {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group]--}}
           <div class="form-group align-self-center m-4">
-            <a href="#" id="next-6" class="btn btn-success card-link">Înapoi la pasul 3</a>
+            <a href="#" id="next-4" class="btn btn-success card-link">Înapoi la pasul 2</a>
+            <a href="#" id="next-5" class="btn btn-success card-link">Mergi la pasul 4</a>
           </div>
-          {{!-- Înapoi la pasul 4 [form-group] END --}}
-
-          <div id="submitWrap" class="form-group card-body" data-parent="#accordionFrm">
-            <button id="submit" type="submit" class="btn btn-danger">Adaugă resursa</button>
-          </div>
+          {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group] END --}}
         </div>
-        {{!-- SECȚIUNEA - #4 Verifică fișa și trimite resursa END --}}
-
-
-        {{!-- <div class="form-group">
-          <label for="adaugaPachet">Adaugă arhivă zip</label>
-          <input type="file" name="arhiva" class="form-control-file" id="adaugaPachet">
-        </div>
-        <button type="submit" id="addresbtn" class="btn btn-primary">Trimite</button> --}}
-        </div>
-      {{!-- FINAL ACCORDION --}}
+        {{!-- SECȚIUNEA - #3 Încarcă materialele END --}}
       </div>
+      {{!-- FORM END --}}
     </form>
+
+    {{!-- SECȚIUNEA - #4 Încarcă adiționale Această secțiune este în afara formului --}}
+    <div id="patru" class="card">
+      {{!-- Acționarea grupului de controale pentru #2 --}}
+      <div class="card-header" id="heading04">
+        <h5 class="text-light rounded text-center bg-danger p-2">Încarcă fișiere și introdu conținutul, dacă acesta este de întindere medie</h5>
+      </div>
+
+      {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
+      <div id="sec04" class="form-group card-body" aria-labelledby="heading04" data-parent="#accordionFrm">
+        {{!-- EDITOR pentru introducerea letrică --}}
+        <fieldset>
+          <legend>Editorul materialelor care constituie RED-ul</legend>
+          {{!-- Integrarea editorului de text --}}
+          <div id="codex-editor"></div>
+        </fieldset>
+        {{!-- EDITOR pentru introducerea letrică END --}}
+      </div>
+      {{!-- Verificarea fișei și constituirea înregistrării [form-group] END--}}
+
+      {{!-- Înapoi la pasul 4 [form-group]--}}
+      <div class="form-group align-self-center m-4">
+        <a href="#" id="next-6" class="btn btn-success card-link">Înapoi la pasul 3</a>
+      </div>
+      {{!-- Înapoi la pasul 4 [form-group] END --}}
+
+      <div id="submitWrap" class="form-group card-body" data-parent="#accordionFrm">
+        <button id="submit" type="submit" class="btn btn-danger">Adaugă resursa</button>
+      </div>
+    </div>
+    {{!-- SECȚIUNEA - #4 Verifică fișa și trimite resursa END --}}
+
+
+    {{!-- <div class="form-group">
+      <label for="adaugaPachet">Adaugă arhivă zip</label>
+      <input type="file" name="arhiva" class="form-control-file" id="adaugaPachet">
+    </div>
+    <button type="submit" id="addresbtn" class="btn btn-primary">Trimite</button> --}}
+    </div>
+      
   </div>
 </div>
 
@@ -493,40 +477,6 @@
 {{/each}}
 
 <script>
-  // EVENIMENT la încărcarcarea completă a DOM-ului
-  {{!-- document.addEventListener('DOMContentLoaded', init);
-  function init () {
-      document.getElementById('addresbtn').addEventListener('click', upload);
-  }
-  function upload (evt) {
-      evt.preventDefault();
-
-      // Constituirea headerelor
-      let headers = new Headers();
-      headers.append('Accept', 'application/json'); // Accept un răspuns de tip JSON
-      
-      // Culegerea datelor din form
-      let form01adres = new FormData();   // Obiectul de colectare a tuturor datelor din formular
-      form01adres.append('nume-prenume', document.querySelector('#numeprenume'));
-
-
-      let arhiva = document.querySelector('#adaugaPachet').files[0];
-      form01adres.append('arhiva', arhiva, 'arhiva.zip');
-
-      var url = document.location;
-      let req = new Request(url, {
-          method: 'POST',
-          headers: headers,
-          mode: 'cors',
-          body: form01adres
-      });
-
-      fetch(req).then((response) => {
-          document.querySelector('#confirmare').textContent = "Mesaj de la server: ";
-      }).catch((error) => {
-          console.log('ERROR', err.message);
-      });
-  } --}}
   /**
   * Funcția are rolul de a adăuga un titlu într-o listă de control
   * De fapt, creează un nou element input și ul nou selector de limbă pentru elementul input:text nou creat
