@@ -93,11 +93,10 @@ module.exports = (express, app, passport) => {
     var multer  = require('multer');
     var storage = multer.diskStorage({
         // unde stochezi fișierul
-        
         destination: function (req, file, cb) {
-
-            // TODO: Verifică dacă directorul userului există
+            // Construiește calea pentru utilizatorul care încă nu are director
             let firstData = process.env.REPO_REL_PATH + req.user.email + '/' + uuidv1() + '/data';
+            let existingData = process.env.REPO_REL_PATH + req.user.email;
 
             // directorul utilizatorului nu există. Va trebui creat
             if (!fs.existsSync(firstData)) {
@@ -106,6 +105,10 @@ module.exports = (express, app, passport) => {
                 }).catch((error) => {
                     if (error) throw error;
                 });
+            } else if(fs.existsSync(existingData)) {
+                // În cazul în care directorul utilizatorului există, generează un nou uuid sau folosește-l pe cel primit de la user 
+                // pentru că inseamnă că face parte din aceleși set al uuid-ului stabilit anterior.
+                console.log('directorul există deja');
             }
             // cb(null, process.env.REPO_REL_PATH);
         },
@@ -114,7 +117,7 @@ module.exports = (express, app, passport) => {
             cb(null, file.originalname + '-' + Date.now());
         }
     });
-    // Funcție helper pentru filtrarea extensiilor acceptare
+    // Funcție helper pentru filtrarea extensiilor acceptate
     let fileFilter = function fileFltr (req, file, cb) {
         var fileObj = {
             "image/png": ".png",
@@ -134,14 +137,22 @@ module.exports = (express, app, passport) => {
             // fileSize: 1024 * 1024 * 5 // limitarea dimensiunii fișierelor la 5MB
             fileSize: process.env.FILE_LIMIT_UPL_RES
         },
-        // fileFilter: fileFilter
+        fileFilter: fileFilter
     }).any(); // multer() inițializează pachetul
 
     app.post('/repo', User.ensureAuthenticated, upload, function(req, res){
-        console.log(req.user, req.files);
-        res.send(req.files.path);
+        // console.log(req.files);
+        var filePlace = `${process.env.BASE_URL}/${req.files[0].path}`;
+        // console.log(req.files.path);
+        var resObj = {
+            "success": 1,
+            "file": {
+                "url": `${filePlace}`
+            }
+        };
+        console.log(JSON.stringify(resObj));
+        res.send(JSON.stringify(resObj));
     });
-
 
     // ========== 401 - NEPERMIS ==========
     app.get('/401', function(req, res){
