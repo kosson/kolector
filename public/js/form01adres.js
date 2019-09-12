@@ -40,9 +40,40 @@ const editorX = new EditorJS({
         image: {
             class: ImageTool,
             config: {
-                endpoints: {
-                    byFile: 'http://localhost:8080/repo', // Your backend file uploader endpoint
-                    byUrl: 'http://localhost:8080/fetch', // Your endpoint that provides uploading by Url
+                // endpoints: {
+                //     byFile: 'http://localhost:8080/repo', // Your backend file uploader endpoint
+                //     byUrl: 'http://localhost:8080/fetch', // Your endpoint that provides uploading by Url
+                // }
+                uploader: {
+                    uploadByFile(file){
+                        var promise = new Promise(function executor (resolve, reject) {
+                            var objRes = {
+                                user: RED.email,
+                                uuid: RED.uuid,
+                                resF: file
+                            };
+                            // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare
+                            if (RED.uuid !== undefined) {
+                                // este cazul în care deja directorul resursei a fost creat.
+
+                                // trimite obiectul către server
+                                pubComm.emit('resursa', objRes);
+                            }
+                            // în caz contrar, avem de-a face cu prima trimitere a unei resurse iar obiectul objRes va avea doar emailul și fișierul
+                            pubComm.emit('resursa', objRes);
+                            // apoi vom primi uuid-ul generat la momentul constituirii directorului resurse cu primul fișier în subdirectorul /data
+                            pubComm.on('resursa', (respObj) => {
+                                RED.uuid = respObj.uuid;
+                            });
+                        }).then((obi) => {
+                            return obi;
+                        }).catch((error) => {
+                            if (error) throw error;
+                        });
+                    },
+                    uploadByUrl(url){
+
+                    }
                 }
             }
         }
@@ -53,8 +84,11 @@ const editorX = new EditorJS({
     // data: {}
 });
 
+
+
 // colectorul datelor din form
 var RED = {
+    uuid: '',
     langRED: '',
     title: '',
     titleI18n: [],
@@ -68,11 +102,14 @@ var RED = {
     etichete: []
 };
 
+// fă o referință către utonul de trimitere a conținutului
 var saveContinutRes = document.querySelector('#continutRes');
+// la click, introdu conținutul în obiectul marea RED.
 saveContinutRes.addEventListener('click', function (evt) {
     evt.preventDefault();
     editorX.save().then((content) => {
-        console.log(content);
+        console.log(content); 
+        // TODO: Introdu conținutul în obiectul mare RED.
     }).catch((e) => {
         console.log(e);
     });

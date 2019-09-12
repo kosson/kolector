@@ -2,10 +2,11 @@ require('dotenv').config();
 const fs         = require(`fs`);
 const fsPromises = require(`fs`).promises;
 const path       = require(`path`);
-var BagIt        = require('bagit-fs');
+const BagIt      = require('bagit-fs');
 const uuidv1     = require('uuid/v1');
+var Readable     = require('stream').Readable;
 
-module.exports = (express, app, passport) => {
+module.exports = (express, app, passport, pubComm) => {
     /* GESTIONAREA RUTELOR */
     // IMPORTUL CONTROLLERELOR DE RUTE
     var index   = require('./index');
@@ -87,25 +88,59 @@ module.exports = (express, app, passport) => {
     const resurse = require('./resurse')(express.Router());
     app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
 
+    /* SOCKETURI!!! */
+    
+    /* =========== ÎNCĂRCAREA UNEI IMAGINI PRIN STABILIREA UNUI BAG ========= */
+    pubComm.on('resursa', function cbREs (resourceFile) {
+        // cand ai primit date pe `res`, generează mai întâi de toate uuid-ul. Este valabil pentru primul fișier care va iniția crearea bag-ului
+        var uuidV1  = uuidv1();
+        // creează calea pe care se va depozita.
+        var calea   = `${process.env.REPO_REL_PATH}/${resourceFile.email}/`;
 
-    // ========== ÎNCĂRCAREA UNEI IMAGINI =========
+        // cazul în care resursa deja există, setază valoarea locală uuid
+        if (resourceFile.uuid) {
+            calea += `${resourceFile.uuid}`;
+        } else {
+            // în acest caz, se va lua valoarea generată de uuidv1()
+            calea += `${uuidV1}`;
+        }
+        // FIXME: caută o cale să aduci numele complet al utilizatorului.
+        var bag     = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.email}`}); //creează bag-ul
+        // construiește obiectul de răspuns.
+        var responseObj = {
+            uuid: uuidV1
+        };
+        // FIXME: Termină implementarea!
+    });
+    /* =========== ÎNCĂRCAREA UNEI IMAGINI PRIN STABILIREA UNUI BAG ========= */
+
+
+    /* ========== ÎNCĂRCAREA UNEI IMAGINI cu `multer` ========= */
     // app.use(express.static(path.join(__dirname, 'repo')));  // static pe repo
     var multer  = require('multer');
     var storage = multer.diskStorage({
         // unde stochezi fișierul
         destination: function (req, file, cb) {
-            // Construiește calea pentru utilizatorul care încă nu are director
-            let firstData = process.env.REPO_REL_PATH + req.user.email + '/' + uuidv1() + '/data';
+            // generează un uuid care va fi numele noului subdirector corespondent unei resurse
+            let uuidV1 = uuidv1();
+            // Aceasta este cale pentru cazul în care nu există un director al resursei deja
+            let firstData = process.env.REPO_REL_PATH + req.user.email + '/' + uuidV1 + '/data';
+            // Aceasta este calea pentru cazul în care deja există creat directorul resursei pentru că a fost încărcat deja un fișier.
             let existingData = process.env.REPO_REL_PATH + req.user.email;
 
-            // directorul utilizatorului nu există. Va trebui creat
+            /* ======= Directorul utilizatorului nu există. Trebuie creat !!!! ========= */
             if (!fs.existsSync(firstData)) {
                 fsPromises.mkdir(firstData, { recursive: true }).then(() => {
-                    cb(null, firstData);
+                    pubComm.emit('uuid', uuidV1); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată
+                    cb(null, firstData); // FIXME: construiește alternativa cu bag-it
                 }).catch((error) => {
                     if (error) throw error;
                 });
             } else if(fs.existsSync(existingData)) {
+                // în cazul în care subdirectorul există, setează variabila `uuidV1` la valoarea primită din client 
+                // pubComm.on('uuid', (uuid) => {
+                //     uuidV1 = uuid;
+                // });
                 // În cazul în care directorul utilizatorului există, generează un nou uuid sau folosește-l pe cel primit de la user 
                 // pentru că inseamnă că face parte din aceleși set al uuid-ului stabilit anterior.
                 console.log('directorul există deja');
@@ -116,7 +151,9 @@ module.exports = (express, app, passport) => {
         filename: function (req, file, cb) {
             cb(null, file.originalname + '-' + Date.now());
         }
+        // TODO: construirea alternativei 
     });
+
     // Funcție helper pentru filtrarea extensiilor acceptate
     let fileFilter = function fileFltr (req, file, cb) {
         var fileObj = {
@@ -130,6 +167,7 @@ module.exports = (express, app, passport) => {
             cb(null, true); // acceptă fișierul pentru a fi stocat
         }
     };
+
     // crearea mecanismului de stocare pentru ca multer să știe unde să trimită
     var upload = multer({
         storage: storage,
@@ -151,8 +189,11 @@ module.exports = (express, app, passport) => {
             }
         };
         console.log(JSON.stringify(resObj));
+        // FIXME: În momentul în care utilizatorul decide să șteargă resursa din fișier, acest lucru ar trebui să se reflecte și pe harddisc.
+        // Creează logica de ștergere a resursei care nu mai există în Frontend. Altfel, te vei trezi cu hardul plin de fițiere orfane.
         res.send(JSON.stringify(resObj));
     });
+    // ========== ÎNCĂRCAREA UNEI IMAGINI cu `multer` - END =========
 
     // ========== 401 - NEPERMIS ==========
     app.get('/401', function(req, res){

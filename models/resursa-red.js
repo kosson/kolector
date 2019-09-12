@@ -103,6 +103,7 @@ var Resursa = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'coment'
     }],     // este o listă de identificatori pentru comentariile aduse unei anumite resurse.
+    continut:      {}, // Este conținutul pe care îl permiți să fie adăugat cu Editor.js
     bibliografie:  String, // este o listă de referințe bibliografice dacă acest lucru există. Formatul este APA, versiunea 6.
 
     // #7. METRICI

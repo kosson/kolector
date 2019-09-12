@@ -101,7 +101,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // GESTIONAREA RUTELOR
-const routes = require('./routes/routes')(express, app, passport);
+const routes = require('./routes/routes')(express, app, passport, pubComm);
 
 // colectarea erorilor de pe toate middleware-urile
 app.use(function (err, req, res, next) {
