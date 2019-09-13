@@ -46,43 +46,56 @@ const editorX = new EditorJS({
                 // }
                 uploader: {
                     uploadByFile(file){
-                        console.log(file);
-                        var promise = new Promise(function executor (resolve, reject) {
-                            var objRes = {
-                                user: RED.idContributor,
-                                name: RED.nameUser,
-                                uuid: RED.uuid,
-                                resF: file,
-                                numR: file.name,
-                                type: file.type
-                            };
-                            // console.log(objRes);
+                        // obiectul trimis către server
+                        let objRes = {
+                            user: RED.idContributor,
+                            name: RED.nameUser,
+                            uuid: RED.uuid,
+                            resF: file,
+                            numR: file.name,
+                            type: file.type
+                        };
+                        // obiectul necesar lui Editor.js
+                        let obj4EditorJS = {
+                            success: '',
+                            file: {
+                                url: ''
+                            }
+                        };
+                        /* ====== FUNCȚIA EXECUTOR ===== */
+                        function executor (resolve, reject) {
                             // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare
                             if (RED.uuid !== undefined) {
                                 // este cazul în care deja directorul resursei a fost creat.
-
+                                pubComm.emit('resursa', objRes);
                                 // trimite obiectul către server
-                                // pubComm.emit('resursa', objRes);
+                                pubComm.on('resursa', (respObj) => {
+                                    RED.uuid = respObj.uuid;
+                                    obj4EditorJS.success = respObj.success;
+                                    obj4EditorJS.file.url = respObj.file;
+                                    resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
+                                });
+                            } else {
+                                // în caz contrar, avem de-a face cu prima trimitere a unei resurse, iar obiectul objRes nu va avea uuid-ul
+                                pubComm.emit('resursa', objRes);
+                                // apoi vom primi uuid-ul generat la momentul constituirii directorului resurse cu primul fișier în subdirectorul /data
+                                pubComm.on('resursa', (respObj) => {
+                                    RED.uuid = respObj.uuid;
+                                    obj4EditorJS.success = respObj.success;
+                                    obj4EditorJS.file.url = respObj.file;
+                                    resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
+                                });
                             }
-                            // în caz contrar, avem de-a face cu prima trimitere a unei resurse, iar obiectul objRes va avea doar emailul și fișierul
-                            pubComm.emit('resursa', objRes);
-                            // apoi vom primi uuid-ul generat la momentul constituirii directorului resurse cu primul fișier în subdirectorul /data
-                            pubComm.on('resursa', (respObj) => {
-                                RED.uuid = respObj.uuid;
-                                let obj4EditorJS = {
-                                    success: respObj.success,
-                                    file: respObj.file
-                                };
-                                return obj4EditorJS;
-                                // FIXME: Editor.js nu primește obiectul. Vezi de ce!!!!
-                            });
-                        });
-                        promise.then((obi) => {
+                        }
+                        // construiește promisiunea
+                        var promise = new Promise(executor);
+                        // returnează rezultatul promisunii. Este ceea ce are nevoie Editor.js
+                        return promise.then((obi) => {
+                            // console.log(obi);
                             return obi;
                         }).catch((error) => {
                             if (error) throw error;
-                        });
-                        return promise;
+                        }); // returnează promisiunea de care are nevoie Editor.js
                     },
                     uploadByUrl(url){
 
@@ -115,7 +128,7 @@ var RED = {
     etichete: []
 };
 
-// fă o referință către utonul de trimitere a conținutului
+// fă o referință către butonul de trimitere a conținutului
 var saveContinutRes = document.querySelector('#continutRes');
 // la click, introdu conținutul în obiectul marea RED.
 saveContinutRes.addEventListener('click', function (evt) {
@@ -763,4 +776,14 @@ function pas2 () {
 
 function pas3 () {
     // colectează datele din formular de la pasul 3. În cazul în care te întorci la pasul 2, introdu activitățile selectate anterior într-un list.
+}
+
+var submitBtn = document.querySelector('#submit');
+submitBtn.addEventListener('click', (evt) => {
+    closeBag(evt);
+});
+function closeBag (evt) {
+    evt.preventDefault();
+    // Închide Bag-ul
+    pubComm.emit('closeBag', true);
 }

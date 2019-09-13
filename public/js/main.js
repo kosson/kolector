@@ -14,6 +14,6 @@ pubComm.on('uuid', (val) => {
     console.log(uuid);
 });
 
-pubComm.on('resursa', (resp) => {
-    console.log(resp);
-});
+// pubComm.on('resursa', (resp) => {
+//     console.log(resp);
+// });

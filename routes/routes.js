@@ -88,53 +88,73 @@ module.exports = (express, app, passport, pubComm) => {
     const resurse = require('./resurse')(express.Router());
     app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
 
+    /* =========== CONSTRUCȚIA BAG-ULUI ========= */
     /* SOCKETURI!!! */
+    let lastBag = '';
     pubComm.on('connect', (socket) => {
+        // Ascultă mesajele
         socket.on('mesaje', (mesaj) => {
             console.log('Standing by.... listening');
             console.log(mesaj);
         });
-        socket.on('resursa', function cbREs (resourceFile) {
-            console.log(resourceFile);
-            // pubComm.emit('resursa', 'Tu stai sola?');
-    
-            // cand ai primit date pe `res`, generează mai întâi de toate uuid-ul. Este valabil pentru primul fișier care va iniția crearea bag-ului
-            var uuidV1  = uuidv1();
-            // // creează calea pe care se va depozita.
-            var calea   = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
-    
-            // cazul în care resursa deja există, setază valoarea locală uuid
-            if (resourceFile.uuid) {
-                calea += `${resourceFile.uuid}`;
-            } else {
-                // în acest caz, se va lua valoarea generată de uuidv1()
-                calea += `${uuidV1}`;
-            }
 
-            var bag     = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează bag-ul
-            // // construiește obiectul de răspuns.
-            var responseObj = {
-                success: 1,
-                uuid: uuidV1,
-                file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${uuidV1}/data/${resourceFile.numR}`
-            };
+        // Momentul primirii datelor pe scoket conduce la crearea Bag-ului
+        socket.on('resursa', function cbRes (resourceFile) {  
+            console.log(resourceFile);  
+            // creează calea pe care se va depozita.
+            var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
 
+            // Transformarea Buffer-ului primit într-un stream `Readable`
             var strm = new Readable();
             strm.push(resourceFile.resF);  
             strm.push(null);
-
-            strm.pipe(bag.createWriteStream(`${resourceFile.numR}`));
-
-            bag.finalize(() => {
+    
+            // cazul în care BAG-ul EXISTĂ DEJA, setează valoarea locală uuid
+            if (resourceFile.uuid) {                
+                // setează calea către directorul deja existent al resursei
+                calea += `${resourceFile.uuid}`;
+                // constituie mediul Bag-ului
+                var bagExistent = BagIt(calea, 'sha256');
+                lastBag = bagExistent;
+                // introdu un nou fișier în Bag
+                strm.pipe(bagExistent.createWriteStream(`${resourceFile.numR}`));
+                // construiește obiectul de răspuns.
+                var responseObj4AddedFile = {
+                    success: 1,
+                    uuid: resourceFile.uuid,
+                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${resourceFile.uuid}/data/${resourceFile.numR}`
+                };
+                // trimite înapoi obiectul care reprezintă fișierul creat în Bag-ul resursei
+                socket.emit('resursa', responseObj4AddedFile);
+            } else {
+                // cand ai primit date pe `res`, generează mai întâi de toate uuid-ul. Este valabil pentru primul fișier care va iniția crearea bag-ului
+                var uuidV1  = uuidv1();
+                // în cazul în care NU EXISTĂ BAG-UL (resursă nouă), se va lua valoarea generată de uuidv1()
+                calea += `${uuidV1}`;
+                var bagNou = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează bag-ul
+                lastBag = bagNou;
+                // crearea efectivă a resursei în bag
+                strm.pipe(bagNou.createWriteStream(`${resourceFile.numR}`));                
+                // construiește obiectul de răspuns.
+                var responseObj = {
+                    success: 1,
+                    uuid: uuidV1,
+                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${uuidV1}/data/${resourceFile.numR}`
+                };
+                // trimite înapoi obiectul care reprezintă fișierul creat în Bag-ul resursei
                 socket.emit('resursa', responseObj);
-                console.log('Am creat bag!');
+            }
+        });
+
+        // În momentul în care se va apăsa butonul care creează resursa, se va închide și Bag-ul.
+        socket.on('closeBag', () => {
+            // finalizarea creării Bag-ului
+            lastBag.finalize(() => {
+                socket.emit('closeBag', 'Am finalizat închiderea bag-ului');
             });
         });
     });
-
-    /* =========== ÎNCĂRCAREA UNEI IMAGINI PRIN STABILIREA UNUI BAG ========= */
-
-    /* =========== ÎNCĂRCAREA UNEI IMAGINI PRIN STABILIREA UNUI BAG ========= */
+    /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */
 
 
     /* ========== ÎNCĂRCAREA UNEI IMAGINI cu `multer` ========= */
