@@ -13,3 +13,7 @@ pubComm.on('uuid', (val) => {
     uuid = val;
     console.log(uuid);
 });
+
+pubComm.on('resursa', (resp) => {
+    console.log(resp);
+});

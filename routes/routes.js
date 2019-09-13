@@ -89,29 +89,51 @@ module.exports = (express, app, passport, pubComm) => {
     app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
 
     /* SOCKETURI!!! */
+    pubComm.on('connect', (socket) => {
+        socket.on('mesaje', (mesaj) => {
+            console.log('Standing by.... listening');
+            console.log(mesaj);
+        });
+        socket.on('resursa', function cbREs (resourceFile) {
+            console.log(resourceFile);
+            // pubComm.emit('resursa', 'Tu stai sola?');
     
-    /* =========== ÎNCĂRCAREA UNEI IMAGINI PRIN STABILIREA UNUI BAG ========= */
-    pubComm.on('resursa', function cbREs (resourceFile) {
-        // cand ai primit date pe `res`, generează mai întâi de toate uuid-ul. Este valabil pentru primul fișier care va iniția crearea bag-ului
-        var uuidV1  = uuidv1();
-        // creează calea pe care se va depozita.
-        var calea   = `${process.env.REPO_REL_PATH}/${resourceFile.email}/`;
+            // cand ai primit date pe `res`, generează mai întâi de toate uuid-ul. Este valabil pentru primul fișier care va iniția crearea bag-ului
+            var uuidV1  = uuidv1();
+            // // creează calea pe care se va depozita.
+            var calea   = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
+    
+            // cazul în care resursa deja există, setază valoarea locală uuid
+            if (resourceFile.uuid) {
+                calea += `${resourceFile.uuid}`;
+            } else {
+                // în acest caz, se va lua valoarea generată de uuidv1()
+                calea += `${uuidV1}`;
+            }
 
-        // cazul în care resursa deja există, setază valoarea locală uuid
-        if (resourceFile.uuid) {
-            calea += `${resourceFile.uuid}`;
-        } else {
-            // în acest caz, se va lua valoarea generată de uuidv1()
-            calea += `${uuidV1}`;
-        }
-        // FIXME: caută o cale să aduci numele complet al utilizatorului.
-        var bag     = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.email}`}); //creează bag-ul
-        // construiește obiectul de răspuns.
-        var responseObj = {
-            uuid: uuidV1
-        };
-        // FIXME: Termină implementarea!
+            var bag     = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează bag-ul
+            // // construiește obiectul de răspuns.
+            var responseObj = {
+                success: 1,
+                uuid: uuidV1,
+                file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${uuidV1}/data/${resourceFile.numR}`
+            };
+
+            var strm = new Readable();
+            strm.push(resourceFile.resF);  
+            strm.push(null);
+
+            strm.pipe(bag.createWriteStream(`${resourceFile.numR}`));
+
+            bag.finalize(() => {
+                socket.emit('resursa', responseObj);
+                console.log('Am creat bag!');
+            });
+        });
     });
+
+    /* =========== ÎNCĂRCAREA UNEI IMAGINI PRIN STABILIREA UNUI BAG ========= */
+
     /* =========== ÎNCĂRCAREA UNEI IMAGINI PRIN STABILIREA UNUI BAG ========= */
 
 
@@ -131,8 +153,8 @@ module.exports = (express, app, passport, pubComm) => {
             /* ======= Directorul utilizatorului nu există. Trebuie creat !!!! ========= */
             if (!fs.existsSync(firstData)) {
                 fsPromises.mkdir(firstData, { recursive: true }).then(() => {
-                    pubComm.emit('uuid', uuidV1); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată
-                    cb(null, firstData); // FIXME: construiește alternativa cu bag-it
+                    // pubComm.emit('uuid', uuidV1); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată
+                    cb(null, firstData);
                 }).catch((error) => {
                     if (error) throw error;
                 });
@@ -151,7 +173,6 @@ module.exports = (express, app, passport, pubComm) => {
         filename: function (req, file, cb) {
             cb(null, file.originalname + '-' + Date.now());
         }
-        // TODO: construirea alternativei 
     });
 
     // Funcție helper pentru filtrarea extensiilor acceptate
@@ -188,7 +209,7 @@ module.exports = (express, app, passport, pubComm) => {
                 "url": `${filePlace}`
             }
         };
-        console.log(JSON.stringify(resObj));
+        // console.log(JSON.stringify(resObj));
         // FIXME: În momentul în care utilizatorul decide să șteargă resursa din fișier, acest lucru ar trebui să se reflecte și pe harddisc.
         // Creează logica de ștergere a resursei care nu mai există în Frontend. Altfel, te vei trezi cu hardul plin de fițiere orfane.
         res.send(JSON.stringify(resObj));
