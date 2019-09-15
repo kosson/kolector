@@ -99,8 +99,7 @@ module.exports = (express, app, passport, pubComm) => {
         });
 
         // Momentul primirii datelor pe scoket conduce la crearea Bag-ului
-        socket.on('resursa', function cbRes (resourceFile) {  
-            console.log(resourceFile);  
+        socket.on('resursa', function cbRes (resourceFile) {
             // creează calea pe care se va depozita.
             var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
 
@@ -116,6 +115,7 @@ module.exports = (express, app, passport, pubComm) => {
                 // constituie mediul Bag-ului
                 var bagExistent = BagIt(calea, 'sha256');
                 lastBag = bagExistent;
+
                 // introdu un nou fișier în Bag
                 strm.pipe(bagExistent.createWriteStream(`${resourceFile.numR}`));
                 // construiește obiectul de răspuns.

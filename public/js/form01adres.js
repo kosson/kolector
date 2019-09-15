@@ -98,7 +98,109 @@ const editorX = new EditorJS({
                         }); // returnează promisiunea de care are nevoie Editor.js
                     },
                     uploadByUrl(url){
+                        /**
+                         * Funcția validează răspunsul în funcție de headere și stare
+                         * @param {Object} response 
+                         */
+                        function validateResponse(response) {
+                            if (!response.ok) {
+                                throw Error(response.statusText);
+                            }
+                            return response;
+                        }                        
 
+                        // Extrage numele fișierului
+                        let nameF = url.split('/').pop().split('#')[0].split('?')[0];
+                        // alternativ se poate folosi
+                        function fileNameFromUrl(url) {
+                            var matches = url.match(/\/([^\/?#]+)[^\/]*$/);
+                            if (matches.length > 1) {
+                                return matches[1];
+                            }
+                            return null;
+                        }
+
+                        /**
+                         * 
+                         * @param {String} url Este chiar URL-ul de pe care va veni resursa
+                         */
+                        function getExtension(url) {
+                            var extStart = url.indexOf('.',url.lastIndexOf('/')+1);
+                            if (extStart==-1) return false;
+                            var ext = url.substr(extStart+1),
+                                // finalul numelui extensiei începe după următoarele: end-of-string ori question-mark or hash-mark
+                                extEnd = ext.search(/$|[?#]/);
+                            return ext.substring (0,extEnd);
+                        }
+                        // extrage extensia fișierului
+                        let extF = getExtension(url);
+
+                        return fetch(url)
+                            .then(validateResponse)
+                            .then(response => response.blob())
+                            .then(response => {
+                                // completează proprietățile necesare pentru a-l face `File` like.
+                                response.lastModifiedDate = new Date();
+                                response.name = nameF;
+
+                                // obiectul trimis către server
+                                let objRes = {
+                                    user: RED.idContributor,
+                                    name: RED.nameUser,
+                                    uuid: RED.uuid,
+                                    resF: null,
+                                    numR: '',
+                                    type: ''
+                                };
+
+                                objRes.numR = nameF;    // completează obiectul care va fi trimis serverului cu numele fișierului
+                                objRes.type = response.type; // completează cu extensia
+                                objRes.resF = response;
+                                
+                                const promissed = new Promise((resolve, reject) => {
+                                    // obiectul necesar lui Editor.js
+                                    let obj4EditorJS = {
+                                        success: '',
+                                        file: {
+                                            url: ''
+                                        }
+                                    };
+                                    
+                                    // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare
+                                    if (RED.uuid !== undefined) {
+                                        // este cazul în care deja directorul resursei a fost creat.
+                                        pubComm.emit('resursa', objRes); // trimite obiectul preparat
+                                        // trimite obiectul către server
+                                        pubComm.on('resursa', (respObj) => {
+                                            RED.uuid = respObj.uuid;
+                                            obj4EditorJS.success = respObj.success;
+                                            obj4EditorJS.file.url = respObj.file;
+                                            // console.log(obj4EditorJS);
+                                            resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
+                                        });
+                                    } else {
+                                        // în caz contrar, avem de-a face cu prima trimitere a unei resurse, iar obiectul objRes nu va avea uuid-ul
+                                        pubComm.emit('resursa', objRes);
+                                        // apoi vom primi uuid-ul generat la momentul constituirii directorului resurse cu primul fișier în subdirectorul /data
+                                        pubComm.on('resursa', (respObj) => {
+                                            RED.uuid = respObj.uuid;
+                                            obj4EditorJS.success = respObj.success;
+                                            obj4EditorJS.file.url = respObj.file;
+                                            // console.log(obj4EditorJS);
+                                            resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
+                                        });
+                                    }
+                                });
+                                
+                                return promissed.then((obi) => {
+                                    return obi;
+                                }).catch(error => {
+                                    if (error) throw error;
+                                });
+                            })
+                            .catch((error) => {
+                                if (error) throw error;
+                            });
                     }
                 }
             }
@@ -109,8 +211,6 @@ const editorX = new EditorJS({
      */
     // data: {}
 });
-
-
 
 // colectorul datelor din form
 var RED = {
@@ -778,12 +878,21 @@ function pas3 () {
     // colectează datele din formular de la pasul 3. În cazul în care te întorci la pasul 2, introdu activitățile selectate anterior într-un list.
 }
 
+/* ========== TRIMITEREA DATELOR FORMULARULUI ============== */
 var submitBtn = document.querySelector('#submit');
 submitBtn.addEventListener('click', (evt) => {
     closeBag(evt);
 });
+
+/**
+ * Funcția are rolul de a închide bagul după ce toate resursele au fost contribuite.
+ * @param {Object} evt Este obiectul eveniment al butonului `#submit` 
+ */
 function closeBag (evt) {
     evt.preventDefault();
     // Închide Bag-ul
     pubComm.emit('closeBag', true);
+    pubComm.on('closeBag', (mesaj) => {
+        console.log(mesaj);
+    });
 }
