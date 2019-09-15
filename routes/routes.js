@@ -90,7 +90,8 @@ module.exports = (express, app, passport, pubComm) => {
 
     /* =========== CONSTRUCȚIA BAG-ULUI ========= */
     /* SOCKETURI!!! */
-    let lastBag = '';
+    let lastBag = ''; // este o referință către un bag deja deschis
+    let lastUuid = '';
     pubComm.on('connect', (socket) => {
         // Ascultă mesajele
         socket.on('mesaje', (mesaj) => {
@@ -98,8 +99,11 @@ module.exports = (express, app, passport, pubComm) => {
             console.log(mesaj);
         });
 
-        // Momentul primirii datelor pe scoket conduce la crearea Bag-ului
+        // Primirea imaginilor pe socket conduce la crearea Bag-ului
         socket.on('resursa', function cbRes (resourceFile) {
+            // setează uuid-ul local
+            lastUuid = resourceFile.uuid;
+
             // creează calea pe care se va depozita.
             var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
 
@@ -128,7 +132,13 @@ module.exports = (express, app, passport, pubComm) => {
                 socket.emit('resursa', responseObj4AddedFile);
             } else {
                 // cand ai primit date pe `res`, generează mai întâi de toate uuid-ul. Este valabil pentru primul fișier care va iniția crearea bag-ului
-                var uuidV1  = uuidv1();
+                var uuidV1 = '';
+                if (lastUuid) {
+                    uuidV1 = lastUuid; // asta înseamnă că deja a fost încărcat un fișier tip document și s-a creat un uuid al resursei
+                } else {
+                    uuidV1 = uuidv1(); // dacă nu a fost încărcat niciun fișier tip document, înseamnă că mai întâi se introduc imagini în editor
+                }
+                
                 // în cazul în care NU EXISTĂ BAG-UL (resursă nouă), se va lua valoarea generată de uuidv1()
                 calea += `${uuidV1}`;
                 var bagNou = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează bag-ul
@@ -156,51 +166,107 @@ module.exports = (express, app, passport, pubComm) => {
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */
 
-
-    /* ========== ÎNCĂRCAREA UNEI IMAGINI cu `multer` ========= */
-    // app.use(express.static(path.join(__dirname, 'repo')));  // static pe repo
+    /* ========== ÎNCĂRCAREA UNIUI fișier cu `multer` ========= */
     var multer  = require('multer');
-    var storage = multer.diskStorage({
-        // unde stochezi fișierul
+    var multer2bag = require('./multer-bag-storage');
+
+    var storage = multer2bag({
         destination: function (req, file, cb) {
+            console.log('Este file primit la metoda destination din storage settings: ', file);
             // generează un uuid care va fi numele noului subdirector corespondent unei resurse
-            let uuidV1 = uuidv1();
+            let uuidV1 = '';
+            // verifică dacă nu cumva mai întâi utilizatorul a ales să încarce o imagine. În acest caz, lastUuid poartă valoarea setată anterior.
+            if (lastUuid) {
+                uuidV1 = lastUuid; // asta înseamnă că deja a fost încărcat un fișier tip document și s-a creat un uuid al resursei
+            } else {
+                uuidV1 = uuidv1(); // userul incarcă mai întâi de toate un  fișier tip document. Setezi uuid-ul pentru prima dată.
+                // console.log(pubComm);
+                pubComm.emit('uuid', uuidV1); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată      
+            }
+            // console.log(uuidV1);
+
             // Aceasta este cale pentru cazul în care nu există un director al resursei deja
-            let firstData = process.env.REPO_REL_PATH + req.user.email + '/' + uuidV1 + '/data';
+            let firstDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${uuidV1}`;
             // Aceasta este calea pentru cazul în care deja există creat directorul resursei pentru că a fost încărcat deja un fișier.
-            let existingData = process.env.REPO_REL_PATH + req.user.email;
+            let existingDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${lastUuid}/data`;
 
             /* ======= Directorul utilizatorului nu există. Trebuie creat !!!! ========= */
-            if (!fs.existsSync(firstData)) {
-                fsPromises.mkdir(firstData, { recursive: true }).then(() => {
-                    // pubComm.emit('uuid', uuidV1); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată
-                    cb(null, firstData);
-                }).catch((error) => {
-                    if (error) throw error;
-                });
-            } else if(fs.existsSync(existingData)) {
-                // în cazul în care subdirectorul există, setează variabila `uuidV1` la valoarea primită din client 
-                // pubComm.on('uuid', (uuid) => {
-                //     uuidV1 = uuid;
-                // });
-                // În cazul în care directorul utilizatorului există, generează un nou uuid sau folosește-l pe cel primit de la user 
-                // pentru că inseamnă că face parte din aceleși set al uuid-ului stabilit anterior.
-                console.log('directorul există deja');
+            if (!fs.existsSync(firstDataPath)) {
+                cb(null, firstDataPath);    // introdu primul fișier aici.
+            } else if(fs.existsSync(existingDataPath)) {
+                cb(null, existingDataPath);
             }
-            // cb(null, process.env.REPO_REL_PATH);
         },
-        // cum denumești fișierul
         filename: function (req, file, cb) {
-            cb(null, file.originalname + '-' + Date.now());
-        }
+            cb(null, file.originalname);
+        }        
     });
+    // unde stochezi fișierul
+    // var storage = multer.diskStorage({
+    //     destination: function (req, file, cb) {
+    //         console.log('Este file primit la metoda destination din storage settings: ', file);
+    //         // generează un uuid care va fi numele noului subdirector corespondent unei resurse
+    //         let uuidV1 = '';
+    //         // verifică dacă nu cumva mai întâi utilizatorul a ales să încarce o imagine. În acest caz, lastUuid poartă valoarea setată anterior.
+    //         if (lastUuid) {
+    //             uuidV1 = lastUuid; // asta înseamnă că deja a fost încărcat un fișier tip document și s-a creat un uuid al resursei
+    //         } else {
+    //             uuidV1 = uuidv1(); // userul incarcă mai întâi de toate un  fișier tip document. Setezi uuid-ul pentru prima dată.
+    //             // console.log(pubComm);
+    //             pubComm.emit('uuid', uuidV1); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată      
+    //         }
+    //         // console.log(uuidV1);
+
+    //         // Aceasta este cale pentru cazul în care nu există un director al resursei deja
+    //         let firstDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${uuidV1}/data`;
+    //         let firstDataPath2 = `${process.env.REPO_REL_PATH}${req.user.email}/${uuidV1}`;
+    //         // Aceasta este calea pentru cazul în care deja există creat directorul resursei pentru că a fost încărcat deja un fișier.
+    //         let existingDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${lastUuid}/data`;
+            
+    //         // Transformarea Buffer-ului primit într-un stream `Readable`
+    //         // var strm = new Readable();
+    //         // strm.push(resourceFile.resF);  
+    //         // strm.push(null);
+
+    //         /* ======= Directorul utilizatorului nu există. Trebuie creat !!!! ========= */
+    //         if (!fs.existsSync(firstDataPath)) {
+    //             fsPromises.mkdir(firstDataPath, { recursive: true }).then(() => {
+    //                 // FIXME: CREEAZĂ BAG, NU FILE!
+    //                 var bagNou = BagIt(firstDataPath2, 'sha256', {'Contact-Name': `${req.user.googleProfile.name}`}); //creează bag-ul
+
+    //                 lastBag = bagNou;
+    //                 // crearea efectivă a resursei în bag
+    //                 // strm.pipe(bagNou.createWriteStream(`${resourceFile.numR}`));
+                    
+    //                 cb(null, firstDataPath);    // introdu primul fișier aici.
+    //             }).catch((error) => {
+    //                 if (error) throw error;
+    //             });
+    //         } else if(fs.existsSync(existingDataPath)) {
+    //             cb(null, existingDataPath);
+    //         }
+    //         // cb(null, process.env.REPO_REL_PATH);
+    //     },
+    //     // cum denumești fișierul
+    //     filename: function (req, file, cb) {
+    //         cb(null, file.originalname);
+    //     }
+    // });
 
     // Funcție helper pentru filtrarea extensiilor acceptate
     let fileFilter = function fileFltr (req, file, cb) {
         var fileObj = {
             "image/png": ".png",
             "image/jpeg": ".jpeg",
-            "image/jpg": ".jpg"
+            "image/jpg": ".jpg",
+            "application/pdf": ".pdf",
+            "application/msword": ".doc",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
+            "application/vnd.ms-powerpoint": ".ppt",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation": ".pptx",
+            "application/octet-stream": ".zip",
+            "application/vnd.oasis.opendocument.text": ".odt",
+            "application/vnd.oasis.opendocument.presentation": ".odp"
         };
         if (fileObj[file.mimetype] == undefined) {
             cb(new Error("file format not valid"), false); // nu stoca fișierul și trimite eroarea
@@ -217,24 +283,33 @@ module.exports = (express, app, passport, pubComm) => {
             fileSize: process.env.FILE_LIMIT_UPL_RES
         },
         fileFilter: fileFilter
-    }).any(); // multer() inițializează pachetul
+    }); // multer() inițializează pachetul
 
-    app.post('/repo', User.ensureAuthenticated, upload, function(req, res){
-        // console.log(req.files);
-        var filePlace = `${process.env.BASE_URL}/${req.files[0].path}`;
-        // console.log(req.files.path);
+    app.post('/repo', User.ensureAuthenticated, upload.any(), function(req, res){
+        // console.log('Detaliile lui files: ', req.files);
+        var fileP = req.files[0].path;
+        var parts = fileP.split('/');
+        parts.shift();
+        var cleanPath = parts.join('/');
+
+        var filePath = `${process.env.BASE_URL}/${cleanPath}/data/${req.files[0].originalname}`;
+        console.log('Calea formată înainte de a trimite înapoi: ', filePath);
+        
         var resObj = {
             "success": 1,
             "file": {
-                "url": `${filePlace}`
+                "url": `${filePath}`,
+                "name": `${req.files[0].originalname}`
             }
         };
-        // console.log(JSON.stringify(resObj));
-        // FIXME: În momentul în care utilizatorul decide să șteargă resursa din fișier, acest lucru ar trebui să se reflecte și pe harddisc.
-        // Creează logica de ștergere a resursei care nu mai există în Frontend. Altfel, te vei trezi cu hardul plin de fițiere orfane.
+        // FIXME: În momentul în care utilizatorul decide să șteargă resursa din fișier, acest lucru ar trebui să se reflecte și pe hard disk.
+        // Creează logica de ștergere a resursei care nu mai există în Frontend. Altfel, te vei trezi cu hardul plin de fișiere orfane.
         res.send(JSON.stringify(resObj));
     });
-    // ========== ÎNCĂRCAREA UNEI IMAGINI cu `multer` - END =========
+    // ========== ÎNCĂRCAREA UNUI FIȘIER cu `multer` - END =========
+
+
+
 
     // ========== 401 - NEPERMIS ==========
     app.get('/401', function(req, res){

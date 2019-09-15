@@ -9,11 +9,7 @@ pubComm.on('mesaje', (mess) => {
     console.log(text);
 });
 
-pubComm.on('uuid', (val) => {
-    uuid = val;
-    console.log(uuid);
+pubComm.on('uuid', (id) => {
+    uuid = id;
+    RED.uuid = id;
 });
-
-// pubComm.on('resursa', (resp) => {
-//     console.log(resp);
-// });

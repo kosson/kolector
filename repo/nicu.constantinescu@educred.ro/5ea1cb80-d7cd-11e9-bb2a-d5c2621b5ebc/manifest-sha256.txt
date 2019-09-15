@@ -1,2 +1,0 @@
-39e378b6aef14a819b56462e3f4583f2590f427fcecb75c702fd938e7abf6c73 data/John_Bull.jpg
-000c2fac3c22baf7ad475657ea8df46afc4f892a2dc1902fcbbbf9bb47165ef7 data/ArchivesSavesLives.png

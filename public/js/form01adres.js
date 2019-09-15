@@ -1,3 +1,24 @@
+// colectorul datelor din form
+var RED = {
+    uuid: '',
+    langRED: '',
+    title: '',
+    titleI18n: [],
+    idContributor: '',
+    description: '',
+    licenta: '',
+    // pas 2
+    arieCurriculara: [],
+    level: [],
+    discipline: [],
+    etichete: []
+};
+
+pubComm.on('uuid', (id) => {
+    console.log(id);
+    RED.uuid = id;
+});
+
 /* ======== Integrarea lui EditorJS ======== https://editorjs.io */
 const editorX = new EditorJS({
     placeholder: 'Introdu conținutul nou sau copiază-l pe cel pe care îl ai într-un material.',
@@ -33,9 +54,21 @@ const editorX = new EditorJS({
         },
         attaches: {
             class: AttachesTool,
+            buttonText: 'Încarcă un fișier',
             config: {
                 endpoint: 'http://localhost:8080/repo'
-            }
+            },
+            errorMessage: 'Nu am putut încărca fișierul.'
+        },
+        embed: {
+            class: Embed,
+            config: {
+                services: {
+                    youtube: true,
+                    coub: true
+                }
+            },
+            inlineToolbar: true
         },
         image: {
             class: ImageTool,
@@ -211,22 +244,6 @@ const editorX = new EditorJS({
      */
     // data: {}
 });
-
-// colectorul datelor din form
-var RED = {
-    uuid: '',
-    langRED: '',
-    title: '',
-    titleI18n: [],
-    idContributor: '',
-    description: '',
-    licenta: '',
-    // pas 2
-    arieCurriculara: [],
-    level: [],
-    discipline: [],
-    etichete: []
-};
 
 // fă o referință către butonul de trimitere a conținutului
 var saveContinutRes = document.querySelector('#continutRes');
