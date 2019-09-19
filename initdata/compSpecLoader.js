@@ -1,47 +1,80 @@
 require('dotenv').config();
-const fs = require('fs');
-const Papa = require('papaparse');
-const readF = fs.createReadStream('CSuri-arteViz3.csv', 'utf8');
-// const writeF = fs.createWriteStream('CSuriX.json', 'utf8');
+const fs    = require('fs');
+const path  = require('path');
+const Papa  = require('papaparse');
+const csv   = require("fast-csv");
+// const writeF = fs.createWriteStream('CSuriX.json', 'utf8'); // Generează un JSON în caz că acest lucru este necesar. Să fie acolo.
 
 const mongoose = require('mongoose');
-mongoose.set('useCreateIndex', true); // Deprecation warning
+mongoose.set('useCreateIndex', true); // Deprecation warning solver
 const connectionString = `mongodb://localhost:27017/redcolector`;
+
+/**
+ * Funcția are rolul de a strânge toate activitățile unei competențe specifice într-un array dedicat.
+ * Când sunt erori, problema stă în normalizarea datelor. ATENȚIE! M-am opărit!
+ * @param {Object} data Este un obiect de date
+ */
+function foldOneField (data) {
+    const arr = JSON.stringify(data);
+    const folded = data.reduce((arrAcc, elemArrOrig, idx, srcArr) => {
+        // Inițial, acumulatorul este un array fără niciun element. Este necesară introducerea primului:
+        if (arrAcc.length === 0) {
+            arrAcc[idx] = elemArrOrig;
+        }
+        // Verifică câmpul `ids` al ultimului element din array (ultimul introdus)
+        if (arrAcc.slice(-1)[0].ids[0] === elemArrOrig.ids[0]) {
+            // pentru toate activitățile existente în array-ul `activități`,
+            elemArrOrig.activitati.forEach((act) => {
+                arrAcc.slice(-1)[0].activitati.push(act); // introdu-le în array-ul activități a înregistrării preexistente
+            });
+        } else {
+            // În cazul în care `ids` diferă, înseamnă că ai de-a face cu o nouă competență, care va constitui o nouă înregistrare
+            arrAcc.push(srcArr[idx]); // care la rândul ei va împături activități.
+        }
+        return arrAcc;
+    }, []);
+    return folded;
+}
 
 // TODO: DEZVOLTĂ MAI DEPARTE ÎNTR-UN AUTOMATOR!!!
 /* ============ OBȚINEREA CĂILOR TUTUROR FIȘIERELOR =============== */
 // De la https://gist.github.com/kethinov/6658166
-var dir = 'csvuri';
-var csvUri = async function walk(dir, fileList = []) {
+var dir = 'csvuri'; // este numele directorului în care vor sta toate fișierele care trebuie concatenate
+/**
+ * Funcția area rolul de a genera un Array cu toate fișierele existente în directorul desemnat prin variabila `dir`
+ * @param {String} dir Numele directorului în care se află fișierele care trebuie concatenate
+ */
+const read = (dir) =>
+    fs.readdirSync(dir)
+        .reduce((files, file) =>
+            fs.statSync(path.join(dir, file)).isDirectory() ?
+                files.concat(read(path.join(dir, file))) :
+                files.concat(path.join(dir, file)),
+            []);
 
-    const files = await fs.readdir(dir);
-
-    for (const file of files) {
-        const stat = await fs.stat(path.join(dir, file));
-        if (stat.isDirectory()) fileList = await walk(path.join(dir, file), fileList);
-        else fileList.push(path.join(dir, file));
-    }
-
-    return fileList;
-}
-
-walk('/csuri/').then((res) => {
-    console.log(res);
-});
+// În caz că vrei să afișezi numele fișierelor prelucrate în vreun context viitor, activeză fragmentul !!!
+// walk('/csvuri/').then((res) => {
+//     console.log(res); // fa ceva cu lista de fișiere
+// });
 
 /* ======== CONCATENAREA TUTUROR CSV-urilor în unul singur ================ */
 /**
+ * Funcția `concatCSVAndOutput` construiește un array de promisiuni pentru fiecare fișier csv
+ * pe care îl și rezolvă cu Promise.all
  * De la https://stackoverflow.com/questions/50905202/how-to-merge-two-csv-files-rows-in-node-js
+ * Pentru utilizarea funcției, trebuie să avem dependința `fast-csv` instalată deja
  * @param {Array} csvFilePaths 
  * @param {String} outputFilePath 
+ * @returns {Promise}
  */
 function concatCSVAndOutput(csvFilePaths, outputFilePath) {
     // construiești un array de promisiuni
     const promises = csvFilePaths.map((path) => {
+        // pentru fiecare fișier CSV, generează o promisiune.
         return new Promise((resolve) => {
             const dataArray = [];
             return csv
-                .fromPath(path, {
+                .parseFile(path, {
                     headers: true
                 })
                 .on('data', function (data) {
@@ -54,32 +87,30 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
     });
 
     return Promise.all(promises)
-        .then((results) => {
+                .then((results) => {
+                    // constituirea stream-ului Readable care va fi chiar fișierului CSV de output
+                    const csvStream = csv.format({headers: true});
 
-            const csvStream = csv.format({
-                headers: true
-            });
-            const writableStream = fs.createWriteStream(outputFilePath);
+                    // constituirea stream-ului Writeable
+                    const writableStream = fs.createWriteStream(outputFilePath);
+                    // la finalizarea scrierii pe disc
+                    writableStream.on('finish', function () {
+                        console.log('Am terminat de scris rezultatul!');
+                    });
 
-            writableStream.on('finish', function () {
-                console.log('DONE!');
-            });
-
-            csvStream.pipe(writableStream);
-            results.forEach((result) => {
-                result.forEach((data) => {
-                    csvStream.write(data);
+                    csvStream.pipe(writableStream);
+                    // scrie fișierul trimițând fiecare linie csv operațiunea de scriere a stream-ul
+                    results.forEach((result) => {
+                        result.forEach((data) => {
+                            csvStream.write(data);
+                        });
+                    });
+                    csvStream.end();
                 });
-            });
-            csvStream.end();
-
-        });
 }
-
-concatCSVAndOutput(read(csvUri), 'toateCSurile.csv')
-.then(() => {
-    // Aici ar trebui integrată prelucrarea cu Papaparse-ul
-});
+// generează fișierul consolidat cu toate câmpurile din toate csv-urilor
+concatCSVAndOutput(read(dir), `${dir}/all.csv`);
+const readF = fs.createReadStream(`${dir}/all.csv`, 'utf8'); // Creează stream Read din fișierul CSV sursă.
 
 /* ======= PRELUCRAREA CSV-ului ============  */
 Papa.parse(readF, {
@@ -134,7 +165,7 @@ Papa.parse(readF, {
         }
         const folded = foldOneField(results.data); // apelează funcția de folding
         // scrie datele pe disc...
-        fs.writeFile('CSuri.json', JSON.stringify(folded), 'utf8', (err) => {
+        fs.writeFile(`${dir}/all.json`, JSON.stringify(folded), 'utf8', (err) => {
             if (err) throw err;
         });
         
@@ -159,30 +190,3 @@ Papa.parse(readF, {
         }
     }
 });
-
-/**
- * Funcția are rolul de a strânge toate activitățile unei competențe specifice într-un array dedicat.
- * Când sunt erori, problema stă în normalizarea datelor. ATENȚIE! M-am opărit!
- * @param {Object} data Este un obiect de date
- */
-function foldOneField (data) {
-    const arr = JSON.stringify(data);
-    const folded = data.reduce((arrAcc, elemArrOrig, idx, srcArr) => {
-        // Inițial, acumulatorul este un array fără niciun element. Este necesară introducerea primului:
-        if (arrAcc.length === 0) {
-            arrAcc[idx] = elemArrOrig;
-        }
-        // Verifică câmpul `ids` al ultimului element din array (ultimul introdus)
-        if (arrAcc.slice(-1)[0].ids[0] === elemArrOrig.ids[0]) {
-            // pentru toate activitățile existente în array-ul `activități`,
-            elemArrOrig.activitati.forEach((act) => {
-                arrAcc.slice(-1)[0].activitati.push(act); // introdu-le în array-ul activități a înregistrării preexistente
-            });
-        } else {
-            // În cazul în care `ids` diferă, înseamnă că ai de-a face cu o nouă competență, care va constitui o nouă înregistrare
-            arrAcc.push(srcArr[idx]); // care la rândul ei va împături activități.
-        }
-        return arrAcc;
-    }, []);
-    return folded;
-}
