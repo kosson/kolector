@@ -105,7 +105,7 @@
               <legend>O scurtă descriere a resursei</legend>
               <div class="input-group">
                 <div class="input-group-prepend">
-                  <span class="input-group-text">Maxim două paragrafe...</span>
+                  <span class="input-group-text">Maxim 1000 de caractere</span>
                 </div>
                 <textarea id="descriereRed" class="form-control" aria-label="Descrierea resursei" rows="3"></textarea>
               </div>
@@ -194,7 +194,7 @@
 
             {{!-- Selectarea nivelului de școlarizare --}}
             <fieldset>
-              <legend>Nivel școlar</legend>
+              <legend>Clasa</legend>
               <div id="nivel">
                 {{!-- PRIMAR --}}
                 <div class="form-check form-check-inline">
@@ -325,7 +325,7 @@
 
               {{!-- LATURI --}}
               <div class="form-group">
-                <label for="valid-laturi">Selectează laturile.</label>
+                <label for="valid-laturi">Selectează obiectivul educațional.</label>
                 <select multiple class="form-control" id="valid-laturi">
                   <optgroup label="cognitiv">
                     <option value="descoperire">descoperire</option>
@@ -390,9 +390,10 @@
                 <label for="valid-spatii">Selectează spațiul de desfășurare.</label>
                 <select multiple class="form-control" id="valid-spatii">
                   <option value="la clasă">la clasă</option>
-                  <option value="acasă">acasă</option>
+                  <option value="acasă">individual</option>
                   <option value="laborator">în laborator</option>
                   <option value="în aer liber">în aer liber</option>
+                  <option value="în aer liber">în grup</option>
                 </select>
               </div>
               {{!-- SPAȚII END --}}
