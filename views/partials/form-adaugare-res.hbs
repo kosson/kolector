@@ -77,6 +77,12 @@
                   <option value="tur">turcă</option>
                 </select>
               </div>
+              {{!-- HELP Titlul --}}
+              <small class="form-text text-muted">
+                  Titlul trebuie să cuprindă un maxim de 150 de caractere, să fie clar și să evidențieze conținutul resursei.
+              </small>
+              {{!-- HELP Titlul End--}}
+
               {{!-- Buton de adăugare câmpuri noi pentru variantele în alte limbi ale titlurilor [vezi form01adres.js] --}}
               <button id="titluLangAdd" class="btn btn-outline-secondary m-2" type="button" onclick="creeazaTitluAlternativ()">+ în altă limbă</button>
               <div id="langAlternative">
@@ -110,13 +116,21 @@
                 <textarea id="descriereRed" class="form-control" aria-label="Descrierea resursei" rows="3"></textarea>
               </div>
             </fieldset>
+            {{!-- Descrierea resursei educaționale END--}}
+
+            {{!-- HELP Titlul --}}
+            <small class="form-text text-muted">
+              În maxim 1000 caractere autorul descrie conceptele/ activitățile/ conținuturile importante ale resursei, astfel încât să existe o corelație între titlu, descriere și conținut.
+            </small>
+            {{!-- HELP Titlul End--}}
             {{!-- Descrierea resursei educaționale END --}}
+
+            {{!-- LICENȚIEREA RESURSEI --}}
             <fieldset>
               <legend>Alegerea licenței resursei</legend>
-              {{!-- LICENȚIEREA RESURSEI --}}
               <div class="input-group mb-3">
                 <div class="alert alert-warning" role="alert">
-                  <p>Pentru a crește nivelul de implicare și gradul de refolosire a materialelor puse la dispoziție, a fost aleasă licența Creative Commons „Atribuire”</p>
+                  <p>Pentru a crește nivelul de implicare și gradul de refolosire a materialelor, a fost aleasă licența Creative Commons „Atribuire”</p>
                 </div>
                 <div class="input-group-prepend">
                   <label class="input-group-text" for="licente">Licențe disponibile</label>
@@ -135,8 +149,8 @@
               </div>
               <p>Despre licențele Creative Commons puteți citi mai multe la <a href="https://creativecommons.org/licenses/?lang=ro">„Despre licențe”</a>. Despre efectele și aria de protecție pentru fiecare licență în parte consultă și <a href="https://creativecommons.org/choose/?lang=ro">„Distribuie-ți opera”</a></p>
               <p>Despre licența <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License</a> puteți să aflați mai multe de la <a href="https://ro.wikipedia.org/wiki/Licen%C8%9Ba_Public%C4%83_General%C4%83_GNU">articolul Wikipedia dedicat</a></p>
-              {{!-- LICENȚIEREA RESURSEI  END --}}
             </fieldset>
+            {{!-- LICENȚIEREA RESURSEI  END --}}
           </div>
           {{!-- Grupul controale - Titlu și responsabilitate [form-group] END --}}
 
@@ -314,47 +328,45 @@
 
               {{!-- GRUPURILE ȚINTĂ --}}
               <div class="form-group">
-                <label for="valid-grup">Selectează un grup țintă sau mai multe.</label>
+                <label for="valid-grup">Selectează un grup țintă sau mai multe</label>
                 <select multiple class="form-control" id="valid-grup">
                   <option value="elev">elev</option>
                   <option value="profesor">profesor</option>
-                  <option value="aparținator">aparținător</option>
+                  <option value="apartinator">părinte/ tutore/ aparținător</option>
                 </select>
               </div>
               {{!-- GRUPURILE ȚINTĂ END--}}
 
-              {{!-- LATURI --}}
+              {{!-- DOMENIU --}}
               <div class="form-group">
-                <label for="valid-laturi">Selectează obiectivul educațional.</label>
-                <select multiple class="form-control" id="valid-laturi">
-                  <optgroup label="cognitiv">
-                    <option value="descoperire">descoperire</option>
-                    <option value="experimentare">experimentare</option>
-                  </optgroup>
-                  <option value="psiho-motor">psiho-motor</option>
+                <label for="valid-domeniu">Domeniul căruia i se adresează resursa</label>
+                <select multiple class="form-control" id="valid-domeniu">
+                  <option value="cognitiv">cognitiv</option>
+                  <option value="psihomotor">psihomotor</option>
                   <option value="afectiv">afectiv</option>
-                  <option value="social">social</option>
                 </select>
               </div>
-              {{!-- LATURI END --}}
+              {{!-- DOMENIU END --}}
 
-              {{!-- FUNCȚII --}}
+              {{!-- VIZEAZĂ --}}
               <div class="form-group">
-                <label for="valid-functii">Selectează funcțiile.</label>
+                <label for="valid-functii">Resursa vizează</label>
                 <select multiple class="form-control" id="valid-functii">
-                  <option value="cunostinte noi">cunoștințe noi („predare”, „explicare”)</option>
-                  <option value="acomodare">acomodare</option>
-                  <option value="actualizare">actualizare</option>
-                  <option value="aprofundare">aprofundare</option>
-                  <option value="recapitulare">recapitulare</option>
-                  <option value="evaluare">evaluare</option>
+                  <option value="cunostinte">comunicare/ însușire de noi cunoștințe</option>
+                  <option value="formare">formare de priceperi și deprinderi</option>
+                  <option value="fixare">fixare și sistematizare</option>
+                  <optgroup label="verificare/ evaluare a cunoștințelor acumulate">
+                    <option value="chestionare">chestionare</option>
+                    <option value="test">teste</option>
+                    <option value="quiz">quiz</option>
+                  </optgroup>
                 </select>
               </div>
-              {{!-- FUNCȚII END --}}
+              {{!-- VIZEAZĂ END --}}
 
               {{!-- DEMERSURI --}}
               <div class="form-group">
-                <label for="valid-demersuri">Selectează demersurile.</label>
+                <label for="valid-demersuri">Tipul de demers / raționament utilizat în realizarea resursei</label>
                 <select class="form-control" id="valid-demersuri">
                   <option value="inductiv">inductiv</option>
                   <option value="deductiv">deductiv</option>
@@ -364,41 +376,55 @@
               </div>
               {{!-- DEMERSURI END --}}
 
-              {{!-- MODELE --}}
-              <div class="form-group">
-                <label for="valid-modele">Selectează modelul urmărit.</label>
-                <select class="form-control" id="valid-modele">
-                  <option value="expozitiv">expozitiv</option>
-                  <option value="narativ">narativ</option>
-                </select>
-              </div>
-              {{!-- MODELE END --}}
-
-              {{!-- ORGANIZARE --}}
-              <div class="form-group">
-                <label for="valid-organizare">Selectează modelul urmărit.</label>
-                <select class="form-control" id="valid-organizare">
-                  <option value="la clasă">la clasă</option>
-                  <option value="individual">individual</option>
-                  <option value="grupat">grupat</option>
-                </select>
-              </div>
-              {{!-- ORGANIZARE END--}}
-                
               {{!-- SPAȚII --}}
               <div class="form-group">
-                <label for="valid-spatii">Selectează spațiul de desfășurare.</label>
+                <label for="valid-spatii">Activitatea se desfășoară</label>
                 <select multiple class="form-control" id="valid-spatii">
-                  <option value="la clasă">la clasă</option>
-                  <option value="acasă">individual</option>
+                  <option value="clasa">la clasă</option>
+                  <option value="acasa">individual</option>
+                  <option value="grupe">în grupe</option>
                   <option value="laborator">în laborator</option>
-                  <option value="în aer liber">în aer liber</option>
-                  <option value="în aer liber">în grup</option>
-                </select>
+                  <optgroup label="în afara clasei">
+                    <option value="salasport">sala de sport</option>
+                    <option value="curteascolii">în curtea școlii</option>
+                    <option value="spatiideschise">alte spații deschise (pădure, parc)</option>
+                  </optgroup>
+                </select>              
               </div>
               {{!-- SPAȚII END --}}
 
-            </fieldset>
+              {{!-- CUM SE PRODUCE ÎNVĂȚAREA --}}
+              <div class="form-group">
+                <label for="valid-invatarea">Modul în care se produce învățarea</label>
+                <select multiple class="form-control" id="valid-invatarea">
+                  <option value="cooperare">prin cooperare</option>
+                  <option value="competitie">prin competiție</option>
+                  <option value="colaborare">prin colaborare</option>
+                  <option value="descoperire">prin descoperire</option>
+                  <option value="problematizare">prin problematizare</option>
+                  <option value="experimentare">prin experimentare</option>
+                  <option value="receptare">prin receptare activă</option>
+                </select>              
+              </div>
+              {{!-- CUM SE PRODUCE ÎNVĂȚAREA END --}} 
+
+              {{!-- DEPENDINȚELE Resursei --}}
+              <div class="form-group">
+                <fieldset>
+                  <legend>Mijloace / materiale didactice necesare</legend>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"></span>
+                    </div>
+                    <textarea id="dependinte" class="form-control" aria-label="dependinte" rows="3"></textarea>
+                  </div>
+                  <small class="form-text text-muted">
+                    Contribuitorul va introduce toate detaliile privind necesitățile sau condiționalitățile pentru a deschide, citi, interpreta sau rula conținutul resursei.
+                  </small>                  
+                </fieldset>
+              </div>
+              {{!-- DEPENDINȚELE Resursei END--}}                          
+
             {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI END --}}
 
             {{!-- Bibliografie --}}
