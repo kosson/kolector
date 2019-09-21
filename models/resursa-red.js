@@ -77,14 +77,12 @@ var Resursa = new mongoose.Schema({
 
     // #5. ELEMENTE OBLIGATORII PENTRU VALIDAREA RESURSEI
     grupuri:          [], // [valoare din vocabular] Va fi o listă de coduri care identifică câte o categorie reglementată de un vocabular controlat. De ex: „elev”, „profesor”, „aparținător”
-    laturi:           [], // [valoare din vocabular] De ex: „cognitiv”, „psiho-motor”, „afectiv”, „social”
+    domeniu:          [], // [valoare din vocabular] De ex: „cognitiv”, „psiho-motor”, „afectiv”, „social”
     functii:          [], // [valoare din vocabular] De ex: „cunoștințe noi” („predare”, „explicare”), „acomodare”, „actualizare”, „aprofundare”, „recapitulare”, „evaluare”
     demersuri:        [], // [valoare din vocabular] De ex: „inductiv”, „deductiv”, „dialectic”, „analogic”
-    modelUrmarit:     [], // [valoare din vocabular] De ex: „expozitive”, „narative”
-    modeleOrganizare: [], // [valoare din vocabular] De ex: „la clasă”, „individual”, „grupat”
-    modelCognitiv:    [], // [valoare din vocabular] De ex. „descoperire”, „experimentare”
     spatii:           [], // [valoare din vocabular] De ex. „la clasă”, „acasă”, „în laborator”, „în aer liber”
-    
+    invatarea:        [], // [valoare din vocabular] De ex: „la clasă”, „individual”, „grupat”
+
     // #5 DESCRIERE
     description: {
         type: String
@@ -95,7 +93,7 @@ var Resursa = new mongoose.Schema({
     identifierContext:  ['http://purl.org/dc/elements/1.1/identifier', 'https://schema.org/identifier'],
 
     // #6. CONȚINUT
-    dependinte:    [softwareSchema], // În cazul în care resursa are nevoie de un context de execuție, acesta va fi menționat aici.
+    dependinte:    String, // În cazul în care resursa are nevoie de un context de execuție, acesta va fi menționat aici.
     coperta:       String, // [este un URI] dacă resursa are o imagine reprezentativă, video, audio, etc. Aceasta se numește generic „copertă” și va fi folosită pentru a ilustra resursa în landing page și acces restricționat specialiști
     licenta:       String,
     contextLicenta:['http://purl.org/dcx/lrmi-terms/useRightsUrl'],
@@ -103,7 +101,7 @@ var Resursa = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'coment'
     }],     // este o listă de identificatori pentru comentariile aduse unei anumite resurse.
-    continut:      {}, // Este conținutul pe care îl permiți să fie adăugat cu Editor.js
+    content:       {}, // Este conținutul pe care îl permiți să fie adăugat cu Editor.js
     bibliografie:  String, // este o listă de referințe bibliografice dacă acest lucru există. Formatul este APA, versiunea 6.
 
     // #7. METRICI

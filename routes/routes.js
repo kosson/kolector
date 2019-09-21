@@ -90,8 +90,9 @@ module.exports = (express, app, passport, pubComm) => {
 
     /* =========== CONSTRUCȚIA BAG-ULUI ========= */
     /* SOCKETURI!!! */
-    let lastBag = ''; // este o referință către un bag deja deschis
-    let lastUuid = '';
+    let lastBag = '';   // este o referință către un bag deja deschis
+    let lastUuid = '';  // referință către UUID-ul în efect
+    
     pubComm.on('connect', (socket) => {
         // Ascultă mesajele
         socket.on('mesaje', (mesaj) => {
@@ -168,18 +169,18 @@ module.exports = (express, app, passport, pubComm) => {
 
     /* ========== ÎNCĂRCAREA UNIUI fișier cu `multer` ========= */
     var multer  = require('multer');
-    var multer2bag = require('./multer-bag-storage');
+    var multer2bag = require('./multer-bag-storage'); // încarcă mecanismul de storage special construit să gestioneze bag-uri!
 
     var storage = multer2bag({
         destination: function (req, file, cb) {
-            console.log('Este file primit la metoda destination din storage settings: ', file);
+            // console.log('Este file primit la metoda destination din storage settings: ', file);
             // generează un uuid care va fi numele noului subdirector corespondent unei resurse
             let uuidV1 = '';
             // verifică dacă nu cumva mai întâi utilizatorul a ales să încarce o imagine. În acest caz, lastUuid poartă valoarea setată anterior.
             if (lastUuid) {
                 uuidV1 = lastUuid; // asta înseamnă că deja a fost încărcat un fișier tip document și s-a creat un uuid al resursei
             } else {
-                uuidV1 = uuidv1(); // userul incarcă mai întâi de toate un  fișier tip document. Setezi uuid-ul pentru prima dată.
+                uuidV1 = uuidv1(); // userul încarcă mai întâi de toate un  fișier tip document. Setezi uuid-ul pentru prima dată.
                 // console.log(pubComm);
                 pubComm.emit('uuid', uuidV1); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată      
             }
@@ -201,57 +202,6 @@ module.exports = (express, app, passport, pubComm) => {
             cb(null, file.originalname);
         }        
     });
-    // unde stochezi fișierul
-    // var storage = multer.diskStorage({
-    //     destination: function (req, file, cb) {
-    //         console.log('Este file primit la metoda destination din storage settings: ', file);
-    //         // generează un uuid care va fi numele noului subdirector corespondent unei resurse
-    //         let uuidV1 = '';
-    //         // verifică dacă nu cumva mai întâi utilizatorul a ales să încarce o imagine. În acest caz, lastUuid poartă valoarea setată anterior.
-    //         if (lastUuid) {
-    //             uuidV1 = lastUuid; // asta înseamnă că deja a fost încărcat un fișier tip document și s-a creat un uuid al resursei
-    //         } else {
-    //             uuidV1 = uuidv1(); // userul incarcă mai întâi de toate un  fișier tip document. Setezi uuid-ul pentru prima dată.
-    //             // console.log(pubComm);
-    //             pubComm.emit('uuid', uuidV1); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată      
-    //         }
-    //         // console.log(uuidV1);
-
-    //         // Aceasta este cale pentru cazul în care nu există un director al resursei deja
-    //         let firstDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${uuidV1}/data`;
-    //         let firstDataPath2 = `${process.env.REPO_REL_PATH}${req.user.email}/${uuidV1}`;
-    //         // Aceasta este calea pentru cazul în care deja există creat directorul resursei pentru că a fost încărcat deja un fișier.
-    //         let existingDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${lastUuid}/data`;
-            
-    //         // Transformarea Buffer-ului primit într-un stream `Readable`
-    //         // var strm = new Readable();
-    //         // strm.push(resourceFile.resF);  
-    //         // strm.push(null);
-
-    //         /* ======= Directorul utilizatorului nu există. Trebuie creat !!!! ========= */
-    //         if (!fs.existsSync(firstDataPath)) {
-    //             fsPromises.mkdir(firstDataPath, { recursive: true }).then(() => {
-    //                 // FIXME: CREEAZĂ BAG, NU FILE!
-    //                 var bagNou = BagIt(firstDataPath2, 'sha256', {'Contact-Name': `${req.user.googleProfile.name}`}); //creează bag-ul
-
-    //                 lastBag = bagNou;
-    //                 // crearea efectivă a resursei în bag
-    //                 // strm.pipe(bagNou.createWriteStream(`${resourceFile.numR}`));
-                    
-    //                 cb(null, firstDataPath);    // introdu primul fișier aici.
-    //             }).catch((error) => {
-    //                 if (error) throw error;
-    //             });
-    //         } else if(fs.existsSync(existingDataPath)) {
-    //             cb(null, existingDataPath);
-    //         }
-    //         // cb(null, process.env.REPO_REL_PATH);
-    //     },
-    //     // cum denumești fișierul
-    //     filename: function (req, file, cb) {
-    //         cb(null, file.originalname);
-    //     }
-    // });
 
     // Funcție helper pentru filtrarea extensiilor acceptate
     let fileFilter = function fileFltr (req, file, cb) {
@@ -293,7 +243,7 @@ module.exports = (express, app, passport, pubComm) => {
         var cleanPath = parts.join('/');
 
         var filePath = `${process.env.BASE_URL}/${cleanPath}/data/${req.files[0].originalname}`;
-        console.log('Calea formată înainte de a trimite înapoi: ', filePath);
+        // console.log('Calea formată înainte de a trimite înapoi: ', filePath);
         
         var resObj = {
             "success": 1,
@@ -307,9 +257,6 @@ module.exports = (express, app, passport, pubComm) => {
         res.send(JSON.stringify(resObj));
     });
     // ========== ÎNCĂRCAREA UNUI FIȘIER cu `multer` - END =========
-
-
-
 
     // ========== 401 - NEPERMIS ==========
     app.get('/401', function(req, res){

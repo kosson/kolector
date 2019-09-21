@@ -11,8 +11,11 @@ var RED = {
     arieCurriculara: [],
     level: [],
     discipline: [],
+    activitati: [],
     etichete: []
 };
+
+let imagini = []; // un array cu toate imaginile care au fost introduse în document.
 
 pubComm.on('uuid', (id) => {
     console.log(id);
@@ -56,7 +59,7 @@ const editorX = new EditorJS({
             class: AttachesTool,
             buttonText: 'Încarcă un fișier',
             config: {
-                endpoint: 'http://localhost:8080/repo'
+                endpoint: 'http://localhost:8080/repo' // FIXME: CAUTĂ SĂ FACI UN MECANISM DE CONSTITUIRE DINAMICĂ A RĂDĂCINII ADRESEI
             },
             errorMessage: 'Nu am putut încărca fișierul.'
         },
@@ -106,6 +109,7 @@ const editorX = new EditorJS({
                                     RED.uuid = respObj.uuid;
                                     obj4EditorJS.success = respObj.success;
                                     obj4EditorJS.file.url = respObj.file;
+                                    imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
                                     resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
                                 });
                             } else {
@@ -116,6 +120,7 @@ const editorX = new EditorJS({
                                     RED.uuid = respObj.uuid;
                                     obj4EditorJS.success = respObj.success;
                                     obj4EditorJS.file.url = respObj.file;
+                                    imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
                                     resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
                                 });
                             }
@@ -209,6 +214,7 @@ const editorX = new EditorJS({
                                             obj4EditorJS.success = respObj.success;
                                             obj4EditorJS.file.url = respObj.file;
                                             // console.log(obj4EditorJS);
+                                            imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
                                             resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
                                         });
                                     } else {
@@ -220,6 +226,7 @@ const editorX = new EditorJS({
                                             obj4EditorJS.success = respObj.success;
                                             obj4EditorJS.file.url = respObj.file;
                                             // console.log(obj4EditorJS);
+                                            imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
                                             resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
                                         });
                                     }
@@ -253,6 +260,7 @@ saveContinutRes.addEventListener('click', function (evt) {
     editorX.save().then((content) => {
         console.log(content); 
         // TODO: Introdu conținutul în obiectul mare RED.
+        RED.content = content;
     }).catch((e) => {
         console.log(e);
     });
@@ -510,20 +518,19 @@ function actSwitcher () {
     }
 }
 
-
-var activitatiSelectate = []; // array-ul care va colecta activitățile selectate.
 /**
  * Funcție helper pentru prezentarea informațiilor privind activitățile în row separat
  * De funcția aceasta are nevoie `disciplineBifate()`
- * singura formulă de a adăuga interactivtate inputurilor este prin atașarea unui listener cu `onclick`
+ * singura formulă de a adăuga interactivtate inputurilor este prin atașarea unui listener `manageInputClick()` pe `onclick`
  * FIXME: Vreodată dacă ai timp, curăță JQuery-ul
- * @param {Object} data sunt datele originale ale tabelului
+ * @param {Object} data sunt datele unei Competențe Specifice. Acestea au fost aduse din baza de date
  */
 function tabelFormater (data) {
-    // constituie un array al tuturor activităților arondate unei competențe specifice pentru a genera o listă din acestea
+    // constituie o secțiune în care vor sta activitățile
     var sectionW   = $('<section></section>');
     var activitati = $(`<ul id="${data.cod}"></ul>`);
-    // populare cu activitățile aferente competenței specifice
+
+    // constituie un array al tuturor activităților arondate unei competențe specifice pentru a genera elementele li din acestea
     data.activitati.forEach((elem) => {
         // pentru fiecare activitate, generează câte un `<li>` care să fie in form check a cărui valoare este chiar textul activității
         let divElem = $('<div class="form-check"></div>').wrap('<li class="list-group-item"><li>');
@@ -532,32 +539,35 @@ function tabelFormater (data) {
         activitati.append(divElem);
     });
 
-    // generarea formului folosit la adăugarea de activități
+    // generarea formului folosit la adăugarea de activități arbitrare
     var wrapper   = $(`<div class="input-group mb-3">`);
     var frmAddAct = $(`<input type="text" aria-label="descrierea noii activități propuse" class="form-control ${data.cod}-add" placeholder="Aici vei introduce descrierea noii activități propuse" aria-describedby="basic-addon2"></input>`);
+    // adăugarea butonul necesar introducerii de activități arbitrare
     var btnWrap   = $('<div class="input-group-append">');
     var btnAdd    = $(`<buton type="button" id="${data.cod}-add" class="btn btn-warning">Adaugă o nouă activitate</div>`).wrap(`<div class="input-group-append">`);
-    btnWrap.append(btnAdd);
-    wrapper.append(frmAddAct);
+    btnWrap.append(btnAdd); // adaugă elementul buton
+    wrapper.append(frmAddAct);  // 
     wrapper.append(btnWrap);
-    // aici se creează butonul care permite adăugarea de elemente noi la lista de activități
-    $(btnAdd).on('click', function () {
+
+    // aici se creează butonul care permite adăugarea de elemente noi la lista de activități și se atașează și listener-ul
+    $(btnAdd).on('click', function (evt) {
+        // la apăsarea butonului „Adaugă o nouă activitate”, se va genera un element nou input checkbox, deja bifat
         let divElem = $('<div class="form-check"></div>').wrap('<li class="list-group-item"><li>');
         divElem.append(`<input class="activitate form-check-input position-static" type="checkbox" value="${$(frmAddAct).val()}" checked onclick="manageInputClick()"> ${$(frmAddAct).val()}`);
         // am introdus clasa activitate pentru ușura mecanismul de selecție ulterior în funcția manageInputClick()
+
+        // Introdu de la momentul în care se constituie elementul input checkbox valoarea în activitatiFinal
+        activitatiFinal.set(`${$(frmAddAct).val()}`, `${data.cod}`);
         activitati.append(divElem);
-        activitatiSelectate.set($(frmAddAct).val(), data.cod); // introdu deja activitatea în mecanismul construit cu Map
-        console.log(activitatiSelectate);
     });
 
-    // Adaugă în wrapper cele două zone: activitati și introducere activități
+    // Adaugă în wrapper cele două zone: activitati și formul de introducere activități
     sectionW.append(activitati);
     sectionW.append(wrapper);
 
     // Inițializează cu date instanța clasei Act --> scoate datele caracteristice zonei populate!!!
     watchRow(data);
-    // FIXME: Dă-i drumu când e gata!!!
-    //activitatiRepopulareChecks(); // restabilirea stării de dinaintea închiderii rândului cu lista de activități
+
     // trebuie returnat lui Data Table, alfel nu se populează datele.
     return sectionW;
 }
@@ -585,11 +595,9 @@ function watchRow (data) {
     XY = inception;
 }
 
-// mecanism de colectare al activităților bifate sau nu
-var activitatiSelectate = new Map();
-
 /** 
  * Funcția are rolul de a restabili starea de dinainte de a scoate din DOM activitățile unei competențe
+ * Este apelată din `disciplineBifate()`
  */
 function activitatiRepopulareChecks () {
     let rowData = XY.getData();
@@ -600,17 +608,17 @@ function activitatiRepopulareChecks () {
 
     // selectează doar elementele care au valoarea codului competenței și fă-le să apară bifate.
     const existing = arr.map((element) => {
-        if ((activitatiSelectate.has(element.value))) {
+        if ((activitatiFinal.has(element.value))) {
             element.checked = true;
         }
     });
 
     /* ====== Popularea cu activitățile create de user ======*/
-    var contentMap = activitatiSelectate.entries();
+    var contentMap = activitatiFinal.entries();
     // creează punctul de inserție pentru activitățile care au fost dorite opțional
     var ancora = document.getElementById(XY.getData().cod);
 
-    // constituie un array al activităților care se încarcă din bază
+    // constituie un array al tuturor activităților care se încarcă din bază
     var activitati = [];
     for (let el of arr) {
         activitati.push(el.value);
@@ -635,40 +643,46 @@ function activitatiRepopulareChecks () {
     }
 }
 
+var activitatiFinal = new Map();    // mecanism de colectare al activităților bifate sau nu
 /**
- *  Funcția este event handler pentru click-urile de pe inputurile create dinamic în rândul, care la rândul său este creat dinamic.
+ *  Funcția este event handler pentru click-urile de pe input checkbox-urile create dinamic pentru fiecare activitate.
+ * Gestionează ce se întâmplă cu datele din `activitatiFinal`
  *  Are acces la obiectul `XY`, care oferă datele rândului.
- *  Aici se verifică bifele și se crează un `Map` cu datele care trebuie inroduse în obiectul `RED`
+ *  Aici se verifică bifele și se crează un `Map` cu datele care trebuie introduse în obiectul `RED`
  */
 function manageInputClick () {
-    let rowData = XY.getData();
+    let rowData = XY.getData(); // referință către datele rândului de tabel pentru o anumită competență specifică
+    // console.log(rowData);
     // $(`#arteviz3\\-1\\.1`).show(); MEMENTO!!!! Bittes like fuckin sheet!
-    // $(`#arteviz3\\-1\\.1`).css('background-color', 'salmon');
 
-    // selectează `<ul>`-ul care ține toate inputurile
-    // var listaID = document.getElementById(`${rowData.cod}`);
-    // constituie un array cu toate elementele input
-    // var arr = Array.from(listaID.getElementsByTagName('input')); // OLD!!! FIXME: Șterge-mă!
-    var arr = Array.from(document.getElementsByClassName('activitate'));
+    // FIXME: Aici este eroarea: selectarea tuturor elementelor care au clasa activitate. TREBUIE selectate doar cele ale sectiunii curente.
+    /* ==== constituie un array cu toate elementele input checkbox care au clasa `activitate` indiferent de rând ==== */
+    // var arr = Array.from(document.getElementsByClassName('activitate'));
+    // console.log(arr.length);
 
-    // pentru fiecare dintre elementele din array, verifică dacă a fost bifat.
-    // dacă a fost bifat, adaugă-l în Map
-    var existing = arr.filter((elem) => {
+    var ancoraID = document.getElementById(rowData.cod);
+    // console.log(ancoraID);
+    var activitChildren = Array.from(ancoraID.querySelectorAll('.activitate'));
+    // console.log(activitChildren);
+
+    // pentru fiecare dintre elementele din array, verifică dacă a fost bifat. Dacă a fost bifat, adaugă-l în Map
+    var existing = activitChildren.filter((elem) => {
         if (elem.checked) {
-            return true; // dacă e true, adaugă element bifat în rezultat
-        } else if (activitatiSelectate.has(elem.value)) { // dacă nu e bifat, verifică dacă nu cumva se află în Map de la o bifare anterioară
-            activitatiSelectate.delete(elem.value); // STERGE-L!!!
+            return true; // dacă e true, adaugă element bifat în `existing`
+        } else if (activitatiFinal.has(elem.value)) { 
+            // dacă nu e bifat, verifică dacă nu cumva se află în Map de la o bifare anterioară. Atenție, valoarea nu este codul CS-ului, este chiar descierea activității
+            activitatiFinal.delete(elem.value); // STERGE-L!!!
         }
     });
-    // console.log(existing);
+
     // pentru array-ul inputurilor bifate, 
-    existing.forEach((elem) => {// verifică dacă valorile sunt în Map
-        activitatiSelectate.set(elem.value, rowData.cod);
+    existing.forEach((elem) => {
+        activitatiFinal.set(elem.value, rowData.cod);
     });
 
     // selectează tabelul mare din care vei ținti checkboxul de pe rândul competenței specifice
     // ceea ce se dorește este ca atunci când există cel puțin un element bifat, să fie bifat și rândul competenței specifice
-    if (activitatiSelectate.size) {
+    if (activitatiFinal.size) {
         document.getElementById('competenteS').querySelector(`input[value="${rowData.cod}"]`).checked = true;
         // console.log(activitatiSelectate);
     } else {
@@ -683,24 +697,24 @@ function addMeDeleteMe () {
 /* ======== MAGIA ESTE GATA, APLAUZE pentru o mare măgărie, care... FUNCȚIONEAZĂ :)))))) ======= */
 
 /**
- * Funcția `diciplineBifate` are rolul de a extrage datele pentru disciplinele existente în vederea
- * constituirii obiectului mare care să fie trimis spre baza de date. 
- * Pentru că se folosește Bootstrap 4, aceasta este soluția corectă în cazul checkbox-urilor.
- * TODO: Extinde suportul și pentru celelalte situații de checkbox-uri pentru concizie!!! (arii în relații, și niveluri în relație)
+ * Funcția `diciplineBifate` este listener pentru butonul „Alege competențele specifice”
+ * Are rolul de a aduce competențele specifice pentru disciplinele bifate folosind socketurile.
+ * Apelează funcțiile `tabelFormater(data)` și `activitatiRepopulareChecks()` la momentul când se apasă pe butonu plus
  * Încarcă și obiectul `RED` care colectează datele de formular: `RED.discipline` și `RED.etichete`
  */
 function disciplineBifate () {
+    // un array necesar pentru a captura valorile input checkbox-urilor bifate
     let values = [];
-    // selectează toate checkbox-urile checked.
+
+    // trimite în `values` valorile din input checkboxurile bifate în elementul părinte #discipline
     document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
         values.push(value);
     });
 
-    // ori de câte ori va fi apăsată o disciplină, se vor aduce date noi. Deficiența este că baza de date este atinsă la fiecare selecție
+    // ori de câte ori va fi apăsată o disciplină, se emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ]). 
     pubComm.emit('csuri', values);
-    // TODO: emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ])
-    // FIXME: șterge conținutul tabelului la apel
-    const tabelComps = document.querySelector('#competenteS'); // selectează tabelul țintă
+
+    // const tabelComps = document.querySelector('#competenteS'); // selectează tabelul țintă
     
     /* ==== GENEREAZA TABELUL ===== */
     pubComm.on('csuri', (csuri) => {        
@@ -750,7 +764,7 @@ function disciplineBifate () {
                 evt.preventDefault();
 
                 var tr = $(this).closest('tr'); // this este butonul. closest('tr') este randul în care se află. Caută rândul pe care este butonul și fă-i o referință
-                var row = table.row(tr); // row() este o metodă de-a lui data table. Transformă tr-ul JQuery în row de data-table
+                var row = table.row(tr); // row() este o metodă de-a lui Data Table. Transformă tr-ul JQuery în row de data-table
         
                 if ( row.child.isShown() ) {
                     // Rândul cu detaliile activităților este deschis. Închide-l!
@@ -764,8 +778,7 @@ function disciplineBifate () {
                     tr.addClass('shown');
                     // tr.find('svg').attr('data-icon', 'minus-circle'); // FontAwesome 5
 
-                    // pune check-urile pe cele care au fost deja selectate.
-                    activitatiRepopulareChecks();
+                    activitatiRepopulareChecks(); // restabilirea stării de dinaintea închiderii rândului cu lista de activități
                 }
             });
         });
@@ -889,10 +902,48 @@ function pas2 () {
             RED.etichete.push(element.value);
         }
     });
+
+    // TODO: introdu valorile din `activitatiFinal` în obiectul RED.
+    RED.activitati = [];
+    function pushActivitate (value, key, map) {
+        var arr = [value, key];
+        RED.activitati.push(arr);
+    }
+    activitatiFinal.forEach(pushActivitate);
 }
 
 function pas3 () {
-    // colectează datele din formular de la pasul 3. În cazul în care te întorci la pasul 2, introdu activitățile selectate anterior într-un list.
+    // introducerea grupurilor țintă selectare din options
+    var grup = document.getElementById('valid-grup');
+    RED.grupuri = getMeSelected(grup, false);
+    var domeniu = document.getElementById('valid-domeniu');
+    RED.domeniu = getMeSelected(domeniu, true);
+    var functii = document.getElementById('valid-functii');
+    RED.functii = getMeSelected(functii, true);
+    var demersuri = document.getElementById('valid-demersuri');
+    RED.demersuri = getMeSelected(demersuri, false);
+    var spatii = document.getElementById('valid-spatii');
+    RED.spatii = getMeSelected(spatii, true);
+    var invatarea = document.getElementById('valid-invatarea');
+    RED.invatarea = getMeSelected(invatarea, true);
+    RED.dependinte = document.getElementById('dependinte').value;
+    RED.bibliografie = document.getElementById('bibliografie').value;
+}
+
+/**
+ * Funcția are rolul să prelucreze un element select cu opțiunea multiple activă
+ * @param {Object} elem Este elementul DOM select din care se dorește returnarea unui array cu valorile celor selectate
+ * @return {Array} Array cu valorile select-urilor pentru care utilizatorul a optat.
+ */
+function getMeSelected (elem, eticheta) {
+    // introdu un nivel de verificare compatibilitate. Dacă browserul nu are suport pentru `.selectedOptions`, optează pentru un nivel suplimentar de asigurare a compatibilității
+    var selectedElems = elem.selectedOptions || [].filter.call(elem.options, option => option.selected);
+    return [].map.call(selectedElems, option => {
+        if (eticheta === true) {
+            RED.etichete.push(option.value);
+        }
+        return option.value;
+    });
 }
 
 /* ========== TRIMITEREA DATELOR FORMULARULUI ============== */

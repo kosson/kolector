@@ -332,7 +332,9 @@
                 <select multiple class="form-control" id="valid-grup">
                   <option value="elev">elev</option>
                   <option value="profesor">profesor</option>
-                  <option value="apartinator">părinte/ tutore/ aparținător</option>
+                  <option value="părinte">părinte</option>
+                  <option value="tutore">tutore</option>
+                  <option value="aparținător">aparținător</option>
                 </select>
               </div>
               {{!-- GRUPURILE ȚINTĂ END--}}
@@ -352,7 +354,8 @@
               <div class="form-group">
                 <label for="valid-functii">Resursa vizează</label>
                 <select multiple class="form-control" id="valid-functii">
-                  <option value="cunostinte">comunicare/ însușire de noi cunoștințe</option>
+                  <option value="comunicare">comunicare</option>
+                  <option value="însușire">însușire de noi cunoștințe</option>
                   <option value="formare">formare de priceperi și deprinderi</option>
                   <option value="fixare">fixare și sistematizare</option>
                   <optgroup label="verificare/ evaluare a cunoștințelor acumulate">
@@ -395,15 +398,15 @@
 
               {{!-- CUM SE PRODUCE ÎNVĂȚAREA --}}
               <div class="form-group">
-                <label for="valid-invatarea">Modul în care se produce învățarea</label>
+                <label for="valid-invatarea">Modul în care se produce învățarea se face prin:</label>
                 <select multiple class="form-control" id="valid-invatarea">
-                  <option value="cooperare">prin cooperare</option>
-                  <option value="competitie">prin competiție</option>
-                  <option value="colaborare">prin colaborare</option>
-                  <option value="descoperire">prin descoperire</option>
-                  <option value="problematizare">prin problematizare</option>
-                  <option value="experimentare">prin experimentare</option>
-                  <option value="receptare">prin receptare activă</option>
+                  <option value="cooperare">cooperare</option>
+                  <option value="competitie">competiție</option>
+                  <option value="colaborare">colaborare</option>
+                  <option value="descoperire">descoperire</option>
+                  <option value="problematizare">problematizare</option>
+                  <option value="experimentare">experimentare</option>
+                  <option value="receptare">receptare activă</option>
                 </select>              
               </div>
               {{!-- CUM SE PRODUCE ÎNVĂȚAREA END --}} 
@@ -414,7 +417,7 @@
                   <legend>Mijloace / materiale didactice necesare</legend>
                   <div class="input-group">
                     <div class="input-group-prepend">
-                      <span class="input-group-text"></span>
+                      <span class="input-group-text">Resursa necesită:</span>
                     </div>
                     <textarea id="dependinte" class="form-control" aria-label="dependinte" rows="3"></textarea>
                   </div>
