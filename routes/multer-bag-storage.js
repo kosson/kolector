@@ -16,7 +16,8 @@ Multer2Bag.prototype._handleFile = function _handleFile (req, file, cb) {
         if (err) return cb(err);
 
         var bag = BagIt(path, 'sha256', {'Contact-Name': `${req.user.googleProfile.name}`});
-        file.stream.pipe(bag.createWriteStream(file.originalname).on('finish', function () {
+        var fileName = file.originalname;
+        file.stream.pipe(bag.createWriteStream(fileName).on('finish', function () {
             cb(null, {
                 path: path
             });

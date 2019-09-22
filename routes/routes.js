@@ -1,10 +1,11 @@
 require('dotenv').config();
-const fs         = require(`fs`);
-const fsPromises = require(`fs`).promises;
-const path       = require(`path`);
-const BagIt      = require('bagit-fs');
-const uuidv1     = require('uuid/v1');
-var Readable     = require('stream').Readable;
+const fs          = require(`fs`);
+const fsPromises  = require(`fs`).promises;
+const path        = require(`path`);
+const querystring = require('querystring')
+const BagIt       = require('bagit-fs');
+const uuidv1      = require('uuid/v1');
+var Readable      = require('stream').Readable;
 
 module.exports = (express, app, passport, pubComm) => {
     /* GESTIONAREA RUTELOR */
@@ -90,8 +91,8 @@ module.exports = (express, app, passport, pubComm) => {
 
     /* =========== CONSTRUCȚIA BAG-ULUI ========= */
     /* SOCKETURI!!! */
-    let lastBag = '';   // este o referință către un bag deja deschis
-    let lastUuid = '';  // referință către UUID-ul în efect
+    let lastBag;   // este o referință către un bag deja deschis
+    let lastUuid;  // referință către UUID-ul în efect
     
     pubComm.on('connect', (socket) => {
         // Ascultă mesajele
@@ -102,9 +103,6 @@ module.exports = (express, app, passport, pubComm) => {
 
         // Primirea imaginilor pe socket conduce la crearea Bag-ului
         socket.on('resursa', function cbRes (resourceFile) {
-            // setează uuid-ul local
-            lastUuid = resourceFile.uuid;
-
             // creează calea pe care se va depozita.
             var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
 
@@ -112,17 +110,32 @@ module.exports = (express, app, passport, pubComm) => {
             var strm = new Readable();
             strm.push(resourceFile.resF);  
             strm.push(null);
-    
-            // cazul în care BAG-ul EXISTĂ DEJA, setează valoarea locală uuid
-            if (resourceFile.uuid) {                
+
+            // dacă resursa primită nu are uuid, înseamnă că este prima. Tratează cazul primei resurse
+            if (!resourceFile.uuid) {
+                // setează lastUuid
+                lastUuid = uuidv1();
+                // ajustează calea adăugând fragmentul uuid
+                calea += `${lastUuid}`;
+                // generează bag-ul pentru user
+                lastBag = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează bag-ul
+                // adăugarea fișierului primit în Bag
+                strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));                
+                // construiește obiectul de răspuns necesar lui Editor.js
+                var responseObj = {
+                    success: 1,
+                    uuid: lastUuid,
+                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`
+                };
+                // trimite înapoi în client obiectul de care are nevoie Editor.js
+                socket.emit('resursa', responseObj);
+            } else if (resourceFile.uuid && lastUuid === resourceFile.uuid) {
+                // dacă lastUuid este același cu cel primit din client, avem de-a face cu aceeași resursă
                 // setează calea către directorul deja existent al resursei
                 calea += `${resourceFile.uuid}`;
-                // constituie mediul Bag-ului
-                var bagExistent = BagIt(calea, 'sha256');
-                lastBag = bagExistent;
-
+                lastBag = BagIt(calea, 'sha256');
                 // introdu un nou fișier în Bag
-                strm.pipe(bagExistent.createWriteStream(`${resourceFile.numR}`));
+                strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));
                 // construiește obiectul de răspuns.
                 var responseObj4AddedFile = {
                     success: 1,
@@ -132,28 +145,7 @@ module.exports = (express, app, passport, pubComm) => {
                 // trimite înapoi obiectul care reprezintă fișierul creat în Bag-ul resursei
                 socket.emit('resursa', responseObj4AddedFile);
             } else {
-                // cand ai primit date pe `res`, generează mai întâi de toate uuid-ul. Este valabil pentru primul fișier care va iniția crearea bag-ului
-                var uuidV1 = '';
-                if (lastUuid) {
-                    uuidV1 = lastUuid; // asta înseamnă că deja a fost încărcat un fișier tip document și s-a creat un uuid al resursei
-                } else {
-                    uuidV1 = uuidv1(); // dacă nu a fost încărcat niciun fișier tip document, înseamnă că mai întâi se introduc imagini în editor
-                }
-                
-                // în cazul în care NU EXISTĂ BAG-UL (resursă nouă), se va lua valoarea generată de uuidv1()
-                calea += `${uuidV1}`;
-                var bagNou = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează bag-ul
-                lastBag = bagNou;
-                // crearea efectivă a resursei în bag
-                strm.pipe(bagNou.createWriteStream(`${resourceFile.numR}`));                
-                // construiește obiectul de răspuns.
-                var responseObj = {
-                    success: 1,
-                    uuid: uuidV1,
-                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${uuidV1}/data/${resourceFile.numR}`
-                };
-                // trimite înapoi obiectul care reprezintă fișierul creat în Bag-ul resursei
-                socket.emit('resursa', responseObj);
+                const err = new Error('message', 'nu pot încărca... se încearcă crearea unui bag nou');
             }
         });
 
@@ -167,34 +159,28 @@ module.exports = (express, app, passport, pubComm) => {
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */
 
-    /* ========== ÎNCĂRCAREA UNIUI fișier cu `multer` ========= */
+    /* ========== ÎNCĂRCAREA UNUI fișier cu `multer` ========= */
     var multer  = require('multer');
     var multer2bag = require('./multer-bag-storage'); // încarcă mecanismul de storage special construit să gestioneze bag-uri!
 
     var storage = multer2bag({
         destination: function (req, file, cb) {
-            // console.log('Este file primit la metoda destination din storage settings: ', file);
-            // generează un uuid care va fi numele noului subdirector corespondent unei resurse
-            let uuidV1 = '';
             // verifică dacă nu cumva mai întâi utilizatorul a ales să încarce o imagine. În acest caz, lastUuid poartă valoarea setată anterior.
-            if (lastUuid) {
-                uuidV1 = lastUuid; // asta înseamnă că deja a fost încărcat un fișier tip document și s-a creat un uuid al resursei
-            } else {
-                uuidV1 = uuidv1(); // userul încarcă mai întâi de toate un  fișier tip document. Setezi uuid-ul pentru prima dată.
-                // console.log(pubComm);
-                pubComm.emit('uuid', uuidV1); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată      
+            if (!lastUuid) {
+                lastUuid = uuidv1(); // userul încarcă mai întâi de toate un  fișier tip document. Setezi uuid-ul pentru prima dată.
+                pubComm.emit('uuid', lastUuid); // trimite clientului numele directorului pe care a fost salvată prima resursă încărcată
             }
-            // console.log(uuidV1);
 
             // Aceasta este cale pentru cazul în care nu există un director al resursei deja
-            let firstDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${uuidV1}`;
+            let firstDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${lastUuid}`;
             // Aceasta este calea pentru cazul în care deja există creat directorul resursei pentru că a fost încărcat deja un fișier.
-            let existingDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${lastUuid}/data`;
+            let existingDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${lastUuid}`;
 
             /* ======= Directorul utilizatorului nu există. Trebuie creat !!!! ========= */
             if (!fs.existsSync(firstDataPath)) {
                 cb(null, firstDataPath);    // introdu primul fișier aici.
             } else if(fs.existsSync(existingDataPath)) {
+                // cb(null, existingDataPath); // păstrează spațiile fișierului original dacă acestea le avea. La întoarcere în client, va fi un path rupt de spații.
                 cb(null, existingDataPath);
             }
         },
@@ -239,17 +225,19 @@ module.exports = (express, app, passport, pubComm) => {
         // console.log('Detaliile lui files: ', req.files);
         var fileP = req.files[0].path;
         var parts = fileP.split('/');
-        parts.shift();
-        var cleanPath = parts.join('/');
+        parts.shift(); // necesar pentru a șterge punctul din start-ul căii
+        var cleanPath = parts.join('/'); // reasamblează calea curată
 
-        var filePath = `${process.env.BASE_URL}/${cleanPath}/data/${req.files[0].originalname}`;
+        // var fileName = querystring.escape(req.files[0].originalname);
+        var fileName = req.files[0].originalname;
+        var filePath = `${process.env.BASE_URL}/${cleanPath}/data/${fileName}`;
         // console.log('Calea formată înainte de a trimite înapoi: ', filePath);
         
         var resObj = {
             "success": 1,
             "file": {
                 "url": `${filePath}`,
-                "name": `${req.files[0].originalname}`
+                "name": `${fileName}`
             }
         };
         // FIXME: În momentul în care utilizatorul decide să șteargă resursa din fișier, acest lucru ar trebui să se reflecte și pe hard disk.

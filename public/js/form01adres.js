@@ -17,8 +17,9 @@ var RED = {
 
 let imagini = []; // un array cu toate imaginile care au fost introduse în document.
 
+// este necesar pentru a primi uuid-ul generat la încărcarea unui fișier mai întâi de orice în Editor.js. Uuid-ul este trimis din multer
 pubComm.on('uuid', (id) => {
-    console.log(id);
+    console.log('Pentru că a fost încărcat un fișier mai întâi de toate, a fost generat următorul uuid în server: ', id);
     RED.uuid = id;
 });
 
@@ -59,7 +60,7 @@ const editorX = new EditorJS({
             class: AttachesTool,
             buttonText: 'Încarcă un fișier',
             config: {
-                endpoint: 'http://localhost:8080/repo' // FIXME: CAUTĂ SĂ FACI UN MECANISM DE CONSTITUIRE DINAMICĂ A RĂDĂCINII ADRESEI
+                endpoint: `${location.origin}/repo`
             },
             errorMessage: 'Nu am putut încărca fișierul.'
         },
@@ -90,7 +91,8 @@ const editorX = new EditorJS({
                             resF: file,
                             numR: file.name,
                             type: file.type
-                        };
+                        };  // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare
+
                         // obiectul necesar lui Editor.js
                         let obj4EditorJS = {
                             success: '',
@@ -100,30 +102,21 @@ const editorX = new EditorJS({
                         };
                         /* ====== FUNCȚIA EXECUTOR ===== */
                         function executor (resolve, reject) {
-                            // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare
-                            if (RED.uuid !== undefined) {
-                                // este cazul în care deja directorul resursei a fost creat.
-                                pubComm.emit('resursa', objRes);
-                                // trimite obiectul către server
-                                pubComm.on('resursa', (respObj) => {
+                            console.log('Cand încarc un fișier, trimit următorul obiect: ', objRes);
+                            // TRIMITE RESURSA către server
+                            pubComm.emit('resursa', objRes);
+                            // trimite obiectul către server
+                            pubComm.on('resursa', (respObj) => {
+                                // în cazul în care nu există nicio resursă, aceasta va fi creată și se va primi uuid-ul generat de server
+                                if (!RED.uuid) {
                                     RED.uuid = respObj.uuid;
-                                    obj4EditorJS.success = respObj.success;
-                                    obj4EditorJS.file.url = respObj.file;
-                                    imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
-                                    resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
-                                });
-                            } else {
-                                // în caz contrar, avem de-a face cu prima trimitere a unei resurse, iar obiectul objRes nu va avea uuid-ul
-                                pubComm.emit('resursa', objRes);
-                                // apoi vom primi uuid-ul generat la momentul constituirii directorului resurse cu primul fișier în subdirectorul /data
-                                pubComm.on('resursa', (respObj) => {
-                                    RED.uuid = respObj.uuid;
-                                    obj4EditorJS.success = respObj.success;
-                                    obj4EditorJS.file.url = respObj.file;
-                                    imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
-                                    resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
-                                });
-                            }
+                                }
+                                console.log('În urma încărcării fișierului de imagine am primit de la server: ', respObj);
+                                obj4EditorJS.success = respObj.success;
+                                obj4EditorJS.file.url = respObj.file;
+                                imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
+                                resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
+                            });
                         }
                         // construiește promisiunea
                         var promise = new Promise(executor);
@@ -148,8 +141,12 @@ const editorX = new EditorJS({
                         }                        
 
                         // Extrage numele fișierului
-                        let nameF = url.split('/').pop().split('#')[0].split('?')[0];
-                        // alternativ se poate folosi
+                        // let nameF = url.split('/').pop().split('#')[0].split('?')[0];
+
+                        /**
+                         * Funcția are rolul de a extrage numele fișierului
+                         * @argument {String} url Este chiar url-ul în formă string
+                         */
                         function fileNameFromUrl(url) {
                             var matches = url.match(/\/([^\/?#]+)[^\/]*$/);
                             if (matches.length > 1) {
@@ -158,28 +155,30 @@ const editorX = new EditorJS({
                             return null;
                         }
 
-                        /**
-                         * 
-                         * @param {String} url Este chiar URL-ul de pe care va veni resursa
-                         */
-                        function getExtension(url) {
-                            var extStart = url.indexOf('.',url.lastIndexOf('/')+1);
-                            if (extStart==-1) return false;
-                            var ext = url.substr(extStart+1),
-                                // finalul numelui extensiei începe după următoarele: end-of-string ori question-mark or hash-mark
-                                extEnd = ext.search(/$|[?#]/);
-                            return ext.substring (0,extEnd);
-                        }
-                        // extrage extensia fișierului
-                        let extF = getExtension(url);
+                        // /**
+                        //  * Funcția are rolul de a obține extensia fișierului de imagine
+                        //  * @param {String} url Este chiar URL-ul de pe care va veni resursa
+                        //  */
+                        // function getExtension(url) {
+                        //     var extStart = url.indexOf('.',url.lastIndexOf('/')+1);
+                        //     if (extStart==-1) return false;
+                        //     var ext = url.substr(extStart+1),
+                        //         // finalul numelui extensiei începe după următoarele: end-of-string ori question-mark or hash-mark
+                        //         extEnd = ext.search(/$|[?#]/);
+                        //     return ext.substring (0,extEnd);
+                        // }
+                        // // extrage extensia fișierului
+                        // let extF = getExtension(url);
 
+                        // adu-mi fișierul de pe net!!!
                         return fetch(url)
                             .then(validateResponse)
                             .then(response => response.blob())
                             .then(response => {
                                 // completează proprietățile necesare pentru a-l face `File` like.
                                 response.lastModifiedDate = new Date();
-                                response.name = nameF;
+                                response.name = fileNameFromUrl(decodeURI(url)); // WARNING: Bits like fucking shit!!!
+                                // console.log('Fetch-ul adaugă proprietatea response.name cu url-ul după prelucrarea cu fileNameFromUrl(url): ', response.name);
 
                                 // obiectul trimis către server
                                 let objRes = {
@@ -191,9 +190,11 @@ const editorX = new EditorJS({
                                     type: ''
                                 };
 
-                                objRes.numR = nameF;    // completează obiectul care va fi trimis serverului cu numele fișierului
+                                objRes.numR = response.name; // completează obiectul care va fi trimis serverului cu numele fișierului
                                 objRes.type = response.type; // completează cu extensia
                                 objRes.resF = response;
+                                // trimite resursa în server
+                                pubComm.emit('resursa', objRes);
                                 
                                 const promissed = new Promise((resolve, reject) => {
                                     // obiectul necesar lui Editor.js
@@ -202,36 +203,21 @@ const editorX = new EditorJS({
                                         file: {
                                             url: ''
                                         }
-                                    };
+                                    };                                    
                                     
-                                    // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare
-                                    if (RED.uuid !== undefined) {
-                                        // este cazul în care deja directorul resursei a fost creat.
-                                        pubComm.emit('resursa', objRes); // trimite obiectul preparat
-                                        // trimite obiectul către server
-                                        pubComm.on('resursa', (respObj) => {
+                                    pubComm.on('resursa', (respObj) => {
+                                        // cazul primei trimiteri de resursă: setează uuid-ul proaspăt generat! Este cazul în care prima resursă trimisă este un fișier imagine.
+                                        if (RED.uuid === undefined) {
                                             RED.uuid = respObj.uuid;
-                                            obj4EditorJS.success = respObj.success;
-                                            obj4EditorJS.file.url = respObj.file;
-                                            // console.log(obj4EditorJS);
-                                            imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
-                                            resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
-                                        });
-                                    } else {
-                                        // în caz contrar, avem de-a face cu prima trimitere a unei resurse, iar obiectul objRes nu va avea uuid-ul
-                                        pubComm.emit('resursa', objRes);
-                                        // apoi vom primi uuid-ul generat la momentul constituirii directorului resurse cu primul fișier în subdirectorul /data
-                                        pubComm.on('resursa', (respObj) => {
-                                            RED.uuid = respObj.uuid;
-                                            obj4EditorJS.success = respObj.success;
-                                            obj4EditorJS.file.url = respObj.file;
-                                            // console.log(obj4EditorJS);
-                                            imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
-                                            resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
-                                        });
-                                    }
+                                        }
+                                        console.log('În cazul paste-ului de imagine, pe canalul resursa am primit următorul obiect: ', respObj);
+                                        obj4EditorJS.success = respObj.success;
+                                        obj4EditorJS.file.url = respObj.file;
+                                        imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
+                                        resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
+                                    });
                                 });
-                                
+                                // returnează promisiunea așteptată de Editor.js
                                 return promissed.then((obi) => {
                                     return obi;
                                 }).catch(error => {
@@ -797,7 +783,6 @@ compSpecPaginator.addEventListener('click', (ev) => {
 /* ========== COLECTAREA DATELOR DIN FORM ============= */
 
 /* ====== Pasul 1 ====== */
-
 /**
  * Funcția are rolul de a popula obiectul `RED` cu datele din formular de la `Pas 1`.
  */
