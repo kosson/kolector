@@ -15,7 +15,7 @@ var RED = {
     etichete: []
 };
 
-let imagini = []; // un array cu toate imaginile care au fost introduse în document.
+let imagini = new Set(); // un array cu toate imaginile care au fost introduse în document.
 
 // este necesar pentru a primi uuid-ul generat la încărcarea unui fișier mai întâi de orice în Editor.js. Uuid-ul este trimis din multer
 pubComm.on('uuid', (id) => {
@@ -114,7 +114,7 @@ const editorX = new EditorJS({
                                 console.log('În urma încărcării fișierului de imagine am primit de la server: ', respObj);
                                 obj4EditorJS.success = respObj.success;
                                 obj4EditorJS.file.url = respObj.file;
-                                imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
+                                imagini.add(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
                                 resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
                             });
                         }
@@ -129,6 +129,7 @@ const editorX = new EditorJS({
                         }); // returnează promisiunea de care are nevoie Editor.js
                     },
                     uploadByUrl(url){
+                        url = decodeURIComponent(url); // Din nou m-a mușcat rahatul ăsta pentru URL-urile care sunt afișate în browser encoded deja... Flying Flamingos!!!
                         /**
                          * Funcția validează răspunsul în funcție de headere și stare
                          * @param {Object} response 
@@ -189,7 +190,11 @@ const editorX = new EditorJS({
                                     numR: '',
                                     type: ''
                                 };
-
+                                // FIXME: Nu rezolvă imagini de pe Wikipedia Commons de tipul celor codate deja. De ex:
+                                // https://upload.wikimedia.org/wikipedia/commons/d/df/Paulina_Rubio_%40_Asics_Music_Festival_09.jpg
+                                // https://upload.wikimedia.org/wikipedia/commons/1/1b/R%C3%ADo_Moscova%2C_Mosc%C3%BA%2C_Rusia%2C_2016-10-03%2C_DD_16-17_HDR.jpg
+                                // La imaginea https://kosson.ro/images/Autori/Doina_Hendre_Biro/identite_collective/SP01.jpg
+                                // dă eroare de CORS.
                                 objRes.numR = response.name; // completează obiectul care va fi trimis serverului cu numele fișierului
                                 objRes.type = response.type; // completează cu extensia
                                 objRes.resF = response;
@@ -207,18 +212,19 @@ const editorX = new EditorJS({
                                     
                                     pubComm.on('resursa', (respObj) => {
                                         // cazul primei trimiteri de resursă: setează uuid-ul proaspăt generat! Este cazul în care prima resursă trimisă este un fișier imagine.
-                                        if (RED.uuid === undefined) {
+                                        if (!RED.uuid) {
                                             RED.uuid = respObj.uuid;
                                         }
                                         console.log('În cazul paste-ului de imagine, pe canalul resursa am primit următorul obiect: ', respObj);
                                         obj4EditorJS.success = respObj.success;
                                         obj4EditorJS.file.url = respObj.file;
-                                        imagini.push(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
+                                        imagini.add(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
                                         resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
                                     });
                                 });
                                 // returnează promisiunea așteptată de Editor.js
                                 return promissed.then((obi) => {
+                                    console.log('Înainte de a returna promisiunea care se rezolvă cu obiectul: ', obi);
                                     return obi;
                                 }).catch(error => {
                                     if (error) throw error;
@@ -228,7 +234,9 @@ const editorX = new EditorJS({
                                 if (error) throw error;
                             });
                     }
-                }
+                },
+                captionPlaceholder: 'Legendă:',
+                buttonContent: 'Selectează fișierul pe care vrei să-l încarci!'
             }
         }
     },
