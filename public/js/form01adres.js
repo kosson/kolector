@@ -111,10 +111,16 @@ const editorX = new EditorJS({
                                 if (!RED.uuid) {
                                     RED.uuid = respObj.uuid;
                                 }
-                                console.log('În urma încărcării fișierului de imagine am primit de la server: ', respObj);
+                                // console.log('În urma încărcării fișierului de imagine am primit de la server: ', respObj);
                                 obj4EditorJS.success = respObj.success;
                                 obj4EditorJS.file.url = respObj.file;
-                                imagini.add(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
+
+                                // constituie calea către imagine
+                                console.log(respObj.file);
+                                var urlAll = new URL(`${respObj.file}`);
+                                var path = urlAll.pathname;
+                                imagini.add(path); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
+
                                 resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
                             });
                         }
@@ -215,16 +221,22 @@ const editorX = new EditorJS({
                                         if (!RED.uuid) {
                                             RED.uuid = respObj.uuid;
                                         }
-                                        console.log('În cazul paste-ului de imagine, pe canalul resursa am primit următorul obiect: ', respObj);
+                                        // console.log('În cazul paste-ului de imagine, pe canalul resursa am primit următorul obiect: ', respObj);
                                         obj4EditorJS.success = respObj.success;
                                         obj4EditorJS.file.url = respObj.file;
-                                        imagini.add(respObj.file); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
+
+                                        // constituie calea către imagine
+                                        console.log(respObj.file);
+                                        var urlAll = new URL(`${respObj.file}`);
+                                        var path = urlAll.pathname;
+                                        imagini.add(path); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
+                                        
                                         resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
                                     });
                                 });
                                 // returnează promisiunea așteptată de Editor.js
                                 return promissed.then((obi) => {
-                                    console.log('Înainte de a returna promisiunea care se rezolvă cu obiectul: ', obi);
+                                    // console.log('Înainte de a returna promisiunea care se rezolvă cu obiectul: ', obi);
                                     return obi;
                                 }).catch(error => {
                                     if (error) throw error;
@@ -246,44 +258,12 @@ const editorX = new EditorJS({
     // data: {}
 });
 
-// fă o referință către butonul de trimitere a conținutului
-var saveContinutRes = document.querySelector('#continutRes');
-// la click, introdu conținutul în obiectul marea RED.
-saveContinutRes.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    editorX.save().then((content) => {
-        console.log(content); 
-        // TODO: Introdu conținutul în obiectul mare RED.
-        RED.content = content;
-        pickCover();
-    }).catch((e) => {
-        console.log(e);
-    });
-});
-
-// TODO: Creează o funcție care generează toate elementele ce poartă imagini pentru a fi bifată cea care devine coperta resursei.
-function pickCover () {
-    var insertie = document.getElementById('imgSelector');
-    for (let img of imagini) {
-        let container = new createElement('div', '', 'col-xs-4 col-sm-3 col-md-2 nopad text-center', null).creeazaElem();
-        let imgCheck = new createElement('div', '', 'image-checkbox', null).creeazaElem();
-        //FIXME: trebuie doar căi relative!!!! Repară stringurile care sunt culese în `imagini`.
-        let imgElem = new createElement('img', '', 'img-responsive', {src: `"${img}"`}).creeazaElem();
-        let inputElem = new createElement('input', '', '', {type: 'checkbox', value: `"${img}"`}).creeazaElem();
-        let inputI = new createElement('i', '', 'fa fa-check d-none', null).creeazaElem();
-        imgCheck.appendChild(imgElem);
-        imgCheck.appendChild(inputElem);
-        imgCheck.appendChild(inputI);
-        container.appendChild(imgCheck);
-        insertie.appendChild(container);
-    }
-}
 
 /**
  * Clasa `createElement` va creea elemente HTML
  * @param {String} tag este un și de caractere care indică ce tip de element va fi creat
  * @param {String} [id] este un șir de caractere care indică un id pentru element
- * @param {String} [cls] este un array ce cuprinde clasele elementului
+ * @param {Array} [cls] este un array ce cuprinde clasele elementului
  * @param {Object} [attrs] este un obiect de configurare a elementului care permite definirea de atribute
  */
 class createElement {
@@ -941,41 +921,12 @@ function pas3 () {
     RED.dependinte = document.getElementById('dependinte').value;
     RED.bibliografie = document.getElementById('bibliografie').value;
 
-    // Afișează selectorul de imagini - https://codepen.io/kskhr/pen/pRwKjg
-    // image gallery
-    // init the state from the input
-    $(".image-checkbox").each(function () {
-        if ($(this).find('input[type="checkbox"]').first().attr("checked")) {
-            $(this).addClass('image-checkbox-checked');
-        }
-        else {
-            $(this).removeClass('image-checkbox-checked');
-        }
+    var tagsElems = document.getElementById('tags');
+    RED.etichete.forEach((tag) => {
+        var elemBadge = new createElement('span', '', ['badge', 'badge-info', 'm-1'], null).creeazaElem(`${tag}`);
+        tagsElems.appendChild(elemBadge);
     });
     
-    // sync the state to the input
-    $(".image-checkbox").on("click", function (e) {
-        e.preventDefault();
-
-        $(this).toggleClass('image-checkbox-checked');
-        var checkbox = $(this).find('input[type="checkbox"]');
-        checkbox.prop("checked",!checkbox.prop("checked"));
-
-        $(this).find('svg').toggleClass(function () {
-            if (checkbox.prop("checked")) {
-                return 'd-block';
-            } else {
-                return 'd-none';
-            }
-        });
-
-        if(checkbox.prop('checked')){
-            $(this).find('svg').removeClass('d-none');
-            $(this).find('svg').toggleClass('d-block');
-        }
-        // $(this).find('.fa-check').removeClass('d-none').addClass('d-block');
-    });
-    // Galerie END 
 }
 
 /**
@@ -994,12 +945,6 @@ function getMeSelected (elem, eticheta) {
     });
 }
 
-/* ========== TRIMITEREA DATELOR FORMULARULUI ============== */
-var submitBtn = document.querySelector('#submit');
-submitBtn.addEventListener('click', (evt) => {
-    closeBag(evt);
-});
-
 /**
  * Funcția are rolul de a închide bagul după ce toate resursele au fost contribuite.
  * @param {Object} evt Este obiectul eveniment al butonului `#submit` 
@@ -1012,3 +957,97 @@ function closeBag (evt) {
         console.log(mesaj);
     });
 }
+
+
+// Afișează selectorul de imagini - https://codepen.io/kskhr/pen/pRwKjg
+/**
+ * Funcția are rolul de a bifa și debifa imaginile din galeria celor expuse selecției.
+ */
+function clickImgGal ()  {
+    $(".image-checkbox").each(function () {
+        if ($(this).find('input[type="checkbox"]').first().attr("checked")) {
+            $(this).addClass('image-checkbox-checked');
+        }
+        else {
+            $(this).removeClass('image-checkbox-checked');
+        }
+    });
+    $(this).toggleClass('image-checkbox-checked');
+    var checkbox = $(this).find('input[type="checkbox"]');
+    checkbox.prop("checked",!checkbox.prop("checked"));
+
+    $(this).find('svg').toggleClass(function () {
+        if (checkbox.prop("checked")) {
+            return 'd-block';
+        } else {
+            return 'd-none';
+        }
+    });
+
+    if(checkbox.prop('checked')){
+        $(this).find('svg').removeClass('d-none');
+        $(this).find('svg').toggleClass('d-block');
+    }
+}
+var insertGal = document.getElementById('imgSelector');
+/**
+ * Funcția generează toate elementele ce poartă imagini pentru a fi bifată cea care devine coperta resursei.
+ */
+function pickCover () {
+    insertGal.innerHTML = '';
+    for (let img of imagini) {
+        console.log(img);    
+        
+        let container = new createElement('div', '', [`col-xs-4`, `col-sm-3`, `col-md-2`, `nopad`, `text-center`], null).creeazaElem();
+        container.addEventListener('click', clickImgGal);
+        let imgCheck = new createElement('div', '', [`image-checkbox`], null).creeazaElem();
+        //FIXME: trebuie doar căi relative!!!! Repară stringurile care sunt culese în `imagini`.
+        
+        let imgElem = new createElement('img', '', [`img-responsive`], {src: `${img}`}).creeazaElem();
+        let inputElem = new createElement('input', '', [`inputCheckGal`], {type: 'checkbox', value: `${img}`}).creeazaElem();
+        let inputI = new createElement('i', '', [`fa`, 'fa-check', 'd-none'], null).creeazaElem();
+
+        imgCheck.appendChild(imgElem);
+        imgCheck.appendChild(inputElem);
+        imgCheck.appendChild(inputI);
+        container.appendChild(imgCheck);
+        insertGal.appendChild(container);
+    }
+    return insertGal;
+}
+/**
+ * Funcția are rolul de a colecta care dintre imagini va fi coperta.
+ */
+function pas4 () {
+    var inputCheckGal = document.querySelectorAll('.inputCheckGal');
+    inputCheckGal.forEach(input => {
+        if (input.checked) {
+            RED.coperta = input.value;
+        }
+    });
+    var newTags = document.getElementById('eticheteRed');
+    var arrNewTags = newTags.value.split(',');
+    arrNewTags.forEach((tag) => {
+        RED.etichete.push(tag);
+    });
+}
+
+// fă o referință către butonul de trimitere a conținutului
+var saveContinutRes = document.querySelector('#continutRes');
+// la click, introdu conținutul în obiectul marea RED.
+saveContinutRes.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    editorX.save().then((content) => {
+        RED.content = content;
+        pickCover();
+    }).catch((e) => {
+        console.log(e);
+    });
+});
+
+/* ========== TRIMITEREA DATELOR FORMULARULUI ============== */
+var submitBtn = document.querySelector('#submit');
+submitBtn.addEventListener('click', (evt) => {
+    pas4();
+    closeBag(evt);
+});

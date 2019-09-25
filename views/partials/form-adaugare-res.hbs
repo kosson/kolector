@@ -444,10 +444,6 @@
             {{!-- Bibliografie END --}}
           </div>
           {{!-- Încărcarea fișierelor sau a fragmentului [form-group] END--}}
-          
-          {{!-- ETICHETE --}}
-          <div id="etichete"></div>
-          {{!-- ETICHETE END --}}
 
           {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group]--}}
           <div class="form-group align-self-center m-4">
@@ -467,7 +463,11 @@
       <div class="card-header" id="heading04">
         <h5 class="text-light rounded text-center bg-danger p-2">Încarcă fișiere și introdu conținutul, dacă acesta este de întindere medie</h5>
       </div>
-
+      {{!-- Înapoi la pasul 3 [form-group]--}}
+      <div class="form-group align-self-center m-4">
+        <a href="#" id="next-6" class="btn btn-success card-link">Înapoi la pasul 3</a>
+      </div>
+      {{!-- Înapoi la pasul 4 [form-group] END --}}
       {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
       <div id="sec04" class="form-group card-body" aria-labelledby="heading04" data-parent="#accordionFrm">
         {{!-- EDITOR pentru introducerea letrică --}}
@@ -482,35 +482,33 @@
       {{!-- Verificarea fișei și constituirea înregistrării [form-group] END--}}
       {{!-- Selector de imagine pentru coperta resursei --}}
       <fieldset>
-        <legend id="imgSelector">Selectează imaginea care va fi coperta resursei</legend>  
-          {{!-- <div class="col-xs-4 col-sm-3 col-md-2 nopad text-center">
-            <div class="image-checkbox">
-              <img class="img-responsive" src="https://dummyimage.com/600x400/000/fff" />
-              <input type="checkbox" name="" value="https://dummyimage.com/600x400/000/fff" />
-              <i class="fa fa-check d-none"></i>
-            </div>
-          </div>
-          <div class="col-xs-4 col-sm-3 col-md-2 nopad text-center">
-            <div class="image-checkbox">
-              <img class="img-responsive" src="https://dummyimage.com/600x400/000/fff" />
-              <input type="checkbox" name="" value="https://dummyimage.com/600x400/000/fff" />
-              <i class="fa fa-check d-none"></i>
-            </div>
-          </div>
-          <div class="col-xs-4 col-sm-3 col-md-2 nopad text-center">
-            <div class="image-checkbox">
-              <img class="img-responsive" src="https://dummyimage.com/600x400/000/fff" />
-              <input type="checkbox" name="" value="https://dummyimage.com/600x400/000/fff" />
-              <i class="fa fa-check d-none"></i>
-            </div>
-          </div> --}}
+        <legend id="imgSelector">Selectează imaginea care va fi coperta resursei</legend>
       </fieldset>
       {{!-- Selector de imagine pentru coperta resursei END--}}
-      {{!-- Înapoi la pasul 3 [form-group]--}}
-      <div class="form-group align-self-center m-4">
-        <a href="#" id="next-6" class="btn btn-success card-link">Înapoi la pasul 3</a>
+      {{!-- ETICHETE --}}
+      <div id="etichete">
+        {{!-- Introducerea etichetelor --}}
+        <fieldset>
+          <legend>Etichetele atribuite RED-ului</legend>
+          <div id="tags">
+            <span class="badge badge-info">Info</span>
+          </div>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Completează:</span>
+            </div>
+            <textarea id="eticheteRed" class="form-control" aria-label="Etichetele RED-ului" rows="3"></textarea>
+          </div>
+        </fieldset>
+        {{!-- Introducerea etichetelor END--}}
+
+        {{!-- HELP Etichete --}}
+        <small class="form-text text-muted">
+          Primele etichete sunt introduse automat în funcție de informațiile introduse sau selectate. Se vor completa etichetele dorite delimitate de virgule. Etichetele pot fi formate dintr-unul singur sau o sintagmă formată din maxim trei cuvinte alăturate care formează un sens unitar indivizibil. De exemplu, o formulă chimică precum „acidul dezoxiribonucleic”. 
+        </small>
+        {{!-- HELP Etichete End--}}
       </div>
-      {{!-- Înapoi la pasul 4 [form-group] END --}}
+      {{!-- ETICHETE END --}}
 
       <div id="submitWrap" class="form-group card-body" data-parent="#accordionFrm">
         <button id="submit" type="submit" class="btn btn-danger">Adaugă resursa</button>

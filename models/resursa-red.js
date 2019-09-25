@@ -108,10 +108,7 @@ var Resursa = new mongoose.Schema({
     contorAcces:      Number,  // de câte ori a fost accesată individual resursa
     generalPublic:    Boolean, // o valoare 'true' semnifică faptul că prezenta resursă intră în zona publică
     contorDescarcare: Number,  // de câte ori a fost descărcată resursa
-    etichete:         [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'eticheta'
-    }],      // Sunt toate etichetele primite la momentul introducerii resursei la care se vor adăuga cele introduse ulterior de public
+    etichete:         [],      // Sunt toate etichetele primite la momentul introducerii resursei la care se vor adăuga cele introduse ulterior de public
     utilMie:          Number,  // Este echivalentul lui „Like” pentru un utilizator indiferent de rangul ACL. Acesta va cumula cu cele date de public.
     expertCheck:      Boolean  // indică faptul că expertul a declarat resursa educațională a fi una validă după ce s-au operat revizuirile. Va avea o bifă în form
     // o resursă educațională va avea cel puțin o referință, care să indice prin textul introdus de expert acordul la publicare în baza algoritmului de validare. Câta vreme expertCheck este false, resursa nu va fi publicată

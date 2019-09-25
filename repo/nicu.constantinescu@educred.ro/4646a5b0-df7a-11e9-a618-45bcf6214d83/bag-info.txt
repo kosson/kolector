@@ -1,2 +1,0 @@
-Bagging-Date: 2019-09-25
-Bag-Size: 438 KB

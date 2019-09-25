@@ -152,9 +152,13 @@ module.exports = (express, app, passport, pubComm) => {
         // În momentul în care se va apăsa butonul care creează resursa, se va închide și Bag-ul.
         socket.on('closeBag', () => {
             // finalizarea creării Bag-ului
-            lastBag.finalize(() => {
-                socket.emit('closeBag', 'Am finalizat închiderea bag-ului');
-            });
+            if (lastBag) {
+                lastBag.finalize(() => {
+                    socket.emit('closeBag', 'Am finalizat închiderea bag-ului');
+                });
+            } else {
+                socket.emit('closeBag', 'Nu e niciun bag.');
+            }
         });
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */

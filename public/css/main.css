@@ -247,3 +247,8 @@ tr.shown td.details-control {
 .image-checkbox-checked .fa {
     display: block !important;
 }
+
+/* Etichete */
+#tags {
+    padding: 0.3rem;
+}
