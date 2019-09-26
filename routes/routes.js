@@ -5,7 +5,9 @@ const path        = require(`path`);
 const querystring = require('querystring')
 const BagIt       = require('bagit-fs');
 const uuidv1      = require('uuid/v1');
-var Readable      = require('stream').Readable;
+const Readable    = require('stream').Readable;
+const mongoose    = require('mongoose');
+const Resursa     = require('../models/resursa-red');
 
 module.exports = (express, app, passport, pubComm) => {
     /* GESTIONAREA RUTELOR */
@@ -159,6 +161,47 @@ module.exports = (express, app, passport, pubComm) => {
             } else {
                 socket.emit('closeBag', 'Nu e niciun bag.');
             }
+        });
+
+        // Introducerea resursei în MongoDB
+        socket.on('red', (RED) => {
+            // gestionează cazul în care nu ai un uuid generat pentru că resursa educațională nu are niciun fișier încărcat
+            if (!RED.uuid) {
+                RED.uuid = uuidv1();
+            }
+            const resursaEducationala = new Resursa({
+                date:            Date.now(),
+                identifier:      RED.uuid,
+                idContributor:   RED.idContributor,
+                langRED:         RED.langRED,
+                title:           RED.title,
+                titleI18n:       RED.titleI18n,
+                arieCurriculara: RED.arieCurriculara,
+                level:           RED.level,
+                discipline:      RED.discipline,
+                competenteGen:   RED.competenteGen,
+                competenteS:     RED.competenteS,
+                activitati:      RED.activitati,
+                grupuri:         RED.grupuri,
+                domeniu:         RED.domeniu,
+                functii:         RED.functii,
+                demersuri:       RED.demersuri,
+                spatii:          RED.spatii,
+                invatarea:       RED.invatarea,
+                description:     RED.description,
+                dependinte:      RED.dependinte,
+                coperta:         RED.coperta,
+                licenta:         RED.licenta,
+                content:         RED.content,
+                bibliografie:    RED.bibliografie,
+                expertCheck:     RED.expertCheck,
+                etichete:        RED.etichete
+            });
+            resursaEducationala.save().then(() => {
+                Resursa.findOne({title: `${RED.title}`}).then((res) => {
+                    socket.emit('red', res);
+                });
+            });
         });
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */

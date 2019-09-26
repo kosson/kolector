@@ -1,5 +1,6 @@
 // colectorul datelor din form
 var RED = {
+    expertCheck: false,
     uuid: '',
     langRED: '',
     title: '',
@@ -11,6 +12,8 @@ var RED = {
     arieCurriculara: [],
     level: [],
     discipline: [],
+    competenteGen: [],
+    competenteS: [],
     activitati: [],
     etichete: []
 };
@@ -637,6 +640,8 @@ function activitatiRepopulareChecks () {
 }
 
 var activitatiFinal = new Map();    // mecanism de colectare al activităților bifate sau nu
+var competenteGen = new Set();      // este un set necesar colectării competențelor Generale pentru care s-au făcut selecții de activități în cele specifice
+var competenteS = new Set();        // este setul comptențelor specifice care au avut câte o activitate bifată sau completată.
 /**
  *  Funcția este event handler pentru click-urile de pe input checkbox-urile create dinamic pentru fiecare activitate.
  * Gestionează ce se întâmplă cu datele din `activitatiFinal`
@@ -645,18 +650,11 @@ var activitatiFinal = new Map();    // mecanism de colectare al activităților 
  */
 function manageInputClick () {
     let rowData = XY.getData(); // referință către datele rândului de tabel pentru o anumită competență specifică
-    // console.log(rowData);
+    console.log(rowData);
     // $(`#arteviz3\\-1\\.1`).show(); MEMENTO!!!! Bittes like fuckin sheet!
 
-    // FIXME: Aici este eroarea: selectarea tuturor elementelor care au clasa activitate. TREBUIE selectate doar cele ale sectiunii curente.
-    /* ==== constituie un array cu toate elementele input checkbox care au clasa `activitate` indiferent de rând ==== */
-    // var arr = Array.from(document.getElementsByClassName('activitate'));
-    // console.log(arr.length);
-
     var ancoraID = document.getElementById(rowData.cod);
-    // console.log(ancoraID);
     var activitChildren = Array.from(ancoraID.querySelectorAll('.activitate'));
-    // console.log(activitChildren);
 
     // pentru fiecare dintre elementele din array, verifică dacă a fost bifat. Dacă a fost bifat, adaugă-l în Map
     var existing = activitChildren.filter((elem) => {
@@ -677,9 +675,18 @@ function manageInputClick () {
     // ceea ce se dorește este ca atunci când există cel puțin un element bifat, să fie bifat și rândul competenței specifice
     if (activitatiFinal.size) {
         document.getElementById('competenteS').querySelector(`input[value="${rowData.cod}"]`).checked = true;
-        // console.log(activitatiSelectate);
+        // Adaugă informațiile utile privind Competența Generală adăugată
+        competenteGen.add(rowData.parteA);  // introdu în set Competența Generală pentru care s-a făcut o selecție
+        competenteS.add(rowData._id);       // introdu în set Compențele Specifice pentru care au fost bifate sau introduse activități
     } else {
         document.getElementById('competenteS').querySelector(`input[value="${rowData.cod}"]`).checked = false;
+        // elimină din array-ul competențelorGen codul celi care nu mai are nicio selecție în activități
+        // for( let i = 0; i < RED.competenteGen; i++){ 
+        //     if ( RED.competenteGen[i] === 5) {
+        //         RED.competenteGen.splice(i, 1); 
+        //         i--;
+        //     }
+        // }
     }
     // console.log(activitatiSelectate.size);
 }
@@ -863,10 +870,6 @@ function pas2 () {
         }
     });
 
-    // RED.arieCurriculara = Array.prototype.map.call(arie.selectedOptions, function (elem) {
-    //     return elem.value;
-    // });
-
     if (RED.arieCurriculara.length === 0) {
         $('#currErr').toastmessage('showToast', {
             text: "Fă alegerea corectă în ariile curriculare. Este un element absolut necesar!!!",
@@ -877,7 +880,7 @@ function pas2 () {
         });
     }
 
-    // Obținerea valorilor pentru nivel
+    // Obținerea valorilor pentru clasele selectate
     var niveluriScolare = document.querySelector('#nivel');
     var noduriInputNiveluri = niveluriScolare.querySelectorAll('input');
     noduriInputNiveluri.forEach(input => {
@@ -902,6 +905,14 @@ function pas2 () {
         RED.activitati.push(arr);
     }
     activitatiFinal.forEach(pushActivitate);
+    // introducerea valorilor din Set-ul competenteGen
+    competenteGen.forEach((v) => {
+        RED.competenteGen.push(v);
+    }); 
+    // introducerea valorilor din Set-ul competenteS
+    competenteS.forEach((v) => {
+        RED.competenteS.push(v);
+    }); 
 }
 
 function pas3 () {
@@ -1050,4 +1061,8 @@ var submitBtn = document.querySelector('#submit');
 submitBtn.addEventListener('click', (evt) => {
     pas4();
     closeBag(evt);
+    pubComm.emit('red', RED);
+    pubComm.on('red', (red) => {
+        console.log(red);
+    });
 });

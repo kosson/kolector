@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 var softwareSchema = new mongoose.Schema({
     nume:     {
@@ -19,17 +20,15 @@ var recomSchema = new mongoose.Schema({
 });
 
 var Resursa = new mongoose.Schema({
-    _id: Schema.Types.ObjectId,
+    // _id: Schema.Types.ObjectId,
 
     // #1. INIȚIALIZARE ÎNREGISTRARE
-    date:        Date,    // este data la care resursa intră în sistem. Data este introdusă automat la momentul în care este trimisă către baza de date.
+    date:          Date,  // este data la care resursa intră în sistem. Data este introdusă automat la momentul în care este trimisă către baza de date.
     idContributor: String,// este id-ul celui care a creat resursa. Dacă sunt mai mulți autori, este cel care face propunerea de resursă.
-    dateContext: ['http://purl.org/dc/elements/1.1/date', 'https://schema.org/datePublished'],
-    langRED:     String,  // Este limba primară a resursei. Modelul ar fi 'ro', care indică limba pentru care s-a optat la deschiderea formularului pentru depunederea resursei. Valoarea va fi conform ISO 639-1 (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
-    langContext: ['http://purl.org/dc/elements/1.1/language', 'https://schema.org/Language'],
-    caleBagIT:   String, // (generată automat la primul upload) Este calea relativă către subdirectorul creat de implementarea BagIt pentru resursă. O resursă complexă poate avea multiple fișiere organizate ca depozite BagIt v.1.0.
-    dimensiune:  String, // (generată automat de implementarea BagIt și completată aici după primul upload) Va fi dimensiunea calculată de algoritmii BagIt v1.0
-    
+    dateContext:   ['http://purl.org/dc/elements/1.1/date', 'https://schema.org/datePublished'],
+    langRED:       String,  // Este limba primară a resursei. Modelul ar fi 'ro', care indică limba pentru care s-a optat la deschiderea formularului pentru depunederea resursei. Valoarea va fi conform ISO 639-1 (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
+    langContext:   ['http://purl.org/dc/elements/1.1/language', 'https://schema.org/Language'],
+
     // #2. TITLU ȘI RESPONSABILITATE
     title: {        
         type: String,  // Aici se introduce titlul lucrării în limba de elaborare
@@ -39,30 +38,18 @@ var Resursa = new mongoose.Schema({
         index: true,
         trim: true
     },
-    titleI18n: [],  // Un titlu poate fi tradus în mai multe limbi. Modelul este: {ro:'Numele RED-ului',de:'Titel der RED'}. Cheia va fi o valoare conform ISO 639-2. Modificare la 639-2 pentru a permite și rromani - http://www.bibnat.ro/dyn-doc/Coduri%20de%20%20limba_639_2_2009_fin.pdf.
-    titleContext: ['http://purl.org/dc/elements/1.1/title', 'https://schema.org/name'],
-    creator:   [{   // este ceea ce numim autor / autori ai resursei. Poate fi unul sau mai mulți. Este o colecție de id-uri de utilizatori.
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
-    }],
-    contribuabili: [{   // Sunt cei care au contribuit la resursă. Este o colecție de id-uri de utilizatori.
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
-    }],
-    creatorContext: ['http://purl.org/dc/elements/1.1/creator', 'https://schema.org/creator'],
+    titleI18n:      [],  // Un titlu poate fi tradus în mai multe limbi. Modelul este: {ro:'Numele RED-ului',de:'Titel der RED'}. Cheia va fi o valoare conform ISO 639-2. Modificare la 639-2 pentru a permite și rromani - http://www.bibnat.ro/dyn-doc/Coduri%20de%20%20limba_639_2_2009_fin.pdf.
+    titleContext:   ['http://purl.org/dc/elements/1.1/title', 'https://schema.org/name'],
     
     // #3. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI
-    arieCurriculara: {
-        type: String,   // [valoare din vocabular] Este o valoare dintr-un select care va declanșa subseturile de date încărcate ulterior la disciplina și apoi la competențe
-    },
-    ariiCurriculare:    [],    // vor fi id-uri pentru ariile curriculare diferite de cea primară pentru care resursa se califică în opțiunea specialistului sau a publicului. 
+    arieCurriculara:    [],
     level:              [],    // menționează clasa. Ex: Clasa I. În form, va fi un range. În înregistrare va fi un array de numere de la 0 la 8. Vezi colecția „niveluri-gimnaziu” din initdata
     levelContext:       ['http://purl.org/dcx/lrmi-vocabs/alignmentType/educationalLevel', 'https://schema.org/alignmentType'],
     discipline:         [],    // [valoare din vocabular] Sunt disciplinele pentru care se poate folosi această resursă, dar propuse intern. Este un array de coduri aferente disciplinelor. Codurile acestora devin etichete automat
     disciplinePropuse:  [],    // Aici vor intra sugestiile publicului. I se va oferi un câmp de introducere etichete, cu autocompletare primele sugestii fiind disciplinele din vocabularul controlat. Codurile acestora devin automat etichete
     disciplineContext:  ['http://purl.org/dcx/lrmi-vocabs/alignmentType/educationalSubject', 'https://schema.org/identifier'],
-    competenteGen:      [],    // Este grupul mare de competențe specifice. Acel 1. Nume grup competențe. Se va completa cu un obiect {idComGen, Denumirea}
-    competentaS:        [{     // Primul va fi cel din ierarhie, restul vor fi cele care sunt propuse (public sau experți).
+    competenteGen:      [],    // Va fi un array de id-uri ale competențelor specifice
+    competenteS:        [{     // Primul va fi cel din ierarhie, restul vor fi cele care sunt propuse (public sau experți).
         type: mongoose.Schema.Types.ObjectId,    // va lua id-uri din altă colecție
         ref: 'competentaspecifica'      // este numele modelului de competență specifică, în cazul de față (ceea ce exporți din modul)
     }],    // [valoare din vocabular] Set de competențe specifice. Este ținta de învățare specificată ca obiectiv clar identificabil într-un vocabular controlat al elementelor stabilite de specialiști, dar codate. Sunt cele care sunt alese inițial la selecția când resursa a fost încărcată. Codurile acestora devin automat etichete. Când identficatorul unei comptențe specifice este introdus în acest set, automat, va fi actualizat setul `REDuri` cu id-ul resursei constituite. Astfel, o competență va ști mereu de care REDuri este referită.
@@ -87,7 +74,6 @@ var Resursa = new mongoose.Schema({
     description: {
         type: String
     },
-    descriptionI18n:    [], // Descrierea poate fi în mai multe limbi posibile. Modelul este: {ro:'Descriere',de:'Beschreibung'}. Cheia va fi o valoare conform ISO 639-2.
     descriptionContext: ['http://purl.org/dc/elements/1.1/description', 'https://schema.org/description'],
     identifier:         [], // Sunt diferiții identificatori ai unei resurse. Poate fi orice string, fie text, nume fișier, fie url sau ISBN... Se generează automat la încărcare. Va apărea doar la momentul accesării! Nu este disponibil la momentul încărcării.
     identifierContext:  ['http://purl.org/dc/elements/1.1/identifier', 'https://schema.org/identifier'],
