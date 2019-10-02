@@ -1,4 +1,9 @@
 {{!< layout}}
 {{> nav-resurse}}
 {{> messages}}
-<p>Încarcă aici resursele create în proiectul CRED</p>
+<h3>Resursele cu care ai contribuit</h3>
+<ul>
+    {{#each resurse}}
+    <li>{{this.title}}</li>
+    {{/each}}
+</ul>

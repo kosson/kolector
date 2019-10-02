@@ -42,6 +42,7 @@ module.exports = (express, app, passport, pubComm) => {
     /* Este ruta care încarcă resursele atribuite utilizatorului, fie proprii, fie asignate */
     app.get('/user/resurse', User.resAtribuite, function(req, res) {
         // console.log('Ce există în headerul de autorizare', req.get('authorization'));
+        console.log(req);
         res.render('red-atribuite', {
             user:     req.user,
             title:    "RED Atribuite",
@@ -82,6 +83,27 @@ module.exports = (express, app, passport, pubComm) => {
             });
         }
     );
+
+    app.get('/profile/resurse', makeSureLoggedIn.ensureLoggedIn(), function(req, res){
+        // console.dir(req.user.email);
+        var count = require('./controllers/resincred.ctrl')(req.user);
+        // console.log(count);
+        count.then(rezultat => {
+            console.log(rezultat);
+            //TODO: creează setul de date al resurselor contribuite.
+            res.render('red-in-cred', {
+                user:    req.user,
+                title:   "Profil",
+                logoimg: "/img/red-logo-small30.png",
+                resurse: rezultat
+            });
+        }).catch(err => {
+            if (err) throw err;
+        });
+        
+
+    }
+);
     // ========== ADMINISTRATOR ==========
     app.get('/administrator', User.ensureAuthenticated, admin);
     // TODO: RUTA ADMINISTRATOR:
@@ -173,6 +195,7 @@ module.exports = (express, app, passport, pubComm) => {
                 date:            Date.now(),
                 identifier:      RED.uuid,
                 idContributor:   RED.idContributor,
+                autori:          RED.nameUser,
                 langRED:         RED.langRED,
                 title:           RED.title,
                 titleI18n:       RED.titleI18n,
