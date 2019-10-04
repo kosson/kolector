@@ -1,0 +1,16 @@
+<div class="scaling-svg-container">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" class="scaling-svg" viewBox="auto 0 100 100" preserveAspectRatio="xMidYMid slice" style="">
+        <style>
+            .title {fill:rgb(236, 135, 10)}
+        </style>
+        <!-- pattern -->
+        <defs>
+            <pattern id="image" x="0" y="0" patternUnits="userSpaceOnUse" height="1" width="1">
+                {{!-- Este o problemă cu generarea imaginii  --}}
+                <image x="0" y="0" height="100" width="100" xlink:href="{{this.coperta}}"></image>
+            </pattern>
+        </defs>            
+        <circle cx="100" cy="100" r="100" stroke="black" stroke-width="3" fill="url(#image)" stroke-opacity="0.8" opacity="0.8"></circle>
+        <text class="title" x="0" y="50" font-size="12">{{this.title}}</text>
+    </svg>  
+</div>

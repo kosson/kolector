@@ -29,14 +29,14 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
             record.roles.admin = true;
             const userObj = new userModel(record);
             userObj.save(function (err, user) {
-                if (err) throw err;
+                if (err) throw new Error('Eroarea la salvarea userului este: ', err.message);
                 // console.log("Salvez user în bază!");
                 done(null, user);
             });
         // DACĂ sunt înregistrări în colecție, caută după email dacă deja există
         } else {
             userModel.findOne({ email: profile._json.email }, (err, user) => {
-                if (err) throw new Error(err);    
+                if (err) throw new Error('A apărut următoarea eroare la căutarea utilizatorului: ', err.message);    
                 if(user) {
                     // console.log(user.roles);
                     done(null, user); 

@@ -89,7 +89,7 @@ module.exports = (express, app, passport, pubComm) => {
         var count = require('./controllers/resincred.ctrl')(req.user);
         // console.log(count);
         count.then(rezultat => {
-            console.log(rezultat);
+            // console.log(rezultat);
             //TODO: creează setul de date al resurselor contribuite.
             res.render('red-in-cred', {
                 user:    req.user,

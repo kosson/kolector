@@ -20,7 +20,7 @@ var recomSchema = new mongoose.Schema({
 });
 
 var Resursa = new mongoose.Schema({
-    // _id: Schema.Types.ObjectId,
+    _id: Schema.Types.ObjectId,
 
     // #1. INIȚIALIZARE ÎNREGISTRARE
     date:          Date,  // este data la care resursa intră în sistem. Data este introdusă automat la momentul în care este trimisă către baza de date.
