@@ -85,25 +85,28 @@ module.exports = (express, app, passport, pubComm) => {
     );
 
     app.get('/profile/resurse', makeSureLoggedIn.ensureLoggedIn(), function(req, res){
-        // console.dir(req.user.email);
-        var count = require('./controllers/resincred.ctrl')(req.user);
-        // console.log(count);
-        count.then(rezultat => {
-            // console.log(rezultat);
-            //TODO: creează setul de date al resurselor contribuite.
-            res.render('red-in-cred', {
-                user:    req.user,
-                title:   "Profil",
-                logoimg: "/img/red-logo-small30.png",
-                resurse: rezultat
+            // console.dir(req.user.email);
+            var count = require('./controllers/resincred.ctrl')(req.user);
+            // console.log(count);
+            count.then(rezultat => {
+                // console.log(rezultat);
+                //TODO: creează setul de date al resurselor contribuite.
+                res.render('red-in-cred', {
+                    user:    req.user,
+                    title:   "Profil",
+                    logoimg: "/img/red-logo-small30.png",
+                    resurse: rezultat
+                });
+            }).catch(err => {
+                if (err) throw err;
             });
-        }).catch(err => {
-            if (err) throw err;
-        });
-        
+        }
+    );
 
-    }
-);
+    app.get('/profile/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), function(req, res){
+        var record = require('./controllers/resincredid.ctrl')(req.params);
+    });
+
     // ========== ADMINISTRATOR ==========
     app.get('/administrator', User.ensureAuthenticated, admin);
     // TODO: RUTA ADMINISTRATOR:
