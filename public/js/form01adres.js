@@ -1062,7 +1062,9 @@ submitBtn.addEventListener('click', (evt) => {
     pas4();
     closeBag(evt);
     pubComm.emit('red', RED);
+    // aștept răspunsul de la server:
     pubComm.on('red', (red) => {
         console.log(red);
+        window.location.href = '/profile/resurse/' + red._id;
     });
 });

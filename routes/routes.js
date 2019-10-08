@@ -105,6 +105,18 @@ module.exports = (express, app, passport, pubComm) => {
 
     app.get('/profile/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), function(req, res){
         var record = require('./controllers/resincredid.ctrl')(req.params);
+        record.then(rezultat => {
+            // console.log(rezultat);
+            //TODO: creează setul de date al resurselor contribuite.
+            res.render('resursa', {
+                user:    req.user,
+                title:   "Profil",
+                logoimg: "/img/red-logo-small30.png",
+                resursa: rezultat
+            });
+        }).catch(err => {
+            if (err) throw err;
+        });
     });
 
     // ========== ADMINISTRATOR ==========
@@ -195,6 +207,7 @@ module.exports = (express, app, passport, pubComm) => {
                 RED.uuid = uuidv1();
             }
             const resursaEducationala = new Resursa({
+                _id: null,
                 date:            Date.now(),
                 identifier:      RED.uuid,
                 idContributor:   RED.idContributor,
@@ -225,6 +238,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
             resursaEducationala.save().then(() => {
                 Resursa.findOne({title: `${RED.title}`}).then((res) => {
+                    // res.redirect(`/profile/resurse/${RED.uuid}`);
                     socket.emit('red', res);
                 });
             });
