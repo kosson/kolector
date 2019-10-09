@@ -75,7 +75,7 @@ app.use(session({
     resave: false, 
     saveUninitialized: true
 }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/public' )));
 app.use('/repo', express.static(path.join(__dirname, 'repo')));
 // app.use(fileUpload());
 app.use(favicon(path.join(__dirname,  'public', 'favicon.ico')));

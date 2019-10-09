@@ -30,6 +30,7 @@ module.exports = (passport) => {
         auth(req, res){
             res.render('auth', {
                 title:    "auth",
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg:  "img/rED-logo192.png",
                 credlogo: "img/CREDlogo150.jpg"
             });
@@ -37,6 +38,7 @@ module.exports = (passport) => {
         login(req, res){
             res.render('login', {
                 title:    "login",
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg:  "img/rED-logo192.png",
                 credlogo: "img/CREDlogo150.jpg"
             });

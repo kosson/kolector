@@ -8,6 +8,7 @@ router.get('/administrator', function (req, res) {
         res.render('administrator', {
             title:   "administrator",
             user:    req.user,
+            style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "img/rED-logo192.png",
             credlogo: "img/CREDlogo.jpg"
         });
@@ -24,6 +25,7 @@ router.get('/administrator/admins', function (req, res) {
         // TODO: Adu toți utilizatorii care au rangul de admin
         res.render('administrator', {
             title:   "administrator",
+            style:   "/lib/fontawesome/css/fontawesome.min.css",
             user:    req.user,
             logoimg: "img/rED-logo192.png",
             credlogo: "img/CREDlogo.jpg"

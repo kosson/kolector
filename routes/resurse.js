@@ -19,6 +19,7 @@ module.exports = function (router) {
     router.get('/resursepublice', function (req, res) {
         res.render('resursepublice', {
             title: "R.E.D.",
+            style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "img/rED-logo192.png",
         });
     });
@@ -39,12 +40,14 @@ module.exports = function (router) {
             // Dacă avem un admin, atunci oferă acces neîngrădit
             res.render('resurse', {
                 user:    req.user,
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
                 title:   "Resurse",
                 logoimg: "/img/rED-logo192.png",
             });
         } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
             res.render('resurse', {
                 user:    req.user,
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
                 title:   "Resurse",
                 logoimg: "/img/rED-logo192.png",
             });
@@ -57,9 +60,19 @@ module.exports = function (router) {
     /* ========== GET - Pe această rută se obține formularul de adăugare a resurselor doar dacă ești logat, având rolurile menționate */
     // Cere helperul `checkRole`
     router.get('/adauga', function (req, res) {
-
+        // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
         let scripts = [
-            {script: '/js/form01adres.js'}
+            {script: '/lib/editorjs/editor.js'},
+            {script: '/lib/editorjs/header.js'},
+            {script: '/lib/editorjs/paragraph.js'},
+            {script: '/lib/editorjs/list.js'},
+            {script: '/lib/editorjs/image.js'},
+            {script: '/lib/editorjs/table.js'},
+            {script: '/lib/editorjs/attaches.js'},
+            {script: '/lib/editorjs/embed.js'},
+            {script: '/lib/editorjs/code.js'},
+            {script: '/lib/editorjs/inlinecode.js'},
+            {script: '/js/form01adres.js'}         
         ];
         let roles = ["user", "educred", "validator"];
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
@@ -70,7 +83,9 @@ module.exports = function (router) {
             res.render('adauga-res', {
                 user:    req.user,
                 title:   "Adauga",
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/rED-logo192.png",
+                credlogo:"/img/CREDlogo.jpg",
                 scripts
             });
             // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
@@ -78,7 +93,9 @@ module.exports = function (router) {
         } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
             res.render('adauga-res', {
                 title: "Adauga",
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/rED-logo192.png",
+                credlogo:"/img/CREDlogo.jpg",
                 scripts
             });
         } else {

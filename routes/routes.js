@@ -46,6 +46,7 @@ module.exports = (express, app, passport, pubComm) => {
         res.render('red-atribuite', {
             user:     req.user,
             title:    "RED Atribuite",
+            style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg:  "../img/rED-logo192.png",
             credlogo: "../img/CREDlogo.jpg"
         });
@@ -54,6 +55,7 @@ module.exports = (express, app, passport, pubComm) => {
     app.get('/user/resurse/cred', User.resAtribuite, function(req, res) {
         res.render('red-in-cred', {
             title:    "RED Atribuite",
+            style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg:  "../img/rED-logo192.png",
             credlogo: "../img/CREDlogo.jpg"
         });
@@ -79,7 +81,9 @@ module.exports = (express, app, passport, pubComm) => {
             res.render('profile', {
                 user:    req.user,
                 title:   "Profil",
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/red-logo-small30.png",
+                credlogo: "../img/CREDlogo.jpg"
             });
         }
     );
@@ -94,7 +98,9 @@ module.exports = (express, app, passport, pubComm) => {
                 res.render('red-in-cred', {
                     user:    req.user,
                     title:   "Profil",
+                    style:   "/lib/fontawesome/css/fontawesome.min.css",
                     logoimg: "/img/red-logo-small30.png",
+                    credlogo: "../img/CREDlogo.jpg",
                     resurse: rezultat
                 });
             }).catch(err => {
@@ -111,7 +117,9 @@ module.exports = (express, app, passport, pubComm) => {
             res.render('resursa', {
                 user:    req.user,
                 title:   "Profil",
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/red-logo-small30.png",
+                credlogo: "../img/CREDlogo.jpg",
                 resursa: rezultat
             });
         }).catch(err => {
