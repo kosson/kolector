@@ -13,8 +13,6 @@
   {{!-- <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@2.2.1/dist/bundle.min.js" charset="utf-8"></script> --}}
   {{!-- <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@2.4.1/dist/bundle.min.js" charset="utf-8"></script> --}}
   {{!-- <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@1.3.0/dist/bundle.min.js" charset="utf-8"></script> --}}
-
-
   <div class="justify-content-center mt-4">
     {{!-- Progress bar --}}
     <div class="progress" style="height: 3rem;">
@@ -179,25 +177,25 @@
                 <p>Selectarea corectă a arie este primul criteriu de încadrare a resursei. Se poate opta pentru mai multe arii curriculare atunci când resursa are un caracter transversal.</p>
                 <select id="arii-curr" class="form-control custom-select" multiple>
                   <optgroup label="Limbă și comunicare">
-                    <option value="LbCom">Limbă și comunicare [general]</option>
-                    <option value="LbComLbRomMin">» Limba și literatura romana (pt. elevi care învață în limba maternă)</option>
-                    <option value="LbComLbMat">» Limbi materne</option>
-                    <option value="LbComLbMod">» Limbi moderne</option>
+                    <option data-arie="LbCom"         value="Limbă și comunicare">Limbă și comunicare [general]</option>
+                    <option data-arie="LbComLbRomMin" value="Limba și literatura romana (pt. elevi care învață în limba maternă)">Limba și literatura romana (pt. elevi care învață în limba maternă)</option>
+                    <option data-arie="LbComLbMat"    value="Limbi materne">Limbi materne</option>
+                    <option data-arie="LbComLbMod"    value="Limbi moderne">Limbi moderne</option>
                   </optgroup>
-                  <option value="MatStNat">Matematică și științe ale naturii</option>
+                  <option data-arie="MatStNat"        value="Matematică și științe ale naturii">Matematică și științe ale naturii</option>
                   <optgroup label="Om și societate">
-                    <option value="OmSiSoc">Om și societate [general]</option>
-                    <option value="OmSiSocIstMin">» Istorie minorități</option>
-                    <option value="OmSiSocRel">» Religii</option>
+                    <option data-arie="OmSiSoc"       value="Om și societate">Om și societate [general]</option>
+                    <option data-arie="OmSiSocIstMin" value="Istorie minorități">Istorie minorități</option>
+                    <option data-arie="OmSiSocRel"    value="Religii">Religii</option>
                   </optgroup>
-                  <option value="Arte">Arte</option>
+                  <option data-arie="Arte" value="Arte">Arte</option>
                   <optgroup label="Educație fizică și sport">
-                    <option value="EdFizSiSp">Educație fizică și sport [general]</option>
-                    <option value="EdFizSiSpPrSpPra">» Pregătire sportivă practică</option>              
+                    <option data-arie="EdFizSiSp"        value="Educație fizică și sport">Educație fizică și sport [general]</option>
+                    <option data-arie="EdFizSiSpPrSpPra" value="Pregătire sportivă practică">Pregătire sportivă practică</option>              
                   </optgroup>
-                  <option value="Teh">Tehnologii</option>
-                  <option value="ConsOri">Consiliere și orientare</option>
-                  <option value="CurrDecSco">Curriculum la decizia școlii</option>
+                  <option data-arie="Teh"        value="Tehnologii">Tehnologii</option>
+                  <option data-arie="ConsOri"    value="Consiliere și orientare">Consiliere și orientare</option>
+                  <option data-arie="CurrDecSco" value="Curriculum la decizia școlii">Curriculum la decizia școlii</option>
                 </select>
               </div>
               {{!-- Validare arie curriculară --}}
@@ -215,21 +213,21 @@
                   data-arteviz0="Arte vizuale și abilități practice" 
                   data-matexpmed0="Matematică și explorarea mediului" 
                   data-comlbrom0="Comunicare în limba română">
-                  <label class="form-check-label" for="inlineCheckbox1">Cl. preg.</label>
+                  <label class="form-check-label" for="inlineCheckbox1">Clasa pregătitoare</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1"  
                   data-arteviz1="Arte vizuale și abilități practice" 
                   data-matexpmed1="Matematică și explorarea mediului" 
                   data-comlbrom01="Comunicare în limba română">
-                  <label class="form-check-label" for="inlineCheckbox1">Cl. I</label>
+                  <label class="form-check-label" for="inlineCheckbox1">Clasa I</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox2" value="cl2"  
                   data-arteviz2="Arte vizuale și abilități practice" 
                   data-matexpmed2="Matematică și explorarea mediului" 
                   data-comlbrom2="Comunicare în limba română">
-                  <label class="form-check-label" for="inlineCheckbox2">Cl. a II-a</label>
+                  <label class="form-check-label" for="inlineCheckbox2">Clasa a II-a</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox3" value="cl3"  
@@ -238,7 +236,7 @@
                   data-comlbrom3="Limba și literatura română" 
                   data-edciv3="Educaţie civică" 
                   data-jocmi3="Joc și mișcare">
-                  <label class="form-check-label" for="inlineCheckbox3">Cl. a III-a</label>
+                  <label class="form-check-label" for="inlineCheckbox3">Clasa a III-a</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox4" value="cl4"  
@@ -249,25 +247,25 @@
                   data-geo4="Geografie" 
                   data-ist4="Istorie" 
                   data-jocmi4="Joc și mișcare">
-                  <label class="form-check-label" for="inlineCheckbox4">Cl. a IV-a</label>
+                  <label class="form-check-label" for="inlineCheckbox4">Clasa a IV-a</label>
                 </div>
                 {{!-- PRIMAR END --}}
                 {{!-- GIMANZIU --}}
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox5" value="cl5"  >
-                  <label class="form-check-label" for="inlineCheckbox5">Cl. a V-a</label>
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox5" value="cl5">
+                  <label class="form-check-label" for="inlineCheckbox5">Clasa a V-a</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox6" value="cl6" >
-                  <label class="form-check-label" for="inlineCheckbox6">Cl. a VI-a</label>
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox6" value="cl6">
+                  <label class="form-check-label" for="inlineCheckbox6">Clasa a VI-a</label>
                 </div>
                 <div class="form-check form-check-inline nivel">
-                  <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="cl7"  >
-                  <label class="form-check-label" for="inlineCheckbox7">Cl. a VII-a</label>
+                  <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="cl7">
+                  <label class="form-check-label" for="inlineCheckbox7">Clasa a VII-a</label>
                 </div>
                 <div class="form-check form-check-inline nivel">
-                  <input class="form-check-input" type="checkbox" id="inlineCheckbox8" value="cl8"  >
-                  <label class="form-check-label" for="inlineCheckbox8">Cl. a VIII-a</label>
+                  <input class="form-check-input" type="checkbox" id="inlineCheckbox8" value="cl8">
+                  <label class="form-check-label" for="inlineCheckbox8">Clasa a VIII-a</label>
                 </div>
                 {{!-- GIMANZIU END--}}
               </div>
