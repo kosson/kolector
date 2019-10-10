@@ -489,26 +489,29 @@ function creeazaTitluAlternativHelper (id, insertie) {
 }
 
 /* === Constituirea selectorului pentru disciplină === */
-var niveluri = document.querySelectorAll('.nivel');
+var niveluri = document.querySelectorAll('.nivel'); // array de clasele selectate
 var discipline = document.querySelector('#discipline');
-niveluri.forEach(function (checkbox) {
-    // pentru fiecare nivel de școlarizare apăsat, se vor genera butoane pentru fiecare disciplină
+/**
+ * Pentru fiecare clasă bifată, adaugă un listener la `click`, care va genera input checkbox-uri în baza datelor din `data=*` (Bootstrap 4)
+ * Parcurge un array al claselor existente și pentru fiecare selectată, generează inputbox-uri care arată ca butoane.
+ */
+niveluri.forEach(function cbNiveluri (checkbox) {
     checkbox.addEventListener('click', (event) => {
-        // FIXME: La un moment dat, adu-mi dinamic datele, nu din `data=*`. Gândește-te la numărul de atingeri ale bazei. Merită?!
-        var data = JSON.parse(JSON.stringify(event.target.dataset)); // constituie un obiect cu toate datele din `data=*` a checkbox-ului
+        // FIXME: Date sunt hardcodate în formular cu atribute `data=*`. Am dorit reducerea la maxim a atingerii bazei de date.
+        var data = JSON.parse(JSON.stringify(event.target.dataset)); // constituie un obiect cu toate datele din `data=*` a checkbox-ului de clasă.
 
-        // verifică dacă nu cumva bifa nu mai este checked. În cazul acesta șterge toate disciplinele asociate
+        // Dacă sunt elemente în `niveluri` care au uncheck, șterge disciplinele asociate!
         if(event.target.checked === false) {
             // Pentru fiecare valoare din data, șterge elementul din discipline
             for (let [k, v] of Object.entries(data)) {
-                let elemExistent = document.querySelector(`.${k}`); // k este codul disciplinei care a fost pus drept clasă pentru discipline
-                discipline.removeChild(elemExistent); // șterge disciplina
+                let elemExistent = document.querySelector(`.${k}`); // k este codul disciplinei care a fost pus drept clasă în vederea modelării cu CSS (culoare, etc)
+                discipline.removeChild(elemExistent); // șterge disciplina din array-ul elementelor DOM
             }
         } else {
             // dacă event.target.checked a fost bifat - avem `checked`, vom genera elementele checkbox.
             for (let [key, val] of Object.entries(data)) {
                 // crearea checkbox - urilor
-                let inputCheckBx      = new createElement('input', '', ['form-check-input'],      {type: "checkbox", autocomplete: "off", value: key}).creeazaElem();
+                let inputCheckBx      = new createElement('input', '', ['form-check-input'],      {type: "checkbox", 'data-nume': val, autocomplete: "off", value: key}).creeazaElem();
                 let labelBtn          = new createElement('label', '', ['btn', 'btn-success'],    {}).creeazaElem(val);
                 let divBtnGroupToggle = new createElement('div',   '', ['btn-group-toggle', key], {"data-toggle": "buttons", onclick: "actSwitcher()"}).creeazaElem();          
                 labelBtn.appendChild(inputCheckBx);
@@ -522,7 +525,8 @@ niveluri.forEach(function (checkbox) {
 /* === Prezentarea competențelor specifice === */
 // Locul de inserție al tabelului
 var compSpecPaginator = document.querySelector('#actTable');
-// Pentru a preveni orice erori izvorâte din apăsarea prematură a butonului „Alege comptetențe specifice”, am ales să-l ascund până când nu este selectată o disciplină
+
+// Pentru a preveni orice erori izvorâte din apăsarea prematură a butonului „Alege competetențe specifice”, am ales să-l ascund până când nu este selectată o disciplină
 /**
  * Rolul funcției este de a face ca butonul de selecție să apară doar dacă a fost apăsată vreo disciplină
  */
@@ -714,23 +718,26 @@ function manageInputClick () {
 function addMeDeleteMe () {
     let rowData = XY.getData();
 } 
-/* ======== MAGIA ESTE GATA, APLAUZE pentru o mare măgărie, care... FUNCȚIONEAZĂ :)))))) ======= */
+/* ======== MAGIA ESTE GATA, APLAUZE!!! ======= */
 
 /**
- * Funcția `diciplineBifate` este listener pentru butonul „Alege competențele specifice”
+ * Funcția `diciplineBifate` este listener pentru butonul „Alege competențele specifice” - `#actTable`
  * Are rolul de a aduce competențele specifice pentru disciplinele bifate folosind socketurile.
- * Apelează funcțiile `tabelFormater(data)` și `activitatiRepopulareChecks()` la momentul când se apasă pe butonu plus
- * Încarcă și obiectul `RED` care colectează datele de formular: `RED.discipline` și `RED.etichete`
+ * Apelează funcțiile `tabelFormater(data)` și `activitatiRepopulareChecks()` la momentul când se apasă pe butonul plus
+ * Încarcă și obiectul `RED`, care colectează datele de formular: `RED.discipline` și `RED.etichete`
  */
 function disciplineBifate () {
     // un array necesar pentru a captura valorile input checkbox-urilor bifate
     let values = [];
 
     // trimite în `values` valorile din input checkboxurile bifate în elementul părinte #discipline
-    document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value}) => {
+    document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value, dataset}) => {
         values.push(value);
+
+        // ==== RED.discipline ====
+        RED.discipline.push(dataset.nume);
     });
-    console.log(values);
+    // console.log(values);
 
     // ori de câte ori va fi apăsată o disciplină, se emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ]). 
     pubComm.emit('csuri', values);
@@ -883,6 +890,7 @@ function pas2 () {
     var valAriiSelectate = [].map.call(optSelectate, option => option.value);
     // RED.arieCurriculara = [].map.call(optSelectate, option => option.value);
 
+    // ==== RED.arieCurriculara ====
     // Verifică dacă valorile din array-ul `RED.arieCurriculara`. Dacă valoarea există deja, nu o mai adăuga de fiecare dată când `pas2()` este executat.
     valAriiSelectate.forEach((valoare) => {
         // Verifica cu indexOf existența valorii. Dacă nu e, adaug-o!
@@ -947,7 +955,7 @@ function pas2 () {
     // disciplinele și etichetele sunt încărcate din funcția `disciplineBifate()`; selectează toate checkbox-urile checked.
     document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach((element) => {
         if (RED.discipline.indexOf(element.value) === -1) {
-            RED.discipline.push(element.value);
+            // RED.discipline.push(element.value);
             RED.etichete.push(element.value);
         }
     });
