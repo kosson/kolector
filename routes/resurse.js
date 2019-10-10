@@ -89,7 +89,6 @@ module.exports = function (router) {
                 scripts
             });
             // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
-            
         } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
             res.render('adauga-res', {
                 title: "Adauga",
@@ -142,15 +141,6 @@ module.exports = function (router) {
     //     }
     // });
 
-    /**
-     * Funcția are rolul de a trimite toate fișierele într-un Bag.
-     * @param {Object} files 
-     */
-    function putFilesInBag (files, body) {
-        console.log(files);
-        // console.log(body);
-    }
-
     // router.get('/resurse/:id', function (req, res) {
     //     res.render('resursa', {
     //         title: "Resursa",
@@ -163,7 +153,6 @@ module.exports = function (router) {
     //     console.log('Time: ', Date.now());
     //     next();
     // });
-
 
     return router;
 };

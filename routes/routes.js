@@ -109,19 +109,50 @@ module.exports = (express, app, passport, pubComm) => {
         }
     );
 
-    app.get('/profile/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), function(req, res){
+    let checkRole = require('./controllers/checkRole.helper');
+    app.get('/profile/resurse/:idres', User.ensureAuthenticated, function(req, res){
         var record = require('./controllers/resincredid.ctrl')(req.params);
         record.then(rezultat => {
-            // console.log(rezultat);
-            //TODO: creează setul de date al resurselor contribuite.
-            res.render('resursa', {
-                user:    req.user,
-                title:   "Profil",
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                logoimg: "/img/red-logo-small30.png",
-                credlogo: "../img/CREDlogo.jpg",
-                resursa: rezultat
-            });
+            let scripts = [
+                {script: '/lib/editorjs/editor.js'},
+                {script: '/lib/editorjs/header.js'},
+                {script: '/lib/editorjs/paragraph.js'},
+                {script: '/lib/editorjs/list.js'},
+                {script: '/lib/editorjs/image.js'},
+                {script: '/lib/editorjs/table.js'},
+                {script: '/lib/editorjs/attaches.js'},
+                {script: '/lib/editorjs/embed.js'},
+                {script: '/lib/editorjs/code.js'},
+                {script: '/lib/editorjs/inlinecode.js'},
+                {script: '/js/redincredadmin.js'}         
+            ];
+            let roles = ["user", "educred", "validator"];
+            let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
+            
+            /* ====== VERIFICAREA CREDENȚIALELOR ====== */
+            if(req.session.passport.user.roles.admin){
+                res.render('resursa-admin', {
+                    user:    req.user,
+                    title:   "Administrare RED",
+                    style:   "/lib/fontawesome/css/fontawesome.min.css",
+                    scripts,
+                    logoimg: "/img/red-logo-small30.png",
+                    credlogo: "../img/CREDlogo.jpg",
+                    resursa: rezultat
+                });
+            } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
+                res.render('resursa', {
+                    user:    req.user,
+                    title:   "Afișare RED",
+                    style:   "/lib/fontawesome/css/fontawesome.min.css",
+                    logoimg: "/img/red-logo-small30.png",
+                    credlogo: "../img/CREDlogo.jpg",
+                    resursa: rezultat,
+                    scripts
+                });
+            } else {
+                res.redirect('/401');
+            }
         }).catch(err => {
             if (err) throw err;
         });
