@@ -48,7 +48,7 @@
                 </div>
 
                 {{!-- INPUT - TITLU --}}
-                <input id="titlu-res" class="form-control" type="text" name="titlu" aria-label="Titlul resursei" aria-describedby="titlu-label" placeholder="ex: Bătălia de la Călugăreni" required >
+                <input id="titlu-res" class="form-control" type="text" name="titlu" aria-label="Titlul resursei" aria-describedby="titlu-label" placeholder="ex: Bătălia de la Călugăreni" required>
                 {{!-- Validare -Helper afisare text direct / Am ales să folosesc toastmessage [plugin]--}}
                 <strong id="titluErr" class="form-text text-danger"></strong>
 
@@ -76,7 +76,7 @@
               </div>
               {{!-- HELP Titlul --}}
               <small class="form-text text-muted">
-                  Titlul trebuie să cuprindă un maxim de 150 de caractere, să fie clar și să evidențieze conținutul resursei.
+                Titlul trebuie să cuprindă un maxim de 150 de caractere, să fie clar și să evidențieze conținutul resursei.
               </small>
               {{!-- HELP Titlul End--}}
 
@@ -105,7 +105,7 @@
 
             {{!-- Descrierea resursei educaționale --}}
             <fieldset>
-              <legend>O scurtă descriere a resursei</legend>
+              <legend>Scurtă descriere a resursei</legend>
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text">Maxim 1000 de caractere</span>
@@ -171,7 +171,7 @@
           <div id="sec02" class="form-group card-body" aria-labelledby="heading02" data-parent="#accordionFrm">
             {{!-- Selectări de arie --}}
             <fieldset>
-              <legend>Arie curriculară</legend>
+              <legend>Arie curriculară din care face parte disciplina</legend>
               {{!-- ARIE - Selector În caz de selecție multiplă, avem un caz de transdisciplinaritate--}}
               <div class="form-group">
                 <p>Selectarea corectă a arie este primul criteriu de încadrare a resursei. Se poate opta pentru mai multe arii curriculare atunci când resursa are un caracter transversal.</p>
@@ -276,7 +276,7 @@
 
             {{!-- Alegerea dinamică a disciplinelor în funcție de selectarea nivelului școlar --}}
             <fieldset>
-              <legend>Alege disciplinele</legend>
+              <legend>Disciplina</legend>
               <h4>Selectarea disciplinei sau a mai multora încarcă competențele specifice</h4>
               <p>Pentru a avea acces la comptențele specifice și implicit la activitățile proprii, cât și pentru a propune noi activități inexistente, se va alege unul din nivelurile de școlarizare.</p>
               <p>Odată selectat nivelul, se vor încărca disciplinele aferente acelui nivel, dintre care se vor alege cele pentru care resursa propusă răspunde</p>
@@ -344,6 +344,8 @@
                   <option value="psihomotor">psihomotor</option>
                   <option value="afectiv">afectiv</option>
                 </select>
+                <small>Prin care se dovedește că elevul are competențe generale și specifice - ceea ce știe și/sau să facă elevul</small>
+                <small>Se pot selecta una sau mai multe dintre variantele de mai sus sau se pot adăuga, după caz, dacă niciuna dintre variantele enumerate nu întrunește cerințele autorului/ contributorului.</small>
               </div>
               {{!-- DOMENIU END --}}
 
@@ -351,8 +353,7 @@
               <div class="form-group">
                 <label for="valid-functii">Resursa vizează</label>
                 <select multiple class="form-control" id="valid-functii">
-                  <option value="comunicare">comunicare</option>
-                  <option value="însușire">însușire de noi cunoștințe</option>
+                  <option value="comunicare">comunicare/însușire de noi cunoștințe</option>
                   <option value="formare">formare de priceperi și deprinderi</option>
                   <option value="fixare">fixare și sistematizare</option>
                   <optgroup label="verificare/ evaluare a cunoștințelor acumulate">
@@ -373,6 +374,7 @@
                   <option value="dialectic">dialectic</option>
                   <option value="analogic">analogic</option>
                 </select>
+                <small>Se pot selecta una sau mai multe dintre variantele de mai sus sau se pot adăuga, după caz, dacă niciuna dintre variantele enumerate nu întrunește cerințele autorului/ contributorului.</small>
               </div>
               {{!-- DEMERSURI END --}}
 
@@ -389,24 +391,12 @@
                     <option value="curteascolii">în curtea școlii</option>
                     <option value="spatiideschise">alte spații deschise (pădure, parc)</option>
                   </optgroup>
-                </select>              
+                  <option value="laborator">în perechi (dual)</option>
+                  <option value="laborator">mixte</option>
+                </select>
+                <small>Se pot selecta una sau mai multe dintre variantele de mai sus sau se pot adăuga, după caz, dacă niciuna dintre variantele enumerate nu întrunește cerințele autorului/ contributorului.</small>
               </div>
               {{!-- SPAȚII END --}}
-
-              {{!-- CUM SE PRODUCE ÎNVĂȚAREA --}}
-              <div class="form-group">
-                <label for="valid-invatarea">Modul în care se produce învățarea se face prin:</label>
-                <select multiple class="form-control" id="valid-invatarea">
-                  <option value="cooperare">cooperare</option>
-                  <option value="competitie">competiție</option>
-                  <option value="colaborare">colaborare</option>
-                  <option value="descoperire">descoperire</option>
-                  <option value="problematizare">problematizare</option>
-                  <option value="experimentare">experimentare</option>
-                  <option value="receptare">receptare activă</option>
-                </select>              
-              </div>
-              {{!-- CUM SE PRODUCE ÎNVĂȚAREA END --}} 
 
               {{!-- DEPENDINȚELE Resursei --}}
               <div class="form-group">
@@ -419,11 +409,27 @@
                     <textarea id="dependinte" class="form-control" aria-label="dependinte" rows="3"></textarea>
                   </div>
                   <small class="form-text text-muted">
-                    Contribuitorul va introduce toate detaliile privind necesitățile sau condiționalitățile pentru a deschide, citi, interpreta sau rula conținutul resursei.
+                    Contribuitorul va introduce toate detaliile privind necesitățile sau condiționalitățile pentru a deschide, citi, interpreta sau rula conținutul resursei. Se vor enumera materialele de care are nevoie elevul/ profesorul/ aparținătorul pentru a putea parcurge/ înțelege/ asimila informațiile cuprinse în resursă.
                   </small>                  
                 </fieldset>
               </div>
-              {{!-- DEPENDINȚELE Resursei END--}}                          
+              {{!-- DEPENDINȚELE Resursei END--}}
+
+              {{!-- CUM SE PRODUCE ÎNVĂȚAREA --}}
+              <div class="form-group">
+                <label for="valid-invatarea">Modul în care se produce învățarea se face prin:</label>
+                <select multiple class="form-control" id="valid-invatarea">
+                  <option value="cooperare">cooperare</option>
+                  <option value="competitie">competiție</option>
+                  <option value="colaborare">colaborare</option>
+                  <option value="descoperire">descoperire</option>
+                  <option value="problematizare">problematizare</option>
+                  <option value="experimentare">experimentare</option>
+                  <option value="receptare">receptare activă</option>
+                </select>
+                <small>Se pot selecta una sau mai multe dintre variantele de mai sus sau se pot adăuga, după caz, dacă niciuna dintre variantele enumerate nu întrunește cerințele autorului/ contributorului.</small>           
+              </div>
+              {{!-- CUM SE PRODUCE ÎNVĂȚAREA END --}}                                   
 
             {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI END --}}
 

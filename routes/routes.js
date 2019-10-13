@@ -246,7 +246,7 @@ module.exports = (express, app, passport, pubComm) => {
                 RED.uuid = uuidv1();
             }
             const resursaEducationala = new Resursa({
-                _id: null,
+                _id:             new mongoose.Types.ObjectId(),
                 date:            Date.now(),
                 identifier:      RED.uuid,
                 idContributor:   RED.idContributor,
