@@ -108,9 +108,10 @@ module.exports = (express, app, passport, pubComm) => {
             });
         }
     );
-
+    // Aducere unei singure resurse contribuite de utilizator
     let checkRole = require('./controllers/checkRole.helper');
     app.get('/profile/resurse/:idres', User.ensureAuthenticated, function(req, res){
+        // Adu înregistrarea resursei cu toate câmpurile referință populate deja
         var record = require('./controllers/resincredid.ctrl')(req.params);
         record.then(rezultat => {
             let scripts = [
@@ -276,8 +277,11 @@ module.exports = (express, app, passport, pubComm) => {
                 etichete:        RED.etichete
             });
             resursaEducationala.save().then(() => {
-                Resursa.findOne({title: `${RED.title}`}).then((res) => {
+                Resursa.findOne({title: `${RED.title}`}).populate({
+                    path: 'competenteS'
+                }).execPopulate().then((res) => {
                     // res.redirect(`/profile/resurse/${RED.uuid}`);
+
                     socket.emit('red', res);
                 });
             });

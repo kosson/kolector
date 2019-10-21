@@ -56,7 +56,9 @@
                 <ul>
                     {{#each this.competenteS}}
                         <li>
-                            {{this}}
+                            {{#this}}
+                                {{nume}}
+                            {{/this}}
                         </li>
                     {{/each}}
                 </ul>
@@ -124,23 +126,11 @@
                 <p>{{this.bibliografie}}</p>
                 <h5>Conținut</h5>
                 <div class="content">
-                    {{#each this.content.blocks}}
-                        <p>{{this.data}}</p>
-                        {{#if this.data.file.extension}}
-                            <p>
-                                <a href="{{this.data.file.url}}">{{this.data.file.name}}</a>
-                            </p>
-                        {{else}}
-                            {{#if this.data.file.url}}
-                                <img src="{{this.data.file.url}}" alt="{{this.data.caption}}">
-                                <figcaption>{{this.data.caption}}</figcaption>
-                            {{/if}}
-                        {{/if}}
-                        
-                    {{/each}}                    
+                    {{!-- AFIȘAREA CONȚINUTULUI este de fapt o transformare în html a obiectului content. Vezi resincredid.ctrl.js --}}
+                    {{{this.content}}}
                 </div>
                 {{!-- Integrarea editorului de text --}}
-                <div id="codex-editor"></div>
+                {{!-- <div id="codex-editor"></div> --}}
                 {{!-- Încarcă aici scripturile pentru a evita oul înaintea găinii! :D --}}
                 {{#each scripts}}
                     <script src="{{script}}"></script>
@@ -149,3 +139,6 @@
         </div>
     {{/each}}
 </div>
+{{#each scripts}}
+    <script src="{{script}}"  charset="utf-8"></script>
+{{/each}}

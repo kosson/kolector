@@ -54,7 +54,9 @@
                 <ul>
                     {{#each this.competenteS}}
                         <li>
-                            {{this}}
+                            {{#this}}
+                                {{nume}}
+                            {{/this}}
                         </li>
                     {{/each}}
                 </ul>
@@ -137,7 +139,16 @@
                         
                     {{/each}}                    
                 </div>
+                {{!-- Integrarea editorului de text --}}
+                <div id="codex-editor"></div>
+                {{!-- Încarcă aici scripturile pentru a evita oul înaintea găinii! :D --}}
+                {{#each scripts}}
+                    <script src="{{script}}"></script>
+                {{/each}}
             </div>
         </div>
     {{/each}}
 </div>
+{{#each scripts}}
+    <script src="{{script}}"  charset="utf-8"></script>
+{{/each}}
