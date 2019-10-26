@@ -65,7 +65,7 @@ module.exports = (params) => {
                         if (obj.data.style === 'unordered') {
                             const list = obj.data.items.map(item => {
                                 return `<li class="cdx-list__item">${item}</li>`;
-                            });
+                            });                        
                             articleHTML += `<div class="ce-block">
                                     <div class="ce-block__content">
                                         <div class="ce-paragraph cdx-block">
@@ -74,13 +74,14 @@ module.exports = (params) => {
                                     </div>
                                 </div>\n`;
                         } else {
-                            const list = obj.data.items.map(item => {
-                                return `<li class="cdx-list__item">${item}</li>`;
+                            let lss = '';
+                            const list = obj.data.items.forEach(item => {
+                                lss += `<li class="cdx-list__item">${item}</li>`;
                             });
                             articleHTML += `<div class="ce-block">
                                 <div class="ce-block__content">
                                     <div class="ce-paragraph cdx-block">
-                                        <ol class="cdx-list--ordered">${list}</ol>
+                                        <ol class="cdx-list--ordered">${lss}</ol>
                                     </div>
                                 </div>
                             </div>\n`;
@@ -101,11 +102,16 @@ module.exports = (params) => {
                         </div>\n`;
                         break;
                     case 'embed':
+                            // FIXME: Transformă din https://www.youtube.com/watch?v=TNKWgcFPHqw în https://www.youtube.com/embed/TNKWgcFPHqw
+                            let ytbLnk = `${obj.data.source}`;
+                            let ytbID = ytbLnk.match(/([A-Z])\w+/)[0];
+                            // console.log(ytbID);
+                            let embYtbLink = `https://www.youtube.com/embed/${ytbID}`;
                             articleHTML += `<div class="ce-block">
                                 <div class="ce-block__content">
                                     <iframe width="${obj.data.width}" 
                                             height="${obj.data.height}" 
-                                            src="${obj.data.source}" 
+                                            src="${embYtbLink}" 
                                             frameborder="0" 
                                             allow="accelerometer; 
                                             autoplay; 
@@ -113,7 +119,8 @@ module.exports = (params) => {
                                             gyroscope; 
                                             picture-in-picture" 
                                             allowfullscreen>
-                                            </iframe>
+                                    </iframe>
+                                    </br>
                                     <strong>${obj.data.caption}</strong>
                                 </div>
                             </div>\n`;
