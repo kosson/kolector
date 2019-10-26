@@ -1,13 +1,12 @@
 require('dotenv').config();
-const fs          = require(`fs`);
-const fsPromises  = require(`fs`).promises;
+const fs          = require(`fs-extra`);
 const path        = require(`path`);
-const querystring = require('querystring')
+const querystring = require('querystring');
 const BagIt       = require('bagit-fs');
 const uuidv1      = require('uuid/v1');
 const Readable    = require('stream').Readable;
 const mongoose    = require('mongoose');
-const Resursa     = require('../models/resursa-red');
+const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
 
 module.exports = (express, app, passport, pubComm) => {
     /* GESTIONAREA RUTELOR */
@@ -87,14 +86,13 @@ module.exports = (express, app, passport, pubComm) => {
             });
         }
     );
-
+    // ACCESAREA PROPRIILOR RESURSE
     app.get('/profile/resurse', makeSureLoggedIn.ensureLoggedIn(), function(req, res){
             // console.dir(req.user.email);
             var count = require('./controllers/resincred.ctrl')(req.user);
             // console.log(count);
             count.then(rezultat => {
                 // console.log(rezultat);
-                //TODO: creează setul de date al resurselor contribuite.
                 res.render('red-in-cred', {
                     user:    req.user,
                     title:   "Profil",
@@ -113,6 +111,7 @@ module.exports = (express, app, passport, pubComm) => {
     app.get('/profile/resurse/:idres', User.ensureAuthenticated, function(req, res){
         // Adu înregistrarea resursei cu toate câmpurile referință populate deja
         var record = require('./controllers/resincredid.ctrl')(req.params);
+        // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
         record.then(rezultat => {
             let scripts = [
                 {script: '/lib/editorjs/editor.js'},
@@ -125,7 +124,9 @@ module.exports = (express, app, passport, pubComm) => {
                 {script: '/lib/editorjs/embed.js'},
                 {script: '/lib/editorjs/code.js'},
                 {script: '/lib/editorjs/inlinecode.js'},
-                {script: '/js/redincredadmin.js'}         
+                // {script: '/js/main.js'},       
+                {script: '/js/redincredadmin.js'},       
+                {script: '/js/moment.min.js'}        
             ];
             let roles = ["user", "educred", "validator"];
             let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
@@ -168,11 +169,11 @@ module.exports = (express, app, passport, pubComm) => {
     const resurse = require('./resurse')(express.Router());
     app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
 
-    /* =========== CONSTRUCȚIA BAG-ULUI ========= */
+    /* =========== CONSTRUCȚIA BAG-ULUI, INTRODUCEREA ÎNREGISTRĂRII, INTRODUCEREA ÎN ELASTICSEARCH ========= */
     /* SOCKETURI!!! */
     let lastBag;   // este o referință către un bag deja deschis
     let lastUuid;  // referință către UUID-ul în efect
-    
+    // EVENTS
     pubComm.on('connect', (socket) => {
         // Ascultă mesajele
         socket.on('mesaje', (mesaj) => {
@@ -183,7 +184,7 @@ module.exports = (express, app, passport, pubComm) => {
         // Primirea imaginilor pe socket conduce la crearea Bag-ului
         socket.on('resursa', function cbRes (resourceFile) {
             // creează calea pe care se va depozita.
-            var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
+            var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`; // FIXME: Folosește path.join în viitor să dăm și celor de pe Windows o șansă
 
             // Transformarea Buffer-ului primit într-un stream `Readable`
             var strm = new Readable();
@@ -240,12 +241,13 @@ module.exports = (express, app, passport, pubComm) => {
             }
         });
 
-        // Introducerea resursei în MongoDB
+        // Introducerea resursei în baza de date MongoDB
         socket.on('red', (RED) => {
-            // gestionează cazul în care nu ai un uuid generat pentru că resursa educațională nu are niciun fișier încărcat
+            // gestionează cazul în care nu ai un uuid generat pentru că resursa educațională, adică nu are niciun fișier încărcat
             if (!RED.uuid) {
                 RED.uuid = uuidv1();
             }
+            // Încarcă modelul cu date!!!
             const resursaEducationala = new Resursa({
                 _id:             new mongoose.Types.ObjectId(),
                 date:            Date.now(),
@@ -276,13 +278,35 @@ module.exports = (express, app, passport, pubComm) => {
                 expertCheck:     RED.expertCheck,
                 etichete:        RED.etichete
             });
+            // SAVE!!! INDEXARE ÎN ACELAȘI MOMENT!
             resursaEducationala.save().then(() => {
                 Resursa.findOne({title: `${RED.title}`}).populate({
                     path: 'competenteS'
                 }).execPopulate().then((res) => {
                     // res.redirect(`/profile/resurse/${RED.uuid}`);
-
+                    resursaEducationala.on('es-indexed', (err, res) => {
+                        if (err) throw err;
+                        console.log('Resursa a fost indexată cu rezultatul: ', res);
+                    });
                     socket.emit('red', res);
+                });
+            });
+        });
+
+        // Ștergerea unei resurse
+        socket.on('delresid', (resource) => {
+            console.log('Șterg resursa cu id-ul: ', resource);
+            Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
+                if (err) throw err;
+                console.log(doc);
+                var docId = doc._id;
+                // TODO: Sterge fizic directorul cu totul
+                let dirPath = path.join(process.env.REPO_REL_PATH, resource.contribuitor, resource.id);
+                console.log(dirPath);
+                fs.remove(dirPath, (err) => {
+                    if(err) throw err;
+                    // console.log('Am șters directorul cu succes');
+                    // socket.emit('delresid', 'Salut, client, am șters resursa: ', resource.id, 'contribuită de: ', resource.contributor);
                 });
             });
         });
@@ -394,7 +418,6 @@ module.exports = (express, app, passport, pubComm) => {
             imaginesplash: "/img/theseAreNotTheDroids.jpg",
             mesaj:    "Nu am gasit pagina căutată. Verifică linkul!"
         });
-        // next();
     });
 
     return app;

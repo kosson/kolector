@@ -1,5 +1,7 @@
 const resursaModel = require('../../models/resursa-red');
-const competenteS = require('../../models/competenta-specifica');
+const competenteS  = require('../../models/competenta-specifica');
+const moment       = require('moment');
+
 module.exports = (params) => {
     return resursaModel.find({_id: params.idres}).populate({
         path: 'competenteS'
@@ -120,7 +122,9 @@ module.exports = (params) => {
                         return '';
                 }
             });
-            resursa[0].content = articleHTML;            
+            resursa[0].content = articleHTML;
+            let localizat = moment(resursa[0].date).locale('ro').format('LLL');
+            resursa[0].dataRo = `${localizat}`; // formatarea datei pentru limba română.
         }
         return resursa;
     });

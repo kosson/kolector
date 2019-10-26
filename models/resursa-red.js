@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Schema   = mongoose.Schema;
+const mexp     = require('mongoose-elasticsearch-xp');
 
 var softwareSchema = new mongoose.Schema({
     nume:     {
@@ -19,7 +20,7 @@ var recomSchema = new mongoose.Schema({
     continut:    String, // este conținutul recomandării
 });
 
-var Resursa = new mongoose.Schema({
+var ResursaSchema = new mongoose.Schema({
     _id: Schema.Types.ObjectId,
 
     // #1. INIȚIALIZARE ÎNREGISTRARE
@@ -52,7 +53,12 @@ var Resursa = new mongoose.Schema({
     competenteGen:      [],    // Va fi un array de id-uri ale competențelor specifice
     competenteS:        [{     // Primul va fi cel din ierarhie, restul vor fi cele care sunt propuse (public sau experți).
         type: mongoose.Schema.Types.ObjectId,    // va lua id-uri din altă colecție
-        ref: 'competentaspecifica'      // este numele modelului de competență specifică, în cazul de față (ceea ce exporți din modul)
+        ref: 'competentaspecifica',      // este numele modelului de competență specifică, în cazul de față (ceea ce exporți din modul)
+        es_type: {
+            nume: {
+                es_type: 'string'
+            }
+        }
     }],    // [valoare din vocabular] Set de competențe specifice. Este ținta de învățare specificată ca obiectiv clar identificabil într-un vocabular controlat al elementelor stabilite de specialiști, dar codate. Sunt cele care sunt alese inițial la selecția când resursa a fost încărcată. Codurile acestora devin automat etichete. Când identficatorul unei comptențe specifice este introdus în acest set, automat, va fi actualizat setul `REDuri` cu id-ul resursei constituite. Astfel, o competență va ști mereu de care REDuri este referită.
     competentaSContext: ['https://schema.org/targetName', 'http://purl.org/dcx/lrmi-vocabs/alignmentType/teaches'],
     activitati:         [],    // sunt activitățile selectate de contribuitor și/sau adăugate de acesta suplimentar.
@@ -101,9 +107,11 @@ var Resursa = new mongoose.Schema({
     // o resursă educațională va avea cel puțin o referință, care să indice prin textul introdus de expert acordul la publicare în baza algoritmului de validare. Câta vreme expertCheck este false, resursa nu va fi publicată
 });
 
+ResursaSchema.plugin(mexp); // indexare directă a înregistrărilor.
+
 // HOOKS
 // Stergerea comentariilor asociate utiliatorului atunci când acesta este șters din baza de date.
-Resursa.pre('remove', function hRemoveCb() {
+ResursaSchema.pre('remove', function hRemoveCb() {
     const Coment = monoose.model('coment'); // acces direct la model fără require
     Coment.remove({ // -> Parcurge întreaga colecție a comentariilor
         // -> iar dacă un `_id`  din întreaga colecție de comentarii se potrivește cu id-urile de comentariu din întregistrarea resursei (`$in: this.Coment`), șterge-le. 
@@ -111,4 +119,4 @@ Resursa.pre('remove', function hRemoveCb() {
     }).then(() => next()); // -> acesta este momentul în care putem spune că înregistrarea a fost eliminată complet.
 });
 
-module.exports = mongoose.model('resursedu', Resursa);
+module.exports = mongoose.model('resursedu', ResursaSchema);

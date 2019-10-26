@@ -72,7 +72,7 @@ module.exports = function (router) {
             {script: '/lib/editorjs/embed.js'},
             {script: '/lib/editorjs/code.js'},
             {script: '/lib/editorjs/inlinecode.js'},
-            {script: '/js/form01adres.js'}         
+            {script: '/js/form01adres.js'}
         ];
         let roles = ["user", "educred", "validator"];
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);

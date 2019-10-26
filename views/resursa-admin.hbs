@@ -1,14 +1,15 @@
 {{!< layout}}
 {{> nav-resurse}}
 {{> messages}}
-<div id="resursaincred" class="resurse">
+<div id="resursaincredadm" class="resurse">
     {{#each resursa}}
-        <div class="">
+        <div data-id="{{this._id}}" data-contribuitor="{{this.idContributor}}" id="{{this._id}}" class="resursa">
             <img class="coperta" src="{{this.coperta}}" class="card-img-top" alt="{{this.title}}" style="width: 18rem;">
             <div class="">
-                <button type="button" class="btn btn-danger">Șterge resursa</button>
-                <button type="button" class="btn btn-warning">Editează resursa</button>
-                <h5>Data introducerii resursei: {{this.date}}</h5>
+                <button id="resdeladm" type="button" class="btn btn-danger" data-toggle="modal" data-target="#delModal">Șterge resursa</button>
+                <button id="resedadm" type="button" class="btn btn-warning">Editează resursa</button>
+                <h5>Data introducerii resursei</h5>
+                <p>{{this.dataRo}}</p>
                 <h5>Verificată:</h5>
                 <p>{{this.expertCheck}}</p>
                 <h5 class="card-title">Titlul resursei: {{this.title}}</h5>
@@ -18,6 +19,10 @@
                         <strong>{{@key}}: {{.}}</strong>
                     {{/each}}
                 {{/each}}
+                <h5>Autori:</h5>
+                <p>{{this.autori}}</p>
+                <h5>Contribuitor:</h5>
+                <p>{{this.idContributor}}</p>
                 <h5>Descrierea resursei:</h5>
                 <p class="card-text">{{this.description}}</p>
                 <h5>Arie curriculară:</h5>
@@ -124,6 +129,12 @@
                 <p>{{this.licenta}}</p>
                 <h5>Bibliografie</h5>
                 <p>{{this.bibliografie}}</p>
+                <h5>Etichete</h5>
+                <div>
+                    {{#each this.etichete}}
+                        <a href="#" class="badge badge-success">{{this}}</a>
+                    {{/each}}
+                </div>
                 <h5>Conținut</h5>
                 <div class="content">
                     {{!-- AFIȘAREA CONȚINUTULUI este de fapt o transformare în html a obiectului content. Vezi resincredid.ctrl.js --}}
@@ -138,6 +149,21 @@
             </div>
         </div>
     {{/each}}
+    <!-- Modal -->
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="delModalLabel">ȘTERGE</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+        </div>
+        <div class="modal-body"> Atenție, chiar vrei să ștergi resursa? </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">NU</button>
+            <a href="#delete" id="delete" class="btn btn-primary" onclick="deleteRes()">DA</a> </div>
+        </div>
+    </div>
+    </div>
 </div>
 {{#each scripts}}
     <script src="{{script}}"  charset="utf-8"></script>

@@ -1031,7 +1031,7 @@ function getMeSelected (elem, eticheta) {
 function closeBag (evt) {
     evt.preventDefault();
     // Închide Bag-ul
-    pubComm.emit('closeBag', true);
+    pubComm.emit('closeBag', true); // vezi routes.js ->  socket.on('closeBag'...)
     pubComm.on('closeBag', (mesaj) => {
         console.log(mesaj);
     });
@@ -1128,11 +1128,12 @@ saveContinutRes.addEventListener('click', function (evt) {
 var submitBtn = document.querySelector('#submit');
 submitBtn.addEventListener('click', (evt) => {
     pas4();
-    closeBag(evt);
-    pubComm.emit('red', RED);
-    // aștept răspunsul de la server:
+    closeBag(evt); // ÎNCHIDE BAG-ul
+    //FIXME: aici este locul unde ar trebui inițiat și un git repo pentru fiecare resursă. Astfel, introducem mecanism de versionare.
+    pubComm.emit('red', RED); // vezi în routes.js -> socket.on('red', (RED) => {...
+    // aștept răspunsul de la server și redirecționez utilizatorul către resursa tocmai creată.
     pubComm.on('red', (red) => {
-        console.log(red);
+        console.log(red); // FIXME: Dezactivează!
         window.location.href = '/profile/resurse/' + red._id;
     });
 });
