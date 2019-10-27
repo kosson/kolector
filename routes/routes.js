@@ -37,29 +37,6 @@ module.exports = (express, app, passport, pubComm) => {
         res.redirect('/resurse');
     });
 
-    // ========== USER ==========
-    /* Este ruta care încarcă resursele atribuite utilizatorului, fie proprii, fie asignate */
-    app.get('/user/resurse', User.resAtribuite, function(req, res) {
-        // console.log('Ce există în headerul de autorizare', req.get('authorization'));
-        console.log(req);
-        res.render('red-atribuite', {
-            user:     req.user,
-            title:    "RED Atribuite",
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg:  "../img/rED-logo192.png",
-            credlogo: "../img/CREDlogo.jpg"
-        });
-    });
-
-    app.get('/user/resurse/cred', User.resAtribuite, function(req, res) {
-        res.render('red-in-cred', {
-            title:    "RED Atribuite",
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg:  "../img/rED-logo192.png",
-            credlogo: "../img/CREDlogo.jpg"
-        });
-    });
-
     //  ========== LOGOUT ==========
     app.get('/logout', function(req, res){
         req.logout();
@@ -70,9 +47,10 @@ module.exports = (express, app, passport, pubComm) => {
         res.redirect('/');
     });
     
-    let makeSureLoggedIn = require('connect-ensure-login');
-    
     // ========== PROFILUL PROPRIU ==========
+    let makeSureLoggedIn = require('connect-ensure-login');
+    let checkRole = require('./controllers/checkRole.helper'); // Verifică rolul pe care îl are contul
+
     app.get('/profile',
         makeSureLoggedIn.ensureLoggedIn(),
         function(req, res){
@@ -107,7 +85,7 @@ module.exports = (express, app, passport, pubComm) => {
         }
     );
     // Aducere unei singure resurse contribuite de utilizator
-    let checkRole = require('./controllers/checkRole.helper');
+
     app.get('/profile/resurse/:idres', User.ensureAuthenticated, function(req, res){
         // Adu înregistrarea resursei cu toate câmpurile referință populate deja
         var record = require('./controllers/resincredid.ctrl')(req.params);
@@ -234,6 +212,7 @@ module.exports = (express, app, passport, pubComm) => {
             // finalizarea creării Bag-ului
             if (lastBag) {
                 lastBag.finalize(() => {
+                    // FIXME: setează bag-ul ca depozit git
                     socket.emit('closeBag', 'Am finalizat închiderea bag-ului');
                 });
             } else {
@@ -248,7 +227,7 @@ module.exports = (express, app, passport, pubComm) => {
                 RED.uuid = uuidv1();
             }
             // Încarcă modelul cu date!!!
-            const resursaEducationala = new Resursa({
+            var resursaEducationala = new Resursa({
                 _id:             new mongoose.Types.ObjectId(),
                 date:            Date.now(),
                 identifier:      RED.uuid,
@@ -279,30 +258,25 @@ module.exports = (express, app, passport, pubComm) => {
                 etichete:        RED.etichete
             });
             // SAVE!!! INDEXARE ÎN ACELAȘI MOMENT!
-            resursaEducationala.save().then(() => {
-                Resursa.findOne({title: `${RED.title}`}).populate({
-                    path: 'competenteS'
-                }).execPopulate().then((res) => {
-                    // res.redirect(`/profile/resurse/${RED.uuid}`);
-                    resursaEducationala.on('es-indexed', (err, res) => {
-                        if (err) throw err;
-                        console.log('Resursa a fost indexată cu rezultatul: ', res);
-                    });
-                    socket.emit('red', res);
-                });
+            var pResEd = resursaEducationala.populate('competenteS').execPopulate(); // returnează o promisiune
+            pResEd.then(res => {
+                res.save();
+                socket.emit('red', res);
+            }).catch(err => {
+                if (err) throw err;
             });
         });
 
         // Ștergerea unei resurse
         socket.on('delresid', (resource) => {
-            console.log('Șterg resursa cu id-ul: ', resource);
+            // console.log('Șterg resursa cu id-ul: ', resource);
             Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
                 if (err) throw err;
-                console.log(doc);
+                // console.log(doc);
                 var docId = doc._id;
                 // TODO: Sterge fizic directorul cu totul
                 let dirPath = path.join(process.env.REPO_REL_PATH, resource.contribuitor, resource.id);
-                console.log(dirPath);
+                // console.log(dirPath);
                 fs.remove(dirPath, (err) => {
                     if(err) throw err;
                     // console.log('Am șters directorul cu succes');

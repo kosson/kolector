@@ -1,2 +1,0 @@
-7e9b5454f887edaed391a1c86dcfd571294ef24407b06d2befc3f415ccc6f489 data/BlckoutITwikipedia.png
-efacb302f1dca2dfc8a5b4f89b0b98b204c7f58599389281594eab7e90fb05ef data/Koala_climbing_tree.jpg

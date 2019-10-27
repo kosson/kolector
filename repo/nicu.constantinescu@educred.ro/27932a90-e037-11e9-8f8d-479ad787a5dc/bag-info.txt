@@ -1,3 +1,0 @@
-Contact-Name: Nicu Constantinescu
-Bagging-Date: 2019-09-26
-Bag-Size: 84 KB
