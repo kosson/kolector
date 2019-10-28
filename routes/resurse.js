@@ -1,30 +1,5 @@
-// const express = require('express');
-// const router  = express.Router();
-
-// const multer  = require('multer');
-// var upload    = multer({ dest: 'repo/' });
-// var BagIt     = require('bagit-fs');
-// const fileUpload = require('express-fileupload');
-// const app = express();
-
-// // default options
-// app.use(fileUpload({
-//     createParentPath: true
-// }));
-
 module.exports = function (router) {
-
-    // ========== RESURSE PUBLICE ==========
-    /* ========== GET */
-    router.get('/resursepublice', function (req, res) {
-        res.render('resursepublice', {
-            title: "R.E.D.",
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "img/rED-logo192.png",
-        });
-    });
-
-    // ========== RESURSE ==========
+    // ========== VERIFICAREA ROLURILOR ==========
     let checkRole = require('./controllers/checkRole.helper');
 
     /* ========== GET */
@@ -74,8 +49,11 @@ module.exports = function (router) {
             {script: '/lib/editorjs/inlinecode.js'},
             {script: '/js/form01adres.js'}
         ];
-        let roles = ["user", "educred", "validator"];
+        // roluri pe care un cont le poate avea în proiectul CRED.
+        let roles = ["user", "educred", "validator"]; // FIXME: Atenție, la crearea conturilor nu este completat array-ul rolurilor în CRED!!! FIX NOW, NOW, NOW!
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
+        console.log(req.session.passport.user.roles);
+        // console.log(req.session.passport.user.roles.rolInCRED);
 
         /* ====== VERIFICAREA CREDENȚIALELOR ====== */
         if(req.session.passport.user.roles.admin){
@@ -89,9 +67,10 @@ module.exports = function (router) {
                 scripts
             });
             // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
-        } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
+        } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere al resursei.
             res.render('adauga-res', {
-                title: "Adauga",
+                user:    req.user,
+                title:   "Adauga",
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/rED-logo192.png",
                 credlogo:"/img/CREDlogo.jpg",

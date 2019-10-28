@@ -1,8 +1,10 @@
 const userModel = require('../../models/user');
+const mongoose  = require('mongoose');
 
 function googleStrategy (request, accessToken, refreshToken, params, profile, done) {
     // popularea modelului cu date
     const record = {
+        _id: new mongoose.Types.ObjectId(),
         email: profile._json.email,
         googleID: profile.id,
         googleProfile: {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mexp     = require('mongoose-elasticsearch-xp');
 
 let Persoana = new mongoose.Schema({
     nume: String,
@@ -9,3 +10,7 @@ let Persoana = new mongoose.Schema({
         ref: 'unit'
     }]
 });
+
+Persoana.plugin(mexp);
+
+module.exports = new mongoose.model('persoana', Persoana);

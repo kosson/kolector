@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mexp     = require('mongoose-elasticsearch-xp');
 
 let Disciplina = new mongoose.Schema({
     nume:        String,      // numele ariei curiculare este membru al unui vocabular controlat. Acesta trebuie definit.
@@ -22,4 +23,7 @@ let Disciplina = new mongoose.Schema({
     subcomponente: ['Limba şi literatura română','Limba engleză','Limba rusă','Limba germană','Limba italiană','Limba franceză','Limba spaniolă','Limba latină']
 }   
 */
+
+Disciplina.plugin(mexp);
+
 module.exports = new mongoose.model('disciplina', Disciplina);

@@ -1,8 +1,29 @@
 {{!< layout}}
 {{> nav-administrator}}
 {{> messages}}
-<div>
+<div id="content">
     <h1>Bine ai venit în zona de administrare!</h1>
-    <button type="button" class="btn btn-primary">Toți utilizatorii</button>
-    <button type="button" class="btn btn-primary">Unități</button>
+    <div id="foci">
+        <button type="button" class="btn btn-primary">Toți utilizatorii</button>
+        <button type="button" class="btn btn-primary">Unități</button>
+        <button type="button" class="btn btn-primary">Competențe specifice</button>    
+    </div>
+    <br>
+    <section id="userres">
+        <form action="#">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="useremail">@educred.ro</span>
+                </div>
+                <input type="text" id="useremail" class="form-control" placeholder="Adresa de email a utilizatorului" aria-label="useremail" aria-describedby="useremail">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button">Caută</button>
+                </div>
+            </div>
+        </form>
+        <br>
+        <div id="contributii" class="resurse">
+
+        </div>
+    </section>
 </div>

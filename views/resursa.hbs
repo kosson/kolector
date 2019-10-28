@@ -1,12 +1,13 @@
 {{!< layout}}
 {{> nav-resurse}}
 {{> messages}}
-<div id="resursaincred" class="resurse">
+<div id="resursaincredadm" class="resurse">
     {{#each resursa}}
-        <div class="">
+        <div data-id="{{this._id}}" data-contribuitor="{{this.idContributor}}" id="{{this._id}}" class="resursa">
             <img class="coperta" src="{{this.coperta}}" class="card-img-top" alt="{{this.title}}" style="width: 18rem;">
             <div class="">
-                <h5>Data introducerii resursei: {{this.date}}</h5>
+                <h5>Data introducerii resursei</h5>
+                <p>{{this.dataRo}}</p>
                 <h5>Verificată:</h5>
                 <p>{{this.expertCheck}}</p>
                 <h5 class="card-title">Titlul resursei: {{this.title}}</h5>
@@ -16,6 +17,10 @@
                         <strong>{{@key}}: {{.}}</strong>
                     {{/each}}
                 {{/each}}
+                <h5>Autori:</h5>
+                <p>{{this.autori}}</p>
+                <h5>Contribuitor:</h5>
+                <p>{{this.idContributor}}</p>
                 <h5>Descrierea resursei:</h5>
                 <p class="card-text">{{this.description}}</p>
                 <h5>Arie curriculară:</h5>
@@ -122,25 +127,19 @@
                 <p>{{this.licenta}}</p>
                 <h5>Bibliografie</h5>
                 <p>{{this.bibliografie}}</p>
+                <h5>Etichete</h5>
+                <div>
+                    {{#each this.etichete}}
+                        <a href="#" class="badge badge-success">{{this}}</a>
+                    {{/each}}
+                </div>
                 <h5>Conținut</h5>
                 <div class="content">
-                    {{#each this.content.blocks}}
-                        <p>{{this.data}}</p>
-                        {{#if this.data.file.extension}}
-                            <p>
-                                <a href="{{this.data.file.url}}">{{this.data.file.name}}</a>
-                            </p>
-                        {{else}}
-                            {{#if this.data.file.url}}
-                                <img src="{{this.data.file.url}}" alt="{{this.data.caption}}">
-                                <figcaption>{{this.data.caption}}</figcaption>
-                            {{/if}}
-                        {{/if}}
-                        
-                    {{/each}}                    
+                    {{!-- AFIȘAREA CONȚINUTULUI este de fapt o transformare în html a obiectului content. Vezi resincredid.ctrl.js --}}
+                    {{{this.content}}}
                 </div>
                 {{!-- Integrarea editorului de text --}}
-                <div id="codex-editor"></div>
+                {{!-- <div id="codex-editor"></div> --}}
                 {{!-- Încarcă aici scripturile pentru a evita oul înaintea găinii! :D --}}
                 {{#each scripts}}
                     <script src="{{script}}"></script>

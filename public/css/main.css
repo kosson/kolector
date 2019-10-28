@@ -38,6 +38,10 @@ img {
 }
 
 /*===== NAVIGATION ====*/
+nav.navbar-light {
+    background-color: bisque;
+}
+
 .navbar {
     padding: 0.7rem 1rem;
     text-transform: uppercase;

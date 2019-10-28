@@ -44,3 +44,7 @@ function deleteRes () {
 }
 
 // #3
+// Adu resursele pentru un utilizator
+function getUserRes () {
+    var userEmail = document.getElementById('useremail').value;
+}

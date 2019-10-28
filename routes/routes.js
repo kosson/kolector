@@ -10,16 +10,27 @@ const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
 
 module.exports = (express, app, passport, pubComm) => {
     /* GESTIONAREA RUTELOR */
+    var router = express.Router();
+
+    // Încarcă mecanismele de verificare a rolurilor
+    let makeSureLoggedIn = require('connect-ensure-login');
+    let checkRole = require('./controllers/checkRole.helper'); // Verifică rolul pe care îl are contul    
+
     // IMPORTUL CONTROLLERELOR DE RUTE
-    var index   = require('./index');
-    // var login   = require('./login'); FIXME: elimină toate fișierele de tratare a rutelor
-    var admin   = require('./administrator');
-
-    // ========== / ==========
-    app.get('/', index);
-
     // Încarcă controlerul necesar tratării rutelor de autentificare
-    const User = require('./controllers/user.ctrl')(passport);
+    var User    = require('./controllers/user.ctrl')(passport);
+    var index   = require('./index');
+    var admin   = require('./administrator');
+    var resurse = require('./resurse')(router);
+
+    // ========== ADMINISTRATOR ==========
+    app.use('/administrator', User.ensureAuthenticated, admin);
+
+    // ========== RESURSE ================
+    app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse    
+
+    // ========== / ROOT==========
+    app.get('/', index);
 
     // ========== LOGIN ==========
     app.get('/login', User.login);
@@ -48,9 +59,6 @@ module.exports = (express, app, passport, pubComm) => {
     });
     
     // ========== PROFILUL PROPRIU ==========
-    let makeSureLoggedIn = require('connect-ensure-login');
-    let checkRole = require('./controllers/checkRole.helper'); // Verifică rolul pe care îl are contul
-
     app.get('/profile',
         makeSureLoggedIn.ensureLoggedIn(),
         function(req, res){
@@ -137,15 +145,6 @@ module.exports = (express, app, passport, pubComm) => {
             if (err) throw err;
         });
     });
-
-    // ========== ADMINISTRATOR ==========
-    app.get('/administrator', User.ensureAuthenticated, admin);
-    // TODO: RUTA ADMINISTRATOR:
-    // -- verifică daca este autentificat și dacă este administrator.
-
-    // ========== RESURSE ================
-    const resurse = require('./resurse')(express.Router());
-    app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
 
     /* =========== CONSTRUCȚIA BAG-ULUI, INTRODUCEREA ÎNREGISTRĂRII, INTRODUCEREA ÎN ELASTICSEARCH ========= */
     /* SOCKETURI!!! */
@@ -283,6 +282,11 @@ module.exports = (express, app, passport, pubComm) => {
                     // socket.emit('delresid', 'Salut, client, am șters resursa: ', resource.id, 'contribuită de: ', resource.contributor);
                 });
             });
+        });
+
+        // Aducerea resurselor pentru un id (email) și trimiterea în client
+        socket.on('userset', (userid) => {
+            Resursa.find();            
         });
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */

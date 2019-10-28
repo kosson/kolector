@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mexp     = require('mongoose-elasticsearch-xp');
 
 let CompetentaS = new mongoose.Schema({
     nume: {             // este chiar numele competenței specifice. Ex: 1.1. Identificarea semnificaţiei unui mesaj oral, pe teme accesibile, rostit cu claritate
@@ -27,5 +28,7 @@ let CompetentaS = new mongoose.Schema({
 CompetentaS.virtual('nrREDuri').get(function () {
     return this.REDuri.length;
 });
+
+CompetentaS.plugin(mexp);
 
 module.exports = new mongoose.model('competentaspecifica', CompetentaS);
