@@ -111,6 +111,7 @@ app.use(function (err, req, res, next) {
 
 let port  = process.env.PORT || 8080;
 http.listen(port, '127.0.0.1', function cbConnection () {
+    console.log('RED Colector ', process.env.APP_VER);
     console.log('Server pornit pe 8080 -> binded pe 127.0.0.1');
 });
 

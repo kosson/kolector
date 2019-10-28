@@ -20,7 +20,7 @@ module.exports = (passport) => {
     passport.use(new GoogleStrategy({
             clientID:          process.env.GOOGLE_CLIENT_ID,
             clientSecret:      process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL:       "http://localhost:8080/callback",
+            callbackURL:       process.env.BASE_URL + "/callback",
             prompt:            'select_account',
             passReqToCallback: true
         }, cbGoogleStrategy

@@ -27,7 +27,17 @@ module.exports = (express, app, passport, pubComm) => {
     app.use('/administrator', User.ensureAuthenticated, admin);
 
     // ========== RESURSE ================
-    app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse    
+    app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
+    app.get('/resursepublice', (req, res) => {
+        // TODO: adu-mi toate resursele care sunt marcate a fi publice
+        res.render('resursepublice', {
+            user:    req.user,
+            title:   "RED-uri publice",
+            style:   "/lib/fontawesome/css/fontawesome.min.css",
+            logoimg: "/img/red-logo-small30.png",
+            credlogo: "../img/CREDlogo.jpg"
+        });
+    });
 
     // ========== / ROOT==========
     app.get('/', index);
