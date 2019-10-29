@@ -32,9 +32,11 @@ $( document ).on( "click", "#delete", function() {
     $('#exampleModal').modal('hide');
 });
 
+// detaliile resursei
+var resObi = {id: dataRes.id, contribuitor: dataRes.contribuitor};
+
 // #2
 function deleteRes () {
-    var resObi = {id: dataRes.id, contribuitor: dataRes.contribuitor};
     pubComm.emit('delresid', resObi);
     console.log('Am trimis obiectul: ', resObi);
     pubComm.on('delresid', (res) => {
@@ -44,7 +46,45 @@ function deleteRes () {
 }
 
 // #3
-// Adu resursele pentru un utilizator
-function getUserRes () {
-    var userEmail = document.getElementById('useremail').value;
+var validateCheckbox = document.getElementById('valid');
+validateCheckbox.addEventListener('click', validateResource);
+var resursa = document.getElementById(dataRes.id);
+
+// setează clasele în funcție de starea resursei
+if (validateCheckbox.checked) {
+    resursa.classList.add('validred');
+} else {
+    resursa.classList.add('invalidred');
+}
+
+/**
+ * Funcția are rolul de listener pentru input checkbox-ul pentru validare
+ * Modifică documentul în bază, declarându-l valid
+ * @param {Object} evt 
+ */
+function validateResource (evt) {
+    var queryObj = {_id: dataRes.id};
+    // se va trimite valoarea true sau false, depinde ce valoarea are checkbox-ul la bifare sau debifare
+    if (validateCheckbox.checked) {
+        // verifică dacă există clasa 'invalidred' (resursa pornește nevalidată)
+        if (resursa.classList.contains('invalidred')) {
+            resursa.classList.replace('invalidred', 'validred');
+        }
+        queryObj.expertCheck = true;
+        pubComm.emit('validateRes', queryObj);
+    } else {
+        if (resursa.classList.contains('validred')) {
+            resursa.classList.replace('validred', 'invalidred');
+        }
+        queryObj.expertCheck = false;        
+        pubComm.emit('validateRes', queryObj);
+    }
+    pubComm.on('validateRes', (response) => {
+        // TODO: modifică backgroundul galben în verde pal
+        if (response.expertCheck) {
+            console.log('Schimb culoarea background-ului din galben în verde pal');
+        } else {
+            console.log('Schimb culoarea background-ului din verde pal în galben');
+        }
+    });
 }

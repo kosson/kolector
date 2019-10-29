@@ -145,6 +145,14 @@ nav.navbar-light {
     justify-content: center;
 }
 
+.validred {
+    background-color: lightgreen;
+}
+
+.invalidred {
+    background-color: gold;
+}
+
 .bd-placeholder-img {
     font-size: 1.125rem;
     text-anchor: middle;

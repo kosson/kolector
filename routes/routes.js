@@ -108,7 +108,14 @@ module.exports = (express, app, passport, pubComm) => {
         // Adu înregistrarea resursei cu toate câmpurile referință populate deja
         var record = require('./controllers/resincredid.ctrl')(req.params);
         // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
-        record.then(rezultat => {
+        record.then(rezultat => {            
+            // TODO: Transformă aici resursa pentru a putea fi afișat formul de validare
+            if (rezultat[0].expertCheck) {
+                rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
+            } else {
+                rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck">`;
+            }
+            // console.log(rezultat);
             let scripts = [
                 {script: '/lib/editorjs/editor.js'},
                 {script: '/lib/editorjs/header.js'},
@@ -297,6 +304,21 @@ module.exports = (express, app, passport, pubComm) => {
         // Aducerea resurselor pentru un id (email) și trimiterea în client
         socket.on('userset', (userid) => {
             Resursa.find();            
+        });
+
+        // validarea resursei
+        socket.on('validateRes', (queryObj) => {
+            //TODO: modifică câmpul expertCheck din bază pentru înregistrarea primită
+            // eveniment declanșat din redincredadmin.js
+            let resQuery = Resursa.findOne({_id: queryObj._id}, 'expertCheck');
+            resQuery.exec(function (err, doc) {
+                doc.expertCheck = queryObj.expertCheck;
+                doc.save().then(newdoc => {
+                    socket.emit('validateRes', {expertCheck: newdoc.expertCheck});
+                }).catch(err => {
+                    if (err) throw err;
+                });
+            });
         });
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */
