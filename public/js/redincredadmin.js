@@ -46,9 +46,11 @@ function deleteRes () {
 }
 
 // #3
-var validateCheckbox = document.getElementById('valid');
-validateCheckbox.addEventListener('click', validateResource);
 var resursa = document.getElementById(dataRes.id);
+var validateCheckbox = document.getElementById('valid');
+var publicCheckbox = document.getElementById('public');
+validateCheckbox.addEventListener('click', validateResource);
+publicCheckbox.addEventListener('click', setGeneralPublic);
 
 // setează clasele în funcție de starea resursei
 if (validateCheckbox.checked) {
@@ -60,6 +62,7 @@ if (validateCheckbox.checked) {
 /**
  * Funcția are rolul de listener pentru input checkbox-ul pentru validare
  * Modifică documentul în bază, declarându-l valid
+ * Input checkbox-ul se formează din rute routes.js la app.get('/profile/resurse/:idres'...
  * @param {Object} evt 
  */
 function validateResource (evt) {
@@ -85,6 +88,26 @@ function validateResource (evt) {
             console.log('Schimb culoarea background-ului din galben în verde pal');
         } else {
             console.log('Schimb culoarea background-ului din verde pal în galben');
+        }
+    });
+}
+
+function setGeneralPublic (evt) {
+    var queryObj = {_id: dataRes.id};
+    // se va trimite valoarea true sau false, depinde ce valoarea are checkbox-ul la bifare sau debifare
+    if (publicCheckbox.checked) {
+        queryObj.generalPublic = true;
+        pubComm.emit('setPubRes', queryObj);
+    } else {
+        queryObj.generalPublic = false;        
+        pubComm.emit('setPubRes', queryObj);
+    }    
+    pubComm.on('setPubRes', (response) => {
+        // TODO: modifică backgroundul galben în verde pal
+        if (response.generalPublic) {
+            console.log('Resursa a intrat în zona publică');
+        } else {
+            console.log('Resursa a fost retrasă din zona publică');
         }
     });
 }

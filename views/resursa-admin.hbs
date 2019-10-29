@@ -6,19 +6,19 @@
         <div data-id="{{this._id}}" data-contribuitor="{{this.idContributor}}" id="{{this._id}}" class="resursa">
             <img class="coperta" src="{{this.coperta}}" class="card-img-top" alt="{{this.title}}" style="width: 18rem;">
             <div class="">
-                {{!-- <button id="resedadm" type="button" class="btn btn-warning">Editează resursa</button> --}}
-                <h5>Data introducerii resursei</h5>
-                <p>{{this.dataRo}}</p>
-                <h5>Verificată: {{{this.validate}}}</h5>
-                {{!-- <p>{{{this.expertCheck}}}</p> --}}
-                {{!-- <p>{{{this.validate}}}</p> --}}
                 <h5 class="card-title">Titlul resursei: {{this.title}}</h5>
                 <h5>Titluri alternative:</h5>
                 {{#each this.titleI18n}}
                     {{#each this}}
                         <strong>{{@key}}: {{.}}</strong>
                     {{/each}}
-                {{/each}}
+                {{/each}}                
+                {{!-- <button id="resedadm" type="button" class="btn btn-warning">Editează resursa</button> --}}
+                <h5>Data introducerii resursei</h5>
+                <p>{{this.dataRo}}</p>
+                {{!-- În this.validate vine cod html de la  --}}
+                <h5>Verificată: {{{this.validate}}}</h5>
+                <h5>Publică: {{{this.genPub}}}</h5>
                 <h5>Autori:</h5>
                 <p>{{this.autori}}</p>
                 <h5>Contribuitor:</h5>

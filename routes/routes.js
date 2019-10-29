@@ -104,18 +104,12 @@ module.exports = (express, app, passport, pubComm) => {
     );
     // Aducere unei singure resurse contribuite de utilizator
 
+    // În cazul administratorilor, aceștia au acces la mecanismele de validare
     app.get('/profile/resurse/:idres', User.ensureAuthenticated, function(req, res){
         // Adu înregistrarea resursei cu toate câmpurile referință populate deja
         var record = require('./controllers/resincredid.ctrl')(req.params);
         // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
-        record.then(rezultat => {            
-            // TODO: Transformă aici resursa pentru a putea fi afișat formul de validare
-            if (rezultat[0].expertCheck) {
-                rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
-            } else {
-                rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck">`;
-            }
-            // console.log(rezultat);
+        record.then(rezultat => {
             let scripts = [
                 {script: '/lib/editorjs/editor.js'},
                 {script: '/lib/editorjs/header.js'},
@@ -136,6 +130,18 @@ module.exports = (express, app, passport, pubComm) => {
             
             /* ====== VERIFICAREA CREDENȚIALELOR ====== */
             if(req.session.passport.user.roles.admin){
+                // Adaugă mecanismul de validare a resursei
+                if (rezultat[0].expertCheck) {
+                    rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
+                } else {
+                    rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck">`;
+                }
+                // Adaugă mecanismul de prezentare la public
+                if (rezultat[0].generalPublic) {
+                    rezultat[0].genPub = `<input type="checkbox" id="public" class="generalPublic" checked>`;
+                } else {
+                    rezultat[0].genPub = `<input type="checkbox" id="public" class="generalPublic">`;
+                }                
                 res.render('resursa-admin', {
                     user:    req.user,
                     title:   "Administrare RED",
@@ -236,7 +242,7 @@ module.exports = (express, app, passport, pubComm) => {
             }
         });
 
-        // Introducerea resursei în baza de date MongoDB
+        // Introducerea resursei în baza de date MongoDB la finalizarea completării FORM01
         socket.on('red', (RED) => {
             // gestionează cazul în care nu ai un uuid generat pentru că resursa educațională, adică nu are niciun fișier încărcat
             if (!RED.uuid) {
@@ -271,6 +277,10 @@ module.exports = (express, app, passport, pubComm) => {
                 content:         RED.content,
                 bibliografie:    RED.bibliografie,
                 expertCheck:     RED.expertCheck,
+                contorAcces:     0,
+                generalPublic:   false,
+                contorDescarcare:0,
+                utilMie:         0,
                 etichete:        RED.etichete
             });
             // SAVE!!! INDEXARE ÎN ACELAȘI MOMENT!
@@ -308,13 +318,26 @@ module.exports = (express, app, passport, pubComm) => {
 
         // validarea resursei
         socket.on('validateRes', (queryObj) => {
-            //TODO: modifică câmpul expertCheck din bază pentru înregistrarea primită
             // eveniment declanșat din redincredadmin.js
             let resQuery = Resursa.findOne({_id: queryObj._id}, 'expertCheck');
             resQuery.exec(function (err, doc) {
                 doc.expertCheck = queryObj.expertCheck;
                 doc.save().then(newdoc => {
                     socket.emit('validateRes', {expertCheck: newdoc.expertCheck});
+                }).catch(err => {
+                    if (err) throw err;
+                });
+            });
+        });
+
+        // setarea resursei drept publică
+        socket.on('setPubRes', (queryObj) => {
+            // eveniment declanșat din redincredadmin.js
+            let resQuery = Resursa.findOne({_id: queryObj._id}, 'generalPublic');
+            resQuery.exec(function (err, doc) {
+                doc.generalPublic = queryObj.generalPublic;
+                doc.save().then(newdoc => {
+                    socket.emit('setPubRes', {generalPublic: newdoc.generalPublic});
                 }).catch(err => {
                     if (err) throw err;
                 });
