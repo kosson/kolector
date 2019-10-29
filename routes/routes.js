@@ -40,7 +40,7 @@ module.exports = (express, app, passport, pubComm) => {
     });
 
     // ========== / ROOT==========
-    app.get('/', index);
+    app.use('/', index);
 
     // ========== LOGIN ==========
     app.get('/login', User.login);
