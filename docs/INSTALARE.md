@@ -266,12 +266,14 @@ Are următoarele câmpuri:
 
 ```text
 MONGO_LOCAL_CONN=mongodb://localhost:27017/redcolector
+ELASTIC_URL=http://localhost:9200
 GOOGLE_CLIENT_ID=xsdkkdfkjkuf8s9df9sdfsf9sdfhsvp84.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=fdsao09sad99s0fuajfas
 BASE_URL=http://localhost:8080
 NAME_OF_REPO_DIR=repo
 REPO_REL_PATH=./repo/
 FILE_LIMIT_UPL_RES=5242880
+APP_VER=0.1.0
 ```
 
 unde `GOOGLE_CLIENT_ID` și `GOOGLE_CLIENT_SECRET` sunt proprii administratorului care face instalarea.
