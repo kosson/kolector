@@ -1,3 +1,9 @@
+const express  = require('express');
+const router   = express.Router();
+const moment   = require('moment');
+const mongoose = require('mongoose');
+const Resursa  = require('../models/resursa-red'); // Adu modelul resursei
+
 module.exports = function (router) {
     // ========== VERIFICAREA ROLURILOR ==========
     let checkRole = require('./controllers/checkRole.helper');
@@ -9,22 +15,33 @@ module.exports = function (router) {
         let roles = ["user"];   //FIXME: DREPTURI ACL hardcodate. Constituie ceva centralizat!!!
         // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
+        let resursePublice = Resursa.find({'generalPublic': 'true'}).limit(10);
+        let promiseResPub = resursePublice.exec();
         
         /* ====== VERIFICAREA CREDENȚIALELOR ====== */
         if(req.session.passport.user.roles.admin){
-            // Dacă avem un admin, atunci oferă acces neîngrădit
-            res.render('resurse', {
-                user:    req.user,
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                title:   "Resurse",
-                logoimg: "/img/rED-logo192.png",
+            promiseResPub.then((result) => {
+                res.render('resurse', {
+                    title:   "Resurse publice",
+                    style:   "/lib/fontawesome/css/fontawesome.min.css",
+                    logoimg: "img/rED-logo192.png",
+                    user:    req.user,
+                    resurse: result
+                });
+            }).catch((err) => {
+                if (err) throw err;
             });
         } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
-            res.render('resurse', {
-                user:    req.user,
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                title:   "Resurse",
-                logoimg: "/img/rED-logo192.png",
+            promiseResPub.then((result) => {
+                res.render('resurse', {
+                    title:   "Resurse publice",
+                    style:   "/lib/fontawesome/css/fontawesome.min.css",
+                    logoimg: "img/rED-logo192.png",
+                    user:    req.user,
+                    resurse: result
+                });
+            }).catch((err) => {
+                if (err) throw err;
             });
         } else {
             res.redirect('/401');
@@ -52,7 +69,6 @@ module.exports = function (router) {
         // roluri pe care un cont le poate avea în proiectul CRED.
         let roles = ["user", "educred", "validator"]; // FIXME: Atenție, la crearea conturilor nu este completat array-ul rolurilor în CRED!!! FIX NOW, NOW, NOW!
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
-        console.log(req.session.passport.user.roles);
         // console.log(req.session.passport.user.roles.rolInCRED);
 
         /* ====== VERIFICAREA CREDENȚIALELOR ====== */

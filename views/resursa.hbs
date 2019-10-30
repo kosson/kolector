@@ -4,19 +4,27 @@
 <div id="resursaincredadm" class="resurse">
     {{#each resursa}}
         <div data-id="{{this._id}}" data-contribuitor="{{this.idContributor}}" id="{{this._id}}" class="resursa">
-            <img class="coperta" src="{{this.coperta}}" class="card-img-top" alt="{{this.title}}" style="width: 18rem;">
-            <div class="">
+            <img src="{{this.coperta}}" class="coperta card-img-top" alt="{{this.title}}">
+            <div class="container redcontent">
+                <div class="card-title">
+                    <h5>Titlul resursei: {{this.title}}</h5>
+                    <aside>
+                        <strong>Verificată: {{{this.validate}}}</strong>
+                        <strong>Publică: {{{this.genPub}}}</strong>
+                    </aside>
+                </div>
+                {{#if this.titleI18n}}
+                    <h5>Titluri alternative:</h5>
+                    {{#each this.titleI18n}}
+                        {{#each this}}
+                            <strong>{{@key}}: {{.}}</strong>
+                        {{/each}}
+                    {{/each}}
+                {{/if}}    
                 <h5>Data introducerii resursei</h5>
                 <p>{{this.dataRo}}</p>
                 <h5>Verificată:</h5>
                 <p>{{this.expertCheck}}</p>
-                <h5 class="card-title">Titlul resursei: {{this.title}}</h5>
-                <h5>Titluri alternative:</h5>
-                {{#each this.titleI18n}}
-                    {{#each this}}
-                        <strong>{{@key}}: {{.}}</strong>
-                    {{/each}}
-                {{/each}}
                 <h5>Autori:</h5>
                 <p>{{this.autori}}</p>
                 <h5>Contribuitor:</h5>
@@ -125,8 +133,10 @@
                 <p>{{this.dependinte}}</p>
                 <h5>Licența:</h5>
                 <p>{{this.licenta}}</p>
-                <h5>Bibliografie</h5>
-                <p>{{this.bibliografie}}</p>
+                {{#if this.bibliografie}}
+                    <h5>Bibliografie</h5>
+                    <p>{{this.bibliografie}}</p>
+                {{/if}}
                 <h5>Etichete</h5>
                 <div>
                     {{#each this.etichete}}

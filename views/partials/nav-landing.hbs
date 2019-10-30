@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <nav class="navbar navbar-expand-lg fixed-top">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <img id="logo-small" src="{{{logoimg}}}" alt="rED colector logo"> RED Colector
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -9,7 +9,7 @@
         
         <div class="collapse navbar-collapse" id="navbarResponsive">
             {{#if user}}
-                <span>Salut, {{user.googleProfile.name}} <img data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" class="avatar-ico" src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" /></span>
+                <span class="salut">Salut, {{user.googleProfile.name}} <img class="avatar" data-email="{{user.email}}" data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" /></span>
             {{/if}}
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">

@@ -28,14 +28,40 @@ module.exports = (express, app, passport, pubComm) => {
 
     // ========== RESURSE ================
     app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
+    // ========== RESURSE PUBLICE ========
     app.get('/resursepublice', (req, res) => {
-        // TODO: adu-mi toate resursele care sunt marcate a fi publice
-        res.render('resursepublice', {
-            user:    req.user,
-            title:   "RED-uri publice",
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "/img/red-logo-small30.png",
-            credlogo: "../img/CREDlogo.jpg"
+        let resursePublice = Resursa.find({'generalPublic': 'true'}).limit(10);
+        let promiseResPub = resursePublice.exec();
+        promiseResPub.then((result) => {
+            res.render('resursepublice', {
+                title:   "Resurse publice",
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
+                logoimg: "img/rED-logo192.png",
+                user:    req.user,
+                resurse: result
+            });
+        }).catch((err) => {
+            if (err) throw err;
+        });
+    });
+    app.get('/resursepublice/:idres', (req, res) => {
+        var record = require('./controllers/resincredid.ctrl')(req.params);
+        record.then(rezultat => {
+            let scripts = [      
+                {script: '/js/redincredadmin.js'},       
+                {script: '/js/moment.min.js'}        
+            ];
+            res.render('resursa-publica', {
+                user:    req.user,
+                title:   "RED public",
+                style:   "/lib/fontawesome/css/fontawesome.min.css",
+                logoimg: "/img/red-logo-small30.png",
+                credlogo: "../img/CREDlogo.jpg",
+                resursa: rezultat,
+                scripts
+            });
+        }).catch(err => {
+            if (err) throw err;
         });
     });
 
@@ -89,7 +115,7 @@ module.exports = (express, app, passport, pubComm) => {
             // console.log(count);
             count.then(rezultat => {
                 // console.log(rezultat);
-                res.render('red-in-cred', {
+                res.render('resurse-profil', {
                     user:    req.user,
                     title:   "Profil",
                     style:   "/lib/fontawesome/css/fontawesome.min.css",
@@ -449,7 +475,7 @@ module.exports = (express, app, passport, pubComm) => {
             title:    "404",
             logoimg:  "/img/red-logo-small30.png",
             imaginesplash: "/img/theseAreNotTheDroids.jpg",
-            mesaj:    "Nu am gasit pagina căutată. Verifică linkul!"
+            mesaj:    "Nu-i, verifică linkul!"
         });
     });
 

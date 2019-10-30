@@ -1,45 +1,62 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:400,700');
 
-/* Extra small devices (portrait phones, less than 576px) */
-@media (max-width: 575.98px) {}
+/* Extra small devices (portrait phones, less than 576px) (landscape phones, 576px and up) */
+@media (max-width: 575.98px) {
+    .card-img-top {
+        height: 19vw;
+    }
+}
 
 /* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) and (max-width: 767.98px) {}
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .card-img-top {
+        height: 16vw;
+    }
+}
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991.98px) {
     .bd-placeholder-img-lg {
         font-size: 3.5rem;
     }
+    .card-img-top {
+        height: 16vw;
+    }
 }
 
 /* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) and (max-width: 1199.98px) {}
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .card-img-top {
+        height: 11vw;
+    }
+}
 
 /* Extra large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {}
+@media (min-width: 1200px) {
+    .card-img-top {
+        height: 11vw;
+    }
+}
 
 /* GENERAL */
 footer {
     display: flex;
 }
 
-img {
-    max-width:100%;
+
+.avatar {
+    max-width:10%;
     height:auto;
-}
-
-/* #logo-small {
-    width: 20%;
-} */
-
-.avatar-ico {
-    width: 10%;
 }
 
 /*===== NAVIGATION ====*/
 nav.navbar-light {
-    background-color: bisque;
+    /* background-color: bisque; */
+    background-color: dimgray;
+}
+
+.salut {
+    color: beige;
 }
 
 .navbar {
@@ -124,21 +141,44 @@ nav.navbar-light {
 }
 
 .resurse {
-    display: flex;
-    flex-wrap: wrap;
-    /* flex-flow: row wrap;
-    justify-content: space-around; */
-    justify-content: center;
-    width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	/* flex-flow: row wrap; */
+	/* justify-content: space-around; */
+	justify-content: center;
+	width: 100%;
+    background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/903ce031794441.566ce52083024.png');
+    background-repeat: no-repeat;
+    background-position: center; 
+    background-color: black;
+    background-size: cover;
+    background-position: center;
+    padding: 1rem 0 1rem;
 }
 
-/* .card {
-    width: 15em;
-    margin: 0.2em;
-} */
+.redcontent {
+    background-color: beige;
+    margin: .3rem;
+}
+
+.card {
+    padding: .2rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
 
 .card-body {
     padding: .2em;
+    /* height: 100%; */
+}
+
+.card-title {
+    text-align: center;
+}
+
+.card-img-top {
+    width: 100%;
+    /* height: 15vw; GESTIONAT PENTRU FIECARE PRAG MEDIAQUERIES */
+    object-fit: cover;
 }
 
 #resurse, #licenta {
@@ -288,9 +328,4 @@ svg {
     top: 0;; 
     padding-bottom: 92%; 
     overflow: visible;
-}
-
-.coperta {
-    vertical-align: middle;
-    border-radius: 50%;
 }
