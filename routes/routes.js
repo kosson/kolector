@@ -49,7 +49,7 @@ module.exports = (express, app, passport, pubComm) => {
         record.then(rezultat => {
             let scripts = [      
                 {script: '/js/redincredadmin.js'},       
-                {script: '/js/moment.min.js'}        
+                {script: '/lib/moment/min/moment.min.js'}        
             ];
             res.render('resursa-publica', {
                 user:    req.user,
@@ -149,7 +149,7 @@ module.exports = (express, app, passport, pubComm) => {
                 {script: '/lib/editorjs/inlinecode.js'},
                 // {script: '/js/main.js'},       
                 {script: '/js/redincredadmin.js'},       
-                {script: '/js/moment.min.js'}        
+                {script: '/lib/moment/min/moment.min.js'}        
             ];
             let roles = ["user", "educred", "validator"];
             let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);

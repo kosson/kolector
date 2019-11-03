@@ -73,6 +73,7 @@ public/lib/jquery
 public/lib/jquery-toast-plugin
 public/lib/waypoints
 public/lib/popper.js
+public/lib/moment
 
 # nu salva resursele de test din repo
 repo

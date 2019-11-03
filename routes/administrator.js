@@ -17,7 +17,7 @@ router.get('/', function (req, res) {
         let scripts = [
             // {script: '/js/main.js'},
             {script: '/js/redincredadmin.js'},       
-            {script: '/js/moment.min.js'}        
+            {script: '/lib/moment/min/moment.min.js'}        
         ];
         res.render('administrator', {
             title:   "administrator",
@@ -38,7 +38,7 @@ router.get('/admins', function (req, res) {
     if(req.session.passport.user.roles.admin){
         let scripts = [    
             {script: '/js/redincredadmin.js'},       
-            {script: '/js/moment.min.js'}        
+            {script: '/lib/moment/min/moment.min.js'}        
         ];
         // TODO: Adu toți utilizatorii care au rangul de admin
         res.render('administrator', {

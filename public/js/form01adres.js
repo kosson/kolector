@@ -898,14 +898,14 @@ function pas2 () {
             RED.arieCurriculara.push(valoare);
         }
     });
-
+    // Afișează eroare în cazul în care nu s-a făcut încadrarea curriculară.
     if (RED.arieCurriculara.length === 0) {
-        $('#currErr').toastmessage('showToast', {
-            text: "Fă alegerea corectă în ariile curriculare. Este un element absolut necesar!!!",
-            position: 'top-center', 
-            type: 'error', 
-            sticky: true,
-            stayTime: 10000,
+        $.toast({
+            heading: 'Curricula',
+            text: "Mergi înapoi și fă alegerea corectă în ariile curriculare. Este un element absolut necesar!!!",
+            position: 'top-center',
+            showHideTransition: 'fade',
+            icon: 'error'
         });
     }
 
@@ -915,7 +915,7 @@ function pas2 () {
     var noduriInputNiveluri = niveluriScolare.querySelectorAll('input');
     noduriInputNiveluri.forEach(input => {
         if (input.checked && RED.level.indexOf(input.value) === -1) {
-            console.log(input.value);
+            // console.log(input.value);
             switch (input.value) {
                 case 'cl0':
                     RED.level.push('Clasa pregătitoare');

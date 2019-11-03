@@ -99,25 +99,25 @@ $(document).ready(function () {
     // Validare pe titlul resursei
     if ($('#titlu-res').val() == '') {
       // $('#titluErr').text('Trebuie neapărat să denumești resursa!!!'); // Folosește dacă revii la texte afișate
-      $('#titluErr').toastmessage('showToast', {
+      // $('#titluErr').toast({
+      $.toast({
+        heading:'Lipsă nume',
         text: "Trebuie neapărat să denumești resursa!!!",
-        position: 'top-center', 
-        type: 'error', 
-        sticky: true,
-        stayTime: 10000,
+        position: 'top-center',
+        showHideTransition: 'fade',
+        icon: 'error'
       });
       return false;
-    } else if ($('#responsabil').val() == '') {
-      $('#titluErr').toastmessage('showToast', {
-        text: "Introdu numele celui care propune resursa.",
-        position: 'top-center', 
-        type: 'error', 
-        sticky: true,
-        stayTime: 10000,
+    } else if ($('#descriereRed').val() == '') {
+      $.toast({
+        text: "Introdu descrierea resursei. Este un pas necesar",
+        position: 'top-center',
+        showHideTransition: 'fade',
+        icon: 'error'
       });
     } else {
-      pas1(); // funcție care culege datele introduse la pasul 1
-      console.log(RED);
+      pas1(); // funcție care culege datele introduse la pasul 1 (definită în form01adres.js)
+      // console.log(RED);
       // arată divul cu id-ul `doi` și ascunde div-ul primului pas din formular `unu`
       $('#doi').show();
       $('#unu').hide();
@@ -131,7 +131,7 @@ $(document).ready(function () {
   // Mergi înapoi la pasul unu al formularului
   $('#next-2').click(function () {
     pas2(); // funcție care culege datele introduse la pasul 2
-    console.log(RED);
+    // console.log(RED);
     // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `unu`
     $('#doi').hide();
     $('#unu').show();
@@ -144,7 +144,7 @@ $(document).ready(function () {
   $('#next-3').click(function () {
     // testează dacă a fost selectată vreo opțiune din selectul ariilor curriculare
     pas2(); // colectează datele de la pasul 2 al formularului.
-    console.log(RED);
+    // console.log(RED);
     // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `trei`
     $('#doi').hide();
     $('#trei').show();
