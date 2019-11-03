@@ -102,7 +102,6 @@ module.exports = (params) => {
                         </div>\n`;
                         break;
                     case 'embed':
-                            // FIXME: Transformă din https://www.youtube.com/watch?v=TNKWgcFPHqw în https://www.youtube.com/embed/TNKWgcFPHqw
                             let ytbLnk = `${obj.data.source}`;
                             let ytbID = ytbLnk.match(/([A-Z])\w+/)[0];
                             // console.log(ytbID);

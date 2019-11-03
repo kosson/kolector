@@ -41,7 +41,7 @@ sudo apt-get install nodejs
 node -v
 ```
 
-La verificarea versiunii, ar trebui să răspundă cu `v12.10.0`.
+La verificarea versiunii, ar trebui să răspundă cu `v12.13.0`.
 
 Instalează și pachetul PM2 care este folosit pentru rularea aplicației și repornirea automată în caz de downtime. Instalarea se va face la nivel global (vezi flag-ul `g`).
 
@@ -63,7 +63,7 @@ sudo systemctl start mongod
 mongod --version
 ```
 
-Odată instalat, MongoDB în momentul în care ceri ersiunea, trebuie să ai un răspuns asemănător cu următoarea secvență.
+Odată instalat, MongoDB în momentul în care ceri versiunea, trebuie să ai un răspuns asemănător cu următoarea secvență.
 
 ```text
 db version v4.0.12
@@ -76,6 +76,29 @@ build environment:
     distarch: x86_64
     target_arch: x86_64
 ```
+
+### Aducerea resurselor de pe Github
+
+Pentru a avea deja resursele descărcate, trebuie setat subdirectorul din `/var/www/numeSite`.
+
+Din subdirectorul selectat inițiezi depozitul git.
+
+```bash
+git init .
+git remote add origin git@github.com:kosson/redcolector.git
+git fetch origin
+git checkout master
+```
+
+### Instalarea resurselor cu Bower
+
+Imediat după aducerea resurselor de pe Git, este indicată instalarea din consola serverului a dependințelor externe necesare.
+
+```bash
+bower install
+```
+
+Toate dependințele necesare specificate în bower.json vor fi instalate în directorul specificat de `.bowerrc`. În cazul nostru, în `public/lib`.
 
 ### Instalare NginX
 
