@@ -23,9 +23,6 @@ coverage
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
-# Bower dependency directory (https://bower.io/)
-bower_components
-
 # node-waf configuration
 .lock-wscript
 
@@ -61,7 +58,21 @@ typings/
 .next
 
 # nu salva toate bibliotecile de cod aduse de bower
-public/lib
+public/lib/datatables.net-dt
+public/lib/datatables.net-buttons
+public/lib/datatables.net-buttons-dt
+public/lib/datatables.net-buttons-bs4
+public/lib/datatables.net
+public/lib/datatables.net-select
+public/lib/datatables.net-select-dt
+public/lib/datatables.net-bs4
+public/lib/datatables.net-select-bs4
+public/lib/bootstrap
+public/lib/fontawesome
+public/lib/jquery
+public/lib/jquery-toast-plugin
+public/lib/waypoints
+public/lib/popper.js
 
 # nu salva resursele de test din repo
 repo

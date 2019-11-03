@@ -7,17 +7,22 @@
         <script src="/socket.io/socket.io.js"></script>
         <script type="text/javascript" charset="utf8" src="/js/main.js"></script>
 
-        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
         <link rel="stylesheet" type="text/css" href="/css/main.css">
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
-        {{!-- DATATABLES --}}
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.0/css/select.bootstrap4.min.css">
-        <link rel="stylesheet" href="/css/jquery.toastmessage.css">
+        {{!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css"> --}}
+        <link rel="stylesheet" type="text/css" href="/lib/datatables.net-dt/css/jquery.dataTables.min.css">
 
-        <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>		
+        {{!-- <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css"> --}}
+        <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+
+        {{!-- DATATABLES --}}
+        {{!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"> --}}
+        <link rel="stylesheet" type="text/css" href="/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
+        {{!-- <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.0/css/select.bootstrap4.min.css"> --}}
+        <link rel="stylesheet" href="/lib/datatables.net-select-bs4/css/select.bootstrap4.min.css">
+        {{!-- <link rel="stylesheet" href="/css/jquery.toastmessage.css"> --}}
+        <link rel="stylesheet" href="/lib/jquery-toast-plugin/dist/jquery.toast.min.css">
+
+        {{!-- <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>		 --}}
         <script type="text/javascript" charset="utf8" src="/lib/jquery/dist/jquery.min.js"></script>
 
         <title>{{title}}</title>
@@ -30,16 +35,29 @@
         </footer>
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script type="text/javascript" charset="utf8" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        {{!-- <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> --}}
+        <script type="text/javascript" charset="utf8" src="/lib/popper.js/dist/popper.min.js"></script>
         
+        {{!-- <script type="text/javascript" charset="utf8" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> --}}
+        <script type="text/javascript" charset="utf8" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
         <script type="text/javascript" charset="utf8" src="/lib/fontawesome/js/all.js"></script>
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.bootstrap4.min.js"></script>
+        {{!-- DATATABLES --}}
+        {{!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script> --}}
+        <script type="text/javascript" charset="utf8" src="/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+        {{!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script> --}}
+        <script type="text/javascript" charset="utf8" src="/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+        {{!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script> --}}
+        <script type="text/javascript" charset="utf8" src="/lib/datatables.net-buttons-dt/js/buttons.dataTables.min.js"></script>
+
+        {{!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.bootstrap4.min.js"></script> --}}
+        <script type="text/javascript" charset="utf8" src="/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.3.0/js/dataTables.select.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="/js/jquery.toastmessage.js"></script>
+        {{!-- <script type="text/javascript" charset="utf8" src="/js/jquery.toastmessage.js"></script> --}}
+        <script type="text/javascript" charset="utf8" src="/lib/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
+        
         <script type="text/javascript" charset="utf8" src="/js/custom.js"></script>
     </body>
 </html>
