@@ -113,7 +113,7 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
                 });
 }
 // generează fișierul consolidat cu toate câmpurile din toate csv-urile
-// concatCSVAndOutput(read(dir), `${dir}/all.csv`);
+concatCSVAndOutput(read(dir), `${dir}/all.csv`);
 
 const readF = fs.createReadStream(`${dir}/all.csv`, 'utf8'); // Creează stream Read din fișierul CSV sursă.
 
