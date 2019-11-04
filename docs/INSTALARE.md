@@ -7,6 +7,18 @@ Software necesar:
 - Node.js
 - Redis
 
+Ca etapă preliminară este necesară obținerea de chei pentru dezvoltarea de aplicații furnizate de Google (https://developers.google.com/identity/sign-in/web și https://developers.google.com/identity/sign-in/web/sign-in#before_you_begin).
+
+Aplicația are nevoie de serviciile de SignIn oferite de Google și din acest motiv trebuie ca persoana care face instalarea și care va îngriji aplicația, să creeze un cont de Google pentru aplicația în sine. Acest cont va fi utilizat numai în scop de autentificare și pentru a furniza credențialele necesare.
+După ce contul de Google a fost creat, se va naviga la Google API console, accesibil în momentul redactării acestui ghid de instalare la https://console.developers.google.com. Se va proceda la crearea unui `OAuth 2.0 client ID` din secțiunea `Credentials`.
+
+La acest pas sunt cerute două căi pentru `Authorised JavaScript origins` și `Authorised redirect URIs`. Căile pentru această aplicație sunt:
+
+- `Authorised JavaScript origins`: `http://localhost:8080`,
+- `Authorised redirect URIs`: `http://localhost:8080/callback`
+
+Copiază datele de la ` Client ID` și de la `Client secret`. Acestea vor fi necesare pentru a completa setările din fișierul dedicat acestora numit `.env`.
+
 ### Instalare utilitare
 
 Pentru a nu întâmpina surprize pe parcursul instalării, asigură-te că ai următoarele pachete instalate deja.
@@ -18,6 +30,11 @@ sudo apt-get install software-properties-common
 sudo apt-get install -y build-essential python
 sudo snap install bower --classic
 ```
+
+### Activează firewall-ul
+
+În cazul în care instalarea se face pe un server care nu are firewall hardware și este expus direct către wwww, atunci este necesară folosirea unui firewall al sistemului de operare pe care rulează aplicația.
+În acest sens, există un ghid de instalare și configurare la https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-18-04.
 
 ### Instalare Redis
 
@@ -77,9 +94,81 @@ build environment:
     target_arch: x86_64
 ```
 
+#### Securizează MongoDB
+
+Din consolă leagă-te la instanța de MongoDB.
+
+```bash
+mongo
+```
+
+Din shell-ul obținut către MongoDB, treci la utilizarea bazei de date `admin`.
+
+```text
+> use admin
+```
+
+În acest moment, vei crea un cond te utilizator care să fie administrator de baze de date.
+
+```text
+db.createUser({user:"nume_administrator",pwd:"paR0laMea1nfa1libila",roles:[{role:"userAdminAnyDatabase",db:"admin"}]})
+```
+
+În exemplul de mai sus, pentru fiecare server MongoDB se vor înlocui la câmpurile `user` și `pwd` datele cele două necesare autentificării ulterioare. Userul va fi creat de MongoDB și va fi afișat în consolă un obiect similar cu cel de mai jos:
+
+```text
+Successfully added user: {
+	"user" : "nume_administrator",
+	"roles" : [
+		{
+			"role" : "userAdminAnyDatabase",
+			"db" : "admin"
+		}
+	]
+}
+```
+
+Pentru mai multe detalii, consultă și https://docs.mongodb.com/manual/tutorial/create-users/.
+
+Se va ieși din consola MongoDB introducând comanda `exit`.
+
+În fișierul `/etc/mongodb.conf` trebuie activată rularea securizată prin editarea cu drepturi sudo.
+
+```bash
+sudo nano /etc/mongodb.conf
+```
+
+În fișier pentru varianta 3.6.3 a lui Mongo, va trebui să ștergi diezul din fața lui `auth = true`.
+
+```text
+# Turn on/off security.  Off is currently the default
+#noauth = true
+auth = true
+```
+
+MongoDB trebuie repornit.
+
+```bash
+sudo systemctl restart mongodb
+```
+
+În cazul în care dorești autentificare specific pe o bază de date, mai întâi trebuie să te autentifici din consola MongoDB și apoi să faci o modificare.
+
+```text
+db.auth({user: "nume_administrator", pwd: "paR0laMea1nfa1libila"})
+1
+db.grantRolesToUser("nume_administrator", ["readWrite", {role: "readWrite", db: "redcolector"}])
+```
+
 ### Aducerea resurselor de pe Github
 
 Pentru a avea deja resursele descărcate, trebuie setat subdirectorul din `/var/www/numeSite`.
+
+```bash
+sudo mkdir db.proiectInstitutie.ro
+sudo chown userAdm:userAdm db.proiectInstitutie.ro
+sudo chmod -R 755 /var/www/db.proiectInstitutie.ro/
+```
 
 Din subdirectorul selectat inițiezi depozitul git.
 
@@ -99,6 +188,28 @@ bower install
 ```
 
 Toate dependințele necesare specificate în bower.json vor fi instalate în directorul specificat de `.bowerrc`. În cazul nostru, în `public/lib`.
+
+### Crearea fișierului `.env`
+
+Acest fișier este necesar pentru că ține datele necesare conectării cu serverul bazei de date și credențialele necesare gestionării sistemului de autentificare cu serverul Google.
+Primul pas este să creezi fișierul `.env` chiar în rădăcina aplicației. Deschide-l și introdu datele necesare așa cum sunt specificate în următoarele câmpuri:
+
+```text
+MONGO_LOCAL_CONN=mongodb://localhost:27017/redcolector
+MONGO_USER=nume_utilizator
+MONGO_PASSWD=parola_utilizatorului
+ELASTIC_URL=http://localhost:9200
+GOOGLE_CLIENT_ID=xsdkkdfkjkuf8s9df9sdfsf9sdfhsvp84.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=fdsao09sad99s0fuajfas
+BASE_URL=http://localhost:8080
+NAME_OF_REPO_DIR=repo
+REPO_REL_PATH=./repo/
+FILE_LIMIT_UPL_RES=5242880
+APP_VER=0.1.3
+```
+
+Câmpurile `GOOGLE_CLIENT_ID` și `GOOGLE_CLIENT_SECRET` sunt proprii administratorului care face instalarea.
+Câmpurile `MONGO_USER` și `MONGO_PASSWD` se vor completa cu datele necesare autorizării la serverul bazei de date MongoDB, care a fost securizat în prealabil.
 
 ### Instalare NginX
 
@@ -262,12 +373,8 @@ sudo apt install python-certbot-nginx
 Instalează certificate pentru domeniile setate în Nginx
 
 ```bash
-sudo certbot --nginx -d db.ise.ro -d www.bd.ise.ro
+sudo certbot --nginx -d db.proiectInstitutie.ro -d www.db.proiectInstitutie.ro
 ```
-
-### Clonare aplicație
-
-Fă un git clone pe repo-ul aplicației
 
 ### Access Control List - ACL
 
@@ -282,21 +389,3 @@ Pentru a face un test general, a fost creată o baterie de testare care va fi ru
 
 Strategia Passport pentru Google: http://www.passportjs.org/packages/passport-google-oauth20/
 Motorul de templating:https://www.npmjs.com/package/express-hbs
-
-## Fișierul `.env`
-
-Are următoarele câmpuri:
-
-```text
-MONGO_LOCAL_CONN=mongodb://localhost:27017/redcolector
-ELASTIC_URL=http://localhost:9200
-GOOGLE_CLIENT_ID=xsdkkdfkjkuf8s9df9sdfsf9sdfhsvp84.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=fdsao09sad99s0fuajfas
-BASE_URL=http://localhost:8080
-NAME_OF_REPO_DIR=repo
-REPO_REL_PATH=./repo/
-FILE_LIMIT_UPL_RES=5242880
-APP_VER=0.1.0
-```
-
-unde `GOOGLE_CLIENT_ID` și `GOOGLE_CLIENT_SECRET` sunt proprii administratorului care face instalarea.
