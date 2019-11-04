@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+// const mongoose = require('../mongoose.config');
 const mexp     = require('mongoose-elasticsearch-xp');
 
 let CompetentaS = new mongoose.Schema({

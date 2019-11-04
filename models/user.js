@@ -1,4 +1,4 @@
-const mongoose = require('../mongoose.config');
+const mongoose = require('mongoose');
 const mexp     = require('mongoose-elasticsearch-xp');
 // const resursedu = require('./resursa-red');
 // Definirea unei scheme necesare verificării existenței utilizatorului.

@@ -3,11 +3,15 @@ const fs    = require('fs');
 const path  = require('path');
 const Papa  = require('papaparse');
 const csv   = require("fast-csv");
-// const writeF = fs.createWriteStream('CSuriX.json', 'utf8'); // Generează un JSON în caz că acest lucru este necesar. Să fie acolo.
-
 const mongoose = require('mongoose');
-mongoose.set('useCreateIndex', true); // Deprecation warning solver
-const connectionString = `mongodb://localhost:27017/redcolector`;
+mongoose.connect(process.env.MONGO_LOCAL_CONN, {
+    auth: { "authSource": "admin" },
+    user: process.env.MONGO_USER,
+    pass: process.env.MONGO_PASSWD,
+    useNewUrlParser: true, 
+    useUnifiedTopology: true
+});
+// const writeF = fs.createWriteStream('CSuriX.json', 'utf8'); // Generează un JSON în caz că acest lucru este necesar. Să fie acolo.
 
 /**
  * Funcția are rolul de a strânge toate activitățile unei competențe specifice într-un array dedicat.
@@ -108,8 +112,9 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
                     csvStream.end();
                 });
 }
-// generează fișierul consolidat cu toate câmpurile din toate csv-urilor
-concatCSVAndOutput(read(dir), `${dir}/all.csv`);
+// generează fișierul consolidat cu toate câmpurile din toate csv-urile
+// concatCSVAndOutput(read(dir), `${dir}/all.csv`);
+
 const readF = fs.createReadStream(`${dir}/all.csv`, 'utf8'); // Creează stream Read din fișierul CSV sursă.
 
 /* ======= PRELUCRAREA CSV-ului ============  */
@@ -165,12 +170,11 @@ Papa.parse(readF, {
         }
         const folded = foldOneField(results.data); // apelează funcția de folding
         // scrie datele pe disc...
-        fs.writeFile(`${dir}/all.json`, JSON.stringify(folded), 'utf8', (err) => {
-            if (err) throw err;
-        });
+        // fs.writeFile(`${dir}/all.json`, JSON.stringify(folded), 'utf8', (err) => {
+        //     if (err) throw err;
+        // });
         
         // scrie datele în bază
-        mongoose.connect(connectionString, { useNewUrlParser: true });
         const CSModel = require('../models/competenta-specifica');
         // mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție la fiecare load!.
         
@@ -179,7 +183,7 @@ Papa.parse(readF, {
                 console.log(err);
                 process.exit();
             } else {
-                console.log('Înregistrări inserate: ', result.length);
+                console.log('Înregistrări inserate în colecție: ', result.length);
                 process.exit();
             }
         });

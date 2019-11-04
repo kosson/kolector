@@ -96,7 +96,13 @@ build environment:
 
 #### Securizează MongoDB
 
-Din consolă leagă-te la instanța de MongoDB.
+După instalarea MongoDB, asigură-te că funcționează.
+
+```bash
+systemctl status mongod
+```
+
+Din consolă, leagă-te la instanța de MongoDB.
 
 ```bash
 mongo
@@ -265,96 +271,6 @@ sudo chmod -R 755 /var/www/db.proiectInstitutie.ro/
 sudo nano /etc/nginx/sites-available/db.proiectInstitutie.ro/
 ```
 
-Introdu configurarea
-
-```txt
-server {
-    listen 8080;
-    listen [::]:80;
-    server_name db.proiectInstitutie.ro www.db.proiectInstitutie.ro;
-    return 301 https://$host$request_uri;
-}
-server {
-    # listen 80;
-    # listen [::]:80;
-    index index.html index.php;
-    # Setarea headerelor corectă către host (ieis2.ro)
-    proxy_set_header Host $http_host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    ## Begin - Server Info
-    #root /var/www/db.proiectInstitutie.ro;
-    server_name db.proiectInstitutie.ro www.db.proiectInstitutie.ro 146.234.159.117;
-    ## End - Server Info
-    location /socket.io/ {
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
-      proxy_pass "http://localhost:8080/socket.io/";
-    }
-    ## Begin - Index
-    # for subfolders, simply adjust:
-    # `location /subfolder {`
-    # and the rewrite to use `/subfolder/index.php`
-    location / {
-        #try_files $uri $uri/ /index.php?$query_string;
-        proxy_pass "http://localhost:8080/";
-    }
-    ## End - Index
-
-    ## Begin - Security
-    # deny all direct access for these folders
-    location ~* /(\.git|cache|bin|logs|backup|tests)/.*$ { return 403; }
-    # deny running scripts inside core system folders
-    location ~* /(system|vendor)/.*\.(txt|xml|md|html|yaml|yml|php|pl|py|cgi|twig|sh|bat)$ { return 403; }
-    # deny running scripts inside user folder
-    location ~* /user/.*\.(txt|md|yaml|yml|php|pl|py|cgi|twig|sh|bat)$ { return 403; }
-    # deny access to specific files in the root folder
-    location ~ /(LICENSE\.txt|composer\.lock|composer\.json|nginx\.conf|web\.config|htaccess\.txt|\.htaccess) { return 403; }
-    ## End - Security
-
-    ## Begin - PHP
-    location ~ \.php$ {
-        # Choose either a socket or TCP/IP address
-        fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
-        # fastcgi_pass unix:/var/run/php5-fpm.sock; #legacy
-        # fastcgi_pass 127.0.0.1:9000;
-
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
-    }
-    ## End - PHP
-
-    listen [::]:443 ssl ipv6only=on; # managed by Certbot
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/db.proiectInstitutie.ro/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/db.proiectInstitutie.ro/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-}
-```
-
-Verifică sintaxa să fie în regulă folosind comanda:
-
-```bash
-sudo nginx -t
-```
-
-Trebuie urmărit un răspuns asemănător cu următoarea secvență:
-
-```text
-nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-nginx: configuration file /etc/nginx/nginx.conf test is successful
-```
-
-Este necesar să reîncerci setările folosind următoarea secvență de comenzi:
-
-```bash
-sudo systemctl reload nginx
-```
-
 ### Instalează certbot
 
 Adaugă repo-ul de surse.
@@ -375,6 +291,115 @@ Instalează certificate pentru domeniile setate în Nginx
 ```bash
 sudo certbot --nginx -d db.proiectInstitutie.ro -d www.db.proiectInstitutie.ro
 ```
+
+Certbot adaugă următoarea secvență la fișierul de configurare în cazul în care certificatele de securitate s-au instalat corect.
+
+```text
+    listen 443 ssl http2 default_server; # managed by Certbot
+    listen [::]:443 ssl http2 default_server; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/db.proiectInstitutie.ro/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/db.proiectInstitutie.ro/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+```
+
+### Amendează configurarea serverului NGINX
+
+```txt
+# Default server configuration
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+        server_name db.proiectInstitutie.ro www.db.proiectInstitutie.ro;
+	    return 301 https://$server_name$request_uri;
+}
+
+# Virtual Host/SSL/Reverse proxy configuration pentru red.educred.ro
+server {
+    # Listen on both HTTP and HTTPS - between Nginx and Express the traffic is HTTP but this is not a major
+    # security concern as both services are on the same box
+    listen 80;
+    
+    listen 443 ssl http2 default_server; # managed by Certbot
+    listen [::]:443 ssl http2 default_server; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/db.proiectInstitutie.ro/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/db.proiectInstitutie.ro/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+    server_name db.proiectInstitutie.ro www.db.proiectInstitutie.ro;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+    
+    # Allow location for Acme challenge - you also might need to allow 'dotfiles' in Express (see next section)
+    location ~ /.well-known {
+        allow all;
+	    proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+    }
+}
+```
+
+În fișierul de configurare dat drept model se va înlocui secvența `db.proiectInstitutie.ro` și `www.db.proiectInstitutie.ro` cu cele ale propriilor domenii.
+
+Verifică sintaxa să fie în regulă folosind comanda:
+
+```bash
+sudo nginx -t
+```
+
+Trebuie urmărit un răspuns asemănător cu următoarea secvență:
+
+```text
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+
+Este necesar să reîncerci setările folosind următoarea secvență de comenzi:
+
+```bash
+sudo systemctl reload nginx
+```
+
+### Introducerea datelor în baza de date
+
+În acest moment baza de date este goală și este nevoie de încărcarea seturilor de date necesare. Primul set este cel al competențele specifice cu activitățile arondate.
+
+#### Încărcarea competențelor specifice pentru discipine
+
+În interiorul subdirectorului `initdata` există seturile de date necesare populării bazei de date. Pentru a încărca datele în baza de date, se va face un symlink către fișierul `.env` din directorul rădăcină a aplicației.
+
+```bash
+ln -s ../.env .
+```
+
+În cazul în care fișierul sumator numit generic `all.csv` din subdirectorul `csvuri` nu există, se va activa linia care generează acest fișier sumator al seturilor de date pentru disciplinele individuale.
+
+```javascript
+// concatCSVAndOutput(read(dir), `${dir}/all.csv`);
+```
+
+În cazul în care dorești la fiecare rulare a scriptului `compSpecLoader.js` să se șteargă și să se construiască de la zero setul de date în bază, se va activa următoarea linie din script.
+
+```javascript
+// mongoose.connection.dropCollection('competentaspecificas');
+```
+
+Acest lucru este necesar pentru a avea acces la setările de securitate prin care se face conexiunea la baza de date.
+După ce acest symlink a fost făcut, se va lansa în execuție executând scriptul `compSpecLoader.js`.
+
+```bash
+node compSpecLoader.js
+```
+
+Dacă toate lucrurile au funcționat corect, ar trebui să fie afișat în consolă numărul de înregistrări create. În acest moment, sunt disponibile date aplicației.
 
 ### Access Control List - ACL
 
