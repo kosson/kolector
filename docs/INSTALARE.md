@@ -314,7 +314,7 @@ server {
 	    return 301 https://$server_name$request_uri;
 }
 
-# Virtual Host/SSL/Reverse proxy configuration pentru red.educred.ro
+# Virtual Host/SSL/Reverse proxy configuration pentru db.proiectInstitutie.ro
 server {
     # Listen on both HTTP and HTTPS - between Nginx and Express the traffic is HTTP but this is not a major
     # security concern as both services are on the same box
@@ -347,9 +347,7 @@ server {
 }
 ```
 
-În fișierul de configurare dat drept model se va înlocui secvența `db.proiectInstitutie.ro` și `www.db.proiectInstitutie.ro` cu cele ale propriilor domenii.
-
-Verifică sintaxa să fie în regulă folosind comanda:
+În fișierul de configurare dat drept model se va înlocui secvența `db.proiectInstitutie.ro` și `www.db.proiectInstitutie.ro` cu cele ale propriilor domenii. Verifică sintaxa fișierului de configurare să fie în regulă folosind comanda:
 
 ```bash
 sudo nginx -t
