@@ -17,7 +17,7 @@ La acest pas sunt cerute două căi pentru `Authorised JavaScript origins` și `
 - `Authorised JavaScript origins`: `http://localhost:8080`,
 - `Authorised redirect URIs`: `http://localhost:8080/callback`
 
-Copiază datele de la ` Client ID` și de la `Client secret`. Acestea vor fi necesare pentru a completa setările din fișierul dedicat acestora numit `.env`.
+Copiază datele de la ` Client ID` și de la `Client secret`. Acestea vor fi necesare pentru a completa setările din fișierul dedicat, numit `.env`.
 
 ### Instalare utilitare
 
@@ -33,7 +33,7 @@ sudo snap install bower --classic
 
 ### Activează firewall-ul
 
-În cazul în care instalarea se face pe un server care nu are firewall hardware și este expus direct către wwww, atunci este necesară folosirea unui firewall al sistemului de operare pe care rulează aplicația.
+În cazul în care instalarea se face pe un server care nu are firewall hardware și este expus direct către WWW, atunci este necesară folosirea unui firewall al sistemului de operare pe care rulează aplicația.
 În acest sens, există un ghid de instalare și configurare la https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-18-04.
 
 ### Instalare Redis
@@ -58,7 +58,7 @@ sudo apt-get install nodejs
 node -v
 ```
 
-La verificarea versiunii, ar trebui să răspundă cu `v12.13.0`.
+La verificarea versiunii, ar trebui să răspundă cu versiunea precum următoarea secvență: `v12.13.0`.
 
 Instalează și pachetul PM2 care este folosit pentru rularea aplicației și repornirea automată în caz de downtime. Instalarea se va face la nivel global (vezi flag-ul `g`).
 
@@ -120,7 +120,7 @@ Din shell-ul obținut către MongoDB, treci la utilizarea bazei de date `admin`.
 db.createUser({user:"nume_administrator",pwd:"paR0laMea1nfa1libila",roles:[{role:"userAdminAnyDatabase",db:"admin"}]})
 ```
 
-În exemplul de mai sus, pentru fiecare server MongoDB se vor înlocui la câmpurile `user` și `pwd` datele cele două necesare autentificării ulterioare. Userul va fi creat de MongoDB și va fi afișat în consolă un obiect similar cu cel de mai jos:
+În exemplul de mai sus, pentru fiecare server MongoDB se vor înlocui pentru câmpurile `user` și `pwd` datele cele două cu cele proprii. Userul va fi creat de MongoDB și va fi afișat în consolă un obiect similar cu cel de mai jos:
 
 ```text
 Successfully added user: {
@@ -134,9 +134,7 @@ Successfully added user: {
 }
 ```
 
-Pentru mai multe detalii, consultă și https://docs.mongodb.com/manual/tutorial/create-users/.
-
-Se va ieși din consola MongoDB introducând comanda `exit`.
+Pentru mai multe detalii, consultă și https://docs.mongodb.com/manual/tutorial/create-users/. Se va ieși din consola MongoDB introducând comanda `exit`.
 
 În fișierul `/etc/mongodb.conf` trebuie activată rularea securizată prin editarea cu drepturi sudo.
 
@@ -144,7 +142,7 @@ Se va ieși din consola MongoDB introducând comanda `exit`.
 sudo nano /etc/mongodb.conf
 ```
 
-În fișier pentru varianta 3.6.3 a lui Mongo, va trebui să ștergi diezul din fața lui `auth = true`.
+În fișier pentru versiunea 3.6.3 a lui MongoDB, va trebui să ștergi diezul din fața lui `auth = true`.
 
 ```text
 # Turn on/off security.  Off is currently the default
@@ -176,7 +174,7 @@ sudo chown userAdm:userAdm db.proiectInstitutie.ro
 sudo chmod -R 755 /var/www/db.proiectInstitutie.ro/
 ```
 
-Din subdirectorul selectat inițiezi depozitul git.
+Din subdirectorul selectat inițiezi depozitul `.git`.
 
 ```bash
 git init .
@@ -187,13 +185,13 @@ git checkout master
 
 ### Instalarea resurselor cu Bower
 
-Imediat după aducerea resurselor de pe Git, este indicată instalarea din consola serverului a dependințelor externe necesare.
+Imediat după aducerea resurselor de pe Github, este indicată instalarea din consola serverului a dependințelor externe necesare.
 
 ```bash
 bower install
 ```
 
-Toate dependințele necesare specificate în bower.json vor fi instalate în directorul specificat de `.bowerrc`. În cazul nostru, în `public/lib`.
+Toate dependințele necesare specificate în `bower.json` vor fi instalate în directorul specificat de `.bowerrc`. În cazul nostru, în `public/lib`.
 
 ### Crearea fișierului `.env`
 
@@ -217,9 +215,9 @@ APP_VER=0.1.3
 Câmpurile `GOOGLE_CLIENT_ID` și `GOOGLE_CLIENT_SECRET` sunt proprii administratorului care face instalarea.
 Câmpurile `MONGO_USER` și `MONGO_PASSWD` se vor completa cu datele necesare autorizării la serverul bazei de date MongoDB, care a fost securizat în prealabil.
 
-### Instalare NginX
+### Instalare NGINX
 
-Instalare serverului NginX este necesară pentru a a gestiona certificatele SSL și pentru a face balancing.
+Instalarea serverului NGINX este necesară pentru a a gestiona certificatele SSL și pentru a face *balancing*.
 
 ```bash
 sudo apt install nginx
@@ -250,7 +248,7 @@ Dacă serviciul este oprit, pornește-l folosind comanda:
 sudo systemctl start nginx
 ```
 
-Dacă ai nevoie să-l oprești mai întâi (stare de eroare)
+Dacă ai nevoie să-l oprești mai întâi (stare de eroare).
 
 ```bash
 sudo systemctl stop nginx
@@ -262,7 +260,7 @@ Pentru a face serviciul să pornească la fiecare restart:
 sudo systemctl enable nginx
 ```
 
-Creează directorul aplicației în `/var/www/`
+Creează directorul aplicației în subdirectorul `/var/www/`
 
 ```bash
 sudo mkdir db.proiectInstitutie.ro
@@ -286,7 +284,7 @@ După actualizarea pachetelor din cache, instalează-l.
 sudo apt install python-certbot-nginx
 ```
 
-Instalează certificate pentru domeniile setate în Nginx
+#### Instalează certificate pentru domeniile setate în NGINX
 
 ```bash
 sudo certbot --nginx -d db.proiectInstitutie.ro -d www.db.proiectInstitutie.ro
@@ -304,6 +302,8 @@ Certbot adaugă următoarea secvență la fișierul de configurare în cazul în
 ```
 
 ### Amendează configurarea serverului NGINX
+
+Următoarea secvență este un model de configurare a serverului ce permite folosirea certificatelor emise de Letsencrypt.
 
 ```txt
 # Default server configuration
@@ -370,7 +370,7 @@ sudo systemctl reload nginx
 
 ### Introducerea datelor în baza de date
 
-În acest moment baza de date este goală și este nevoie de încărcarea seturilor de date necesare. Primul set este cel al competențele specifice cu activitățile arondate.
+În acest moment baza de date este goală și este nevoie de încărcarea seturilor de date necesare. Primul set este cel al competențelor specifice cu activitățile arondate.
 
 #### Încărcarea competențelor specifice pentru discipine
 
@@ -385,6 +385,8 @@ ln -s ../.env .
 ```javascript
 // concatCSVAndOutput(read(dir), `${dir}/all.csv`);
 ```
+
+Acesta este primul pas: generarea fișierului `all.csv`. Imediat după, se va dezactiva această linie și se va rula din nou scriptul pentru a se încărca datele generate în MongoDB. În cazul în care totul a funcționat corect, va fi afișat în consolă numărul de înregistrări introduse.
 
 În cazul în care dorești la fiecare rulare a scriptului `compSpecLoader.js` să se șteargă și să se construiască de la zero setul de date în bază, se va activa următoarea linie din script.
 
