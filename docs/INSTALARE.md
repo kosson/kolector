@@ -164,6 +164,27 @@ db.auth({user: "nume_administrator", pwd: "paR0laMea1nfa1libila"})
 db.grantRolesToUser("nume_administrator", ["readWrite", {role: "readWrite", db: "redcolector"}])
 ```
 
+În cazul în care baze de date conține mai multe baze aparținând diferitelor aplicații, va trebui să ceri administratorului sau dacă tu ai aceste drepturi să adaugi drepturi de scriere/citire pentru baza de date a aplicației colectorului.
+
+În cazul în care ești administratorul, te autentifici din consola `mongo`, selectezi baza de date `admin`, după care te autentifici.
+
+```bash
+use admin
+db.auth('numeleAdminului', 'parolaSa')
+```
+
+Mai întâi, asigură-te că nu trebuie doar să modifici ceea ce există, căutând dreturile administratorului.
+
+```bash
+db.system.users.find()
+```
+
+Acum, introdu drepturi de sciere/citire pentru o anumită bază de date.
+
+```bash
+db.grantRolesToUser('numeleAdminului', ['readWrite', {role: 'readWrite', db: 'numeleBazeiDeDate'}])
+```
+
 ### Aducerea resurselor de pe Github
 
 Pentru a avea deja resursele descărcate, trebuie setat subdirectorul din `/var/www/numeSite`.
