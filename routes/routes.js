@@ -369,6 +369,18 @@ module.exports = (express, app, passport, pubComm) => {
                 });
             });
         });
+
+        // căutarea resurselor după disciplinele selectate
+        socket.on('searchresdisc', (queryObj) => {
+            console.log(queryObj);
+            let resQuery = Resursa.find({
+                discipline: {$all: queryObj}
+            });
+            resQuery.exec(function (err, docs) {
+                // console.log(docs);
+                socket.emit('searchresdisc', docs);
+            });
+        });
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */
 

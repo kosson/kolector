@@ -1,10 +1,11 @@
-{{!< layout}}
+{{!< resursepublice}}
 {{> nav-resurse}}
 {{!-- {{> nav-resurse-publice}} --}}
 {{> messages}}
     <div id="resursepublice">
         <div class="resurse">
             <div id="searchpublic" class="container pb-3">
+                {{!-- Câmpul de căutare --}}
                 <div class="col-12">
                     <div class="input-group">
                         <input class="form-control border-secondary py-2" type="search" value="cauta">
@@ -15,12 +16,41 @@
                         </div>
                     </div>
                 </div>
+                {{!-- Mecanismele de selecție a rezultatelor afișate --}}
+                <div id="selectors" class="container-fluid">
+                    <form>
+                        {{!-- Clasa --}}
+                        <div id="selectlevel" class="form-group d-flex flex-row">
+                            {{!-- <p class="selectortxt">Clasa: </p> --}}
+                            <label for="selectclasa" class="selectortxt col-form-label mt-1 pr-1">Clasa:</label>
+                            <div class="col-sm-10 row align-items-center">
+                                <input type="range" min="0" max="8" value="0" step="1" list="tickmarks" id="selectclasa" oninput="valoareclasa.value = selectclasa.value">
+                                <datalist id="tickmarks">
+                                    <option value="0">0</option>
+                                    <option value="1">I</option>
+                                    <option value="2">II</option>
+                                    <option value="3">III</option>
+                                    <option value="4">IV</option>
+                                    <option value="5">V</option>
+                                    <option value="6">VI</option>
+                                    <option value="7">VII</option>
+                                    <option value="8">VIII</option>
+                                </datalist>
+                                <output class="pl-1" id="valoareclasa" for="selectclasa"> 0</output>
+                            </div>            
+                        </div>
+                        {{!-- Este diviziunea unde se generează selectul pentru discipline --}}
+                        <div id="selectordisc" class="form-group">
+                        </div>
+                        <div class="invalid-feedback">Example invalid custom select feedback</div>
+                    </form>
+                </div>
             </div>
             <div class="container">
                 <div class="row">
-                    <div class="card-deck">
+                    <div id="respubselected" class="card-deck">
                         {{#each resurse}}
-                            <div class="col-sm-4 d-flex align-items-stretch">
+                            <div class="col-sm-4 d-flex align-items-stretch p-2">
                                 <div class="card ml-2 mh-100">
                                     <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">
                                     <div class="card-body">
@@ -34,5 +64,20 @@
                     </div>
                 </div>
             </div>
+            {{!-- Template pentru afișarea resurselor aduse --}}
+            <template id="resursa-template">
+                {{#each resurse}}
+                <div class="col-sm-4 d-flex align-items-stretch p-2">
+                    <div class="card ml-2 mh-100">
+                        <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{this.title}}</h5>
+                            <p class="card-text">{{this.description}}</p>
+                            <a href="/resursepublice/{{this.id}}" class="btn btn-primary">Afișează</a>     
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </template>
         </div>
     </div>
