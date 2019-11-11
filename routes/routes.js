@@ -6,7 +6,18 @@ const BagIt       = require('bagit-fs');
 const uuidv1      = require('uuid/v1');
 const Readable    = require('stream').Readable;
 const mongoose    = require('mongoose');
+const esClient    = require('../elasticsearch.config');
 const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
+const mexp        = require('mongoose-elasticsearch-xp');
+
+// CĂUTARE ÎN ELASTICSEARCH
+const searchDoc = async function (indexName, payload){
+    return await esClient.search({
+        index: indexName,
+        // type: mappingType,
+        body: payload
+    });
+};
 
 module.exports = (express, app, passport, pubComm) => {
     /* GESTIONAREA RUTELOR */
@@ -372,7 +383,7 @@ module.exports = (express, app, passport, pubComm) => {
 
         // căutarea resurselor după disciplinele selectate
         socket.on('searchresdisc', (queryObj) => {
-            console.log(queryObj);
+            // console.log(queryObj);
             let resQuery = Resursa.find({
                 discipline: {$all: queryObj}
             });
@@ -380,6 +391,27 @@ module.exports = (express, app, passport, pubComm) => {
                 // console.log(docs);
                 socket.emit('searchresdisc', docs);
             });
+        });
+        
+        // căutarea termenilor în Elasticsearch
+        socket.on('searchres', (queryString) => {
+            const body = {
+                query: {
+                    query_string: {
+                        "query": queryString,
+                        "fuzziness": 2,
+                        "fields": ["title", "description", "etichete", "discipline"]
+                    }
+                }
+            };
+            
+            var promiseMeData = searchDoc('resursedus', body, (err, result) => {
+                if (err) console.log(err);
+                return result;
+            });
+            promiseMeData.then((result) => {
+                socket.emit('searchres', result.hits.hits);
+            }).catch(console.log);
         });
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */

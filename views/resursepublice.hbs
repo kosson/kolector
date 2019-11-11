@@ -8,9 +8,9 @@
                 {{!-- Câmpul de căutare --}}
                 <div class="col-12">
                     <div class="input-group">
-                        <input class="form-control border-secondary py-2" type="search" value="cauta">
+                        <input id="searchterms" class="form-control border-secondary py-2" type="search" value="">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button">
+                            <button id="generalsearch" class="btn btn-outline-secondary" type="button">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
@@ -64,8 +64,8 @@
                     </div>
                 </div>
             </div>
-            {{!-- Template pentru afișarea resurselor aduse --}}
-            <template id="resursa-template">
+            {{!-- Template pentru afișarea resurselor aduse în regimul clasă -> disciplină --}}
+            <template id="resurse-selected">
                 {{#each resurse}}
                 <div class="col-sm-4 d-flex align-items-stretch p-2">
                     <div class="card ml-2 mh-100">
@@ -78,6 +78,17 @@
                     </div>
                 </div>
                 {{/each}}
+            </template>
+            <template id="resursa-template">
+                <div class="col-sm-4 d-flex align-items-stretch p-2">
+                    <div class="card ml-2 mh-100">
+                        <div class="card-body">
+                            <h5 class="card-title"></h5>
+                            <p class="card-text"></p>
+                            <a id="resid" href="" class="btn btn-primary">Afișează</a>     
+                        </div>
+                    </div>
+                </div>
             </template>
         </div>
     </div>

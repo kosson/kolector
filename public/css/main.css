@@ -280,6 +280,9 @@ tr.shown td.details-control {
 	margin-bottom: 0;
 	outline: 0;
 }
+.img-responsive {
+    height: 8rem;
+}
 /*Ascunde checkboxul original*/
 .image-checkbox input[type="checkbox"] {
 	display: none;

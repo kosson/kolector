@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema   = mongoose.Schema;
-const mexp     = require('mongoose-elasticsearch-xp');
+const mexp     = require('mongoose-elasticsearch-xp').v7;
+const CompetentaS = require('./competenta-specifica');
 
 var softwareSchema = new mongoose.Schema({
     nume:     {
@@ -25,8 +26,8 @@ var ResursaSchema = new mongoose.Schema({
 
     // #1. INIȚIALIZARE ÎNREGISTRARE
     date:          Date,  // este data la care resursa intră în sistem. Data este introdusă automat la momentul în care este trimisă către baza de date.
-    idContributor: String,// este id-ul celui care a creat resursa. Dacă sunt mai mulți autori, este cel care face propunerea de resursă.
-    autori:        String,
+    idContributor: {type: String, es_indexed: true},// este id-ul celui care a creat resursa. Dacă sunt mai mulți autori, este cel care face propunerea de resursă.
+    autori:        {type: String, es_indexed: true},
     dateContext:   ['http://purl.org/dc/elements/1.1/date', 'https://schema.org/datePublished'],
     langRED:       String,  // Este limba primară a resursei. Modelul ar fi 'ro', care indică limba pentru care s-a optat la deschiderea formularului pentru depunederea resursei. Valoarea va fi conform ISO 639-1 (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
     langContext:   ['http://purl.org/dc/elements/1.1/language', 'https://schema.org/Language'],
@@ -38,7 +39,8 @@ var ResursaSchema = new mongoose.Schema({
         //     required: [true, 'Titlul este absolut necesar']
         // },
         index: true,
-        trim: true
+        trim: true,
+        es_indexed: true
     },
     titleI18n:      [],  // Un titlu poate fi tradus în mai multe limbi. Modelul este: {ro:'Numele RED-ului',de:'Titel der RED'}. Cheia va fi o valoare conform ISO 639-2. Modificare la 639-2 pentru a permite și rromani - http://www.bibnat.ro/dyn-doc/Coduri%20de%20%20limba_639_2_2009_fin.pdf.
     titleContext:   ['http://purl.org/dc/elements/1.1/title', 'https://schema.org/name'],
@@ -53,12 +55,7 @@ var ResursaSchema = new mongoose.Schema({
     competenteGen:      [],    // Va fi un array de id-uri ale competențelor specifice
     competenteS:        [{     // Primul va fi cel din ierarhie, restul vor fi cele care sunt propuse (public sau experți).
         type: mongoose.Schema.Types.ObjectId,    // va lua id-uri din altă colecție
-        ref: 'competentaspecifica',      // este numele modelului de competență specifică, în cazul de față (ceea ce exporți din modul)
-        es_type: {
-            nume: {
-                es_type: 'string'
-            }
-        }
+        ref: 'competentaspecifica'      // este numele modelului de competență specifică, în cazul de față (ceea ce exporți din modul)
     }],    // [valoare din vocabular] Set de competențe specifice. Este ținta de învățare specificată ca obiectiv clar identificabil într-un vocabular controlat al elementelor stabilite de specialiști, dar codate. Sunt cele care sunt alese inițial la selecția când resursa a fost încărcată. Codurile acestora devin automat etichete. Când identficatorul unei comptențe specifice este introdus în acest set, automat, va fi actualizat setul `REDuri` cu id-ul resursei constituite. Astfel, o competență va ști mereu de care REDuri este referită.
     competentaSContext: ['https://schema.org/targetName', 'http://purl.org/dcx/lrmi-vocabs/alignmentType/teaches'],
     activitati:         [],    // sunt activitățile selectate de contribuitor și/sau adăugate de acesta suplimentar.
@@ -78,9 +75,7 @@ var ResursaSchema = new mongoose.Schema({
     invatarea:        [], // [valoare din vocabular] De ex: „la clasă”, „individual”, „grupat”
 
     // #5 DESCRIERE
-    description: {
-        type: String
-    },
+    description:      {type: String, es_indexed: true},
     descriptionContext: ['http://purl.org/dc/elements/1.1/description', 'https://schema.org/description'],
     identifier:         [], // Sunt diferiții identificatori ai unei resurse. Poate fi orice string, fie text, nume fișier, fie url sau ISBN... Se generează automat la încărcare. Va apărea doar la momentul accesării! Nu este disponibil la momentul încărcării.
     identifierContext:  ['http://purl.org/dc/elements/1.1/identifier', 'https://schema.org/identifier'],

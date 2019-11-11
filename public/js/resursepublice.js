@@ -56,6 +56,7 @@ function createDisciplineSelector (nr) {
     $('<select class="custom-select" required>');
 }
 
+// LISTENER pentru multiselectul disciplinelor; 
 $('#selectordisc').on('change', function () {
     var delayAct = setTimeout(function () {
         var discArr = $('#discselection option:selected').map(function () {
@@ -64,14 +65,62 @@ $('#selectordisc').on('change', function () {
         }).get();
         // console.log(discArr);
         pubComm.emit('searchresdisc', discArr);
-    }, 1700);
+    }, 1300);
     pubComm.on('searchresdisc', populeazaCuRes);
 });
 
+// LISTENER pentru căutarea generală
+$('#generalsearch').on('click', function (event) {
+    event.preventDefault();
+    // selectează valoarea din input și trimite-o în backend
+    var searchterms = $('#searchterms').val();
+    if (searchterms) {
+        pubComm.emit('searchres', searchterms);
+    }
+});
+
+// LISTENER pentru ENTER pe căutare
+$('#searchterms').on('keyup', function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        $('#generalsearch').click();
+    }
+});
+
+// LISTENER pentru orice modificare
+$('#searchterms').change(function () {
+    console.log('E ceva nou');
+});
+
+/**
+ * Rolul funcției este de a popula un template Handlebars cu datele din backend
+ * @param {Object} resurse 
+ */
 function populeazaCuRes (resurse) {
-    var template = document.getElementById('resursa-template').innerHTML;
+    var template = document.getElementById('resurse-selected').innerHTML;
     var renderResurse = Handlebars.compile(template);
     document.getElementById('respubselected').innerHTML = renderResurse({
         resurse
     });
 }
+
+pubComm.on('searchres', function populeazaCuResES (resurse) {
+    $('#selectordisc').empty(); 
+    $('#respubselected').empty();
+
+    var sablon = document.getElementById('resursa-template');
+    
+    resurse.forEach((resursa) => {
+        console.log(resursa);
+        console.log(resursa._source.title);
+        // creezi o instanță a conținutului template-ului
+        const instance = document.importNode(sablon.content, true);
+        // Introdu conținutul în template
+        instance.querySelector('.card-title').innerHTML = resursa._source.title;
+        instance.querySelector('.card-text').innerHTML = resursa._source.description;
+        instance.querySelector('#resid').href = `/resursepublice/${resursa._id}`;
+
+        // Append the instance ot the DOM
+        document.getElementById('respubselected').appendChild(instance);
+    });
+});

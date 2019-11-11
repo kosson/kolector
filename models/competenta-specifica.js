@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 // const mongoose = require('../mongoose.config');
-const mexp     = require('mongoose-elasticsearch-xp');
+const mexp     = require('mongoose-elasticsearch-xp').v7;
 
 let CompetentaS = new mongoose.Schema({
     nume: {             // este chiar numele competenței specifice. Ex: 1.1. Identificarea semnificaţiei unui mesaj oral, pe teme accesibile, rostit cu claritate
