@@ -336,7 +336,9 @@ let langsMin = new Map([
     ['ita', 'italiană'],
     ['gre', 'greacă'],
     ['rus', 'rusă'],
-    ['tur', 'turcă']
+    ['tur', 'turcă'],
+    ['eng', 'engleză'],
+    ['fra', 'franceză']
 ]);
 
 /**

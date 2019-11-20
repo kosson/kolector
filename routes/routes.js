@@ -1,6 +1,6 @@
 require('dotenv').config();
-const fs          = require(`fs-extra`);
-const path        = require(`path`);
+const fs          = require('fs-extra');
+const path        = require('path');
 const querystring = require('querystring');
 const BagIt       = require('bagit-fs');
 const uuidv1      = require('uuid/v1');
@@ -8,7 +8,7 @@ const Readable    = require('stream').Readable;
 const mongoose    = require('mongoose');
 const esClient    = require('../elasticsearch.config');
 const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
-const mexp        = require('mongoose-elasticsearch-xp');
+const Log         = require('../models/logentry'); // Adu modelul resursei
 
 // CĂUTARE ÎN ELASTICSEARCH
 const searchDoc = async function (indexName, payload){
@@ -20,10 +20,10 @@ const searchDoc = async function (indexName, payload){
 };
 
 module.exports = (express, app, passport, pubComm) => {
-    /* GESTIONAREA RUTELOR */
+    /* CREEAZĂ RUTERUL */
     var router = express.Router();
 
-    // Încarcă mecanismele de verificare a rolurilor
+    // Încarcă mecanismele de verificare ale rolurilor
     let makeSureLoggedIn = require('connect-ensure-login');
     let checkRole = require('./controllers/checkRole.helper'); // Verifică rolul pe care îl are contul    
 
@@ -33,12 +33,20 @@ module.exports = (express, app, passport, pubComm) => {
     var index   = require('./index');
     var admin   = require('./administrator');
     var resurse = require('./resurse')(router);
+    var log     = require('./log');
+
+    // ========== / ROOT==========
+    app.use('/', index);
 
     // ========== ADMINISTRATOR ==========
     app.use('/administrator', User.ensureAuthenticated, admin);
 
     // ========== RESURSE ================
-    app.use('/resurse', User.ensureAuthenticated, resurse); // stabilește rădăcina tuturor celorlalte căi din modulul resurse
+    app.use('/resurse', User.ensureAuthenticated, resurse);
+
+    // ========== JURNALIER ============
+    app.use('/log', User.ensureAuthenticated, log);
+
     // ========== RESURSE PUBLICE ========
     app.get('/resursepublice', (req, res) => {
         let resursePublice = Resursa.find({'generalPublic': 'true'}).limit(10);
@@ -75,9 +83,6 @@ module.exports = (express, app, passport, pubComm) => {
             if (err) throw err;
         });
     });
-
-    // ========== / ROOT==========
-    app.use('/', index);
 
     // ========== LOGIN ==========
     app.get('/login', User.login);
@@ -162,7 +167,7 @@ module.exports = (express, app, passport, pubComm) => {
                 {script: '/js/redincredadmin.js'},       
                 {script: '/lib/moment/min/moment.min.js'}        
             ];
-            let roles = ["user", "educred", "validator"];
+            let roles = ["user", "cred", "validator"];
             let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
             
             /* ====== VERIFICAREA CREDENȚIALELOR ====== */
@@ -203,6 +208,17 @@ module.exports = (express, app, passport, pubComm) => {
             }
         }).catch(err => {
             if (err) throw err;
+        });
+    });
+
+    // Sistem de asistență - HELP
+    app.get('/help', makeSureLoggedIn.ensureLoggedIn(), function (req, res) {
+        res.render('help', {
+            user:    req.user,
+            title:   "Asistență",
+            style:   "/lib/fontawesome/css/fontawesome.min.css",
+            logoimg: "/img/red-logo-small30.png",
+            credlogo: "../img/CREDlogo.jpg"
         });
     });
 
@@ -277,6 +293,23 @@ module.exports = (express, app, passport, pubComm) => {
             } else {
                 socket.emit('closeBag', 'Nu e niciun bag.');
             }
+        });
+
+        socket.on('log', (log) => {
+            var log = new Log({
+                _id: new mongoose.Types.ObjectId(),
+                date: Date.now(),
+                title: log.title,
+                idContributor: log.idContributor,
+                autori: log.nameUser,
+                content: log.content,
+                contorAcces: log.contorAcces
+            });
+            log.save().then((entry) => {
+                socket.emit('log', entry);
+            }).catch(err => {
+                if (err) throw err;
+            });            
         });
 
         // Introducerea resursei în baza de date MongoDB la finalizarea completării FORM01

@@ -1,7 +1,3 @@
-const express  = require('express');
-const router   = express.Router();
-const moment   = require('moment');
-const mongoose = require('mongoose');
 const Resursa  = require('../models/resursa-red'); // Adu modelul resursei
 
 module.exports = function (router) {
@@ -10,13 +6,13 @@ module.exports = function (router) {
 
     /* ========== GET */
     // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
-    router.get('/', function (req, res) {
+    router.get('/', function (req, res, next) {
         // ACL
         let roles = ["user"];   //FIXME: DREPTURI ACL hardcodate. Constituie ceva centralizat!!!
         // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
         let resursePublice = Resursa.find({'generalPublic': 'true'}).limit(10);
-        let promiseResPub = resursePublice.exec();
+        let promiseResPub  = resursePublice.exec();
         
         /* ====== VERIFICAREA CREDENȚIALELOR ====== */
         if(req.session.passport.user.roles.admin){
@@ -51,7 +47,7 @@ module.exports = function (router) {
 
     /* ========== GET - Pe această rută se obține formularul de adăugare a resurselor doar dacă ești logat, având rolurile menționate */
     // Cere helperul `checkRole`
-    router.get('/adauga', function (req, res) {
+    router.get('/adauga', function (req, res, next) {
         // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
         let scripts = [
             {script: '/lib/editorjs/editor.js'},
@@ -67,7 +63,7 @@ module.exports = function (router) {
             {script: '/js/form01adres.js'}
         ];
         // roluri pe care un cont le poate avea în proiectul CRED.
-        let roles = ["user", "educred", "validator"]; // FIXME: Atenție, la crearea conturilor nu este completat array-ul rolurilor în CRED!!! FIX NOW, NOW, NOW!
+        let roles = ["user", "cred", "validator"]; // FIXME: Atenție, la crearea conturilor nu este completat array-ul rolurilor în CRED!!! FIX NOW, NOW, NOW!
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
         // console.log(req.session.passport.user.roles.rolInCRED);
 

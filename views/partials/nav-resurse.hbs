@@ -22,12 +22,18 @@
             {{#if user.roles.admin}}
                 <li class="nav-item">
                     <a class="nav-link" href="/administrator">Administrare</a>
+                </li>    
+                <li class="nav-item">
+                    <a class="nav-link" href="/log/new">Eveniment nou</a>
                 </li>                
             {{/if}}
             <li class="nav-item">
                 <a class="nav-link" href="/resurse/adauga">Adaugă</a>
             </li>
             {{#if user}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/help">Asistență</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Logout</a>
                 </li>

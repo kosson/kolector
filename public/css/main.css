@@ -423,3 +423,8 @@ input[type='range']:focus {
     content:"";
     font-weight: bold;
 } */
+
+#codex-editor {
+    border: .1rem;
+    border-style: solid;
+}

@@ -1,12 +1,10 @@
 const resursaModel = require('../../models/resursa-red');
-const competenteS  = require('../../models/competenta-specifica');
 const moment       = require('moment');
 
 module.exports = (params) => {
     return resursaModel.find({_id: params.idres}).populate({
         path: 'competenteS'
     }).exec().then( (resursa) => {
-        // console.log(resursa);
         if (resursa[0].content) {
             let articleHTML = '';
             resursa[0].content.blocks.map(obj => {

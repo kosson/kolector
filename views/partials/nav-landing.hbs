@@ -19,18 +19,36 @@
                     {{#if user.roles.admin}}
                         <li class="nav-item">
                             <a class="nav-link" href="/administrator">Administrare</a>
-                        </li>                
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/log/new">Eveniment nou</a>
+                        </li>                                         
                     {{/if}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/log">Noutăți</a>
+                    </li>   
                     <li class="nav-item">
                         <a class="nav-link" href="/resurse">Resurse CRED</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/help">Asistență</a>
+                    </li> 
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
                     </li>
                 {{else}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">Loghează-te</a>
+                        <a class="nav-link" href="/despre">Despre</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/log">Noutăți</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/help">Asistență</a>
+                    </li>                                      
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Loghează-te</a>
+                    </li>                  
                 {{/if}}
             </ul>
             {{!-- <form class="form-inline my-2 my-lg-0">

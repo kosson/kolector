@@ -1,0 +1,23 @@
+{{!< log}}
+{{> nav-resurse}}
+{{> messages}}
+    <div id="container">
+        <h1>Intrare nouă în jurnal</h1>
+        <div id="editorcrate" class="container p-2">
+            <form>
+                {{!-- Formular de introducere articol --}}
+                <div class="row">
+                    <div id="titlelog" class="col">
+                        <input type="text" class="form-control" placeholder="Titlu">
+                    </div>
+                    <div id="autorlog" class="col">
+                        <input type="text" class="form-control" placeholder="Autor">
+                    </div>
+                </div>
+                <div class="justify-content-center mt-4">
+                    <div id="codex-editor"></div>
+                </div>
+                <button id="enterlog" type="submit" class="btn btn-danger">Salvează</button>
+            </form>
+        </div>
+    </div>
