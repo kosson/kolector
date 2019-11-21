@@ -16,14 +16,10 @@ router.get('/', function (req, res, next) {
 
     if (confirmedRoles.length > 0) {
         promiseLogPub.then((entries) => {
-            // console.log(entries);
             entries.map(entry => {
-                // console.log(entry.content);
                 entry.content = content2html(entry.content);
             });
-            let scripts = [
-                // {script: '/js/main.js'},       
-                {script: '/js/redincredid.js'},       
+            let scripts = [     
                 {script: '/lib/moment/min/moment.min.js'}        
             ];
             res.render('logentry', {

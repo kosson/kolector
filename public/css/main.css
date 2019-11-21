@@ -428,3 +428,8 @@ input[type='range']:focus {
     border: .1rem;
     border-style: solid;
 }
+/* TRATAREA LOGURILOR */
+.logentry {
+    border: .1rem;
+    border-style: solid;
+}

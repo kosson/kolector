@@ -6,7 +6,7 @@ var LogentrySchema = new mongoose.Schema({
     _id: Schema.Types.ObjectId,
     date: Date,
     idContributor: {type: String, es_indexed: true},
-    autori: {type: String, es_indexed: true},
+    autor: {type: String, es_indexed: true},
     title: {        
         type: String,  // Aici se introduce titlul lucrării în limba de elaborare
         // validate: {

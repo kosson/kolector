@@ -295,18 +295,18 @@ module.exports = (express, app, passport, pubComm) => {
             }
         });
 
-        socket.on('log', (log) => {
+        socket.on('log', (entry) => {
             var log = new Log({
                 _id: new mongoose.Types.ObjectId(),
                 date: Date.now(),
-                title: log.title,
-                idContributor: log.idContributor,
-                autori: log.nameUser,
-                content: log.content,
-                contorAcces: log.contorAcces
+                title: entry.title,
+                idContributor: entry.idContributor,
+                autor: entry.autor,
+                content: entry.content,
+                contorAcces: entry.contorAcces
             });
-            log.save().then((entry) => {
-                socket.emit('log', entry);
+            log.save().then((result) => {
+                socket.emit('log', result);
             }).catch(err => {
                 if (err) throw err;
             });            

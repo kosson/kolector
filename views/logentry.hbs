@@ -1,9 +1,9 @@
-{{!< log}}
+{{!< logentries}}
 {{> nav-resurse}}
 {{> messages}}
     <div id="container" class="container">
         {{#each logentries}}
-            <article class="logentry">
+            <article class="logentry p-1 mt-1">
                 <h3>{{this.title}}</h3>
                 <div class="logcontent">
                     {{{this.content}}}

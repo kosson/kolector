@@ -96,28 +96,49 @@ function content2html (resursa) {
                     </div>\n`;
                     break;
                 case 'embed':
-                        let ytbLnk = `${obj.data.source}`;
-                        let ytbID = ytbLnk.match(/([A-Z])\w+/)[0];
-                        // console.log(ytbID);
-                        let embYtbLink = `https://www.youtube.com/embed/${ytbID}`;
-                        articleHTML += `<div class="ce-block">
-                            <div class="ce-block__content">
-                                <iframe width="${obj.data.width}" 
-                                        height="${obj.data.height}" 
-                                        src="${embYtbLink}" 
-                                        frameborder="0" 
-                                        allow="accelerometer; 
-                                        autoplay; 
-                                        encrypted-media; 
-                                        gyroscope; 
-                                        picture-in-picture" 
-                                        allowfullscreen>
-                                </iframe>
-                                </br>
-                                <strong>${obj.data.caption}</strong>
-                            </div>
-                        </div>\n`;
-                        break;
+                    let ytbLnk = `${obj.data.source}`;
+                    let ytbID = ytbLnk.match(/([A-Z])\w+/)[0];
+                    // console.log(ytbID);
+                    let embYtbLink = `https://www.youtube.com/embed/${ytbID}`;
+                    articleHTML += `<div class="ce-block">
+                        <div class="ce-block__content">
+                            <iframe width="${obj.data.width}" 
+                                    height="${obj.data.height}" 
+                                    src="${embYtbLink}" 
+                                    frameborder="0" 
+                                    allow="accelerometer; 
+                                    autoplay; 
+                                    encrypted-media; 
+                                    gyroscope; 
+                                    picture-in-picture" 
+                                    allowfullscreen>
+                            </iframe>
+                            </br>
+                            <strong>${obj.data.caption}</strong>
+                        </div>
+                    </div>\n`;
+                    break;
+                case 'table':
+                    articleHTML += `<table class="table table-bordered">`;
+                    // tratarea elementului head al tabelului
+                    let theadData = obj.data.content.shift();
+                    articleHTML += `<thead class="thead-dark"><tr>`;
+                    theadData.forEach((value) => {
+                        articleHTML += `<th scope="col">${value}</th>`;
+                    });
+                    articleHTML += `<tr scope="row"></thead><tbody>`;
+                    // tratarea corpului tabelului
+                    obj.data.content.map(item => {
+                        // pentru elementele rămase după shift(), creează table rows
+                        articleHTML += `<tr>`;
+                        // fiecare item este la rândul său un array
+                        item.forEach((value) => {
+                            articleHTML += `<td class="edjscell">${value}</td>`;
+                        });
+                        articleHTML += `</tr>`;
+                    });
+                    articleHTML += `</tbody></table>`;
+                    break;
                 default:
                     return '';
             }
