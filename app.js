@@ -37,7 +37,7 @@ pubComm.on('connect', function pubCommCon (socket) {
 
 const mongoose = require('./mongoose.config');
 /**
- * Funcția este callback al canalului `csuri` de pe sockeuri
+ * Funcția este callback al canalului `csuri` de pe socketuri
  * @param {Arrray} data sunt codurile disciplinelor selectate
  */
 function cbCsuri (data) {

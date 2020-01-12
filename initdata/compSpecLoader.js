@@ -2,8 +2,9 @@ require('dotenv').config();
 const fs    = require('fs');
 const path  = require('path');
 const Papa  = require('papaparse');
-const csv   = require("fast-csv");
+const csv   = require('fast-csv');
 const mongoose = require('mongoose');
+
 mongoose.connect(process.env.MONGO_LOCAL_CONN, {
     auth: { "authSource": "admin" },
     user: process.env.MONGO_USER,
@@ -77,16 +78,9 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
         // pentru fiecare fișier CSV, generează o promisiune.
         return new Promise((resolve) => {
             const dataArray = [];
-            return csv
-                .parseFile(path, {
-                    headers: true
-                })
-                .on('data', function (data) {
-                    dataArray.push(data);
-                })
-                .on('end', function () {
-                    resolve(dataArray);
-                });
+            return csv.parseFile(path, { headers: true })
+                      .on('data', function clbkOnData (data) { dataArray.push(data); })
+                      .on('end', function clbkOnEnd () { resolve(dataArray); });
         });
     });
 
@@ -97,23 +91,26 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
 
                     // constituirea stream-ului Writeable
                     const writableStream = fs.createWriteStream(outputFilePath);
+
                     // la finalizarea scrierii pe disc
-                    writableStream.on('finish', function () {
+                    writableStream.on('finish', function clbkOnFinish () {
                         console.log('Am terminat de scris rezultatul!');
                     });
 
                     csvStream.pipe(writableStream);
-                    // scrie fișierul trimițând fiecare linie csv operațiunea de scriere a stream-ul
+
+                    // scrie fișierul trimițând fiecare linie csv în operațiunea de scriere a stream-ul
                     results.forEach((result) => {
                         result.forEach((data) => {
                             csvStream.write(data);
                         });
                     });
+
                     csvStream.end();
                 });
 }
 // generează fișierul consolidat cu toate câmpurile din toate csv-urile
-concatCSVAndOutput(read(dir), `${dir}/all.csv`);
+// concatCSVAndOutput(read(dir), `${dir}/all.csv`); // linie activată doar în cazul în care baza este goală și nu există generat deja fișierul all.csv
 
 const readF = fs.createReadStream(`${dir}/all.csv`, 'utf8'); // Creează stream Read din fișierul CSV sursă.
 
@@ -132,7 +129,7 @@ Papa.parse(readF, {
         if (header === 'nivel') return 'nivel';
         if (header === 'act normativ') return 'ref';
         if (header === 'competență generală') return 'parteA';
-        if (header === 'număr competența generală') return 'compGen';
+        // if (header === 'număr competența generală') return 'compGen';
     },
     transform: function (value, headName) {
         // console.log(headName);
@@ -160,9 +157,10 @@ Papa.parse(readF, {
             return value;
         } else if (headName === 'parteA') {
             return value;
-        } else if (headName === 'compGen') {
-            return value;
-        }
+        } 
+        // else if (headName === 'compGen') {
+        //     return value;
+        // }
     },
     complete: function (results, file) {
         if (results.errors) {

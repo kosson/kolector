@@ -179,7 +179,7 @@ Mai întâi, asigură-te că nu trebuie doar să modifici ceea ce există, căut
 db.system.users.find()
 ```
 
-Acum, introdu drepturi de sciere/citire pentru o anumită bază de date.
+Acum, introdu drepturi de scriere/citire pentru o anumită bază de date.
 
 ```bash
 db.grantRolesToUser('numeleAdminului', ['readWrite', {role: 'readWrite', db: 'numeleBazeiDeDate'}])
@@ -393,7 +393,7 @@ sudo systemctl reload nginx
 
 #### Încărcarea competențelor specifice pentru discipine
 
-În interiorul subdirectorului `initdata` există seturile de date necesare populării bazei de date. Pentru a încărca datele în baza de date, se va face un symlink către fișierul `.env` din directorul rădăcină a aplicației.
+În interiorul subdirectorului `initdata` există seturile de date necesare populării bazei de date. Pentru a încărca datele în baza de date, se va face un symlink către fișierul `.env` din directorul rădăcină a aplicației din care scriptul de încărvare va culege date utile rulării.
 
 ```bash
 ln -s ../.env .
@@ -405,7 +405,15 @@ ln -s ../.env .
 // concatCSVAndOutput(read(dir), `${dir}/all.csv`);
 ```
 
-Acesta este primul pas: generarea fișierului `all.csv`. Imediat după, se va dezactiva această linie și se va rula din nou scriptul pentru a se încărca datele generate în MongoDB. În cazul în care totul a funcționat corect, va fi afișat în consolă numărul de înregistrări introduse.
+Apoi rulează:
+
+```bash
+node compSpecLoader.js
+```
+
+În momentul afișării mesajului `Am terminat de scris rezultatul!` în consolă, se a termina execuția scriptului cu CTRL + C. Acesta este primul pas: generarea fișierului `all.csv`. Imediat după, se va dezactiva această linie și se va rula din nou scriptul pentru a se încărca datele generate în MongoDB. În cazul în care totul a funcționat corect, va fi afișat în consolă numărul de înregistrări introduse.
+
+La finalizarea operțiunii, va fi afișat în consolă un mesaj similar următorului `Înregistrări inserate în colecție:  408`. Acesta semnalează popularea bazei de date.
 
 În cazul în care dorești la fiecare rulare a scriptului `compSpecLoader.js` să se șteargă și să se construiască de la zero setul de date în bază, se va activa următoarea linie din script.
 
@@ -422,6 +430,14 @@ node compSpecLoader.js
 
 Dacă toate lucrurile au funcționat corect, ar trebui să fie afișat în consolă numărul de înregistrări create. În acest moment, sunt disponibile date aplicației.
 
+În cazul în care din orice motiv, aveți nevoie să încercați din nou oprațiunea de încărcare, activați linia:
+
+```javascript
+// mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție la fiecare load!.
+```
+
+Drept efect, se vor recrea toare înregistrările, stergând baza anterioară pentru competențele specifice. Acest lucru înseamnă că pentru a adăuga înregistrări noi, pur și simplu adaugi csv-urile în directorul csvuri și rulezi comanda, ceea ce va adăuga la preexistent noile date. Dar dacă ai nevoie de la 0, pur și simplu poți face acest lucru activând un `dropCollection`.
+
 ### Access Control List - ACL
 
 În momentul în care primul utilizator se va loga folosind contul educred, acesta va deveni automat administratorul întregii aplicații.
@@ -434,4 +450,4 @@ Pentru a face un test general, a fost creată o baterie de testare care va fi ru
 ## Detalii configurare Software
 
 Strategia Passport pentru Google: http://www.passportjs.org/packages/passport-google-oauth20/
-Motorul de templating:https://www.npmjs.com/package/express-hbs
+Motorul de templating este Handlebars: https://www.npmjs.com/package/express-hbs

@@ -1,0 +1,55 @@
+@mixin clearfix {
+    &::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+@mixin absCenter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+// MEDIA QUERY MANAGER
+// 0 - 600px     Phone
+// 600 - 900px   Tablet portrait
+// 900 - 1200px  Tablet landscape
+// [1200 - 1800] Normal style
+// 1800px +      Big screens
+//
+// `&breakpoint` argument choices
+// - phone
+// - tab-port
+// - tab-land
+// - big-desktop
+// Atenție, pentru mediaqueries, unitățile de măsură sunt em; 1em = 16px
+
+@mixin respond($breakpoint) {
+
+    @if $breakpoint == phone {
+        // pentru ecrane mai mici de 600px; 600px/16 = 37.5em
+        @media only screen and (max-width: 37.5em) {
+            // folosești content directives - permite pasarea de valori în mixin
+            @content
+        };
+    }
+
+    @if $breakpoint == tab-port {
+        // pentru ecrane mai mici de 900px; 
+        @media only screen and (max-width: 56.25em) { @content  };
+    }
+
+    @if $breakpoint == tab-land {
+        // pentru ecrane mai mici de 1200px; 
+        @media only screen and (max-width: 75em) { @content };
+    }
+
+    @if $breakpoint == big-desktop {
+        // pentru ecrane mai mici de 1800px; 
+        @media only screen and (max-width: 112.5em) { @content };
+    }
+
+}

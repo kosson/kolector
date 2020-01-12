@@ -11,7 +11,7 @@ router.get('/', function (req, res, next) {
     let roles = ["user", "cred"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
-    let loguriPublice = Log.find().limit(10);
+    let loguriPublice = Log.find().sort({"date": -1}).limit(10);
     let promiseLogPub = loguriPublice.exec();
 
     if (confirmedRoles.length > 0) {

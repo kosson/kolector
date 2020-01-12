@@ -1,11 +1,17 @@
 {
   "name": "redcolector",
-  "version": "0.1.3",
+  "version": "0.3.0",
   "description": "Aplicația pentru colectare de RED-uri",
   "main": "app.js",
   "scripts": {
     "test": "nodemon --exec 'mocha --recursive -R min'",
-    "test-win": "nodemon --exec mocha --recursive -R min"
+    "test-win": "nodemon --exec mocha --recursive -R min",
+    "watch:sass": "node-sass src/sass/main.scss ../public/css/style.css -w",
+    "compile:sass": "node-sass src/sass/main.scss ../public/css/style.comp.css",
+    "concat:css": "concat -o public/css/style.concat.css public/css/style.comp.css public/css/animate.css public/css/arrow.css",
+    "prefix:css": "postcss --use autoprefixer -b 'last 5 versions' public/css/style.concat.css -o public/css/style.prefix.css",
+    "compress:css": "node-sass public/css/style.prefix.css public/css/style.css --output-style compressed",
+    "build:css": "npm-run-all compile:sass concat:css prefix:css compress:css"
   },
   "repository": {
     "type": "git",
@@ -36,7 +42,7 @@
     "dotenv": "^8.0.0",
     "elasticsearch": "^16.4.0",
     "express": "^4.17.1",
-    "express-hbs": "^2.2.0",
+    "express-hbs": "^2.3.0",
     "express-session": "^1.16.2",
     "fast-csv": "^3.4.0",
     "fs": "0.0.1-security",
@@ -62,5 +68,12 @@
     "stream": "0.0.2",
     "supertest": "^4.0.2",
     "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.7.3",
+    "concat": "^1.0.3",
+    "node-sass": "^4.13.0",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^7.1.0"
   }
 }
