@@ -864,11 +864,11 @@ function pas1 () {
         }
     }
     // Adaugă emailul 
-    var email         = document.querySelector('#emailUser').value;    
-    RED.idContributor = email;
+    var idUser        = document.querySelector('#idUser').value;    
+    RED.idContributor = idUser;
     // Adaugă numele și prenumele utilizatorului
-    let nameUser      = document.querySelector('#nameUser').value;
-    RED.nameUser      = nameUser;
+    let autor         = document.querySelector('#autor').value;
+    RED.nameUser      = autor;
     // Adaugă descrierea
     var descriere     = document.querySelector('#descriereRed').value;
     RED.description   = descriere;
@@ -963,14 +963,19 @@ function pas2 () {
     });
 
     // ==== RED.activitati ====
-    RED.activitati = [];
+    /**
+     * Funcția are rolul de a alimenta array-ul activităților din obiectul colector RED
+     */
     function pushActivitate (value, key, map) {
         var arr = [value, key];
         RED.activitati.push(arr);
     }
+    // Dacă există date în Map-ul `activitatiFinal`,
     if (activitatiFinal) {
         activitatiFinal.forEach(pushActivitate);
     }
+
+    // ==== RED.competenteGen ====
     // introducerea valorilor din Set-ul competenteGen
     if (competenteGen) {
         competenteGen.forEach((v) => {
@@ -1097,7 +1102,7 @@ function pickCover () {
     return insertGal;
 }
 /**
- * Funcția are rolul de a colecta care dintre imagini va fi coperta.
+ * Funcția are rolul de a colecta care dintre imagini va fi coperta și de a colecta etichetele completate de contribuitor.
  */
 function pas4 () {
     var inputCheckGal = document.querySelectorAll('.inputCheckGal');
@@ -1106,9 +1111,11 @@ function pas4 () {
             RED.coperta = input.value;
         }
     });
+    // colectarea etichetelor
     var newTags = document.getElementById('eticheteRed');
     var arrNewTags = newTags.value.split(',');
     arrNewTags.forEach((tag) => {
+        tag = tag.trim(); // curăță de posibilele spații.
         RED.etichete.push(tag);
     });
 }

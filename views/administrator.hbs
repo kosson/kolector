@@ -1,29 +1,100 @@
 {{!< layout}}
 {{> nav-administrator}}
 {{> messages}}
+
 <div id="content">
     <h1>Bine ai venit în zona de administrare!</h1>
-    <div id="foci">
-        <button type="button" class="btn btn-primary">Toți utilizatorii</button>
-        <button type="button" class="btn btn-primary">Unități</button>
-        <button type="button" class="btn btn-primary">Competențe specifice</button>    
-    </div>
-    <br>
+    {{!-- <div id="foci">
+        <button id="allUsers" type="button" class="btn btn-primary">Toți utilizatorii</button>
+        <button id="allUnits" type="button" class="btn btn-primary">Unități</button>
+        <button id="allComps" type="button" class="btn btn-primary">Competențe specifice</button>    
+    </div> --}}
+    {{!-- <br> --}}
     <section id="userres">
-        <form action="#">
+        <p>Caută un utilizator, fie după email, fie după nume</p>
+        <form>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="useremail">@educred.ro</span>
                 </div>
-                <input type="text" id="useremail" class="form-control" placeholder="Adresa de email a utilizatorului" aria-label="useremail" aria-describedby="useremail">
+                <input type="text" id="findUserField" class="form-control" placeholder="Adresa de email a utilizatorului" aria-label="useremail" aria-describedby="useremail">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button">Caută</button>
+                    <button id="findUserBtn" class="btn btn-outline-secondary" type="button">Caută</button>
                 </div>
             </div>
         </form>
         <br>
+        
+        {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
         <div id="contributii" class="resurse">
-
+            <div class="card-deck">
+                {{!-- UTILIZATORII GĂSIȚI ÎN ELASTICSEARCH --}}
+                <div id="showusers" class="container d-flex p-2 bd-highlight justify-content-around">                
+                    {{!-- Va fi inserat rezultatul compilării aici! --}}
+                </div>
+            </div>
+            {{!-- DETALIILE PENTRU UN UTILIZATOR SELECTAT --}}
+            <div id="showusrdetails" class="container">
+                {{!-- Va fi inserat rezultatul compilării aici! --}}
+                <div class="card-deck resurseUser">
+                    {{!-- Vor fi inserate resursele utilizatorului - ultimele 5 --}}
+                </div>
+            </div>
         </div>
-    </section>
+    </section>    
+    
+    {{!-- TEMPLATE_UL UTILIZATORILOR DIN ELASTICSEARCH --}}
+    <template id="usertpl">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"></h5>
+                <p class="card-text">
+                    <button type="button" name="" class="btn btn-light userProfileBtn" onclick="exposeUser()"></button>
+                </p>    
+            </div>          
+        </div>
+    </template>
+
+    {{!-- TEMPLATE_UL DETALIILOR PENTRU UTILIZATORUL SELECTAT --}}
+    <template id="userdetailtpl">
+        <section class="admUview">
+            {{!-- Detaliile primare ale utilizatorului --}}
+            <div class="admUview__admUdesc">
+                {{!-- Imaginea utilizatorului --}}
+                <img class="admUdesc__avatar" src="" alt="">
+                {{!-- ID-ul din baza de date --}}
+                <strong class="admUdesc__admUid"></strong>
+                <p class="admUsesc__admUroles">
+                    Roluri în sistem:
+                    {{!-- Sunt injectate elemente span --}}                    
+                </p>
+                {{!-- Setează administrator!!! --}}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            Admin:
+                            <input id="adminSet" type="checkbox" aria-label="Setează administrator" onchange="mkAdmin()">
+                        </div>
+                    </div>
+                </div>
+                {{!-- Resursele [ultimele 5 ale utilizatorului selectat] --}}
+                <div class="card resursaUser">
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">
+                            <button type="button" name="" class="btn btn-light userProfileBtn"></button>
+                        </p>    
+                    </div>          
+                </div>
+            </div>
+            {{!-- Afișarea detaliilor privind rolurile în sistem; Adăugarea de roluri și eliminarea de roluri --}}
+            <form action="">
+
+            </form>
+        </section>
+    </template>
+
+    {{#each scripts}}
+        <script src="{{script}}" charset="utf-8"></script>
+    {{/each}}
 </div>

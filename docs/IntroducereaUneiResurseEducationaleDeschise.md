@@ -118,7 +118,10 @@ După ce am încărcat în editor fragmentele necesare sau am încărcat un fiș
 
 ![](img/Pas4-EditorsalvareaContinutuluiSiSelectieImagineCoperta.png)
 
-Din moment ce am făcut și acest mic pas, vom salva resursa și imediat vom fi trimiși în modul de vizualizare a sa.
+Din moment ce am făcut și acest mic pas, nu mai rămâne decât să completăm cuvintele cheie de care avem nevoie în plus față de cele generate prin completarea formularului.
+Cuvintele cheie se completează delimitându-se cu virgulă, dar, atenție, fără spații între cuvintele cheie și virgule.
+
+Odată parcus și acest ultim pas vom salva resursa și imediat vom fi trimiși în modul de vizualizare a sa.
 
 ![](img/RED-Publicat.png)
 

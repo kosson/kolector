@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="ro">
-    <head>
-        <meta charset="UTF-8">
+    <head prefix="dc: http://purl.org/dc/elements/1.1 dcterms: http://purl.org/dc/terms">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta charset="UTF-8">
+        <meta property="dc:title" content="Colector Resurse Educaționale Deschise">
+        <meta property="dc:description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
+        <meta itemprop="name" content="Colector Resurse Educaționale Deschise">
+        <meta itemprop="description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
         <script src="/socket.io/socket.io.js"></script>
         <script type="text/javascript" charset="utf8" src="/js/main.js"></script>
 
@@ -17,7 +21,8 @@
         <link rel="stylesheet" href="/lib/datatables.net-select-bs4/css/select.bootstrap4.min.css">
 
         <script type="text/javascript" charset="utf8" src="/lib/jquery/dist/jquery.min.js"></script>
-
+        <script type="text/javascript" charset="utf8" src="/lib/handlebars/handlebars.runtime.min.js"></script> 
+        <script type="text/javascript" charset="utf8" src="/lib/handlebars/handlebars.min.js"></script> 
         <title>{{title}}</title>
     </head>
     <body>
@@ -28,28 +33,16 @@
         </footer>
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        {{!-- <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> --}}
-        <script type="text/javascript" charset="utf8" src="/lib/popper.js/dist/umd/popper.min.js"></script>
-        
-        {{!-- <script type="text/javascript" charset="utf8" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> --}}
+        <script type="text/javascript" charset="utf8" src="/lib/popper.js/dist/umd/popper.min.js"></script>        
         <script type="text/javascript" charset="utf8" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 
         <script type="text/javascript" charset="utf8" src="/lib/fontawesome/js/all.js"></script>
         {{!-- DATATABLES --}}
-        {{!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script> --}}
         <script type="text/javascript" charset="utf8" src="/lib/datatables.net/js/jquery.dataTables.min.js"></script>
-        {{!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script> --}}
         <script type="text/javascript" charset="utf8" src="/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
 
-        {{!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script> --}}
         <script type="text/javascript" charset="utf8" src="/lib/datatables.net-buttons-dt/js/buttons.dataTables.min.js"></script>
-
-        {{!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.bootstrap4.min.js"></script> --}}
-        {{!-- <script type="text/javascript" charset="utf8" src="/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script> --}}
-
-        {{!-- <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.3.0/js/dataTables.select.min.js"></script> --}}
         <script type="text/javascript" charset="utf8" src="/lib/datatables.net-select/js/dataTables.select.min.js"></script>
-        {{!-- <script type="text/javascript" charset="utf8" src="/js/jquery.toastmessage.js"></script> --}}
         <script type="text/javascript" charset="utf8" src="/lib/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
         
         <script type="text/javascript" charset="utf8" src="/js/custom.js"></script>

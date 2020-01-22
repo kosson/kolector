@@ -74,17 +74,21 @@
             </fieldset>
             {{!-- MENȚIUNEA DE RESPONSABILITATE --}}
             <fieldset>
-              <legend>Responsabilitate (contribuitor)</legend>
+              <legend>Responsabilitate: {{user.googleProfile.name}}</legend>
               {{!-- Adăugarea userului care propune resursa --}}
               <div class="input-group">
                   <div class="input-group-prepend">
-                    <span class="input-group-text">Nume și prenume</span>
-                  </div>
+                    <span class="input-group-text">Autori</span>                  </div>
+                  
                   {{!-- INPUT Persoana responsabilă --}}
-                  <input id="responsabil" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.googleProfile.name}}" required>
+                  <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.googleProfile.name}}" required>
+                  {{!-- Câmpuri ascunse --}}
+                  <input id="idUser"    name="idUser" type="hidden" value="{{user._id}}">
                   <input id="emailUser" name="emailUser" type="hidden" value="{{user.email}}">
-                  <input id="nameUser" name="nameUser" type="hidden" value="{{user.googleProfile.name}}">
+                  <input id="nameUser"  name="nameUser"  type="hidden" value="{{user.googleProfile.name}}">
+                  <br>
               </div>
+              <small>Autorii vor fi trecuți în continuarea numelui contribuitorului menționând Nume Prenume. Aceștia vor fi delimitați prin virgule</small>
               {{!-- Adăugarea userului care propune resursa END --}}
             </fieldset>
             {{!-- MENȚIUNEA DE RESPONSABILITATE END --}}
@@ -192,59 +196,60 @@
             {{!-- Selectarea nivelului de școlarizare --}}
             <fieldset>
               <legend>Clasa</legend>
+              {{!-- Orice modificare aduci, ține sincronizat și resursepublice.js -> vezi Map-ul; Acesta este nomenclatorul codurilor pe discipline --}}
               <div id="nivel">
                 {{!-- PRIMAR --}}
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox0" value="cl0"  
-                  data-arteviz0="Arte vizuale și abilități practice" 
-                  data-matexpmed0="Matematică și explorarea mediului" 
-                  data-relclort0="Religie cultul ortodox" 
-                  data-relclromcat0="Religie Cultul Romano-Catolic de limba română"
-                  data-comlbrom0="Comunicare în limba română">
-                  <label class="form-check-label" for="inlineCheckbox1">Clasa pregătitoare</label>
+                    data-arteviz0    ="Arte vizuale și abilități practice" 
+                    data-matexpmed0  ="Matematică și explorarea mediului" 
+                    data-relclort0   ="Religie cultul ortodox" 
+                    data-relclromcat0="Religie Cultul Romano-Catolic de limba română"
+                    data-comlbrom0   ="Comunicare în limba română">
+                  <label class="form-check-label" for="inlineCheckbox0">Clasa pregătitoare</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1"  
-                  data-arteviz1="Arte vizuale și abilități practice" 
-                  data-matexpmed1="Matematică și explorarea mediului" 
-                  data-relclort1="Religie cultul ortodox" 
-                  data-relclromcat1="Religie Cultul Romano-Catolic de limba română" 
-                  data-comlbrom1="Comunicare în limba română">
+                    data-arteviz1    ="Arte vizuale și abilități practice" 
+                    data-matexpmed1  ="Matematică și explorarea mediului" 
+                    data-relclort1   ="Religie cultul ortodox" 
+                    data-relclromcat1="Religie Cultul Romano-Catolic de limba română" 
+                    data-comlbrom1   ="Comunicare în limba română">
                   <label class="form-check-label" for="inlineCheckbox1">Clasa I</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox2" value="cl2"  
-                  data-arteviz2="Arte vizuale și abilități practice" 
-                  data-matexpmed2="Matematică și explorarea mediului" 
-                  data-relclromcat2="Religie Cultul Romano-Catolic de limba română" 
-                  data-relclort2="Religie cultul ortodox" 
-                  data-comlbrom2="Comunicare în limba română">
+                    data-arteviz2    ="Arte vizuale și abilități practice" 
+                    data-matexpmed2  ="Matematică și explorarea mediului" 
+                    data-relclromcat2="Religie Cultul Romano-Catolic de limba română" 
+                    data-relclort2   ="Religie cultul ortodox" 
+                    data-comlbrom2   ="Comunicare în limba română">
                   <label class="form-check-label" for="inlineCheckbox2">Clasa a II-a</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox3" value="cl3"  
-                  data-arteviz3="Arte vizuale și abilități practice" 
-                  data-mat3="Matematică" 
-                  data-stanat3="Științele naturii" 
-                  data-relclort3="Religie cultul ortodox" 
-                  data-relclromcat3="Religie Cultul Romano-Catolic de limba română" 
-                  data-comlbrom3="Limba și literatura română" 
-                  data-edciv3="Educaţie civică" 
-                  data-jocmi3="Joc și mișcare">
+                    data-arteviz3    ="Arte vizuale și abilități practice" 
+                    data-mat3        ="Matematică" 
+                    data-stanat3     ="Științele naturii" 
+                    data-relclort3   ="Religie cultul ortodox" 
+                    data-relclromcat3="Religie Cultul Romano-Catolic de limba română" 
+                    data-comlbrom3   ="Limba și literatura română" 
+                    data-edciv3      ="Educaţie civică" 
+                    data-jocmi3      ="Joc și mișcare">
                   <label class="form-check-label" for="inlineCheckbox3">Clasa a III-a</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox4" value="cl4"  
-                  data-arteviz4="Arte vizuale și abilități practice" 
-                  data-mat4="Matematică" 
-                  data-stanat4="Științele naturii" 
-                  data-relclort4="Religie cultul ortodox" 
-                  data-relclromcat4="Religie Cultul Romano-Catolic de limba română" 
-                  data-comlbrom4="Limba și literatura română" 
-                  data-edciv4="Educaţie civică" 
-                  data-geo4="Geografie" 
-                  data-ist4="Istorie" 
-                  data-jocmi4="Joc și mișcare">
+                    data-arteviz4    ="Arte vizuale și abilități practice" 
+                    data-mat4        ="Matematică" 
+                    data-stanat4     ="Științele naturii" 
+                    data-relclort4   ="Religie cultul ortodox" 
+                    data-relclromcat4="Religie Cultul Romano-Catolic de limba română" 
+                    data-comlbrom4   ="Limba și literatura română" 
+                    data-edciv4      ="Educaţie civică" 
+                    data-geo4        ="Geografie" 
+                    data-ist4        ="Istorie" 
+                    data-jocmi4      ="Joc și mișcare">
                   <label class="form-check-label" for="inlineCheckbox4">Clasa a IV-a</label>
                 </div>
                 {{!-- PRIMAR END --}}

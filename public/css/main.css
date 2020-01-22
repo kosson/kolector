@@ -433,3 +433,26 @@ input[type='range']:focus {
     border: .1rem;
     border-style: solid;
 }
+
+/* Detaliile unui utilizator din panoul de administrare */
+.admUview {
+    background-color: antiquewhite;
+}
+
+.admUdesc__avatar {
+    width: 3rem;
+    height: 3rem;
+    margin: 1rem;
+}
+
+.dmUview__admUdesc {
+    padding: 1rem;
+}
+
+.admUsesc__admUroles {
+    margin: 1rem;
+}
+
+.admUsesc__admUroles--role {
+    margin: .5rem;
+}

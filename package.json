@@ -1,6 +1,6 @@
 {
   "name": "redcolector",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Aplicația pentru colectare de RED-uri",
   "main": "app.js",
   "scripts": {
@@ -72,7 +72,7 @@
   "devDependencies": {
     "autoprefixer": "^9.7.3",
     "concat": "^1.0.3",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "npm-run-all": "^4.1.5",
     "postcss-cli": "^7.1.0"
   }

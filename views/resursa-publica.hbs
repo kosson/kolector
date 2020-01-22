@@ -1,30 +1,33 @@
 {{!< layout}}
 {{> nav-resurse}}
 {{> messages}}
-<div id="resursapublica" class="resurse">
+<div itemscope itemtype="http://schema.org/CreativeWork" id="resursapublica" class="resurse">
     {{#each resursa}}
         <div data-id="{{this._id}}" data-contribuitor="{{this.idContributor}}" id="{{this._id}}" class="resursa">
-            <img src="{{this.coperta}}" class="coperta card-img-top" alt="{{this.title}}">
+            <img itemprop="image" src="{{this.coperta}}" class="coperta card-img-top" alt="{{this.title}}">
             <div class="container redcontent">
                 <div class="card-title">
-                    <h5>Titlul resursei: {{this.title}}</h5>
+                    <h5 itemprop="name">Titlul resursei: {{this.title}}</h5>
                 </div>
                 {{#if this.titleI18n}}
                     <h5>Titluri alternative:</h5>
                     {{#each this.titleI18n}}
                         {{#each this}}
-                            <strong>{{@key}}: {{.}}</strong>
+                            <strong itemprop="alternativeHeadline">{{@key}}: {{.}}</strong>
                         {{/each}}
                     {{/each}}
                 {{/if}}    
                 <h5>Data introducerii resursei</h5>
-                <p>{{this.dataRo}}</p>
+                <p>
+                    <meta itemprop="datePublished" content="{{this.dataRo}}">
+                    {{this.dataRo}}
+                </p>
                 <h5>Autori:</h5>
-                <p>{{this.autori}}</p>
+                <p itemprop="creator">{{this.autori}}</p>
                 <h5>Contribuitor:</h5>
-                <p>{{this.idContributor}}</p>
+                <p itemprop="accountablePerson">{{this.idContributor}}</p>
                 <h5>Descrierea resursei:</h5>
-                <p class="card-text">{{this.description}}</p>
+                <p itemprop="description" class="card-text">{{this.description}}</p>
                 <h5>Arie curriculară:</h5>
                 <ul>
                     {{#each this.arieCurriculara}}
@@ -33,7 +36,7 @@
                         </li>
                     {{/each}}
                 </ul>
-                <h5>Clasa:</h5>
+                <h5 itemprop="alignmentType">Clasa:</h5>
                 <ul>
                     {{#each this.level}}
                         <li>
@@ -76,9 +79,9 @@
                     {{/each}}
                 </ul>
                 <h5>Grup țintă:</h5>
-                <ul>
+                <ul itemprop="audience" itemscope itemtype="http://schema.org/EducationalAudience">
                     {{#each this.grupuri}}
-                        <li>
+                        <li itemprop="educationalRole">
                             {{this}}
                         </li>
                     {{/each}}
@@ -94,7 +97,7 @@
                 <h5>Resursa vizează:</h5>
                 <ul>
                     {{#each this.functii}}
-                        <li>
+                        <li itemprop="learningResourceType">
                             {{this}}
                         </li>
                     {{/each}}
@@ -110,7 +113,7 @@
                 <h5>Activitatea se desfășoară:</h5>
                 <ul>
                     {{#each this.spatii}}
-                        <li>
+                        <li itemprop="educationalUse">
                             {{this}}
                         </li>
                     {{/each}}
@@ -126,7 +129,7 @@
                 <h5>Mijloace / materiale didactice necesare</h5> 
                 <p>{{this.dependinte}}</p>
                 <h5>Licența:</h5>
-                <p>{{this.licenta}}</p>
+                <p itemprop="license">{{this.licenta}}</p>
                 {{#if this.bibliografie}}
                     <h5>Bibliografie</h5>
                     <p>{{this.bibliografie}}</p>
@@ -134,7 +137,7 @@
                 <h5>Etichete</h5>
                 <div>
                     {{#each this.etichete}}
-                        <a href="#" class="badge badge-success">{{this}}</a>
+                        <a itemprop="keywords" href="/tag/{{this}}" class="badge badge-success">{{this}}</a>
                     {{/each}}
                 </div>
                 <h5>Conținut</h5>

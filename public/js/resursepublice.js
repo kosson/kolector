@@ -1,9 +1,9 @@
 var discipline = new Map([
-    ['0', ["Arte vizuale și abilități practice", "Matematică și explorarea mediului", "Comunicare în limba română"]],
-    ['1', ["Arte vizuale și abilități practice", "Matematică și explorarea mediului", "Comunicare în limba română"]],
-    ['2', ["Arte vizuale și abilități practice", "Matematică și explorarea mediului", "Comunicare în limba română"]],
-    ['3', ["Arte vizuale și abilități practice", "Științele naturii", "Limba și literatura română", "Educaţie civică", "Joc și mișcare"]],
-    ['4', ["Arte vizuale și abilități practice", "Științele naturii", "Limba și literatura română", "Educaţie civică", "Geografie", "Istorie", "Joc și mișcare"]],
+    ['0', ["Arte vizuale și abilități practice", "Matematică și explorarea mediului", "Comunicare în limba română", "Religie cultul ortodox", "Religie Cultul Romano-Catolic de limba română"]],
+    ['1', ["Arte vizuale și abilități practice", "Matematică și explorarea mediului", "Comunicare în limba română", "Religie cultul ortodox", "Religie Cultul Romano-Catolic de limba română"]],
+    ['2', ["Arte vizuale și abilități practice", "Matematică și explorarea mediului", "Comunicare în limba română", "Religie cultul ortodox", "Religie Cultul Romano-Catolic de limba română"]],
+    ['3', ["Arte vizuale și abilități practice", "Științele naturii", "Limba și literatura română", "Educaţie civică", "Joc și mișcare", "Religie cultul ortodox", "Religie Cultul Romano-Catolic de limba română"]],
+    ['4', ["Arte vizuale și abilități practice", "Științele naturii", "Limba și literatura română", "Educaţie civică", "Geografie", "Istorie", "Joc și mișcare", "Religie cultul ortodox", "Religie Cultul Romano-Catolic de limba română"]],
     ['5', []],
     ['6', []],
     ['7', []],
@@ -94,7 +94,7 @@ $('#searchterms').change(function () {
 
 /**
  * Rolul funcției este de a popula un template Handlebars cu datele din backend
- * @param {Object} resurse 
+ * @param {Object} resurse
  */
 function populeazaCuRes (resurse) {
     var template = document.getElementById('resurse-selected').innerHTML;

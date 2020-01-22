@@ -8,7 +8,8 @@ const Readable    = require('stream').Readable;
 const mongoose    = require('mongoose');
 const esClient    = require('../elasticsearch.config');
 const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
-const Log         = require('../models/logentry'); // Adu modelul resursei
+const UserModel   = require('../models/user'); // Adu modelul unui user
+const Log         = require('../models/logentry'); // Adu modelul unei înregistrări de jurnal
 
 // CĂUTARE ÎN ELASTICSEARCH
 const searchDoc = async function (indexName, payload){
@@ -35,7 +36,7 @@ module.exports = (express, app, passport, pubComm) => {
     var resurse = require('./resurse')(router);
     var log     = require('./log');
 
-    // ========== / ROOT==========
+    // ========== / ROOT =================
     app.use('/', index);
 
     // ========== ADMINISTRATOR ==========
@@ -44,7 +45,7 @@ module.exports = (express, app, passport, pubComm) => {
     // ========== RESURSE ================
     app.use('/resurse', User.ensureAuthenticated, resurse);
 
-    // ========== JURNALIER ============
+    // ========== JURNALIER ==============
     app.use('/log', User.ensureAuthenticated, log);
 
     // ========== RESURSE PUBLICE ========
@@ -64,7 +65,7 @@ module.exports = (express, app, passport, pubComm) => {
         });
     });
     app.get('/resursepublice/:idres', (req, res) => {
-        var record = require('./controllers/resincredid.ctrl')(req.params);
+        var record = require('./controllers/resincredid.ctrl')(req.params); // aduce resursa și transformă conținutul din JSON în HTML
         record.then(rezultat => {
             let scripts = [      
                 {script: '/js/redincredadmin.js'},       
@@ -82,6 +83,13 @@ module.exports = (express, app, passport, pubComm) => {
         }).catch(err => {
             if (err) throw err;
         });
+    });
+
+    // ========== TAGS ===================
+
+    app.get('/tags/:tag', (req, res) => {
+        let params = req.params.trim();
+        var records = require('./controllers/tag.ctrl')(params); // aduce toate resursele care au tagul asociat
     });
 
     // ========== LOGIN ==========
@@ -113,7 +121,7 @@ module.exports = (express, app, passport, pubComm) => {
     // ========== PROFILUL PROPRIU ==========
     app.get('/profile',
         makeSureLoggedIn.ensureLoggedIn(),
-        function(req, res){
+        function clbkProfile (req, res) {
             // console.dir(req.user);
             res.render('profile', {
                 user:    req.user,
@@ -152,18 +160,7 @@ module.exports = (express, app, passport, pubComm) => {
         var record = require('./controllers/resincredid.ctrl')(req.params);
         // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
         record.then(rezultat => {
-            let scripts = [
-                {script: '/lib/editorjs/editor.js'},
-                {script: '/lib/editorjs/header.js'},
-                {script: '/lib/editorjs/paragraph.js'},
-                {script: '/lib/editorjs/list.js'},
-                {script: '/lib/editorjs/image.js'},
-                {script: '/lib/editorjs/table.js'},
-                {script: '/lib/editorjs/attaches.js'},
-                {script: '/lib/editorjs/embed.js'},
-                {script: '/lib/editorjs/code.js'},
-                {script: '/lib/editorjs/inlinecode.js'},
-                // {script: '/js/main.js'},       
+            let scripts = [      
                 {script: '/js/redincredadmin.js'},       
                 {script: '/lib/moment/min/moment.min.js'}        
             ];
@@ -382,8 +379,30 @@ module.exports = (express, app, passport, pubComm) => {
         });
 
         // Aducerea resurselor pentru un id (email) și trimiterea în client
-        socket.on('userset', (userid) => {
-            Resursa.find();            
+        socket.on('mkAdmin', (userSet) => {    
+            // Atenție: https://mongoosejs.com/docs/deprecations.html#-findandmodify-
+            let docUser = UserModel.findOne({_id: userSet.id}, 'admin');
+            if (userSet.admin == true) {                
+                docUser.exec(function clbkSetAdmTrue(error, doc) {
+                    if (error) console.log(error);
+                    doc.roles.admin = true;
+                    doc.save().then(() => {
+                        socket.emit('mkAdmin', {admin: true});
+                    }).catch(err => {
+                        if (err) throw err;
+                    });
+                });
+            } else {
+                docUser.exec(function clbkSetAdmFalse(error, doc) {
+                    if (error) console.log(error);
+                    doc.roles.admin = false;
+                    doc.save().then(() => {
+                        socket.emit('mkAdmin', {admin: false});
+                    }).catch(err => {
+                        if (err) throw err;
+                    });
+                });
+            }   
         });
 
         // validarea resursei
@@ -445,6 +464,102 @@ module.exports = (express, app, passport, pubComm) => {
             promiseMeData.then((result) => {
                 socket.emit('searchres', result.hits.hits);
             }).catch(console.log);
+        });
+
+        // căutarea unui utilizator
+        socket.on('person', queryString => {
+            // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html
+            const body = {
+                "query": {
+                    "multi_match": {
+                        "query": queryString,
+                        "type": "best_fields",
+                        "fields": ["email", "googleProfile", "name", "*_name"]        
+                    }
+                }
+                // anterior am folosit https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
+                // de explorat: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html
+            };
+            searchDoc('users', body, (err, result) => {
+                if(err) throw err;
+                return result;
+            }).then((result) => {
+                // pentru fiecare id din elasticsearch, cauta daca există o înregistrare în MongoDB. Dacă nu există în Mongo, șterge din Elastic.
+                result.hits.hits.map((user) => {
+                    // dacă documentul nu există în baza de date, șterge înregistrarea din Elastic
+                    // console.log(UserModel.exists({_id: user._id}));
+                    let checked = UserModel.exists({_id: user._id}).then((result) => {
+                        if (!result) {
+                            esClient.delete({
+                                index: 'users',
+                                type: 'user',
+                                id: user._id
+                            }).then((res) => {
+                                console.log(res);
+                            }).catch((error)=>{
+                                console.log(error);
+                            });
+                        }
+                    }).catch((error) => {
+                        if (error) {
+                            console.log(error);
+                        }
+                    });
+                });
+
+                socket.emit('person', result);
+                // TODO: Aici ai putea testa daca ai date; daca nu ai date, tot aici ai putea face căutarea în baza Mongoose să vezi dacă există.
+            }).catch((error) => {
+                // if (error) socket.emit('person', error);
+                // În cazul în care indexul nu există, constitue unul nou din colecția existentă în MongoDB
+                if (error.status == 404) {
+                    UserModel.on('es-bulk-sent', function () {
+                        console.log('buffer sent');
+                    });
+
+                    UserModel.on('es-bulk-data', function (doc) {
+                        console.log('Introduc ' + doc);
+                    });
+                    
+                    UserModel.on('es-bulk-error', function (err) {
+                        console.error(err);
+                    });
+                    
+                    UserModel
+                        .esSynchronize()
+                        .then(function () {
+                            console.log('Verifică acum');
+                    });
+                }
+                socket.emit('mesaje', error);
+                // console.log(error);
+            });
+        });
+
+        // fișa completă de utilizator
+        socket.on('personrecord', id => {
+            // TODO: constituie un query care să aducă înregistrarea de user și ultimele sale 5 contribuții RED
+            console.log(id);
+            // https://mongoosejs.com/docs/api.html#model_Model.populate
+
+            UserModel.findById(id, function clbkFindById (error, user) {
+                if (error) console.log(error);
+                var opts = [
+                    {
+                        path: 'resurse', 
+                        options: {
+                            sort: {date: -1}, // 1 este ascending; -1 deste descending (pornește cu ultima adusă)
+                            limit: 5
+                        },
+                        model: Resursa
+                    }
+                ];
+
+                UserModel.populate(user, opts, function clbkExecPopUser (error, res) {
+                    // console.log(res);
+                    socket.emit('personrecord', res);
+                });
+            });
         });
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */
