@@ -31,10 +31,14 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
         // DACĂ nu găsește nicio înregistrare, creează direct pe prima care va fi și admin
         if (count == 0) {
             record.roles.rolInCRED.push('admin'); // introdu rolul de administrator în array-ul rolurilor
+            // FIXME: [ROLURI] Ieși din hardocadarea rolurilor. Constituie un mecanism separat de acordare ale acestora. Primul admin ca trebuie să aibă un mecanism de creare de roluri noi și acordare ale acestora.
             record.roles.rolInCRED.push('cred');  // introdu rolul de user cred în array-ul rolurilor
             record.roles.unit.push('global');     // unitatea este necesară pentru a face segregări ulterioare în funcție de apartenența la o unitate orice ar însemna aceasta
             record.roles.admin = true;
+
+            // Constituie documentul Mongoose pentru modelul `UserModel`.
             const userObj = new userModel(record);
+            // Salvează documentul în bază! În același timp, profilul a fi indexat în Elasticsearch (vezi în model!).
             userObj.save(function (err, user) {
                 if (err) throw new Error('Eroarea la salvarea userului este: ', err.message);
                 // console.log("Salvez user în bază!");
@@ -49,15 +53,19 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
                     // console.log(user.roles);
                     done(null, user); 
                 } else {
+                    // FIXME: Aici se restricționează accesul la platformă doar celor care au email la domeniul educred.
                     if (profile._json.email.endsWith('@educred.ro')) {
-                        record.roles.rolInCRED.push("user"); // în afară de admin, toți cei care se vor loga ulterior vor porni ca useri simpli
+                        record.roles.rolInCRED.push("cred"); // în afară de admin, toți cei care se vor loga ulterior vor porni ca useri simpli
                     } else {
-                        // dacă cineva din exteriorul proiectului se înscrie, contul se va face cu rol de user
+                        // dacă cineva din exteriorul proiectului se înscrie, contul va fi asimilat publicului, fără niciun rol în EDUCRED. Acesta va putea da calificări, pot comenta, etc.
                         record.roles.public = true;
                     }
-                    // dacă NU există acest user în bază, va fi adăugat fără a fi admin.
+                    // Dacă NU există acest user în bază, va fi adăugat fără a fi admin. Valabil și pentru EDUCRED și pentru PUBLIC
                     record.roles.admin = false;
-                    record.roles.unit.push('global');     // unitatea este necesară pentru a face segregări ulterioare în funcție de apartenența la o unitate orice ar însemna aceasta
+                    // TODO: Elaborează pe conceptul de grupuri, subgrupe, relație formatori-curs-formabili
+                    record.roles.unit.push('global'); // unitatea este necesară pentru a face segregări ulterioare în funcție de apartenența la o unitate orice ar însemna aceasta
+                    
+                    // constituie documentul în baza modelului `UserModel` și salvează-l în bază. Atenție, va fi indexat și în Elasticsearch (vezi modelul).
                     const newUserObj = new userModel(record);
                     newUserObj.save(function (err, user) {
                         if (err) throw err;
@@ -69,4 +77,5 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
         }
     });
 }
+
 module.exports = googleStrategy;

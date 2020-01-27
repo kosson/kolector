@@ -453,10 +453,16 @@ module.exports = (express, app, passport, pubComm) => {
                         "query": queryString,
                         "fuzziness": 2,
                         "fields": ["title", "description", "etichete", "discipline"]
+                    },
+                    highlight: {
+                        fields: {
+                            title: {},
+                            description: {}
+                        }
                     }
                 }
             };
-            
+            // TODO: Integrează gestionarea cuvintelor evidențiate returnate de Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
             var promiseMeData = searchDoc('resursedus', body, (err, result) => {
                 if (err) console.log(err);
                 return result;

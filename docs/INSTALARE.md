@@ -413,7 +413,7 @@ node compSpecLoader.js
 
 În momentul afișării mesajului `Am terminat de scris rezultatul!` în consolă, se a termina execuția scriptului cu CTRL + C. Acesta este primul pas: generarea fișierului `all.csv`. Imediat după, se va dezactiva această linie și se va rula din nou scriptul pentru a se încărca datele generate în MongoDB. În cazul în care totul a funcționat corect, va fi afișat în consolă numărul de înregistrări introduse.
 
-La finalizarea operțiunii, va fi afișat în consolă un mesaj similar următorului `Înregistrări inserate în colecție:  408`. Acesta semnalează popularea bazei de date.
+La finalizarea operațiunii, va fi afișat în consolă un mesaj similar următorului `Înregistrări inserate în colecție:  408`. Acesta semnalează popularea bazei de date.
 
 În cazul în care dorești la fiecare rulare a scriptului `compSpecLoader.js` să se șteargă și să se construiască de la zero setul de date în bază, se va activa următoarea linie din script.
 
