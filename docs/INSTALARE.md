@@ -6,6 +6,8 @@ Software necesar:
 - MongoDB
 - Node.js
 - Redis
+- Elasticsearch
+- Kibana
 
 Ca etapă preliminară este necesară obținerea de chei pentru dezvoltarea de aplicații furnizate de Google (https://developers.google.com/identity/sign-in/web și https://developers.google.com/identity/sign-in/web/sign-in#before_you_begin).
 
@@ -185,7 +187,42 @@ Acum, introdu drepturi de scriere/citire pentru o anumită bază de date.
 db.grantRolesToUser('numeleAdminului', ['readWrite', {role: 'readWrite', db: 'numeleBazeiDeDate'}])
 ```
 
-### Aducerea resurselor de pe Github
+## Instalarea Elasticsearch
+
+Asigură-te că ai instalată Java rulând comanda `java -v`. Dacă nu ai un răspuns, va trebui instalat Java.
+
+```bash
+sudo apt install openjdk-8-jdk
+```
+
+Pentru a vedea ce opțiuni îți oferă sistemul privind Java Virtual Machines, rulează comanda `update-alternatives --config java`. Setează variabila de mediu `JAVA_HOME` rulând în consolă `export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/bin/java`. Astfel, vom seta calea către directorul unde avem instalat JAVA.
+
+Pentru a verifica, rulează comanda `echo $JAVA_HOME`.
+
+Mai trebuile adăugat directorul binarelor Java la căile de sistem. Vom face acest lucru beneficiind de faptul că am setat variabila de sistem `$JAVA_HOME`. Astfel, în consolă executăm `export PATH=$PATH:$JAVA_HOME/bin`.
+
+Verifică dacă a fost adăugată calea către binare rulând `echo $PATH`. Rulând comanda `java -version` ar trebui să reflecte versiunea de Java dorită.
+
+Împortă cheia depozitului.
+
+```bash
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+```
+
+Dacă ai un răspuns `OK`, atunci poți proceda la introducerea în lista depzozitelor (directorul `sources.list.d`), pe cel al lui Elasticsearch.
+
+```bash
+sudo sh -c 'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" > /etc/apt/sources.list.d/elastic-7.x.list'
+```
+
+Procedează la actualizarea listei rulând comanda `sudo apt update`.
+Instalează Elastisearch rulând comanda `sudo apt install elasticsearch`. După instalare, este necesară activarea serviciului rulând comanda `sudo systemctl enable elasticsearch.service`. Astfel, Elasticsearch va fi pornit ori de câte ori sistemul va fi repornit.
+
+În acest moment ești gata să pornești pentru prima dată serverul de Elastisearch rulând `sudo systemctl start elasticsearch.service`. Dacă totul funcționează ok, răspunsul în browser la adresa `http://localhost:9200/` ar trebui să fie un obiect. Poți rula repede din comandă `curl -X GET "localhost:9200/"`. În cazul în care la interogare, este returnat un mesaj *failed to connect* trebuie să mai aștepți puțin pentru ca serverul să pornească. Elasticsearch are nevoie de ceva timp pentru a porni.
+
+Dacă erorile persistă, poți investiga folosind comanda `sudo journalctl -u elasticsearch`.
+
+## Aducerea resurselor de pe Github
 
 Pentru a avea deja resursele descărcate, trebuie setat subdirectorul din `/var/www/numeSite`.
 

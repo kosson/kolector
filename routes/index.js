@@ -15,12 +15,26 @@ let promiseResPub = resursePublice.exec();
 promiseResPub.then((result) => {
     // console.log(result.length);
     router.get('/', function (req, res, next) {
+        // let localizat = moment(result.date).locale('ro').format('LLL');
+        // result.dataRo = `${localizat}`; // formatarea datei pentru limba română.
+        
+        let newResultArr = [];
+
+        result.map(function clbkMapResult (obi) {
+            obi.dataRo = moment(obi.date).locale('ro').format('LLL');
+            newResultArr.push(obi);
+        });
+        
+        let scripts = [       
+            {script: '/lib/moment/min/moment.min.js'}
+        ];
         res.render('index', {
             title:   "RED colector",
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "img/rED-logo192.png",
             user:    req.user,
-            resurse: result
+            resurse: newResultArr,
+            scripts
         });
     });
 }).catch((err) => {

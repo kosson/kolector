@@ -16,6 +16,7 @@
                         </div>
                     </div>
                 </div>
+                
                 {{!-- Mecanismele de selecție a rezultatelor afișate --}}
                 <div id="selectors" class="container-fluid">
                     <form>
@@ -46,47 +47,57 @@
                     </form>
                 </div>
             </div>
-            <div class="container">
-                <div class="row">
-                    <div id="respubselected" class="card-deck">
-                        {{#each resurse}}
-                            <div class="col-sm-4 d-flex align-items-stretch p-2">
-                                <div class="card ml-2 mh-100">
-                                    <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{this.title}}</h5>
-                                        <p class="card-text">{{this.description}}</p>
-                                        <a href="/resursepublice/{{this.id}}" class="btn btn-primary">Afișează</a>     
-                                    </div>
-                                </div>
-                            </div>
-                        {{/each}}
+            <div id="respubselected" class="resurse">
+                {{#each resurse}}
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">
+                                <a class="btn btn-dark" href="/resursepublice/{{this.id}}" class="">{{this.title}}</a>
+                            </h5>
+                            <span class="text-muted">{{this.dataRo}}</span>                                   
+                        </div>
+                        <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">
+                        <div class="card-body">
+                            <p class="card-text">{{this.description}}</p>     
+                        </div>
+                        <div class="card-footer">
+                            {{!-- {{this.date}} --}}
+                            {{#each this.etichete}}
+                                <a href="/tag/{{this}}">
+                                    <span class="badge badge-info">{{this}}</span>
+                                </a>
+                            {{/each}}
+                            {{!-- {{this.dataRo}} --}}
+                        </div>
                     </div>
-                </div>
+                {{/each}}
             </div>
             {{!-- Template pentru afișarea resurselor aduse în regimul clasă -> disciplină --}}
             <template id="resurse-selected">
                 {{#each resurse}}
-                <div class="col-sm-4 d-flex align-items-stretch p-2">
-                    <div class="card ml-2 mh-100">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">
+                                <a class="btn btn-dark" href="/resursepublice/{{this.id}}" class="">{{this.title}}</a>
+                            </h5>                                   
+                        </div>
                         <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">
                         <div class="card-body">
-                            <h5 class="card-title">{{this.title}}</h5>
-                            <p class="card-text">{{this.description}}</p>
-                            <a href="/resursepublice/{{this.id}}" class="btn btn-primary">Afișează</a>     
+                            <p class="card-text">{{this.description}}</p>    
                         </div>
                     </div>
-                </div>
                 {{/each}}
             </template>
+            
             <template id="resursa-template">
-                <div class="col-sm-4 d-flex align-items-stretch p-2">
-                    <div class="card ml-2 mh-100">
-                        <div class="card-body">
-                            <h5 class="card-title"></h5>
-                            <p class="card-text"></p>
-                            <a id="resid" href="" class="btn btn-primary">Afișează</a>     
-                        </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <a id="resid" class="btn btn-dark"></a>
+                        </h5>                                   
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"></p>   
                     </div>
                 </div>
             </template>

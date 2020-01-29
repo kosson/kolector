@@ -43,7 +43,6 @@ footer {
     display: flex;
 }
 
-
 .avatar {
     max-width:10%;
     height:auto;
@@ -141,19 +140,19 @@ nav.navbar-light {
 }
 
 .resurse {
-	display: flex;
-	flex-wrap: wrap;
-	/* flex-flow: row wrap; */
-	/* justify-content: space-around; */
-	justify-content: center;
-	width: 100%;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/903ce031794441.566ce52083024.png');
     background-repeat: no-repeat;
     background-position: center; 
     background-color: black;
     background-size: cover;
     background-position: center;
-    padding: 1rem 0 1rem;
+    /* padding: 1rem 0 1rem; */
+    margin: 0 auto;
 }
 
 .redcontent {
@@ -162,13 +161,18 @@ nav.navbar-light {
 }
 
 .card {
+    width: 25rem;
+    height: 30rem;
+    margin: .8rem;
     padding: .2rem;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
 .card-body {
     padding: .2em;
-    /* height: 100%; */
+    height: 18vh;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .card-title {
@@ -176,13 +180,7 @@ nav.navbar-light {
 }
 
 .card-img-top {
-    width: 100%;
-    /* height: 15vw; GESTIONAT PENTRU FIECARE PRAG MEDIAQUERIES */
     object-fit: cover;
-}
-
-#resurse, #licenta {
-    justify-content: center;
 }
 
 .validred {
@@ -264,13 +262,13 @@ tr.shown td.details-control {
     display: none;
 }
 
-/* GESTIONAREA SELECTORULUI DE IMAGINE */
+/* GESTIONAREA SELECTORULUI DE IMAGINE - FORMULAR*/
 .nopad {
     float: left;
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }
-/*image gallery*/
+/* GALERIA DE IMAGINI - FORMULAR */
 .image-checkbox {
 	cursor: pointer;
 	box-sizing: border-box;
@@ -337,6 +335,7 @@ svg {
 .selectortxt {
     color: beige;
 }
+
 input[type='range'] {
     box-sizing: border-box;
     border: 0px solid transparent;
@@ -455,4 +454,16 @@ input[type='range']:focus {
 
 .admUsesc__admUroles--role {
     margin: .5rem;
+}
+
+/* GESTIONAREA FORMULARULUI */
+#form01adres {
+    background-color: antiquewhite;
+    height: 100%;
+}
+
+/* GESTIONAREA EDITORULUI */
+
+.codex-editor {
+    background-color: #EEE;
 }

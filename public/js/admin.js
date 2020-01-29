@@ -60,7 +60,7 @@ function exposeUser () {
 var userFile;
 // Primirea dataliilor privind utilizatorul ales
 pubComm.on('personrecord', function clblPersReds (resurse) {
-    console.log(resurse); //FIXME: dezactivează la final!!!
+    // console.log(resurse); //FIXME: dezactivează la final!!!
     renderUsrDetails.innerHTML = '';
 
     userFile = resurse;
@@ -103,34 +103,45 @@ function showUserDetails (descriere) {
     });
 
     // ===== RESURSE AFIȘARE =====
-    var uResurse = cloneContent.querySelector('.resursaUser');
+    var uResurse = cloneContent.querySelector('.resurseUser');
     descriere.resurse.map( function clbkResUser (resursa) {
         // Creează containerul cardului
+        let divCard = document.createElement('div');
+        divCard.classList.add('card');
+
+        // Creează headerul cardului
+        let divCardHeader = document.createElement('div');
+        divCardHeader.classList.add('card-header');
+        let h5CardHeader = document.createElement('h5');
+        h5CardHeader.classList.add('card-title');
+        let aH5CardHeader = document.createElement('a');
+        aH5CardHeader.href = `/profile/resurse/${resursa._id}`;
+        aH5CardHeader.role = 'button';
+        aH5CardHeader.classList.add('btn');
+        aH5CardHeader.classList.add('btn-dark');
+        aH5CardHeader.textContent = resursa.title;
+        h5CardHeader.appendChild(aH5CardHeader); // injectează elementul a în h5
+        divCardHeader.appendChild(h5CardHeader); // injectează elementul h5 în .card-header
+        divCard.appendChild(divCardHeader); // inkectează .card-header în .card
+
+        // Creează body-ul card-ului
         let divCardBody = document.createElement('div');
         divCardBody.classList.add('card-body');
+        divCard.appendChild(divCardBody);
 
         // creează titlul cardului
-        let cardTitle = document.createElement('h5');
-        cardTitle.classList.add('card-title');
-        cardTitle.textContent = resursa.title;
-        divCardBody.appendChild(cardTitle);
+        // let cardTitle = document.createElement('h5');
+        // cardTitle.classList.add('card-title');
+        // cardTitle.textContent = resursa.title;
+        // divCardBody.appendChild(cardTitle);
 
         // creează descriere în card
         let resDescr = document.createElement('p');
         resDescr.textContent = resursa.description;
         divCardBody.appendChild(resDescr);
 
-        // creează buton de acces la resursă în mod validare
-        let acxsBtn = document.createElement('a');
-        acxsBtn.href = `/profile/resurse/${resursa._id}`;
-        acxsBtn.role = 'button';
-        acxsBtn.classList.add('btn');
-        acxsBtn.classList.add('btn-info');
-        acxsBtn.textContent = 'Accesează';
-        divCardBody.appendChild(acxsBtn);
-
         // injectează
-        uResurse.appendChild(divCardBody);
+        uResurse.appendChild(divCard);
     });
 
     // ===== SET ADMIN =====

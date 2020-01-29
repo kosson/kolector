@@ -27,16 +27,15 @@
         
         {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
         <div id="contributii" class="resurse">
-            <div class="card-deck">
-                {{!-- UTILIZATORII GĂSIȚI ÎN ELASTICSEARCH --}}
-                <div id="showusers" class="container d-flex p-2 bd-highlight justify-content-around">                
-                    {{!-- Va fi inserat rezultatul compilării aici! --}}
-                </div>
+            {{!-- UTILIZATORII GĂSIȚI ÎN ELASTICSEARCH --}}
+            <div id="showusers" class="container d-flex p-2 bd-highlight justify-content-around">                
+                {{!-- Va fi inserat rezultatul compilării aici! --}}
             </div>
+
             {{!-- DETALIILE PENTRU UN UTILIZATOR SELECTAT --}}
             <div id="showusrdetails" class="container">
                 {{!-- Va fi inserat rezultatul compilării aici! --}}
-                <div class="card-deck resurseUser">
+                <div class="resurseUser">
                     {{!-- Vor fi inserate resursele utilizatorului - ultimele 5 --}}
                 </div>
             </div>
@@ -78,14 +77,7 @@
                     </div>
                 </div>
                 {{!-- Resursele [ultimele 5 ale utilizatorului selectat] --}}
-                <div class="card resursaUser">
-                    <div class="card-body">
-                        <h5 class="card-title"></h5>
-                        <p class="card-text">
-                            <button type="button" name="" class="btn btn-light userProfileBtn"></button>
-                        </p>    
-                    </div>          
-                </div>
+                <div class="resurse resurseUser"></div>
             </div>
             {{!-- Afișarea detaliilor privind rolurile în sistem; Adăugarea de roluri și eliminarea de roluri --}}
             <form action="">

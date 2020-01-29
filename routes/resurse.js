@@ -1,4 +1,5 @@
 const Resursa  = require('../models/resursa-red'); // Adu modelul resursei
+const moment   = require('moment');
 
 module.exports = function (router) {
     // ========== VERIFICAREA ROLURILOR ==========
@@ -8,33 +9,50 @@ module.exports = function (router) {
     // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
     router.get('/', function (req, res, next) {
         // ACL
-        let roles = ["user"];   //FIXME: DREPTURI ACL hardcodate. Constituie ceva centralizat!!!
+        let roles = ["user", "validator"];   //FIXME: DREPTURI ACL hardcodate. Constituie ceva centralizat!!!
+        
         // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
         let resursePublice = Resursa.find({'generalPublic': 'true'}).limit(10);
         let promiseResPub  = resursePublice.exec();
+
+        let scripts = [       
+            {script: '/lib/moment/min/moment.min.js'}
+        ];
         
         /* ====== VERIFICAREA CREDENȚIALELOR ====== */
         if(req.session.passport.user.roles.admin){
             promiseResPub.then((result) => {
+                let newResultArr = []; // noul array al obiectelor resursă
+                result.map(function clbkMapResult (obi) {
+                    obi.dataRo = moment(obi.date).locale('ro').format('LLL');
+                    newResultArr.push(obi);
+                });
                 res.render('resurse', {
                     title:   "Resurse publice",
                     style:   "/lib/fontawesome/css/fontawesome.min.css",
                     logoimg: "img/rED-logo192.png",
                     user:    req.user,
-                    resurse: result
+                    resurse: newResultArr,
+                    scripts
                 });
             }).catch((err) => {
                 if (err) throw err;
             });
         } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
             promiseResPub.then((result) => {
+                let newResultArr = []; // noul array al obiectelor resursă
+                result.map(function clbkMapResult (obi) {
+                    obi.dataRo = moment(obi.date).locale('ro').format('LLL');
+                    newResultArr.push(obi);
+                });
                 res.render('resurse', {
                     title:   "Resurse publice",
                     style:   "/lib/fontawesome/css/fontawesome.min.css",
                     logoimg: "img/rED-logo192.png",
                     user:    req.user,
-                    resurse: result
+                    resurse: newResultArr,
+                    scripts
                 });
             }).catch((err) => {
                 if (err) throw err;

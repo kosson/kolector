@@ -1,4 +1,4 @@
-<div class="container bg-dark p-2">
+<div class="container p-2">
   <div class="justify-content-center mt-4">
     {{!-- Progress bar --}}
     <div class="progress" style="height: 3rem;">
@@ -14,17 +14,15 @@
       <div id="accordionFrm" class="p-4 rounded">
 
         {{!-- SECȚIUNEA - #1. TITLU ȘI RESPONSABILITATE (vezi modelul de date resursa-red.js) --}}
-        <div id="unu" class="card card-image">
-        {{!-- <div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);"> --}}
-          
+        <div id="unu">         
           {{!-- Acționarea grupului de controale pentru #1 --}}
-          <div class="card-header" id="heading01">
+          <div id="heading01">
             <h5 class="text-light text-center rounded bg-danger p-2">Titlu și responsabilitate</h5>
           </div>
           {{!-- Acționarea grupului de controale pentru #1 END--}}
 
           {{!-- Grupul controale - Titlu și responsabilitate [form-group] --}}
-          <div id="sec01" class="form-group card-body" aria-labelledby="heading01" data-parent="#accordionFrm">
+          <div id="sec01" class="form-group" aria-labelledby="heading01" data-parent="#accordionFrm">
             <fieldset>
               <legend>Titlul resursei</legend>
               {{!-- Câmpul titlului --}}
@@ -143,22 +141,22 @@
 
           {{!-- Avans către pasul 2 [form-group] --}}
           <div class="form-group align-self-center m-4">
-            <a href="#" id="next-1" class="btn btn-success card-link">Mergi la pasul 2</a>
+            <a href="#" id="next-1" class="btn btn-success">Mergi la pasul 2</a>
           </div>
           {{!-- Avans către pasul 2 [form-group] END --}}
         </div>
         {{!-- SECȚIUNEA - #1. TITLU ȘI RESPONSABILITATE END --}}
 
         {{!-- SECȚIUNEA - #2. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI --}}
-        <div id="doi" class="card">
+        <div id="doi">
           {{!-- Acționarea grupului de controale pentru #2 --}}
-          <div class="card-header" id="heading02">
+          <div id="heading02">
             <h5 class="text-light rounded text-center bg-danger p-2">Încadrarea resursei</h5>
           </div>
           {{!-- Acționarea grupului de controale pentru #2 END --}}
 
           {{!-- Încadrarea resursei conform Planului Național [form-group] --}}
-          <div id="sec02" class="form-group card-body" aria-labelledby="heading02" data-parent="#accordionFrm">
+          <div id="sec02" class="form-group" aria-labelledby="heading02" data-parent="#accordionFrm">
             {{!-- Selectări de arie --}}
             <fieldset>
               <legend>Arie curriculară din care face parte disciplina</legend>
@@ -306,22 +304,22 @@
 
           {{!-- Avans către pasul 3 / Înapoi la pasul 1 [form-group]--}}
           <div class="form-group align-self-center m-4">
-            <a href="#" id="next-2" class="btn btn-success card-link">Înapoi la pasul 1</a>
-            <a href="#" id="next-3" class="btn btn-success card-link">Mergi la pasul 3</a>
+            <a href="#" id="next-2" class="btn btn-success">Înapoi la pasul 1</a>
+            <a href="#" id="next-3" class="btn btn-success">Mergi la pasul 3</a>
           </div>
           {{!-- Avans către pasul 3 / Înapoi la pasul 1 [form-group] END --}}
         </div>
         {{!-- SECȚIUNEA - #2. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI END--}}
 
         {{!-- SECȚIUNEA - #3 Încarcă materialele --}}
-        <div id="trei" class="card">
+        <div id="trei">
           {{!-- Acționarea grupului de controale pentru #2 --}}
-          <div class="card-header" id="heading03">
+          <div id="heading03">
             <h5 class="text-light rounded text-center bg-danger p-2">Validarea resursei prin specificitate</h5>
           </div>
           
           {{!-- Încărcarea fișierelor sau a fragmentului [form-group] --}}
-          <div id="sec03" class="form-group card-body" aria-labelledby="heading03" data-parent="#accordionFrm">
+          <div id="sec03" class="form-group" aria-labelledby="heading03" data-parent="#accordionFrm">
             {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI --}}
             <fieldset>
               <legend>Elemente obligatorii pentru validarea resursei</legend>
@@ -454,8 +452,8 @@
 
           {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group]--}}
           <div class="form-group align-self-center m-4">
-            <a href="#" id="next-4" class="btn btn-success card-link">Înapoi la pasul 2</a>
-            <a href="#" id="next-5" class="btn btn-success card-link">Mergi la pasul 4</a>
+            <a href="#" id="next-4" class="btn btn-success">Înapoi la pasul 2</a>
+            <a href="#" id="next-5" class="btn btn-success">Mergi la pasul 4</a>
           </div>
           {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group] END --}}
         </div>
@@ -465,18 +463,18 @@
     </form>
 
     {{!-- SECȚIUNEA - #4 Încarcă adiționale Această secțiune este în afara formului --}}
-    <div id="patru" class="card">
+    <div id="patru">
       {{!-- Acționarea grupului de controale pentru #2 --}}
-      <div class="card-header" id="heading04">
+      <div id="heading04">
         <h5 class="text-light rounded text-center bg-danger p-2">Încarcă fișiere și introdu conținutul, dacă acesta este de întindere medie</h5>
       </div>
       {{!-- Înapoi la pasul 3 [form-group]--}}
       <div class="form-group align-self-center m-4">
-        <a href="#" id="next-6" class="btn btn-success card-link">Înapoi la pasul 3</a>
+        <a href="#" id="next-6" class="btn btn-success">Înapoi la pasul 3</a>
       </div>
       {{!-- Înapoi la pasul 4 [form-group] END --}}
       {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
-      <div id="sec04" class="form-group card-body" aria-labelledby="heading04" data-parent="#accordionFrm">
+      <div id="sec04" class="form-group" aria-labelledby="heading04" data-parent="#accordionFrm">
         {{!-- EDITOR pentru introducerea letrică --}}
         <fieldset>
           <legend>Editorul materialelor care constituie RED-ul</legend>
@@ -517,17 +515,11 @@
       </div>
       {{!-- ETICHETE END --}}
 
-      <div id="submitWrap" class="form-group card-body" data-parent="#accordionFrm">
+      <div id="submitWrap" class="form-group" data-parent="#accordionFrm">
         <button id="submit" type="submit" class="btn btn-danger">Adaugă resursa</button>
       </div>
     </div>
     {{!-- SECȚIUNEA - #4 Verifică fișa și trimite resursa END --}}
-
-
-
-
-    {{!-- </div> --}}
-      
   </div>
 </div>
 

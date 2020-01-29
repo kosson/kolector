@@ -2,22 +2,22 @@
 {{> nav-resurse}}
 {{> messages}}
     <div id="" class="resurse">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="card-deck">
-                    {{#each resurse}}
-                        <div class="col-sm-4 d-flex align-items-stretch p-2">
-                            <div class="card ml-2 mh-100">
-                                <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{this.title}}</h5>
-                                    <p class="card-text">{{this.description}}</p>
-                                    <a href="/resursepublice/{{this.id}}" class="btn btn-primary">Afișează</a>     
-                                </div>
-                            </div>
-                        </div>
-                    {{/each}}
+        {{#each resurse}}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <a class="btn btn-dark" href="/resursepublice/{{this.id}}" class="">{{this.title}}</a>
+                    </h5>                                   
+                </div>
+                <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">
+                <div class="card-body">
+                    <p class="card-text">{{this.description}}</p>
+                    {{!-- <a href="/resursepublice/{{this.id}}" class="btn btn-primary">Afișează</a>    --}}
+                </div>
+                <div class="card-footer text-muted">
+                    {{!-- {{this.date}} --}}
+                    {{this.dataRo}}
                 </div>
             </div>
-        </div>
+        {{/each}}
     </div>

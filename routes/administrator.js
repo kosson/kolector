@@ -5,7 +5,7 @@ let checkRole = require('./controllers/checkRole.helper');
 
 router.get('/', function (req, res) {
     // ACL
-    let roles = ["admin"];
+    let roles = ["admin", "validator"];
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 

@@ -39,7 +39,7 @@ function createDisciplineSelector (nr) {
     // sel.addClass("custom-select").attr('required').prop('required');
     sel.attr({
         "id": "discselection",
-        class: "custom-select",
+        "class": "custom-select",
         "required": "true",
         "multiple": "true"
     });
@@ -111,14 +111,13 @@ pubComm.on('searchres', function populeazaCuResES (resurse) {
     var sablon = document.getElementById('resursa-template');
     
     resurse.forEach((resursa) => {
-        console.log(resursa);
-        console.log(resursa._source.title);
         // creezi o instanță a conținutului template-ului
         const instance = document.importNode(sablon.content, true);
         // Introdu conținutul în template
-        instance.querySelector('.card-title').innerHTML = resursa._source.title;
         instance.querySelector('.card-text').innerHTML = resursa._source.description;
-        instance.querySelector('#resid').href = `/resursepublice/${resursa._id}`;
+        var cardHeaderLink = instance.querySelector('#resid');
+        cardHeaderLink.href = `/resursepublice/${resursa._id}`;
+        cardHeaderLink.innerHTML = resursa._source.title;
 
         // Append the instance ot the DOM
         document.getElementById('respubselected').appendChild(instance);

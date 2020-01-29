@@ -6,6 +6,7 @@ const BagIt       = require('bagit-fs');
 const uuidv1      = require('uuid/v1');
 const Readable    = require('stream').Readable;
 const mongoose    = require('mongoose');
+const moment      = require('moment');
 const esClient    = require('../elasticsearch.config');
 const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
 const UserModel   = require('../models/user'); // Adu modelul unui user
@@ -53,20 +54,33 @@ module.exports = (express, app, passport, pubComm) => {
         let resursePublice = Resursa.find({'generalPublic': 'true'}).limit(10);
         let promiseResPub = resursePublice.exec();
         promiseResPub.then((result) => {
+
+            let scripts = [     
+                {script: '/lib/moment/min/moment.min.js'}        
+            ];
+
+            let newResultArr = []; // noul array al obiectelor resursă
+            result.map(function clbkMapResult (obi) {
+                obi.dataRo = moment(obi.date).locale('ro').format('LLL');
+                newResultArr.push(obi);
+            });
+            
             res.render('resursepublice', {
                 title:   "Resurse publice",
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "img/rED-logo192.png",
                 user:    req.user,
-                resurse: result
+                resurse: newResultArr,
+                scripts
             });
         }).catch((err) => {
             if (err) throw err;
         });
     });
+
     app.get('/resursepublice/:idres', (req, res) => {
         var record = require('./controllers/resincredid.ctrl')(req.params); // aduce resursa și transformă conținutul din JSON în HTML
-        record.then(rezultat => {
+        record.then(result => {
             let scripts = [      
                 {script: '/js/redincredadmin.js'},       
                 {script: '/lib/moment/min/moment.min.js'}        
@@ -77,7 +91,7 @@ module.exports = (express, app, passport, pubComm) => {
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/red-logo-small30.png",
                 credlogo: "../img/CREDlogo.jpg",
-                resursa: rezultat,
+                resursa: result,
                 scripts
             });
         }).catch(err => {
@@ -137,15 +151,26 @@ module.exports = (express, app, passport, pubComm) => {
             // console.dir(req.user.email);
             var count = require('./controllers/resincred.ctrl')(req.user);
             // console.log(count);
-            count.then(rezultat => {
+            count.then(result => {
                 // console.log(rezultat);
+                let newResultArr = []; // noul array al obiectelor resursă
+                result.map(function clbkMapResult (obi) {
+                    obi.dataRo = moment(obi.date).locale('ro').format('LLL');
+                    newResultArr.push(obi);
+                });
+
+                let scripts = [       
+                    {script: '/lib/moment/min/moment.min.js'}
+                ];
+
                 res.render('resurse-profil', {
                     user:    req.user,
                     title:   "Profil",
                     style:   "/lib/fontawesome/css/fontawesome.min.css",
                     logoimg: "/img/red-logo-small30.png",
                     credlogo: "../img/CREDlogo.jpg",
-                    resurse: rezultat
+                    resurse: newResultArr,
+                    scripts
                 });
             }).catch(err => {
                 if (err) throw err;
