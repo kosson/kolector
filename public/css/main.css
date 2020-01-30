@@ -452,7 +452,7 @@ input[type='range']:focus {
     margin: 1rem;
 }
 
-.admUsesc__admUroles--role {
+.admUsesc__admUroles--role, .admUsesc__admUroles--unit {
     margin: .5rem;
 }
 
@@ -466,4 +466,9 @@ input[type='range']:focus {
 
 .codex-editor {
     background-color: #EEE;
+}
+
+#form03 {
+    margin: 0 auto;
+    padding: 2rem;
 }

@@ -9,7 +9,7 @@ pubComm.on('person', (data) => {
     renderUsr.innerHTML = '';
     showUser(data.hits.hits);
     // console.log(data.hits.hits);
-    // Afișează eroare în cazul în care nu s-a făcut încadrarea curriculară.
+    // Afișează eroare în cazul în care înregistrarea nu este indexată.
     if (data.length === 0) {
         $.toast({
             heading: 'Neindexat, poate?',
@@ -58,13 +58,11 @@ function exposeUser () {
 }
 
 var userFile;
-// Primirea dataliilor privind utilizatorul ales
+// Primirea detaliilor privind utilizatorul ales
 pubComm.on('personrecord', function clblPersReds (resurse) {
     // console.log(resurse); //FIXME: dezactivează la final!!!
     renderUsrDetails.innerHTML = '';
-
     userFile = resurse;
-
     showUserDetails(resurse);
 });
 
@@ -100,6 +98,17 @@ function showUserDetails (descriere) {
         rolTag.classList.add('admUsesc__admUroles--role');
         rolTag.textContent = rol;
         uRoles.appendChild(rolTag);
+    });
+
+    // ==== UNITS =====
+    var uUnits = cloneContent.querySelector('.admUsesc__admUunits');
+    descriere.roles.unit.map(function clbkUnitsTmpl (unit) {
+        let unitTag = document.createElement('span');
+        unitTag.classList.add('badge');
+        unitTag.classList.add('badge-warning');
+        unitTag.classList.add('admUsesc__admUroles--unit');
+        unitTag.textContent = unit;
+        uUnits.appendChild(unitTag);
     });
 
     // ===== RESURSE AFIȘARE =====
@@ -173,4 +182,73 @@ function mkAdmin (userId) {
 
 pubComm.on('mkAdmin', (result) => {
     console.log(result);
+});
+
+// ==== ADAUGĂ ROLURI
+var rolesSet = new Set(); // setul rolurilor care vor fi adăugate în profilul utilizatorului
+var unitsSet = new Set(); // setul unit-urilor care vor fi adăugate în profil.
+
+/**
+ * Funcția are rolul de a colecta rolurile selectare din `options` și de a constitui un set unic definit prin variabila `rolesSet`
+ */
+function colectRoles () {
+    // culege ce valori au fost selectate
+    var element = document.querySelectorAll('#existingRoles option:checked');
+    const values = Array.from(element).map(val => {
+        if(!rolesSet.has(val.value)) {
+            rolesSet.add(val.value);
+        }
+        return val.value;
+    });
+    // Șterge din set restul valorilor care diferă de cele din array-ul `values`. P1 - transformă setul în array
+    for (let r of rolesSet.values()) {
+        // dacă valoarea din set nu se află în array-ul celor selectate, ȘTERGE-L din set. E în plus.
+        if (!values.includes(r)) {
+            rolesSet.delete(r);
+        }
+    }
+}
+
+/**
+ * Funcția are rol de listener al butonului care adaugă roluri suplimentare noi
+ */
+function addNewRole () {
+    pubComm.emit('addRole', {
+        id: userFile._id,
+        roles: Array.from(rolesSet)
+    });
+}
+
+/**
+ * Funcția are rolul de a adăuga unit-uri
+ */
+function colectUnits () {
+    var unitsString = document.querySelector('#units').value;
+    var arrUnits = unitsString.split(",");
+    // console.log(arrUnits);
+    arrUnits.map(val => {
+        if(!unitsSet.has(val)) {
+            unitsSet.add(val);
+        }
+    });
+    // Șterge din set restul valorilor care diferă de cele din array-ul `arrUnits`. P1 - transformă setul în array
+    for (let r of unitsSet.values()) {
+        // dacă valoarea din set nu se află în array-ul celor selectate, ȘTERGE-L din set. E în plus.
+        if (!arrUnits.includes(r)) {
+            unitsSet.delete(r);
+        }
+    }
+    // console.log(Array.from(unitsSet));
+    pubComm.emit('addUnit', {
+        id: userFile._id,
+        units: Array.from(unitsSet)
+    });
+}
+
+pubComm.on('addUnit', (resurce) => {
+    console.log(resurce);
+});
+
+pubComm.on('addRole', (resurce) => {
+    console.log(resurce);
 });

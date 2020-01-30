@@ -1,19 +1,31 @@
 # Încărcarea Resurselor Educaționale Deschise
 
-**Versiunea 1.5, Noiembrie, 2019**
+**Versiunea 2.0, Ianuarie, 2020**
+
+## Introducere
 
 Acest material descrie pașii pe care persoana care contribuie cu o resursă trebuie să-i parcurgă pentru a introduce o înregistrare viabilă. Formularul dedicat expune patru pași în succesiune, care la rândul lor, fiecare expun informații specifice.
-Completarea pașilor pentru adăugarea unei Resurse Educaționale Deschise va genera în baza de date o fișă descriptivă, iar în directorul dedicat `repo` se va constitui câte un subdirector pentru fiecare resursă în parte în directorul fiecărui utilizator al platformei. Mai jos este un mic exemplu ilustrativ pentru structura unei resurse așa cum este structurată pe hard disk.
+Completarea pașilor pentru adăugarea unei Resurse Educaționale Deschise va genera în baza de date o fișă descriptivă, iar în directorul dedicat `repo` se va constitui câte un subdirector pentru fiecare resursă în parte în directorul fiecărui utilizator al platformei. Mai jos este un mic exemplu ilustrativ pentru structura unei resurse așa cum este structurată pe hard disk-ul serverului după ce s-a încheiat introducerea.
 
 ![](img/StructuraSubdirectoare.png)
 
 Pentru a fi mai simplu, din acest moment vom folosi în întreg documentul acronimul RED pentru Resurse Educaționale Deschise.
 
+## Preliminarii
+
+Utilizatorii, formabili, formatori, experți e-learning și în general toți cei care interacționează cu aplicația Colector RED, trebuie să înțeleagă faptul că această aplicație are rolul de a descrie entități digitale deja existente, fie acestea documente, teste, video, simple texte, etc.
+
+Toți cei care vor contribui cu resurse, vor trebui să aibă materialele deja pregătite, gata de a fi introduse.
+
+Colectorul RED nu este un instrument de creație. Este o aplicație de agregare a materialelor care deja există, oferind cadrul descriptiv necesar încadrării din punct de vedere al Curriculei și al rigorii științifice din domeniul educației și pedagogiei.
+
+Este necesară o bună cunoaștere a materialului care va urma să fie descris. Pentru a aprofunda cunoașterea privind elaborarea unei Resurse Educaționale Deschisă, vă invit să parcurgeți încă o dată cursul dedicat din cadrul proiectului CRED în educație.
+
 ## Pasul 1 - Titlu și responsabilitate
 
 Primul pas a fișei este dedicat introducerii titlului, descrierii și licenței pe care o poartă RED-ul.
 
-![](img/Pasul1-ToateCampurile.png)
+![](img/introducere-resursa/Pas1-all.png)
 
 ### Titlul resursei
 
@@ -25,11 +37,13 @@ Software-ul prevede eventualitatea folosirii sale în grupuri ale vorbitorilor d
 
 ### Responsabilitate (contribuitor)
 
-![](img/Pas1-ResponsabiliteAutori.png)
-
-În secțiunea aceasta `Nume și prenume` este un câmp care va fi completat automat cu datele persoanei care s-a autentificat și care face contribuția. În baza adresei de email se va face generarea subdirectoarelor proprii fiecărui utilizator care contribuie cu resurse. Se va evita modificarea acestui câmp pentru că altfel, va conduce la un decuplaj a numelui cu adresa de email, ceea ce nu este de dorit.
+În secțiunea aceasta `Responsabilitate` este un câmp care va fi completat automat cu datele persoanei care s-a autentificat și care face contribuția. În baza adresei de email se va face generarea subdirectoarelor proprii fiecărui utilizator care contribuie cu resurse. 
 
 Persoana care introduce RED-ul în sistem este considerat a fi contribuitorul acesteia. Un contribuitor poate fi autorul RED-ului, dar în cazul în care acesta este produsul a mai multor autori, unul dintre aceștia va fi desemnat să încarce resursa în sistem, fiind cel care *contribuie* RED-ul în sistem. În acest caz, contribuitorul poate fi considerat autor colectiv.
+
+### Autorii
+
+Autorii unei resurse pot fi o singură persoană, un grup, un colectiv, o instituție. Autorii vor fi introduși rând pe rând, separați de virgule. Nu uitați separarea cu virgule care este esențială. Trebuie înțeleasă distincția clară dintre autori și contribuitori.
 
 ### O scurtă descriere a resursei
 

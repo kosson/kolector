@@ -109,7 +109,7 @@ module.exports = (express, app, passport, pubComm) => {
     // ========== LOGIN ==========
     app.get('/login', User.login);
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/resurse', // redirectează userul logat cu succes către resurse
+        successRedirect: '/', // redirectează userul logat cu succes către pagina de landing
         failureRedirect: '/login'    // dacă a apărut o eroare, reîncarcă userului pagina de login TODO: Fă să apară un mesaj de eroare!!!
     }));
 
@@ -133,9 +133,7 @@ module.exports = (express, app, passport, pubComm) => {
     });
     
     // ========== PROFILUL PROPRIU ==========
-    app.get('/profile',
-        makeSureLoggedIn.ensureLoggedIn(),
-        function clbkProfile (req, res) {
+    app.get('/profile', makeSureLoggedIn.ensureLoggedIn(), function clbkProfile (req, res) {
             // console.dir(req.user);
             res.render('profile', {
                 user:    req.user,
@@ -146,6 +144,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
         }
     );
+
     // ACCESAREA PROPRIILOR RESURSE
     app.get('/profile/resurse', makeSureLoggedIn.ensureLoggedIn(), function(req, res){
             // console.dir(req.user.email);
@@ -207,6 +206,22 @@ module.exports = (express, app, passport, pubComm) => {
                     rezultat[0].genPub = `<input type="checkbox" id="public" class="generalPublic">`;
                 }                
                 res.render('resursa-admin', {
+                    user:    req.user,
+                    title:   "Administrare RED",
+                    style:   "/lib/fontawesome/css/fontawesome.min.css",
+                    scripts,
+                    logoimg: "/img/red-logo-small30.png",
+                    credlogo: "../img/CREDlogo.jpg",
+                    resursa: rezultat
+                });
+            } else if(confirmedRoles.includes('validator')) {
+                // Adaugă mecanismul de validare a resursei
+                if (rezultat[0].expertCheck) {
+                    rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
+                } else {
+                    rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck">`;
+                }
+                res.render('resursa-validator', {
                     user:    req.user,
                     title:   "Administrare RED",
                     style:   "/lib/fontawesome/css/fontawesome.min.css",
@@ -412,7 +427,7 @@ module.exports = (express, app, passport, pubComm) => {
                     if (error) console.log(error);
                     doc.roles.admin = true;
                     doc.save().then(() => {
-                        socket.emit('mkAdmin', {admin: true});
+                        socket.emit('mesaje', 'Felicitări, ai devenit administrator!');
                     }).catch(err => {
                         if (err) throw err;
                     });
@@ -422,12 +437,53 @@ module.exports = (express, app, passport, pubComm) => {
                     if (error) console.log(error);
                     doc.roles.admin = false;
                     doc.save().then(() => {
-                        socket.emit('mkAdmin', {admin: false});
+                        socket.emit('mesaje', 'Ai luat dreptul de administrare!');
                     }).catch(err => {
                         if (err) throw err;
                     });
                 });
             }   
+        });
+
+        socket.on('addRole', (newRoles) => {
+            let docUser = UserModel.findOne({_id: newRoles.id}, 'roles');
+            // dacă vreunul din rolurile trimise nu există deja în array-ul din profilul utilizatorului, acesta va fi adăugat.
+            docUser.exec(function clbkAddRole (error, doc) {
+                if (error) console.log(error);
+                newRoles.roles.map( rol => {                    
+                    if (!doc.roles.rolInCRED.includes(rol)) {
+                        doc.roles.rolInCRED.push(rol);
+                    }
+                });
+                doc.save().then(() => {
+                    socket.emit('mesaje', 'Am salvat rolurile');
+                }).catch(err => {
+                    if (err) throw err;
+                });
+            });
+            // console.log(newRoles);
+        });
+
+        socket.on('addUnit', (newUnits) => {
+            let docUser = UserModel.findById(newUnits.id);
+
+            docUser.exec(function clbkAddArrUnit (error, doc) {
+                if (error) console.log(error);
+
+                newUnits.units.map( unit => {
+                    unit = unit.trim();
+                    // dacă unit-ul nu există, va fi adăugat.
+                    if (!doc.roles.unit.includes(unit)) {
+                        doc.roles.unit.push(unit);
+                    }
+                });
+
+                doc.save().then(() => {
+                    socket.emit('mesaje', 'Am salvat noile unit-uri');
+                }).catch(err => {
+                    if (err) throw err;
+                });
+            });
         });
 
         // validarea resursei

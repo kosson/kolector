@@ -524,7 +524,7 @@ niveluri.forEach(function cbNiveluri (checkbox) {
     });
 });
 
-/* === Prezentarea competențelor specifice === */
+/* ==== Prezentarea competențelor specifice ==== */
 // Locul de inserție al tabelului
 var compSpecPaginator = document.querySelector('#actTable');
 
@@ -540,9 +540,9 @@ function actSwitcher () {
     }
 }
 
-var activitatiFinal = new Map();    // mecanism de colectare al activităților bifate sau nu
-var competenteGen   = new Set();    // este un set necesar colectării competențelor generale pentru care s-au făcut selecții de activități în cele specifice
-var competenteS     = new Set();    // este setul competențelor specifice care au avut câte o activitate bifată sau completată.
+var activitatiFinal = new Map(); // mecanism de colectare al activităților bifate sau nu
+var competenteGen   = new Set(); // este un set necesar colectării competențelor generale pentru care s-au făcut selecții de activități în cele specifice
+var competenteS     = new Set(); // este setul competențelor specifice care au avut câte o activitate bifată sau completată.
 /**
  * Funcție helper pentru prezentarea informațiilor privind activitățile în row separat.
  * De funcția aceasta are nevoie `disciplineBifate()`.
@@ -841,7 +841,6 @@ function pas1 () {
     // verifică dacă nu cumva au fost adăugate titluri alternative. Dacă da, constituie datele necesare
     var titluriAltele = document.querySelector('#langAlternative');
     if (titluriAltele) {
-        // var inputs = titluriAltele..getElementsByTagName('input'); // modul tradițional de a crea un NodeList
         // Creează un NodeList cu toate elementele input
         var inputs = titluriAltele.querySelectorAll('input');
         // Creează un NodeList cu toate elementele select
@@ -890,7 +889,6 @@ function pas2 () {
     // introdu un nivel de verificare compatibilitate. Dacă browserul nu are suport pentru .selectedOptions, optează pentru un nivel suplimentar de asigurare a compatibilității
     var optSelectate = arie.selectedOptions || [].filter.call(arie.options, option => option.selected);
     var valAriiSelectate = [].map.call(optSelectate, option => option.value);
-    // RED.arieCurriculara = [].map.call(optSelectate, option => option.value);
 
     // ==== RED.arieCurriculara ====
     // Verifică dacă valorile din array-ul `RED.arieCurriculara`. Dacă valoarea există deja, nu o mai adăuga de fiecare dată când `pas2()` este executat.

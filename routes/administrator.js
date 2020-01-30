@@ -24,6 +24,20 @@ router.get('/', function (req, res) {
             credlogo: "../img/CREDlogo.jpg",
             scripts
         });
+    // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
+    } else if (confirmedRoles.includes('validator')) {
+        let scripts = [
+            {script: '/js/validator.js'},       
+            {script: '/lib/moment/min/moment.min.js'}
+        ];
+        res.render('validator', {
+            title:   "validator",
+            user:    req.user,
+            style:   "/lib/fontawesome/css/fontawesome.min.css",
+            logoimg: "/img/red-logo-small30.png",
+            credlogo: "../img/CREDlogo.jpg",
+            scripts
+        });
     } else {
         res.redirect('/401');
     }
