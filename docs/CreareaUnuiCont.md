@@ -2,7 +2,7 @@
 
 Pentru a realiza un nivel de compatibilitate crescut cu întreaga infrastructură software creată în cadrul proiectului, Colectorul RED permite crearea de cont și astfel realizarea unei autentificări la nivel local corespondentă cu restul componentelor.
 
-Pentru a crea un cont nu este necesar nimic altceva decât accesarea din meniul principal de pe prima pagină a opțiunii **Loghează-te**. Îmediat apare un ecran care vă propune apăsarea pe logo-ul proiectului Educred. Acest lucru va declanșa mecanismul de autentificare. Veți fi invitați să vă autentificați cu adresa de email pe care o aveți deja sub forma **nume_prenume@educred.ro**.
+Pentru a crea un cont nu este necesar nimic altceva decât accesarea din meniul principal de pe prima pagină a opțiunii **Loghează-te**. Îmediat apare un ecran care vă propune apăsarea pe logo-ul proiectului Educred. Acest lucru va declanșa mecanismul de autentificare. Veți fi invitați să vă autentificați cu adresa de email pe care o aveți deja sub forma **nume_prenume@educred.ro**. Crearea contului se va face cu un browser proaspăt deschis, având un singur tab curat. Au exitat multe cazuri de sesiuni încrucișate și autentificări eșuate din cazul existenței mai multor sesiuni deschise în diferite taburi. 
 
 ![](img/creare-user/SignIn.png)
 
