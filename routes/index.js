@@ -5,12 +5,12 @@ const mongoose = require('mongoose');
 const Resursa  = require('../models/resursa-red'); // Adu modelul resursei
 
 //TODO: Adu-mi ultimele 10 resurse care sunt marcate a fi publice
-Resursa.where({'generalPublic': 'true'}).countDocuments(function cbCountResPub (err, count) {
+Resursa.where({'generalPublic': true}).countDocuments(function cbCountResPub (err, count) {
     if (err) throw err;
     // console.log('Numărul resurselor este: ', count);
 });
 
-let resursePublice = Resursa.find({'generalPublic': 'true'}).limit(10);
+let resursePublice = Resursa.find({'generalPublic': true}).limit(10);
 let promiseResPub = resursePublice.exec();
 promiseResPub.then((result) => {
     // console.log(result.length);
