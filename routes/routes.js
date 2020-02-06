@@ -402,19 +402,16 @@ module.exports = (express, app, passport, pubComm) => {
 
         // Ștergerea unei resurse
         socket.on('delresid', (resource) => {
-            // console.log('Șterg resursa cu id-ul: ', resource);
             Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
                 if (err) throw err;
-                // console.log(doc);
-                var docId = doc._id;
                 // TODO: Sterge fizic directorul cu totul
-                let dirPath = path.join(process.env.REPO_REL_PATH, resource.contribuitor, resource.id);
+                let dirPath = path.join(process.env.REPO_REL_PATH, resource.idContributor, resource.id);
                 // console.log(dirPath);
-                fs.remove(dirPath, (err) => {
-                    if(err) throw err;
-                    // console.log('Am șters directorul cu succes');
-                    // socket.emit('delresid', 'Salut, client, am șters resursa: ', resource.id, 'contribuită de: ', resource.contributor);
-                });
+                // fs.remove(dirPath, (err) => {
+                //     if(err) throw err;
+                //     console.log('Am șters directorul cu succes');
+                //     socket.emit('delresid', 'Salut, client, am șters resursa: ', resource.id, 'contribuită de: ', resource.idContributor);
+                // });
             });
         });
 
