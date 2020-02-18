@@ -51,7 +51,7 @@ module.exports = (express, app, passport, pubComm) => {
 
     // ========== RESURSE PUBLICE ========
     app.get('/resursepublice', (req, res) => {
-        let resursePublice = Resursa.find({'generalPublic': 'true'}).limit(10);
+        let resursePublice = Resursa.find({'generalPublic': 'true'}).sort({"date": -1}).limit(8);
         let promiseResPub = resursePublice.exec();
         promiseResPub.then((result) => {
 

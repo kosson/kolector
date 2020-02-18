@@ -10,7 +10,7 @@ Resursa.where({'generalPublic': true}).countDocuments(function cbCountResPub (er
     // console.log('Numărul resurselor este: ', count);
 });
 
-let resursePublice = Resursa.find({'generalPublic': true}).limit(10);
+let resursePublice = Resursa.find({'generalPublic': true}).sort({"date": -1}).limit(8);
 let promiseResPub = resursePublice.exec();
 promiseResPub.then((result) => {
     // console.log(result.length);

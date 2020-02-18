@@ -4,6 +4,7 @@
 {{> messages}}
     <div id="resursepublice">
         <div class="resurse">
+
             <div id="searchpublic" class="container pb-3">
                 {{!-- Câmpul de căutare --}}
                 <div class="col-12">
@@ -48,6 +49,15 @@
                 </div>
             </div>
             <div id="respubselected" class="resurse">
+                {{!-- Background video --}}
+                <div class="bg-video">
+                    <video class="bg-video__content" autoplay muted loop>
+                        {{!-- https://coverr.co/videos/modem-lights-u4MPlcF4EE --}}
+                        <source src="img/Modem-lights.mp4" type="video/mp4">
+                        <source src="img/Modem-lights.webm" type="video/webm">
+                        Browserul tău nu are support pentru caracteristicile web moderne. Actualizează-l!
+                    </video>
+                </div>
                 {{#each resurse}}
                     <div class="card">
                         <div class="card-header">

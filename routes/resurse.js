@@ -13,7 +13,7 @@ module.exports = function (router) {
         
         // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
-        let resursePublice = Resursa.find({'generalPublic': 'true'}).limit(10);
+        let resursePublice = Resursa.find({'generalPublic': 'true'}).sort({"date": -1}).limit(8);
         let promiseResPub  = resursePublice.exec();
 
         let scripts = [       

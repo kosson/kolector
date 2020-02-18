@@ -94,8 +94,7 @@ const editorX = new EditorJS({
                         id: (groups) => groups.join('/embed/')
                     }
                 }
-            },
-            inlineToolbar: true
+            }
         },
         image: {
             class: ImageTool,

@@ -41,6 +41,7 @@
 /* GENERAL */
 footer {
     display: flex;
+    z-index: 10;
 }
 
 .avatar {
@@ -141,11 +142,11 @@ nav.navbar-light {
 
 .resurse {
     display: flex;
+    position: relative;
     width: 100%;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/903ce031794441.566ce52083024.png');
     background-repeat: no-repeat;
     background-position: center; 
     background-color: black;
@@ -153,6 +154,7 @@ nav.navbar-light {
     background-position: center;
     /* padding: 1rem 0 1rem; */
     margin: 0 auto;
+    z-index: 10;
 }
 
 .redcontent {
@@ -198,6 +200,24 @@ nav.navbar-light {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+/* Tratarea background-ului cu video [COMPONENTA] */
+
+.bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    /* opacity: .80; */
+    overflow: hidden;
+}
+
+.bg-video__content {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 /* The Modal (background) */
