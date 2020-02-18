@@ -8,21 +8,36 @@
         <meta property="dc:description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
         <meta itemprop="name" content="Colector Resurse Educaționale Deschise">
         <meta itemprop="description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
-        <script src="/socket.io/socket.io.js"></script>
-        <script type="text/javascript" charset="utf8" src="/js/main.js"></script>
+        
+        {{!-- SOCKET --}}
+        <script src="/socket.io/socket.io.js"></script>        
 
+        {{!-- MAIN --}}
+        <script type="text/javascript" charset="utf8" src="/js/main.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+        {{!-- TIMELINE --}}
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/lib/timeline3/css/timeline.css">
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/lib/timeline3/css/fonts/font.roboto-megrim.css">
+
+        {{!-- JQUERY --}}
+        <script type="text/javascript" charset="utf8" src="/lib/jquery/dist/jquery.min.js"></script>
+
+        {{!-- JQUERY TOAST --}}
         <link rel="stylesheet" type="text/css" href="/lib/jquery-toast-plugin/dist/jquery.toast.min.css">
-        <link rel="stylesheet" type="text/css" href="/lib/datatables.net-dt/css/jquery.dataTables.min.css">
+
+        {{!-- BOOTSTRAP 4 --}}        
         <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
 
         {{!-- DATATABLES --}}
+        <link rel="stylesheet" type="text/css" href="/lib/datatables.net-dt/css/jquery.dataTables.min.css">
         <link rel="stylesheet" type="text/css" href="/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
         <link rel="stylesheet" href="/lib/datatables.net-select-bs4/css/select.bootstrap4.min.css">
 
-        <script type="text/javascript" charset="utf8" src="/lib/jquery/dist/jquery.min.js"></script>
+        {{!-- HANDLEBARS --}}
         <script type="text/javascript" charset="utf8" src="/lib/handlebars/handlebars.runtime.min.js"></script> 
         <script type="text/javascript" charset="utf8" src="/lib/handlebars/handlebars.min.js"></script> 
+
         <title>{{title}}</title>
     </head>
     <body>

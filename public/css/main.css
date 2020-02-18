@@ -149,7 +149,6 @@ nav.navbar-light {
     justify-content: center;
     background-repeat: no-repeat;
     background-position: center; 
-    background-color: black;
     background-size: cover;
     background-position: center;
     /* padding: 1rem 0 1rem; */
@@ -212,6 +211,7 @@ nav.navbar-light {
     width: 100%;
     /* opacity: .80; */
     overflow: hidden;
+    z-index: -10;
 }
 
 .bg-video__content {
@@ -453,29 +453,6 @@ input[type='range']:focus {
     border-style: solid;
 }
 
-/* Detaliile unui utilizator din panoul de administrare */
-.admUview {
-    background-color: antiquewhite;
-}
-
-.admUdesc__avatar {
-    width: 3rem;
-    height: 3rem;
-    margin: 1rem;
-}
-
-.dmUview__admUdesc {
-    padding: 1rem;
-}
-
-.admUsesc__admUroles {
-    margin: 1rem;
-}
-
-.admUsesc__admUroles--role, .admUsesc__admUroles--unit {
-    margin: .5rem;
-}
-
 /* GESTIONAREA FORMULARULUI */
 #form01adres {
     background-color: antiquewhite;
@@ -491,4 +468,68 @@ input[type='range']:focus {
 #form03 {
     margin: 0 auto;
     padding: 2rem;
+}
+
+/* ZONA DE ADMINISTRARE */
+
+#searchU {
+    max-width: 40%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+#contributii {
+    position: relative;
+}
+
+.admUview__admUdesc {
+    
+}
+
+#showusers {
+    display: flex;
+    /* position: absolute;
+    top: 0;
+    left: 0; */
+}
+
+#showusers .card {
+    height: auto;
+}
+
+.admUdesc__avatar {
+    width: 3rem;
+    height: 3rem;
+    margin: 1rem;
+}
+
+.admUview {
+    display: flex;
+    background-color: rgba(255, 255, 255, .6);
+    border-radius: .4em;
+    margin: 1rem 2rem;
+    padding: 1.5rem;
+}
+
+.resurseUser {
+    display: flex;
+}
+
+.admUsesc__admUroles {
+    margin: 1rem;
+}
+
+.admUsesc__admUroles--role, .admUsesc__admUroles--unit {
+    margin: .5rem;
+}
+
+.admUview {
+    z-index: 150;
+}
+
+/* GESTIONAREA TIMELINE-ULUI DIN ADMINISTRATOR */
+
+#timeline-embed {
+    width: 100%;
+    height: 15rem;
 }

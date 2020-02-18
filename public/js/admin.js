@@ -163,7 +163,10 @@ function showUserDetails (descriere) {
     renderUsrDetails.appendChild(cloneContent);
 }
 
-// var userId = document.querySelector('.admUdesc__admUid');
+/**
+ * Funcția are rolul de a trimite pe Socket modificarea rolului de Administrator de aplicație
+ * @param {String} userId 
+ */
 function mkAdmin (userId) {
     // console.log(userFile);
     // console.log(event.target.checked);

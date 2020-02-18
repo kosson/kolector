@@ -1,7 +1,6 @@
 {{!< layout}}
 {{> nav-administrator}}
 {{> messages}}
-
 <div id="content">
     <h1>Bine ai venit în zona de administrare!</h1>
     {{!-- <div id="foci">
@@ -10,9 +9,9 @@
         <button id="allComps" type="button" class="btn btn-primary">Competențe specifice</button>    
     </div> --}}
     {{!-- <br> --}}
-    <section class="container" id="userres">
+    <section class="container-fluid" id="userres">
         <p>Caută un utilizator, fie după email, fie după nume</p>
-        <form>
+        <form id="searchU">
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="useremail">@educred.ro</span>
@@ -26,18 +25,23 @@
         <br>
         
         {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
-        <div id="contributii" class="resurse">
+        <div id="contributii" class="">
+            {{!-- Background video --}}
+            <div class="bg-video">
+                <video class="bg-video__content" autoplay muted loop>
+                    {{!-- https://coverr.co/videos/modem-lights-u4MPlcF4EE --}}
+                    <source src="img/coverr-typing-in-laptop-1578678668153.mp4" type="video/mp4">
+                    Browserul tău nu are support pentru caracteristicile web moderne. Actualizează-l!
+                </video>
+            </div>
             {{!-- UTILIZATORII GĂSIȚI ÎN ELASTICSEARCH --}}
-            <div id="showusers" class="container d-flex p-2 bd-highlight justify-content-around">                
+            <div id="showusers" class="">                
                 {{!-- Va fi inserat rezultatul compilării aici! --}}
             </div>
 
             {{!-- DETALIILE PENTRU UN UTILIZATOR SELECTAT --}}
-            <div id="showusrdetails" class="container">
+            <div id="showusrdetails" class="">
                 {{!-- Va fi inserat rezultatul compilării aici! --}}
-                <div class="resurseUser">
-                    {{!-- Vor fi inserate resursele utilizatorului - ultimele 5 --}}
-                </div>
             </div>
         </div>
     </section>    
@@ -56,7 +60,8 @@
 
     {{!-- TEMPLATE_UL DETALIILOR PENTRU UTILIZATORUL SELECTAT --}}
     <template id="userdetailtpl">
-        <section class="admUview">
+        {{!-- SECȚIUNE DETALII --}}
+        <section class="admUview container">
             {{!-- Detaliile primare ale utilizatorului --}}
             <div class="admUview__admUdesc">
                 {{!-- Imaginea utilizatorului --}}
@@ -100,9 +105,17 @@
                         <button type="button" class="btn btn-secondary" onclick="colectUnits()">Adaugă unități noi</button>
                     </form>
                 </div>
+            </div>
+        </section>
+        {{!-- SECȚIUNE RESURSE ALE UTILIZATORULUI --}}
+        <section>
+            {{!-- TIMELINE AL RESURSELOR --}}
+            <div id='timeline-embed' class="tline">
 
-                {{!-- Resursele [ultimele 5 ale utilizatorului selectat] --}}
-                <div class="resurse resurseUser"></div>
+            </div>
+            {{!-- ULTIMELE 5 resurse --}}
+            <div class="resurseUser">
+                {{!-- Vor fi inserate resursele utilizatorului - ultimele 5 --}}
             </div>
         </section>
     </template>

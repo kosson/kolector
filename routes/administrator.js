@@ -14,7 +14,8 @@ router.get('/', function (req, res) {
     if(req.session.passport.user.roles.admin){
         let scripts = [
             {script: '/js/admin.js'},       
-            {script: '/lib/moment/min/moment.min.js'}
+            {script: '/lib/moment/min/moment.min.js'},
+            {script: '/lib/timeline/timeline-embed.js'}
         ];
         res.render('administrator', {
             title:   "administrator",

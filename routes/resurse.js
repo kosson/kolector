@@ -1,7 +1,7 @@
 const Resursa  = require('../models/resursa-red'); // Adu modelul resursei
 const moment   = require('moment');
 
-module.exports = function (router) {
+module.exports = function incarcResurseleInIntern (router) {
     // ========== VERIFICAREA ROLURILOR ==========
     let checkRole = require('./controllers/checkRole.helper');
 
@@ -13,7 +13,8 @@ module.exports = function (router) {
         
         // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
-        let resursePublice = Resursa.find({'generalPublic': 'true'}).sort({"date": -1}).limit(8);
+        // Adu-mi ultimele 8 resursele validate în ordinea ultimei intrări, te rog! Hey, hey, Mr. Serverman!
+        let resursePublice = Resursa.find({'expertCheck': 'true'}).sort({"date": -1}).limit(8);
         let promiseResPub  = resursePublice.exec();
 
         let scripts = [       
