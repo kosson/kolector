@@ -78,3 +78,6 @@ public/lib/handlebars
 
 # nu salva resursele de test din repo
 repo
+
+# nu salva configurările debugger-ului de VS Code
+.vscode

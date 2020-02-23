@@ -26,6 +26,7 @@ pubComm.on('person', (data) => {
 
 var userTmpl = document.querySelector('#usertpl'); // Pas 1 - Fă o referință către template
 var renderUsr = document.getElementById('showusers'); // Pas 2 - Fă o referință către elementul din DOM unde va fi inserat conținutul rezultat din compilarea template-ului
+
 /**
  * Rolul funcției este de a popula un template Handlebars cu datele din backend
  * @param {Array} resurse 

@@ -3,9 +3,10 @@ const router = require('express').Router();
 // ========== VERIFICAREA ROLURILOR ==========
 let checkRole = require('./controllers/checkRole.helper');
 
-router.get('/', function (req, res) {
+router.get('/', function clbkRouterRoot (req, res) {
     // ACL
     let roles = ["admin", "validator"];
+    
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
@@ -44,7 +45,7 @@ router.get('/', function (req, res) {
     }
 });
 
-router.get('/admins', function (req, res) {
+router.get('/admins', function clbkRouterAdmins (req, res) {
     /* ====== VERIFICAREA CREDENȚIALELOR ====== */
     // Dacă avem un admin, atunci oferă acces neîngrădit
     if(req.session.passport.user.roles.admin){

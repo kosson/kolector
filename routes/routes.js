@@ -623,23 +623,31 @@ module.exports = (express, app, passport, pubComm) => {
         // fișa completă de utilizator
         socket.on('personrecord', id => {
             // TODO: constituie un query care să aducă înregistrarea de user și ultimele sale 5 contribuții RED
-            console.log(id);
+            // console.log(id);
             // https://mongoosejs.com/docs/api.html#model_Model.populate
 
             UserModel.findById(id, function clbkFindById (error, user) {
-                if (error) console.log(error);
+                if (error) {
+                    console.log(error);
+                    socket.emit('mesaje', 'A dat eroare căutarea...');
+                }
+                // setează opțiunile pentru căutare
                 var opts = [
                     {
                         path: 'resurse', 
                         options: {
-                            sort: {date: -1}, // 1 este ascending; -1 deste descending (pornește cu ultima adusă)
-                            limit: 5
+                            sort: {date: -1} // 1 este ascending; -1 este descending (pornește cu ultima adusă)
+                            // limit: 5
                         },
                         model: Resursa
                     }
                 ];
 
                 UserModel.populate(user, opts, function clbkExecPopUser (error, res) {
+                    if (error) {
+                        console.log(error);
+                        socket.emit('mesaje', 'A dat eroare căutarea...');
+                    }
                     // console.log(res);
                     socket.emit('personrecord', res);
                 });

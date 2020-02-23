@@ -73,10 +73,14 @@ app.use(session({
     resave: false, 
     saveUninitialized: true
 }));
+
+// STATIC
 app.use(express.static(path.join(__dirname, '/public' )));
 app.use('/repo', express.static(path.join(__dirname, 'repo')));
 // app.use(fileUpload());
 app.use(favicon(path.join(__dirname,  'public', 'favicon.ico')));
+
+// PROCESAREA CORPULUI CERERII
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -85,6 +89,7 @@ app.use(bodyParser.json());
 //     'PROD_MODE': 'production' === app.get('env')
 // });
 
+// SETAREA MOTORULUI DE ȘABLONARE
 app.engine('hbs', hbs.express4({
     i18n: i18n,
     partialsDir: __dirname + '/views/partials',
@@ -93,8 +98,9 @@ app.engine('hbs', hbs.express4({
 }));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'hbs');
-// instanțiere modul i18n - este necesar ca înainte de a adăuga acest middleware să fie cerut cookies
-app.use(i18n.init);
+
+// INIȚTALIZARE I18N
+app.use(i18n.init); // instanțiere modul i18n - este necesar ca înainte de a adăuga acest middleware să fie cerut cookies
 
 // Instanțiază Passport și restaurează starea sesiunii dacă aceasta există
 app.use(passport.initialize());
@@ -109,10 +115,10 @@ app.use(function (err, req, res, next) {
     res.status(500).send('În lanțul de prelucrare a cererii, a apărut o eroare');
 });
 
-let port  = process.env.PORT || 8080;
+let port = process.env.PORT || 8080;
 http.listen(port, '127.0.0.1', function cbConnection () {
     console.log('RED Colector ', process.env.APP_VER);
-    console.log('Server pornit pe 3000 -> binded pe 127.0.0.1');
+    console.log('Server pornit pe 8080 -> binded pe 127.0.0.1');
 });
 
 module.exports = app;
