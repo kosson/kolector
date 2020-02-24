@@ -96,7 +96,7 @@ app.engine('hbs', hbs.express4({
     layoutsDir:  __dirname + '/views/layouts',
     beautify: true
 }));
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/views'); // cu app.set se vor seta valori globale pentru aplicație
 app.set('view engine', 'hbs');
 
 // INIȚTALIZARE I18N

@@ -58,27 +58,134 @@ function exposeUser () {
     pubComm.emit('personrecord', event.target.name);
 }
 
-var userFile;
+var userFile; // (userFile.resurse)
+var tmlOptions = {
+    // height: 350,
+    // timenav_height: 200,
+    // timenav_height_percentage: 22,
+    zoom_sequence: 8,
+    scale_factor: 5
+}; // opțiuni necesare obiectului Timeline
+TimelineObj = {
+    // scale: "human",
+    title: {
+        media: {
+            url: '',
+            caption: '',
+            credit: ''
+        },
+        text: {
+            headline: '',
+            text: ''
+        }
+    },
+    events: [],
+};
 // Primirea detaliilor privind utilizatorul ales
 pubComm.on('personrecord', function clblPersReds (resurse) {
-    // console.log(resurse); //FIXME: dezactivează la final!!!
     renderUsrDetails.innerHTML = '';
     userFile = resurse;
-    showUserDetails(resurse);
+    // TODO: Transformă resurse într-un subset necesar lui Timeline
+    TimelineObj.title.text.headline = resurse.googleProfile.name;
+    TimelineObj.title.text.text = `Acestea sunt resursele contribuite afișate temporal`;
+
+    resurse.resurse.map(function clbkResursa2Timeline (resursa) {
+        let discipline = resursa.discipline.join(', '); // flat-out discipline
+        let images = [];
+        resursa.content.blocks.map( part => {
+            if (part.type === 'image') {
+                images.push(part);
+            }
+        });
+        let data = new Date(`${resursa.date}`);
+        let transformedObject = {
+            media: {
+                url: `${images[0].data.file.url}`,
+                caption: `${images[0].data.file.caption}`,
+                credit: '',
+                thumbnail: '',
+                alt: `${images[0].data.file.caption}`,
+                title: `${resursa.title}`,
+                link: `/resurse/${resursa._id}`,
+                link_target: '_blank'
+            },
+            unique_id: resursa._id,
+            start_date: {
+                year: data.getFullYear(),
+                month: data.getMonth(),
+                day: data.getDay(),
+                hour: data.getHours(),
+                minute: data.getMinutes(),
+                second: data.getSeconds(),
+                millisecond: ''
+            },
+            text: {
+                headline: `${resursa.title}`,
+                text: `
+                    <p class="tmlAuth">${resursa.autori}</p>
+                    <p class="tmlDescr">Descriere: ${resursa.description}</p>
+                    <p class="tmlDisc">Discipline: ${discipline}</p>
+                    <p class="tmlLic">${resursa.licenta}</p>
+                `
+            },
+            background: {
+                url: `${resursa.coperta}`
+            }
+        };
+        TimelineObj.events.push(transformedObject);
+    });
+    showUserDetails(resurse); // AFIȘEAZĂ resursele (tip card Bootstrap 4) pe care le-a creat utilizatorul
+
+    // RANDEAZA TIMELINE_UL
+    new TL.Timeline('timeline-embed', TimelineObj, tmlOptions);
+
+    // RANDEAZĂ TABELUL
+    // console.log(resurse.resurse);
+    // https://datatables.net/manual/data/orthogonal-data
+    $('.userResTbl').DataTable({
+        data: resurse.resurse,
+        columns: [
+            {
+                data: '_id',
+                render: function clbkId (data, type, row) {
+                    return `<a href="${window.location.origin}/resurse/${data}">Deschide</a>`;
+                }
+            },
+            {
+                data: 'expertCheck',
+                render: function clbkExpertChk (data, type, row) {
+                    // if ( type === 'display' || type === 'filter' ) {
+
+                    // }
+                    console.log(data);
+                    if (data) {
+                        return "validată";
+                    } else {
+                        return "nevalidată";
+                    }
+                }
+            },
+            {data: 'title'},
+            {data: 'autori'},
+            {data: 'description'},
+            {data: 'licenta'}
+        ]
+    });
 });
 
 // Referință către template
-var usrDetailsTmpl = document.querySelector('#userdetailtpl');
-var renderUsrDetails = document.querySelector('#showusrdetails');
+var usrDetailsTmpl = document.querySelector('#userdetailtpl'); // ref către template-ul detaliilor
+var usrResTblTmpl = document.querySelector('#userResTbl'); // ref către template-ul resurselor în format tabelar
+var renderUsrDetails = document.querySelector('#showusrdetails'); // ref către ancora din DOM unde se va face injectarea resurselor
 
 /**
  * Funcția are rolul de a afișa detaliile despre un utilizator [roluri în sistem, ultimele 5 contribuții]
  * @param {Object} descriere 
  */
 function showUserDetails (descriere) {
-
     // clonează conținutul din template
-    var cloneContent = usrDetailsTmpl.content.cloneNode(true); // clonarea template-ului
+    var cloneContent = usrDetailsTmpl.content.cloneNode(true); // clonarea template-ului pentru detalii user
+    var cloneTbl = usrResTblTmpl.content.cloneNode(true); // clonarea template-ului pentru afișare tabelară
 
     // injectează datele primite în elementele template-ului
     // ===== AVATAR =====
@@ -156,12 +263,17 @@ function showUserDetails (descriere) {
 
     // ===== SET ADMIN =====
     var admCheck = cloneContent.querySelector('#adminSet');
-    if (descriere.roles.admin) {
-        admCheck.checked = true;
-    }
+    if (descriere.roles.admin) {admCheck.checked = true; }
 
-    // injectează template-ul în DOM
+    // Resurse afișate tabelar
+    var uResTbl = cloneTbl.querySelector('#resurseTab'); // ref către div-ul gazdă al tabelului 
+    let divResurseTabelare = document.createElement('table'); // creează tabel
+    divResurseTabelare.classList.add('userResTbl'); // adaugă clasă la tabel
+    uResTbl.appendChild(divResurseTabelare); // append tabel la div-ul gazdă
+
+    // injectează template-urile în DOM
     renderUsrDetails.appendChild(cloneContent);
+    renderUsrDetails.appendChild(uResTbl); // injectează tabelul resurselor tabelare
 }
 
 /**

@@ -1,7 +1,7 @@
 require('dotenv').config();
 const fs          = require('fs-extra');
 const path        = require('path');
-const querystring = require('querystring');
+// const querystring = require('querystring');
 const BagIt       = require('bagit-fs');
 const uuidv1      = require('uuid/v1');
 const Readable    = require('stream').Readable;
@@ -22,7 +22,6 @@ const searchDoc = async function (indexName, payload){
 };
 
 module.exports = (express, app, passport, pubComm) => {
-    /* CREEAZĂ RUTERUL */
     var router = express.Router();
 
     // Încarcă mecanismele de verificare ale rolurilor
@@ -31,22 +30,22 @@ module.exports = (express, app, passport, pubComm) => {
 
     // IMPORTUL CONTROLLERELOR DE RUTE
     // Încarcă controlerul necesar tratării rutelor de autentificare
-    var User    = require('./controllers/user.ctrl')(passport);
-    var index   = require('./index');
-    var admin   = require('./administrator');
-    var resurse = require('./resurse')(router);
-    var log     = require('./log');
+    var User = require('./controllers/user.ctrl')(passport);
 
-    // ========== / ROOT =================
+    // ========== ROOT ==================
+    var index = require('./index');
     app.use('/', index);
 
     // ========== ADMINISTRATOR ==========
+    var admin = require('./administrator');
     app.use('/administrator', User.ensureAuthenticated, admin);
 
     // ========== RESURSE ================
+    var resurse = require('./resurse')(router); // REFĂCUTĂ
     app.use('/resurse', User.ensureAuthenticated, resurse);
 
     // ========== JURNALIER ==============
+    var log = require('./log');
     app.use('/log', User.ensureAuthenticated, log);
 
     // ========== RESURSE PUBLICE ========
@@ -95,7 +94,9 @@ module.exports = (express, app, passport, pubComm) => {
                 scripts
             });
         }).catch(err => {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+            }
         });
     });
 
@@ -115,14 +116,16 @@ module.exports = (express, app, passport, pubComm) => {
 
     // ========== AUTH ==========
     app.get('/auth', User.auth); // Încarcă template-ul hbs pentru afișarea butonului de autorizare
+    
     // AUTH/GOOGLE -> RUTA BUTONULUI CATRE SERVERUL DE AUTORIZARE (trebuie să ai deja ClientID și Secretul)
     app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email']}));
+    
     // RUTA PE CARE VINE RĂSPUNSUL SERVERULUI DE AUTORIZARE
     app.get('/callback', passport.authenticate('google', { failureRedirect: '/auth'}), function(req, res) {
         res.redirect('/resurse');
     });
-
-    //  ========== LOGOUT ==========
+    
+    // ========== LOGOUT ==========
     app.get('/logout', function(req, res){
         req.logout();
         // req.session.destroy(function (err) {
@@ -134,16 +137,15 @@ module.exports = (express, app, passport, pubComm) => {
     
     // ========== PROFILUL PROPRIU ==========
     app.get('/profile', makeSureLoggedIn.ensureLoggedIn(), function clbkProfile (req, res) {
-            // console.dir(req.user);
-            res.render('profile', {
-                user:    req.user,
-                title:   "Profil",
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                logoimg: "/img/red-logo-small30.png",
-                credlogo: "../img/CREDlogo.jpg"
-            });
-        }
-    );
+        res.render('profile', {
+            user:    req.user,
+            title:   "Profil",
+            style:   "/lib/fontawesome/css/fontawesome.min.css",
+            logoimg: "/img/red-logo-small30.png",
+            credlogo: "../img/CREDlogo.jpg",
+            activePrfLnk: true
+        });
+    });
 
     // ACCESAREA PROPRIILOR RESURSE
     app.get('/profile/resurse', makeSureLoggedIn.ensureLoggedIn(), function(req, res){
@@ -176,7 +178,6 @@ module.exports = (express, app, passport, pubComm) => {
             });
         }
     );
-    // Aducere unei singure resurse contribuite de utilizator
 
     // În cazul administratorilor, aceștia au acces la mecanismele de validare
     app.get('/profile/resurse/:idres', User.ensureAuthenticated, function(req, res){
@@ -260,10 +261,9 @@ module.exports = (express, app, passport, pubComm) => {
     });
 
     /* =========== CONSTRUCȚIA BAG-ULUI, INTRODUCEREA ÎNREGISTRĂRII, INTRODUCEREA ÎN ELASTICSEARCH ========= */
-    /* SOCKETURI!!! */
     let lastBag;   // este o referință către un bag deja deschis
     let lastUuid;  // referință către UUID-ul în efect
-    // EVENTS
+    /* SOCKETURI!!! */
     pubComm.on('connect', (socket) => {
         // Ascultă mesajele
         socket.on('mesaje', (mesaj) => {
@@ -565,7 +565,9 @@ module.exports = (express, app, passport, pubComm) => {
                 // de explorat: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html
             };
             searchDoc('users', body, (err, result) => {
-                if(err) throw err;
+                if(err) {
+                    console.log(err);
+                }
                 return result;
             }).then((result) => {
                 // pentru fiecare id din elasticsearch, cauta daca există o înregistrare în MongoDB. Dacă nu există în Mongo, șterge din Elastic.
@@ -620,10 +622,9 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
 
-        // fișa completă de utilizator
+        // FIȘA completă de utilizator
         socket.on('personrecord', id => {
             // TODO: constituie un query care să aducă înregistrarea de user și ultimele sale 5 contribuții RED
-            // console.log(id);
             // https://mongoosejs.com/docs/api.html#model_Model.populate
 
             UserModel.findById(id, function clbkFindById (error, user) {
@@ -642,7 +643,7 @@ module.exports = (express, app, passport, pubComm) => {
                         model: Resursa
                     }
                 ];
-
+                // Completarea datelor prin populare
                 UserModel.populate(user, opts, function clbkExecPopUser (error, res) {
                     if (error) {
                         console.log(error);

@@ -13,10 +13,10 @@ router.get('/', function clbkRouterRoot (req, res) {
     /* ====== VERIFICAREA CREDENȚIALELOR ====== */
     // Dacă avem un admin, atunci oferă acces neîngrădit
     if(req.session.passport.user.roles.admin){
-        let scripts = [
-            {script: '/js/admin.js'},       
+        let scripts = [       
             {script: '/lib/moment/min/moment.min.js'},
-            {script: '/lib/timeline/timeline-embed.js'}
+            // {script: '/lib/timeline3/js/timeline.js'},
+            {script: '/js/admin.js'}
         ];
         res.render('administrator', {
             title:   "administrator",
@@ -24,13 +24,15 @@ router.get('/', function clbkRouterRoot (req, res) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
-            scripts
+            scripts,
+            activeAdmLnk: true
         });
     // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
     } else if (confirmedRoles.includes('validator')) {
         let scripts = [
             {script: '/js/validator.js'},       
-            {script: '/lib/moment/min/moment.min.js'}
+            {script: '/lib/moment/min/moment.min.js'},
+            {script: '/lib/timeline3/js/timeline.js'}
         ];
         res.render('validator', {
             title:   "validator",
@@ -39,28 +41,6 @@ router.get('/', function clbkRouterRoot (req, res) {
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
             scripts
-        });
-    } else {
-        res.redirect('/401');
-    }
-});
-
-router.get('/admins', function clbkRouterAdmins (req, res) {
-    /* ====== VERIFICAREA CREDENȚIALELOR ====== */
-    // Dacă avem un admin, atunci oferă acces neîngrădit
-    if(req.session.passport.user.roles.admin){
-        let scripts = [    
-            {script: '/js/redincredadmin.js'},       
-            {script: '/lib/moment/min/moment.min.js'}        
-        ];
-        // TODO: Adu toți utilizatorii care au rangul de admin
-        res.render('administrator', {
-            title:   "administrator",
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            user:    req.user,
-            scripts,
-            logoimg: "/img/red-logo-small30.png",
-            credlogo: "../img/CREDlogo.jpg",
         });
     } else {
         res.redirect('/401');

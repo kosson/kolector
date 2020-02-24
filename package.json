@@ -1,10 +1,11 @@
 {
   "name": "redcolector",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "Aplicația pentru colectare de RED-uri",
   "main": "app.js",
   "scripts": {
     "test": "nodemon --exec 'mocha --recursive -R min'",
+    "stress": "autocannon -c 400 http://localhost:8080",
     "test-win": "nodemon --exec mocha --recursive -R min",
     "watch:sass": "node-sass src/sass/main.scss ../public/css/style.css -w",
     "compile:sass": "node-sass src/sass/main.scss ../public/css/style.comp.css",
@@ -21,7 +22,9 @@
     "resurse educaționale deschise",
     "resurse educaționale",
     "red",
-    "cred"
+    "cred",
+    "colector",
+    "educred"
   ],
   "author": "Nicolaie Constantinescu",
   "license": "GPL-3.0",
@@ -70,6 +73,7 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+    "autocannon": "^4.6.0",
     "autoprefixer": "^9.7.3",
     "concat": "^1.0.3",
     "node-sass": "^4.13.1",

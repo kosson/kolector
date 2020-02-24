@@ -11,7 +11,7 @@
             <span class="salut">Salut, {{user.googleProfile.name}} <img class="avatar" data-email="{{user.email}}" data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" /></span>
         {{/if}}
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="/">Acasă<span class="sr-only">(current)</span></a>
             </li>
             {{#if user}}
@@ -32,6 +32,9 @@
             {{/if}}
             <li class="nav-item">
                 <a class="nav-link" href="/resurse/adauga">Adaugă</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{#if activeResLnk}}active{{/if}}" href="/resurse">Resurse</a>
             </li>
             {{#if user}}
                 <li class="nav-item">

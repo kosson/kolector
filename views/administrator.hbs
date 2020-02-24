@@ -110,14 +110,18 @@
         {{!-- SECȚIUNE RESURSE ALE UTILIZATORULUI --}}
         <section>
             {{!-- TIMELINE AL RESURSELOR --}}
-            <div id='timeline-embed' class="tline">
+            <div id="timeline-embed" class="tline"></div>
 
-            </div>
             {{!-- ULTIMELE 5 resurse --}}
             <div class="resurseUser">
                 {{!-- Vor fi inserate resursele utilizatorului - ultimele 5 --}}
             </div>
         </section>
+    </template>
+
+    <template id="userResTbl">
+        {{!-- Tabelul resurselor personale --}}
+        <div id="resurseTab" class=""></div>
     </template>
 
     {{#each scripts}}

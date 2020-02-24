@@ -2,6 +2,15 @@
 {{> nav-resurse}}
 {{> messages}}
 <div itemscope itemtype="http://schema.org/CreativeWork" id="resursapublica" class="resurse">
+    {{!-- Background video --}}
+    <div class="bg-video">
+        <video class="bg-video__content" autoplay muted loop>
+            {{!-- https://coverr.co/videos/modem-lights-u4MPlcF4EE --}}
+            <source src="img/Modem-lights.mp4" type="video/mp4">
+            <source src="img/Modem-lights.webm" type="video/webm">
+            Browserul tău nu are support pentru caracteristicile web moderne. Actualizează-l!
+        </video>
+    </div>
     {{#each resursa}}
         <div data-id="{{this._id}}" data-contribuitor="{{this.idContributor}}" id="{{this._id}}" class="resursa">
             <img itemprop="image" src="{{this.coperta}}" class="coperta card-img-top" alt="{{this.title}}">
