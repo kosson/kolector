@@ -26,27 +26,20 @@ pubComm.on('uuid', (id) => {
     RED.uuid = id;
 });
 
-/* ======== Integrarea lui EditorJS ======== https://editorjs.io */
+/* === Integrarea lui EditorJS === https://editorjs.io */
 const editorX = new EditorJS({
-    placeholder: 'Introdu conținutul nou sau copiază-l pe cel pe care îl ai într-un material.',
-    /**
-    * onReady callback
-    */
+    placeholder: 'Introdu conținut care să nu fie mai mult de câteva paragrafe. Editorul nu poate i folosit pentru compunere de resurse. Acestea trebuie să existe deja!!!',
+    
+    /* onReady callback */
     onReady: () => {
-        console.log('Editor.js is ready to work!');
+        console.log('Editor.js e gata de treabă!');
     },
-    /**
-     * Id of Element that should contain Editor instance
-     */
+    /* id element unde se injectează editorul */
     holder: 'codex-editor',
-    /**
-     * Enable autofocus
-     */ 
+    /* Activează autofocus */ 
     autofocus: true,
-    /** 
-   * Available Tools list. 
-   * Pass Tool's class or Settings object for each Tool you want to use 
-   */ 
+    
+    /* Obiectul tuturor instrumentelor pe care le oferă editorul */ 
     tools: { 
         header: {
             class: Header,
@@ -99,78 +92,93 @@ const editorX = new EditorJS({
         image: {
             class: ImageTool,
             config: {
-                // endpoints: {
-                //     byFile: 'http://localhost:8080/repo', // Your backend file uploader endpoint
-                //     byUrl: 'http://localhost:8080/fetch', // Your endpoint that provides uploading by Url
-                // }
+                /* === providing custom uploading methods === */
                 uploader: {
-                    uploadByFile(file){
-                        // obiectul trimis către server
+                    /**
+                     * Upload file to the server and return an uploaded image data
+                     * @param {File} file - file selected from the device or pasted by drag-n-drop
+                     * @return {Promise.<{success, file: {url}}>}
+                     */
+                    uploadByFile(file){  
+                        //TODO: Detectează dimensiunea fișierului și dă un mesaj în cazul în care depășește anumită valoare (vezi API-ul File)
+                        
+                        // => construcția obiectul care va fi trimis către server
                         let objRes = {
                             user: RED.idContributor,
                             name: RED.nameUser,
-                            uuid: RED.uuid,
-                            resF: file,
+                            uuid: RED.uuid, // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare deja
+                            resF: file,     // este chiar fișierul
                             numR: file.name,
                             type: file.type
-                        };  // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare
+                        };
 
-                        // obiectul necesar lui Editor.js
+                        /* obiectul necesar lui Editor.js după ce fișierul a fost trimis
+                           după ce trimiți fișierul, Editor.js se așteaptă ca acesta să fie populat */
                         let obj4EditorJS = {
                             success: '',
                             file: {
                                 url: ''
                             }
                         };
-                        /* ====== FUNCȚIA EXECUTOR ===== */
+
+                        /**
+                         * Funcția are rolul de executor pentru promisiune
+                         * @param {Function} resolve `callback-ul care se declanșează la rezolvarea promisiunii
+                         * @param {Function} reject `callback-ul declanșat la respingerea promisiunii`
+                         */
                         function executor (resolve, reject) {
-                            console.log('Cand încarc un fișier, trimit următorul obiect: ', objRes);
-                            // TRIMITE RESURSA către server
-                            pubComm.emit('resursa', objRes);
+                            // console.log('Cand încarc un fișier, trimit următorul obiect: ', objRes);                            
+                            pubComm.emit('resursa', objRes); // TRIMITE RESURSA către server
                             // trimite obiectul către server
                             pubComm.on('resursa', (respObj) => {
-                                // în cazul în care nu există nicio resursă, aceasta va fi creată și se va primi uuid-ul generat de server
+                                // în cazul în care pe server nu există nicio resursă, prima va fi creată și se va primi înapoi uuid-ul directorului generat de server
                                 if (!RED.uuid) {
                                     RED.uuid = respObj.uuid;
                                 }
                                 // console.log('În urma încărcării fișierului de imagine am primit de la server: ', respObj);
+                                
+                                // completarea proprietăților așteptate de EditorJS în cazul succesului.
                                 obj4EditorJS.success = respObj.success;
                                 obj4EditorJS.file.url = respObj.file;
 
                                 // constituie calea către imagine
-                                console.log(respObj.file);
                                 var urlAll = new URL(`${respObj.file}`);
                                 var path = urlAll.pathname;
                                 imagini.add(path); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
 
+                                // RESOLVE / REJECT
                                 resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
+                                reject(mesaj => {
+                                    pubComm.emit('mesaje', `Promisiunea așteptată de Editor.js a fost respinsă; ${mesaj}`); // CÂND EȘUEAZĂ!
+                                });
                             });
                         }
                         // construiește promisiunea
-                        var promise = new Promise(executor);
-                        // returnează rezultatul promisunii. Este ceea ce are nevoie Editor.js
+                        var promise = new Promise(executor);                        
                         return promise.then((obi) => {
-                            // console.log(obi);
-                            return obi;
+                            return obi; // returnează rezultatul promisiunii. Este ceea ce are nevoie Editor.js
                         }).catch((error) => {
-                            if (error) throw error;
-                        }); // returnează promisiunea de care are nevoie Editor.js
+                            if (error) {
+                                pubComm.emit('mesaje', `Nu am reușit încărcarea fișierului pe server cu detaliile: ${error}`);
+                            }
+                        });
                     },
                     uploadByUrl(url){
+                        //TODO: Detectează dimensiunea fișierului și dă un mesaj în cazul în care depășește anumită valoare (vezi API-ul File)
+                        
                         url = decodeURIComponent(url); // Din nou m-a mușcat rahatul ăsta pentru URL-urile care sunt afișate în browser encoded deja... Flying Flamingos!!!
+                        
                         /**
                          * Funcția validează răspunsul în funcție de headere și stare
                          * @param {Object} response 
                          */
                         function validateResponse(response) {
                             if (!response.ok) {
+                                pubComm.emit('mesaje', `Am încercat să „trag” imaginea de la URL-ul dat, dar: ${response.statusText}`);
                                 throw Error(response.statusText);
                             }
                             return response;
-                        }                        
-
-                        // Extrage numele fișierului
-                        // let nameF = url.split('/').pop().split('#')[0].split('?')[0];
+                        }
 
                         /**
                          * Funcția are rolul de a extrage numele fișierului
@@ -206,7 +214,7 @@ const editorX = new EditorJS({
                             .then(response => {
                                 // completează proprietățile necesare pentru a-l face `File` like.
                                 response.lastModifiedDate = new Date();
-                                response.name = fileNameFromUrl(decodeURI(url)); // WARNING: Bits like fucking shit!!!
+                                response.name = fileNameFromUrl(decodeURI(url)); // WARNING: Bites like fucking shit!!!
                                 // console.log('Fetch-ul adaugă proprietatea response.name cu url-ul după prelucrarea cu fileNameFromUrl(url): ', response.name);
 
                                 // obiectul trimis către server
@@ -226,6 +234,7 @@ const editorX = new EditorJS({
                                 objRes.numR = response.name; // completează obiectul care va fi trimis serverului cu numele fișierului
                                 objRes.type = response.type; // completează cu extensia
                                 objRes.resF = response;
+                                
                                 // trimite resursa în server
                                 pubComm.emit('resursa', objRes);
                                 
@@ -254,6 +263,9 @@ const editorX = new EditorJS({
                                         imagini.add(path); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora.
                                         
                                         resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
+                                        reject(mesaj => {
+                                            pubComm.emit('mesaje', mesaj); // CÂND EȘUEAZĂ!
+                                        });
                                     });
                                 });
                                 // returnează promisiunea așteptată de Editor.js
@@ -261,16 +273,29 @@ const editorX = new EditorJS({
                                     // console.log('Înainte de a returna promisiunea care se rezolvă cu obiectul: ', obi);
                                     return obi;
                                 }).catch(error => {
-                                    if (error) throw error;
+                                    if (error) {
+                                        pubComm.emit('mesaje', `Am eșuat cu următoarele detalii: ${error}`);
+                                    }
                                 });
                             })
                             .catch((error) => {
-                                if (error) throw error;
+                                if (error) {
+                                    pubComm.emit('mesaje', `Am eșuat cu următoarele detalii: ${error}`);
+                                }
                             });
                     }
                 },
+                quote: {
+                    class: Quote,
+                    inlineToolbar: true,
+                    shortcut: 'CMD+SHIFT+O',
+                    config: {
+                        quotePlaceholder: 'Introdu citatul',
+                        captionPlaceholder: 'Autorul citatului',
+                    }
+                },
                 captionPlaceholder: 'Legendă:',
-                buttonContent: 'Selectează fișierul pe care vrei să-l încarci!'
+                buttonContent: 'Selectează fișier'
             }
         }
     },

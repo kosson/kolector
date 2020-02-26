@@ -559,3 +559,114 @@ input[type='range']:focus {
     margin: 1rem;
     /* width: 100%; */
 }
+
+/* EDITOR.JS */
+
+/* Header plugin */
+/* Plugin styles */
+.ce-header {
+    padding: 1em 0;
+    margin: 0;
+    margin-bottom: -0.9em;
+    line-height: 1.5em;
+    outline: none;
+}
+
+.ce-header p,
+.ce-header div{
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Styles for Plugin icon in Toolbar */
+.ce-header__icon {}
+
+.ce-header[contentEditable=true][data-placeholder]::before{
+    position: absolute;
+    content: attr(data-placeholder);
+    color: #707684;
+    font-weight: normal;
+    display: none;
+}
+
+.ce-header[contentEditable=true][data-placeholder]:empty::before {
+    display: block;
+}
+
+.ce-header[contentEditable=true][data-placeholder]:empty:focus::before {
+    display: none;
+}
+
+/* PARAGRAPH */
+
+.ce-paragraph {
+    line-height: 1.6em;
+    outline: none;
+}
+
+.ce-paragraph[data-placeholder]:empty::before{
+    content: attr(data-placeholder);
+    color: #707684;
+    font-weight: normal;
+    opacity: 0;
+}
+
+/** Show placeholder at the first paragraph if Editor is empty */
+.codex-editor--empty .ce-block:first-child .ce-paragraph[data-placeholder]:empty::before {
+    opacity: 1;
+}
+
+.codex-editor--toolbox-opened .ce-block:first-child .ce-paragraph[data-placeholder]:empty::before,
+.codex-editor--empty .ce-block:first-child .ce-paragraph[data-placeholder]:empty:focus::before {
+    opacity: 0;
+}
+
+.ce-paragraph p:first-of-type{
+    margin-top: 0;
+}
+
+.ce-paragraph p:last-of-type{
+    margin-bottom: 0;
+}
+
+/* QUOTE */
+
+.cdx-quote-icon svg {
+    transform: rotate(180deg);
+}
+
+.cdx-quote {
+    margin: 0;
+}
+
+.cdx-quote__text {
+    min-height: 158px;
+    margin-bottom: 10px;
+}
+
+.cdx-quote__caption {}
+
+.cdx-quote [contentEditable=true][data-placeholder]::before{
+    position: absolute;
+    content: attr(data-placeholder);
+    color: #707684;
+    font-weight: normal;
+    opacity: 0;
+}
+
+.cdx-quote [contentEditable=true][data-placeholder]:empty::before {
+    opacity: 1;
+}
+
+.cdx-quote [contentEditable=true][data-placeholder]:empty:focus::before {
+    opacity: 0;
+}
+
+
+.cdx-quote-settings {
+    display: flex;
+}
+
+.cdx-quote-settings .cdx-settings-button {
+    width: 50%;
+}
