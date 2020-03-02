@@ -12,11 +12,7 @@
     <section class="container-fluid" id="userres">
         {{!-- Statisticile care conduc la rezultate --}}
         <div id="restats">
-            <table id="statstable">
-                <tbody>
-                    
-                </tbody>
-            </table>
+            {{!-- Rezultatul compilării template-ului cu date statistice va fi introdus aici --}}
         </div>
 
         {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
@@ -42,8 +38,6 @@
                 </div>
             </form>
 
-
-
             {{!-- UTILIZATORII GĂSIȚI ÎN ELASTICSEARCH --}}
             <div id="showusers" class="">                
                 {{!-- Va fi inserat rezultatul compilării aici! --}}
@@ -54,7 +48,15 @@
                 {{!-- Va fi inserat rezultatul compilării aici! --}}
             </div>
         </div>
-    </section>    
+    </section>
+
+    {{!-- TEMPLATE STATISTIC --}}
+    <template id="statstpl">
+        <article class="stats__article">
+            <h5 class="stat__title"></h5>
+            <a href="" target="_blank" class="stat__figure"></a>
+        </article>
+    </template>
     
     {{!-- TEMPLATE_UL UTILIZATORILOR DIN ELASTICSEARCH --}}
     <template id="usertpl">
@@ -129,8 +131,8 @@
         </section>
     </template>
 
+    {{!-- Tabelul resurselor personale --}}
     <template id="userResTbl">
-        {{!-- Tabelul resurselor personale --}}
         <div id="resurseTab" class=""></div>
     </template>
 

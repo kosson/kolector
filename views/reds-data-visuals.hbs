@@ -1,0 +1,23 @@
+{{!< layout}}
+{{> nav-administrator}}
+{{> messages}}
+<div id="content">
+    <h1>Aici se va dezvolta o pagină dedicată vizualizării datelor privind RED-urile</h1>
+    <section class="container-fluid" id="res-visuals">
+        {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
+        <div id="visuals" class="">
+            {{!-- Background video --}}
+            <div class="bg-video">
+                <video class="bg-video__content" autoplay muted loop>
+                    {{!-- https://coverr.co/videos/modem-lights-u4MPlcF4EE --}}
+                    <source src="img/coverr-typing-in-laptop-1578678668153.mp4" type="video/mp4">
+                    Browserul tău nu are support pentru caracteristicile web moderne. Actualizează-l!
+                </video>
+            </div>
+        </div>
+    </section>
+
+    {{#each scripts}}
+        <script src="{{script}}" charset="utf-8"></script>
+    {{/each}}
+</div>

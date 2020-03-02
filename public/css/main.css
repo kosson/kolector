@@ -671,3 +671,25 @@ input[type='range']:focus {
 .cdx-quote-settings .cdx-settings-button {
     width: 50%;
 }
+
+/* Modul restats */
+
+#restats {
+    display: flex;
+    padding: 0.5rem;
+    margin: 0 auto;
+}
+
+.stats__article {
+    position: relative;
+    border: #707684 solid;
+    margin: 0 0.2rem;
+    padding: 0.3rem;
+    
+}
+
+.stat__figure {
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}

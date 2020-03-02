@@ -267,7 +267,6 @@ module.exports = (express, app, passport, pubComm) => {
     pubComm.on('connect', (socket) => {
         // Ascultă mesajele
         socket.on('mesaje', (mesaj) => {
-            console.log('Standing by.... listening');
             console.log(mesaj);
         });
 
@@ -442,6 +441,7 @@ module.exports = (express, app, passport, pubComm) => {
             }   
         });
 
+        // Adaugă rol nou
         socket.on('addRole', (newRoles) => {
             let docUser = UserModel.findOne({_id: newRoles.id}, 'roles');
             // dacă vreunul din rolurile trimise nu există deja în array-ul din profilul utilizatorului, acesta va fi adăugat.
@@ -461,6 +461,7 @@ module.exports = (express, app, passport, pubComm) => {
             // console.log(newRoles);
         });
 
+        // Adaugă unit nou pentru utilizator
         socket.on('addUnit', (newUnits) => {
             let docUser = UserModel.findById(newUnits.id);
 
@@ -483,7 +484,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
 
-        // validarea resursei
+        // Validarea resursei
         socket.on('validateRes', (queryObj) => {
             // eveniment declanșat din redincredadmin.js
             let resQuery = Resursa.findOne({_id: queryObj._id}, 'expertCheck');
@@ -653,6 +654,44 @@ module.exports = (express, app, passport, pubComm) => {
                     socket.emit('personrecord', res);
                 });
             });
+        });
+
+        // STATS GENERAL
+        socket.on('stats', (projectionObj) => {
+            if (projectionObj) {
+                // pentru fiecare dintre descriptori adu un set de date pe care-l trimiți în frontend
+                projectionObj.descriptors.map(function clbkTreatDecr (descriptor) {
+                    // pentru fiecare set de date extras, voi emite înapoi pentru a fi creat element în pagină
+
+                    // testează după valoarea descriptorului
+                    if (descriptor === 'reds') {
+                        // TODO: adu statistici generale despre toate resursele și toți utilizatorii.
+                        // Resursa; UserModel
+                        const TotalREDs = Resursa.estimatedDocumentCount({}, function clbkResTotal (error, result) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                // console.log(result);
+                                socket.emit('stats', {reds: result});
+
+                                return result;
+                                // TODO: în client, va trebui analizat rezultatul primit pentru a determina ce valoare în care element se va actualiza
+                                // TODO: aici caută să compari printr-o funcție dacă numărul red-urilor indexate este același cu cel al celor din bază
+                            }                    
+                        });
+                    } else if (descriptor === 'users') {
+                        UserModel.estimatedDocumentCount({}, function clbkUsersTotal (error, result) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                socket.emit('stats', {users: result});
+                            }          
+                        });
+                    }
+                });
+            } else {
+                console.log('Nu știu ce se de date să constitui. NU am primit descriptori');
+            }            
         });
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */

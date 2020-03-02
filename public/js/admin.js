@@ -81,6 +81,7 @@ TimelineObj = {
     },
     events: [],
 };
+
 // Primirea detaliilor privind utilizatorul ales
 pubComm.on('personrecord', function clblPersReds (resurse) {
     renderUsrDetails.innerHTML = '';
@@ -181,7 +182,7 @@ var renderUsrDetails = document.querySelector('#showusrdetails'); // ref către 
 
 /**
  * Funcția are rolul de a afișa detaliile despre un utilizator [roluri în sistem, ultimele 5 contribuții]
- * @param {Object} descriere 
+ * @param {Object} descriere Este un array de obiecte cu resurse
  */
 function showUserDetails (descriere) {
     // clonează conținutul din template
@@ -251,12 +252,6 @@ function showUserDetails (descriere) {
         let divCardBody = document.createElement('div');
         divCardBody.classList.add('card-body');
         divCard.appendChild(divCardBody);
-
-        // creează titlul cardului
-        // let cardTitle = document.createElement('h5');
-        // cardTitle.classList.add('card-title');
-        // cardTitle.textContent = resursa.title;
-        // divCardBody.appendChild(cardTitle);
 
         // creează descriere în card
         let resDescr = document.createElement('p');
@@ -374,3 +369,55 @@ pubComm.on('addUnit', (resurce) => {
 pubComm.on('addRole', (resurce) => {
     console.log(resurce);
 });
+
+
+// DATELE STATISTICE
+pubComm.emit('stats', {descriptors: ['reds', 'users']}); // Se pasează descriptorii pentru care se dorește aducerea datelor corespondente. Prin convenție, fiecare descriptor înseamnă un set de date.
+// la primirea datelor statistice, se generează articole.
+pubComm.on('stats', (stats) => {
+    if (stats.hasOwnProperty('reds')) {
+        const resObi = {
+            descriptor: 'reds',
+            categorie: 'Resurse Educaționale Deschise',
+            figure: stats.reds
+        };
+        populateStatisticArticle(resObi);
+    } else if (stats.hasOwnProperty('users')) {
+        const userObi = {
+            descriptor: 'users',
+            categorie: 'Conturi utilizatori existente',
+            figure: stats.users
+        };
+        populateStatisticArticle(userObi);
+    }
+});
+
+var restatsEntry = document.querySelector('#restats'); // Ancora din DOM a elementului deja existent
+var statsTmpl = document.querySelector('#statstpl'); // ref la template
+
+/**
+ * Funcția `populateStatisticArticle` are rolul de a popula template-ul dedicat datelor statistice pentru un anumit descriptor
+ * Funcția este acționată la primirea pe evenimentul `stats` prin cascadarea switch...case.
+ * @param {Object} data Sunt datele care vin din backend pentru datele statistice sumare
+ */
+function populateStatisticArticle (data) {
+    // console.log(data);
+    // clonează nodul în care vom crea dinamic elementele DOM 
+    var cloneStatsContent = statsTmpl.content.cloneNode(true); // clonarea template-ului pentru statistici
+
+    // <article> care joacă rol de container
+    let articleInStats = cloneStatsContent.querySelector('.stats__article');
+    articleInStats.classList.add(data.descriptor);
+
+    // <h5> care joacă rol de titlu
+    let titleInStats = cloneStatsContent.querySelector('.stat__title');
+    titleInStats.textContent = data.categorie;
+
+    // <a> care joacă rol de link către o pagină dedicată afișării tuturor respectivelor resurse.
+    let aInParaInStats = cloneStatsContent.querySelector('.stat__figure');
+    aInParaInStats.href = `/administrator/${data.descriptor}`; // TODO: pagina care se va deschide, va fi dedicată unor vizualizări pe datele despre toate resursele
+    aInParaInStats.setAttribute("href", `/administrator/${data.descriptor}`);
+    aInParaInStats.textContent = data.figure;
+
+    restatsEntry.appendChild(cloneStatsContent);
+}
