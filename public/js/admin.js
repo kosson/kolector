@@ -13,7 +13,7 @@ pubComm.on('person', (data) => {
     if (data.length === 0) {
         $.toast({
             heading: 'Neindexat, poate?',
-            text: "Utilizatorul căutat fie nu există, fie nu a fost indexat. Acum îl voi căuta în baza de date și încerc o reindexare",
+            text: "Utilizatorul căutat, fie nu există, fie nu a fost indexat. Acum îl voi căuta în baza de date și încerc o reindexare",
             position: 'top-center',
             showHideTransition: 'fade',
             icon: 'error',
@@ -63,8 +63,8 @@ var tmlOptions = {
     // height: 350,
     // timenav_height: 200,
     // timenav_height_percentage: 22,
-    zoom_sequence: 8,
-    scale_factor: 5
+    zoom_sequence: 5,
+    scale_factor: 2
 }; // opțiuni necesare obiectului Timeline
 TimelineObj = {
     // scale: "human",
@@ -85,7 +85,7 @@ TimelineObj = {
 pubComm.on('personrecord', function clblPersReds (resurse) {
     renderUsrDetails.innerHTML = '';
     userFile = resurse;
-    // TODO: Transformă resurse într-un subset necesar lui Timeline
+    // TODO: Transformă `resurse` într-un subset necesar lui Timeline
     TimelineObj.title.text.headline = resurse.googleProfile.name;
     TimelineObj.title.text.text = `Acestea sunt resursele contribuite afișate temporal`;
 
@@ -134,6 +134,7 @@ pubComm.on('personrecord', function clblPersReds (resurse) {
         };
         TimelineObj.events.push(transformedObject);
     });
+
     showUserDetails(resurse); // AFIȘEAZĂ resursele (tip card Bootstrap 4) pe care le-a creat utilizatorul
 
     // RANDEAZA TIMELINE_UL
@@ -219,9 +220,14 @@ function showUserDetails (descriere) {
         uUnits.appendChild(unitTag);
     });
 
-    // ===== RESURSE AFIȘARE =====
+    // ===== RESURSE AFIȘARE [CARD-uri Bootstrap 4] =====
     var uResurse = cloneContent.querySelector('.resurseUser');
-    descriere.resurse.map( function clbkResUser (resursa) {
+
+    // Extrage ultimele 5 resurse
+    var last5REDs = descriere.resurse.slice().sort((a, b) => b.date - a.date).slice(0,5);
+    // console.log(last5REDs.length, last5REDs);
+
+    last5REDs.map( function clbkResUser (resursa) {
         // Creează containerul cardului
         let divCard = document.createElement('div');
         divCard.classList.add('card');

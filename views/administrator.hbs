@@ -10,20 +10,15 @@
     </div> --}}
     {{!-- <br> --}}
     <section class="container-fluid" id="userres">
-        <p>Caută un utilizator, fie după email, fie după nume</p>
-        <form id="searchU">
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="useremail">@educred.ro</span>
-                </div>
-                <input type="text" id="findUserField" class="form-control" placeholder="Adresa de email a utilizatorului" aria-label="useremail" aria-describedby="useremail">
-                <div class="input-group-append">
-                    <button id="findUserBtn" class="btn btn-outline-secondary" type="button">Caută</button>
-                </div>
-            </div>
-        </form>
-        <br>
-        
+        {{!-- Statisticile care conduc la rezultate --}}
+        <div id="restats">
+            <table id="statstable">
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+
         {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
         <div id="contributii" class="">
             {{!-- Background video --}}
@@ -34,6 +29,21 @@
                     Browserul tău nu are support pentru caracteristicile web moderne. Actualizează-l!
                 </video>
             </div>
+            {{!-- Formularul câmpului de căutare --}}
+            <form id="searchU">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="useremail">@educred.ro</span>
+                    </div>
+                    <input type="text" id="findUserField" class="form-control" placeholder="Caută un utilizator, fie după email, fie după nume" aria-label="useremail" aria-describedby="useremail">
+                    <div class="input-group-append">
+                        <button id="findUserBtn" class="btn btn-outline-secondary" type="button">Caută</button>
+                    </div>
+                </div>
+            </form>
+
+
+
             {{!-- UTILIZATORII GĂSIȚI ÎN ELASTICSEARCH --}}
             <div id="showusers" class="">                
                 {{!-- Va fi inserat rezultatul compilării aici! --}}

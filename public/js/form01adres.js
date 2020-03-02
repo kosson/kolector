@@ -28,7 +28,7 @@ pubComm.on('uuid', (id) => {
 
 /* === Integrarea lui EditorJS === https://editorjs.io */
 const editorX = new EditorJS({
-    placeholder: 'Introdu conținut care să nu fie mai mult de câteva paragrafe. Editorul nu poate i folosit pentru compunere de resurse. Acestea trebuie să existe deja!!!',
+    placeholder: 'Introdu conținut care să nu fie mai mult de câteva paragrafe. Editorul nu poate fi folosit pentru compunere de resurse. Acestea trebuie să existe deja!!!',
     
     /* onReady callback */
     onReady: () => {
@@ -101,7 +101,8 @@ const editorX = new EditorJS({
                      */
                     uploadByFile(file){  
                         //TODO: Detectează dimensiunea fișierului și dă un mesaj în cazul în care depășește anumită valoare (vezi API-ul File)
-                        
+                        console.log(file);
+
                         // => construcția obiectul care va fi trimis către server
                         let objRes = {
                             user: RED.idContributor,
@@ -165,7 +166,7 @@ const editorX = new EditorJS({
                     },
                     uploadByUrl(url){
                         //TODO: Detectează dimensiunea fișierului și dă un mesaj în cazul în care depășește anumită valoare (vezi API-ul File)
-                        
+
                         url = decodeURIComponent(url); // Din nou m-a mușcat rahatul ăsta pentru URL-urile care sunt afișate în browser encoded deja... Flying Flamingos!!!
                         
                         /**
@@ -177,6 +178,7 @@ const editorX = new EditorJS({
                                 pubComm.emit('mesaje', `Am încercat să „trag” imaginea de la URL-ul dat, dar: ${response.statusText}`);
                                 throw Error(response.statusText);
                             }
+                            console.log(response); // response.body este deja un ReadableStream
                             return response;
                         }
 
@@ -191,21 +193,6 @@ const editorX = new EditorJS({
                             }
                             return null;
                         }
-
-                        // /**
-                        //  * Funcția are rolul de a obține extensia fișierului de imagine
-                        //  * @param {String} url Este chiar URL-ul de pe care va veni resursa
-                        //  */
-                        // function getExtension(url) {
-                        //     var extStart = url.indexOf('.',url.lastIndexOf('/')+1);
-                        //     if (extStart==-1) return false;
-                        //     var ext = url.substr(extStart+1),
-                        //         // finalul numelui extensiei începe după următoarele: end-of-string ori question-mark or hash-mark
-                        //         extEnd = ext.search(/$|[?#]/);
-                        //     return ext.substring (0,extEnd);
-                        // }
-                        // // extrage extensia fișierului
-                        // let extF = getExtension(url);
 
                         // adu-mi fișierul de pe net!!!
                         return fetch(url)
@@ -226,11 +213,12 @@ const editorX = new EditorJS({
                                     numR: '',
                                     type: ''
                                 };
+
                                 // FIXME: Nu rezolvă imagini de pe Wikipedia Commons de tipul celor codate deja. De ex:
                                 // https://upload.wikimedia.org/wikipedia/commons/d/df/Paulina_Rubio_%40_Asics_Music_Festival_09.jpg
                                 // https://upload.wikimedia.org/wikipedia/commons/1/1b/R%C3%ADo_Moscova%2C_Mosc%C3%BA%2C_Rusia%2C_2016-10-03%2C_DD_16-17_HDR.jpg
-                                // La imaginea https://kosson.ro/images/Autori/Doina_Hendre_Biro/identite_collective/SP01.jpg
-                                // dă eroare de CORS.
+                                // La imaginea https://kosson.ro/images/Autori/Doina_Hendre_Biro/identite_collective/SP01.jpg dă eroare de CORS.
+
                                 objRes.numR = response.name; // completează obiectul care va fi trimis serverului cu numele fișierului
                                 objRes.type = response.type; // completează cu extensia
                                 objRes.resF = response;
@@ -285,20 +273,21 @@ const editorX = new EditorJS({
                             });
                     }
                 },
-                quote: {
-                    class: Quote,
-                    inlineToolbar: true,
-                    shortcut: 'CMD+SHIFT+O',
-                    config: {
-                        quotePlaceholder: 'Introdu citatul',
-                        captionPlaceholder: 'Autorul citatului',
-                    }
-                },
                 captionPlaceholder: 'Legendă:',
-                buttonContent: 'Selectează fișier'
+                buttonContent: 'Selectează fișier',
+                types: 'image/*'
+            }
+        },
+        quote: {
+            class: Quote,
+            inlineToolbar: true,
+            shortcut: 'CMD+SHIFT+O',
+            config: {
+                quotePlaceholder: 'Introdu citatul',
+                captionPlaceholder: 'Autorul citatului',
             }
         }
-    },
+    }
     /**
      * Previously saved data that should be rendered
      */

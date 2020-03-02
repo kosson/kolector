@@ -14,5 +14,7 @@ module.exports = (params) => {
             console.log(typeof(resursa[0].content));
         }
         return resursa;
+    }).catch(function clbkHandleErr (error) {
+        console.log(error);
     });
 };
