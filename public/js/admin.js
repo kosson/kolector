@@ -1,13 +1,15 @@
 // ======== CĂUTAREA UNUI UTILIZATOR
+// --> Adaugă receptor pe butonul din formularul de căutare
 var findUserBtn = document.querySelector("#findUserBtn");
 findUserBtn.addEventListener('click', function clbkFindUser (evt) {
     evt.preventDefault();
-    pubComm.emit('person', document.querySelector('#findUserField').value);
+    pubComm.emit('person', document.querySelector('#findUserField').value); // Emite pe `person` în backend
 });
 
 pubComm.on('person', (data) => {
     renderUsr.innerHTML = '';
-    showUser(data.hits.hits);
+    // console.log(data);
+    showUser(data);
     // console.log(data.hits.hits);
     // Afișează eroare în cazul în care înregistrarea nu este indexată.
     if (data.length === 0) {
@@ -24,7 +26,7 @@ pubComm.on('person', (data) => {
     }
 });
 
-var userTmpl = document.querySelector('#usertpl'); // Pas 1 - Fă o referință către template
+var userTmpl = document.querySelector('#usertpl');    // Pas 1 - Fă o referință către template
 var renderUsr = document.getElementById('showusers'); // Pas 2 - Fă o referință către elementul din DOM unde va fi inserat conținutul rezultat din compilarea template-ului
 
 /**
