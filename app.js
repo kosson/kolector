@@ -90,6 +90,10 @@ app.use(bodyParser.json());
 // });
 
 // SETAREA MOTORULUI DE ȘABLONARE
+hbs.registerHelper('json', function clbkHbsHelperJSON (obi) {
+    // console.log(JSON.stringify(obi.content));
+    return JSON.stringify(obi);
+});
 app.engine('hbs', hbs.express4({
     i18n: i18n,
     partialsDir: __dirname + '/views/partials',
@@ -98,6 +102,7 @@ app.engine('hbs', hbs.express4({
 }));
 app.set('views', __dirname + '/views'); // cu app.set se vor seta valori globale pentru aplicație
 app.set('view engine', 'hbs');
+
 
 // INIȚTALIZARE I18N
 app.use(i18n.init); // instanțiere modul i18n - este necesar ca înainte de a adăuga acest middleware să fie cerut cookies

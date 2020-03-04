@@ -87,7 +87,7 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
                 resursa.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
             } else {
                 console.log(`Nu a putut fi adusă resursa!`);
-                pubcomm.emit('mesaje', `Nu am putut aduce resursa!`)
+                pubcomm.emit('mesaje', `Nu am putut aduce resursa!`);
             }
             return resursa;
         }).then(result => {

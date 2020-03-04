@@ -175,12 +175,44 @@ module.exports = (express, app, passport, pubComm) => {
     // În cazul administratorilor, aceștia au acces la mecanismele de validare
     app.get('/profile/resurse/:idres', User.ensureAuthenticated, function(req, res){
         // Adu înregistrarea resursei cu toate câmpurile referință populate deja
-        var record = require('./controllers/resincredid.ctrl')(req.params);
         // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
-        record.then(rezultat => {
+
+        const editorJs2html = require('./controllers/editorJs2HTML');
+        
+        // adu înregistrarea din MongoDB după ce a fost încărcată o nouă resursă
+        Resursa.find({_id: req.params.idres}).populate({
+            path: 'competenteS'
+        }).exec().then(resursa => {
+            if (resursa[0].content) {
+                // resursa[0].content = editorJs2html(resursa[0].content); // înlocuirea conținutului care este JSON cu o variantă HTML.
+                let localizat = moment(resursa[0].date).locale('ro').format('LLL');
+                resursa[0].dataRo = `${localizat}`; // formatarea datei pentru limba română.
+            } else {
+                console.log(typeof(resursa[0].content));
+            }
+            return resursa;
+        }).then(rezultat => {
+            // .then(rez => JSON.stringify(rez))
+            let x = JSON.stringify(rezultat);
+            // console.log(x);
+
+            rezultat.editorContent = JSON.stringify(rezultat); // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată
+
             let scripts = [      
-                {script: '/js/redincredadmin.js'},       
-                {script: '/lib/moment/min/moment.min.js'}        
+                {script: '/js/redincredadmin.js'},
+                {script: '/lib/moment/min/moment.min.js'},
+                {script: '/lib/editorjs/editor.js'},
+                {script: '/lib/editorjs/header.js'},
+                {script: '/lib/editorjs/paragraph.js'},
+                {script: '/lib/editorjs/list.js'},
+                {script: '/lib/editorjs/image.js'},
+                {script: '/lib/editorjs/table.js'},
+                {script: '/lib/editorjs/attaches.js'},
+                {script: '/lib/editorjs/embed.js'},
+                {script: '/lib/editorjs/code.js'},
+                {script: '/lib/editorjs/quote.js'},
+                {script: '/lib/editorjs/inlinecode.js'},
+                {script: '/js/res-shown.js'} 
             ];
             let roles = ["user", "cred", "validator"];
             let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
@@ -208,7 +240,7 @@ module.exports = (express, app, passport, pubComm) => {
                     credlogo: "../img/CREDlogo.jpg",
                     resursa: rezultat
                 });
-            } else if(confirmedRoles.includes('validator')) {
+            } else if (confirmedRoles.includes('validator')) {
                 // Adaugă mecanismul de validare a resursei
                 if (rezultat[0].expertCheck) {
                     rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
@@ -238,7 +270,9 @@ module.exports = (express, app, passport, pubComm) => {
                 res.redirect('/401');
             }
         }).catch(err => {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+            }
         });
     });
 
