@@ -183,12 +183,12 @@ module.exports = (express, app, passport, pubComm) => {
         Resursa.find({_id: req.params.idres}).populate({
             path: 'competenteS'
         }).exec().then(resursa => {
-            if (resursa[0].content) {
+            if (resursa[0]) {
                 // resursa[0].content = editorJs2html(resursa[0].content); // înlocuirea conținutului care este JSON cu o variantă HTML.
                 let localizat = moment(resursa[0].date).locale('ro').format('LLL');
                 resursa[0].dataRo = `${localizat}`; // formatarea datei pentru limba română.
             } else {
-                console.log(typeof(resursa[0].content));
+                console.log(typeof(resursa[0]));
             }
             return resursa;
         }).then(rezultat => {

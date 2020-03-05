@@ -88,6 +88,7 @@ TimelineObj = {
 pubComm.on('personrecord', function clblPersReds (resurse) {
     renderUsrDetails.innerHTML = '';
     userFile = resurse;
+
     // TODO: Transformă `resurse` într-un subset necesar lui Timeline
     TimelineObj.title.text.headline = resurse.googleProfile.name;
     TimelineObj.title.text.text = `Acestea sunt resursele contribuite afișate temporal`;
@@ -95,19 +96,23 @@ pubComm.on('personrecord', function clblPersReds (resurse) {
     resurse.resurse.map(function clbkResursa2Timeline (resursa) {
         let discipline = resursa.discipline.join(', '); // flat-out discipline
         let images = [];
-        resursa.content.blocks.map( part => {
-            if (part.type === 'image') {
-                images.push(part);
-            }
-        });
+
+        // doar dacă ai blocuri, alimentezi array-ul imaginilor
+        if (resursa.blocks) {
+            resursa.content.blocks.map( part => {
+                if (part.type === 'image') {
+                    images.push(part);
+                }
+            });
+        }
         let data = new Date(`${resursa.date}`);
         let transformedObject = {
             media: {
-                url: `${images[0].data.file.url}`,
-                caption: `${images[0].data.file.caption}`,
+                url: images.length ? `${images[0].data.file.url}` : '',
+                caption: images.length ? `${images[0].data.file.caption}` : '',
                 credit: '',
                 thumbnail: '',
-                alt: `${images[0].data.file.caption}`,
+                alt: images.length ? `${images[0].data.file.caption}` : '',
                 title: `${resursa.title}`,
                 link: `/resurse/${resursa._id}`,
                 link_target: '_blank'
