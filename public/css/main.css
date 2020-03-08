@@ -286,11 +286,11 @@ tr.shown td.details-control {
     display: none;
 }
 
-/* GESTIONAREA SELECTORULUI DE IMAGINE - FORMULAR*/
+/* GESTIONAREA SELECTORULUI DE IMAGINE COPERTĂ - FORM 01 */
 .nopad {
     float: left;
 	padding-left: 0 !important;
-	padding-right: 0 !important;
+    padding-right: 0 !important;
 }
 /* GALERIA DE IMAGINI - FORMULAR */
 .image-checkbox {
@@ -298,12 +298,13 @@ tr.shown td.details-control {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
-	border: 4px solid transparent;
+	border: .3rem solid transparent;
 	margin-bottom: 0;
 	outline: 0;
 }
 .img-responsive {
     height: 8rem;
+    width: 100%;
 }
 /*Ascunde checkboxul original*/
 .image-checkbox input[type="checkbox"] {
@@ -316,7 +317,7 @@ tr.shown td.details-control {
     position: absolute;
     color: #4A79A3;
     background-color: #fff;
-    padding: 10px;
+    padding: .8rem;
     top: 0;
     right: 0;
 }
@@ -325,7 +326,7 @@ tr.shown td.details-control {
     display: block !important;
 }
 
-/* Etichete */
+/* ETICHETELE - FORM 01 */
 #tags {
     padding: 0.3rem;
 }

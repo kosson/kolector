@@ -1,4 +1,4 @@
-let editorDiv = document.querySelector('#codex');
+// let editorDiv = document.querySelector('#codex-editor');
 let redObj = JSON.parse(editorDiv.dataset.content);
 console.log(redObj.content.blocks);
 

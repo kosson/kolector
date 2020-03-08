@@ -466,7 +466,7 @@
     <div id="patru">
       {{!-- Acționarea grupului de controale pentru #2 --}}
       <div id="heading04">
-        <h5 class="text-light rounded text-center bg-danger p-2">Încarcă fișiere și introdu conținutul, dacă acesta este de întindere medie</h5>
+        <h5 class="text-light rounded text-center bg-danger p-2">Încarcă fișiere și introdu conținut, dacă acesta este de întindere medie</h5>
       </div>
       {{!-- Înapoi la pasul 3 [form-group]--}}
       <div class="form-group align-self-center m-4">
@@ -475,9 +475,23 @@
       {{!-- Înapoi la pasul 4 [form-group] END --}}
       {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
       <div id="sec04" class="form-group" aria-labelledby="heading04" data-parent="#accordionFrm">
+        {{!-- RESURSELE care au stat la bază --}}
+        <fieldset>
+          <legend>Resursele folosite în elaborarea RED-ului</legend>
+          {{!-- <div id="relatedRes">
+            <span class="badge badge-info">Componente</span>
+          </div> --}}
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Completează menționând fiecare link separat prin virgule:</span>
+            </div>
+            <textarea id="componenteRed" class="form-control" aria-label="Componentele RED-ului" rows="3"></textarea>
+          </div>
+        </fieldset>
+
         {{!-- EDITOR pentru introducerea letrică --}}
         <fieldset>
-          <legend>Editorul materialelor care constituie RED-ul</legend>
+          <legend>Introdu mai jos în editor părțile componente ale RED-ului și o descriere, dacă este nevoie:</legend>
           {{!-- Integrarea editorului de text --}}
           <div id="codex-editor"></div>
           <button id="continutRes" class="btn btn-warning">Salvează conținutul introdus</button>
@@ -487,7 +501,8 @@
       {{!-- Verificarea fișei și constituirea înregistrării [form-group] END--}}
       {{!-- Selector de imagine pentru coperta resursei --}}
       <fieldset>
-        <legend id="imgSelector">Selectează imaginea care va fi coperta resursei</legend>
+        <legend>Selectează imaginea care va fi coperta resursei</legend>
+        <div id="imgSelector"></div>
       </fieldset>
       {{!-- Selector de imagine pentru coperta resursei END--}}
       {{!-- ETICHETE --}}

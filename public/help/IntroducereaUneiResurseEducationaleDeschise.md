@@ -1,6 +1,6 @@
 # Încărcarea Resurselor Educaționale Deschise
 
-**Versiunea 2.0, Ianuarie, 2020**
+**Versiunea 2.2, Martie, 2020**
 
 ## Introducere
 
@@ -65,7 +65,7 @@ Despre licența [GNU General Public License](https://www.gnu.org/licenses/gpl-3.
 
 ## Pasul 2 - Încadrarea resursei
 
-Pasul doi adaugă informație privind Aria curriculară, clasa sau clasele la care poate fi folosită resursa și competențele specifice expuse de fiecare disciplină.
+Pasul doi adaugă informație privind **Aria curriculară**, clasa sau clasele la care poate fi folosită resursa și competențele specifice expuse de fiecare disciplină.
 
 ![](img/Pas2-IncadrareaResursei.png)
 
@@ -110,7 +110,17 @@ Acest pas permite o mai mare granularitate în ceea ce privește atributele și 
 
 ## Pasul 4 - Introducerea conținuturilor
 
-Editorul permite încărcarea de fișiere tip document, text, referințe către materiale video, fragmente de cod active și fișiere de imagine în format `jpg` și `png`. Este permisă copierea și inserarea de text care conține hyperlinkuri.
+### Introducerea unei descrieri extinse
+
+Ați ajuns la zona în care este oferit un editor necesar încărcării pe server a Resursei Educaționale Deschise cu toate conținuturile necesare. Un RED poate fi un singur fișier, dar poate fi constituit din mai multe, acest aspect fiind legat de practica pedagogică specifică fiecăruia. Din acest motiv, este permisă încărcarea de documente și de imagini. Dacă aveți un videoclip, care este offline, adică nu este pe o platformă deja, dacă acesta face parte din resursă sau chiar este resursa în sine, atunci dimensiunile sale nu trebuie să depășească 20 MB. Din rațiuni economice, recomadarea pentru videoclipurile de mare dimensiune, este ca acestea deja să fie online deja și să menționați aici doar linkul, fie să existe deja în directorul Drive propriu, de unde se va genera in link accesibil public, iar acest link să fie menționat aici.
+Aceste precizări sunt valabile pentru toate resursele, indiferent de natura și formatul lor.
+
+![](img/ilustratii/RESURSA.png)
+
+Aceasta este zona unde pot fi aduse și completări importante prin puterea lor de clarificare a anumitor aspecte legate de înțelegerea și lucrul cu resursa în sine. Puteți să considerați că aceasta este zona în care puteți descrie în mai multe detalii ce conține materialul și cum se poate folosi... poate un mic ghid?! În acest scop, editorul permite încărcarea de fișiere tip document, text, referințe către materiale video, fragmente de cod active și fișiere de imagine în format `jpg` și `png`. Este permisă copierea și inserarea de text care conține hyperlinkuri.
+
+În cazul în care resursa proprie a fost elaborată folosind alte resurse cu licență deschisă, aici este zona unde veți menționa autorii (persoană fizică sau juridică), titlul și linkul către acestea. Acest pas este absolut necesar pentru a respecta drepturile acestora așa cum menționează licențele sub care ați preluat, prelucrat și integrat aceste resurse originale care nu vă aparțineau.
+De altfel, există un câmp în care puteți introduce resursele de care v-ați folosit. Aici veți menționa link-urile sau identificatorii separați prin virgule.
 
 ![](img/Pas4-EditorulIndicatorulDeBloc.png)
 

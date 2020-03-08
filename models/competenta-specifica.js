@@ -12,7 +12,11 @@ let CompetentaS = new mongoose.Schema({
             message: 'Numele resursei trebuie să fie mai mare de trei caractere'
         },
         required: [true, 'Fără numele resursei, nu se poate face înregistrarea']
-    },   
+    },
+    idRED:      [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'resursedu'
+    }],
     ids:        [],     // În programă este codat cu 1.1. Aici se poate trece orice secvență alfanumerică care să ofere o adresă rapidă către competența specifică
     cod:        String, // cod intern agreat (parte a vocabularului controlat)
     activitati: [],     // cunoștințe, abilități, atitudini: „utilizarea imaginilor pentru indicarea semnificaţiei unui mesaj audiat”, altul: „realizarea unui desen care corespunde subiectului textului audiat”

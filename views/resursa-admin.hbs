@@ -2,172 +2,146 @@
 {{> nav-resurse}}
 {{> messages}}
 
-<div id="resursaincredadm" class="resurse">    
-    {{#each resursa}}
-        <div data-id="{{this._id}}" data-contribuitor="{{this.idContributor}}" id="{{this._id}}" class="resursa">
-            <img src="{{this.coperta}}" class="coperta card-img-top" alt="{{this.title}}">
-            <div class="container redcontent">
-                <div class="card-title">
-                    <h5>Titlul resursei: {{this.title}}</h5>
-                    <aside>
-                        <strong>Verificată: {{{this.validate}}}</strong>
-                        <strong>Publică: {{{this.genPub}}}</strong>
-                    </aside>
-                </div>
-                {{#if this.titleI18n}}
-                    <h5>Titluri alternative:</h5>
-                    {{#each this.titleI18n}}
-                        {{#each this}}
-                            <strong>{{@key}}: {{.}}</strong>
-                        {{/each}}
-                    {{/each}}
-                {{/if}}              
-                {{!-- <button id="resedadm" type="button" class="btn btn-warning">Editează resursa</button> --}}
-                <h5>Data introducerii resursei</h5>
-                <p>{{this.dataRo}}</p>
-                <h5>Autori:</h5>
-                <p>{{this.autori}}</p>
-                <h5>Contribuitor:</h5>
-                <p>{{this.idContributor}}</p>
-                <h5>Descrierea resursei:</h5>
-                <p class="card-text">{{this.description}}</p>
-                <h5>Arie curriculară:</h5>
-                <ul>
-                    {{#each this.arieCurriculara}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Clasa:</h5>
-                <ul>
-                    {{#each this.level}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Discipline:</h5>
-                <ul>
-                    {{#each this.discipline}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Competențe generale:</h5>
-                <ul>
-                    {{#each this.competenteGen}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Competențe specifice:</h5>
-                <ul>
-                    {{#each this.competenteS}}
-                        <li>
-                            {{#this}}
-                                {{nume}}
-                            {{/this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Activități:</h5>
-                <ul>
-                    {{#each this.activitati}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Grup țintă:</h5>
-                <ul>
-                    {{#each this.grupuri}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Domeniul căruia i se adresează resursa:</h5>
-                <ul>
-                    {{#each this.domeniu}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Resursa vizează:</h5>
-                <ul>
-                    {{#each this.functii}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Tipul de demers / raționament utilizat în realizarea resursei:</h5>
-                <ul>
-                    {{#each this.demersuri}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Activitatea se desfășoară:</h5>
-                <ul>
-                    {{#each this.spatii}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Modul în care se produce învățarea se face prin:</h5>
-                <ul>
-                    {{#each this.invatarea}}
-                        <li>
-                            {{this}}
-                        </li>
-                    {{/each}}
-                </ul>
-                <h5>Mijloace / materiale didactice necesare</h5> 
-                <p>{{this.dependinte}}</p>
-                <h5>Licența:</h5>
-                <p>{{this.licenta}}</p>
-                {{#if this.bibliografie}}
-                    <h5>Bibliografie</h5>
-                    <p>{{this.bibliografie}}</p>
-                {{/if}}
-                <h5>Etichete</h5>
-                <div>
-                    {{#each this.etichete}}
-                        <a href="#" class="badge badge-success">{{this}}</a>
-                    {{/each}}
-                </div>
-                <h5>Conținut</h5>
-                <div class="content">
-                    {{!-- AFIȘAREA CONȚINUTULUI este de fapt o transformare în html a obiectului content. Vezi resincredid.ctrl.js --}}
-                    {{!-- {{{this.content}}} --}}
-                </div>
-
-                <div id="codex" data-content="{{json this}}">Aici ar trebui să fie ceva</div>
-
-                <div id="codex-editor">
-
-                </div>
-                {{!-- Integrarea editorului de text --}}
-                {{!-- <div id="codex-editor"></div> --}}
-                {{!-- Încarcă aici scripturile pentru a evita oul înaintea găinii! :D --}}
-                {{#each scripts}}
-                    <script src="{{script}}"></script>
-                {{/each}}
-
-                
-
-                <button id="resdeladm" type="button" class="btn btn-danger" data-toggle="modal" data-target="#delModal">Șterge resursa</button>
+<div id="resursaincredadm" class="resurse">
+    <div data-id="{{resursa._id}}" data-contribuitor="{{resursa.idContributor}}" id="{{resursa._id}}" class="resursa">
+        {{#if resursa.coperta}}
+            <img src="{{resursa.coperta}}" class="coperta card-img-top" alt="{{resursa.title}}">
+        {{/if}}
+        <div class="container redcontent">
+            <div class="card-title">
+                <h5>Titlul resursei: {{resursa.title}}</h5>
+                <aside>
+                    <strong>Verificată: {{{resursa.validate}}}</strong>
+                    <strong>Publică: {{{resursa.genPub}}}</strong>
+                </aside>
             </div>
+            {{#if resursa.titleI18n}}
+                <h5>Titluri alternative:</h5>
+                {{#each resursa.titleI18n}}
+                    {{#each this}}
+                        <strong>{{@key}}: {{.}}</strong>
+                    {{/each}}
+                {{/each}}
+            {{/if}}              
+            {{!-- <button id="resedadm" type="button" class="btn btn-warning">Editează resursa</button> --}}
+            <h5>Data introducerii resursei</h5>
+            <p>{{resursa.dataRo}}</p>
+            <h5>Autori:</h5>
+            <p>{{resursa.autori}}</p>
+            <h5>Contribuitor:</h5>
+            <p>{{resursa.idContributor}}</p>
+            <h5>Descrierea resursei:</h5>
+            <p class="card-text">{{resursa.description}}</p>
+            <h5>Arie curriculară:</h5>
+            <ul>
+                {{#each resursa.arieCurriculara}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Clasa:</h5>
+            <ul>
+                {{#each resursa.level}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Discipline:</h5>
+            <ul>
+                {{#each resursa.discipline}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Competențe generale:</h5>
+            <ul>
+                {{#each resursa.competenteGen}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Competențe specifice:</h5>
+            <ul>
+                {{#each resursa.competenteS}}
+                    <li>
+                        {{#this}}
+                            {{nume}}
+                        {{/this}}
+                    </li>
+                {{/each}}
+            </ul>
+            <h5>Activități:</h5>
+            <ul>
+                {{#each resursa.activitati}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Grup țintă:</h5>
+            <ul>
+                {{#each resursa.grupuri}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Domeniul căruia i se adresează resursa:</h5>
+            <ul>
+                {{#each resursa.domeniu}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Resursa vizează:</h5>
+            <ul>
+                {{#each resursa.functii}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Tipul de demers / raționament utilizat în realizarea resursei:</h5>
+            <ul>
+                {{#each resursa.demersuri}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Activitatea se desfășoară:</h5>
+            <ul>
+                {{#each resursa.spatii}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Modul în care se produce învățarea se face prin:</h5>
+            <ul>
+                {{#each resursa.invatarea}}
+                    <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <h5>Mijloace / materiale didactice necesare</h5> 
+            <p>{{resursa.dependinte}}</p>
+            <h5>Licența:</h5>
+            <p>{{resursa.licenta}}</p>
+            {{#if resursa.bibliografie}}
+                <h5>Bibliografie</h5>
+                <p>{{resursa.bibliografie}}</p>
+            {{/if}}
+            <h5>Etichete</h5>
+            <div>
+                {{#each resursa.etichete}}
+                    <a href="#" class="badge badge-success">{{this}}</a>
+                {{/each}}
+            </div>
+            <h5>Conținut</h5>
+            {{!-- <div class="content">
+                <!-- AFIȘAREA CONȚINUTULUI este de fapt o transformare în html a obiectului content. Vezi resincredid.ctrl.js -->
+                {{{this.content}}}
+            </div> --}}
+
+            <div id="codex-editor" data-content="{{json resursa}}">
+
+            </div>
+            {{!-- Integrarea editorului de text --}}
+            {{!-- <div id="codex-editor"></div> --}}
+            {{!-- Încarcă aici scripturile pentru a evita oul înaintea găinii! :D --}}
+            {{#each scripts}}
+                <script src="{{script}}"></script>
+            {{/each}}                
+
+            <button id="resdeladm" type="button" class="btn btn-danger" data-toggle="modal" data-target="#delModal">Șterge resursa</button>
         </div>
-    {{/each}}
-    
+    </div>
+
     <!-- Modal -->
     <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

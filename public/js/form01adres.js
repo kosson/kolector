@@ -15,6 +15,7 @@ var RED = {
     competenteGen: [],
     competenteS: [],
     activitati: [],
+    relatedTo: [],
     etichete: []
 };
 
@@ -107,25 +108,17 @@ const editorX = new EditorJS({
                      */
                     uploadByFile(file){  
                         //TODO: Detectează dimensiunea fișierului și dă un mesaj în cazul în care depășește anumită valoare (vezi API-ul File)
-                        console.log(file);
-
-                        /* Obiectul necesar lui Editor.js după ce fișierul a fost trimis. 
-                        După ce trimiți fișierul, Editor.js se așteaptă ca acesta să fie populat */                            
-                        const obj4EditorJS = {
-                            success: '',
-                            file: {
-                                url: ''
-                            }
-                        };
+                        // console.log(file.size);
 
                         // => construcția obiectul care va fi trimis către server
                         let objRes = {
                             user: RED.idContributor, // este de forma "5e31bbd8f482274f3ef29103" [înainte este email-ul]
                             name: RED.nameUser, // este de forma "Nicu Constantinescu"
-                            uuid: RED.uuid, // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare deja. Dacă nu, la prima încărcare, serverul va emite unul înapoi în client
-                            resF: file,     // este chiar fișierul: lastModified: 1583135975000  name: "Sandro_Botticelli_083.jpg" size: 2245432 type: "image/jpeg"
+                            uuid: RED.uuid,  // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare deja. Dacă nu, la prima încărcare, serverul va emite unul înapoi în client
+                            resF: file,      // este chiar fișierul: lastModified: 1583135975000  name: "Sandro_Botticelli_083.jpg" size: 2245432 type: "image/jpeg"
                             numR: file.name, // name: "Sandro_Botticelli_083.jpg"
-                            type: file.type // type: "image/jpeg"
+                            type: file.type, // type: "image/jpeg"
+                            size: file.size
                         };
 
                         /**
@@ -139,11 +132,6 @@ const editorX = new EditorJS({
                             // TRIMITE ÎN SERVER
                             pubComm.emit('resursa', objRes); // TRIMITE RESURSA către server. Serverul creează bag-ul și scrie primul fișier!!! [UUID creat!]
 
-                            // curăță obiectul de partea legată de specificul fiecărui fișier expediat
-                            // objRes.resF = null;
-                            // objRes.numR = '';
-                            // objRes.type = '';
-
                             // RĂSPUNSUL SERVERULUI
                             pubComm.on('resursa', (respObj) => {
                                 // în cazul în care pe server nu există nicio resursă, prima va fi creată și se va primi înapoi uuid-ul directorului nou creat
@@ -151,15 +139,32 @@ const editorX = new EditorJS({
                                     RED.uuid = respObj.uuid; // setează și UUID-ul în obiectul RED local
                                 }
                                 // console.log('În urma încărcării fișierului de imagine am primit de la server: ', respObj);
+
+                                // constituie cale relativă către imagine
+                                var urlAll = new URL(`${respObj.file}`);
+                                var path = urlAll.pathname;   // de forma "/repo/5e31bbd8f482274f3ef29103/5af78e50-5ebb-11ea-9dcc-f50399016f10/data/628px-European_Union_main_map.svg.png"
+                                // obj4EditorJS.file.url = path; // introducerea url-ului nou format în obiectul de răspuns pentru Editor.js
+                                
+                                // FIXME: !!!!!!!!!!!
+                                /* Obiectul necesar lui Editor.js după ce fișierul a fost trimis. 
+                                După ce trimiți fișierul, Editor.js se așteaptă ca acesta să fie populat */                            
+                                const obj4EditorJS = {
+                                    success: respObj.success,
+                                    file: {
+                                        url: path,
+                                        size: respObj.file.size
+                                    }
+                                };
                                 
                                 // completarea proprietăților așteptate de EditorJS în cazul succesului.
-                                obj4EditorJS.success = respObj.success; // TRUE
+                                // obj4EditorJS.success = respObj.success; // 1
                                 // obj4EditorJS.file.url = respObj.file; // Așa era preluat url-ul de obiectul succes până la 0.5.3
-                                // constituie calea către imagine
-                                var urlAll = new URL(`${respObj.file}`);
-                                var path = urlAll.pathname; // de forma "/repo/5e31bbd8f482274f3ef29103/5af78e50-5ebb-11ea-9dcc-f50399016f10/data/628px-European_Union_main_map.svg.png"
-                                obj4EditorJS.file.url = path; // introducerea url-ului nou format în obiectul de răspuns pentru Editor.js
-                                imagini.add(path); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
+                                
+
+                                // TODO: verifică dacă respectiva cale există sau nu în Set.
+                                if (!imagini.has(path)) {
+                                    imagini.add(path); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
+                                }
 
                                 // RESOLVE / REJECT
                                 resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
@@ -222,6 +227,7 @@ const editorX = new EditorJS({
                             .then(response => response.blob())
                             .then(response => {
                                 // TODO: Detectează dimensiunea și nu permite încărcarea peste o anumită limită.
+                                console.log(response);
 
                                 // completează proprietățile necesare pentru a-l face `File` like pe răspunsul care este un Blob.
                                 response.lastModifiedDate = new Date();
@@ -235,38 +241,36 @@ const editorX = new EditorJS({
                                     uuid: RED.uuid,
                                     resF: null,
                                     numR: '',
-                                    type: ''
+                                    type: '',
+                                    size: 0
                                 };
 
                                 objRes.resF = response; // introdu fișierul ca blob
                                 objRes.numR = response.name; // completează obiectul care va fi trimis serverului cu numele fișierului
-                                objRes.type = response.type; // completează cu extensia                                
+                                objRes.type = response.type; // completează cu extensia
+                                objRes.size = response.size; // completează cu dimensiunea                            
                                 
                                 // trimite resursa în server
                                 pubComm.emit('resursa', objRes);
 
-                                // curăță obiectul de partea legată de specificul fiecărui fișier expediat
-                                // objRes.resF = null;
-                                // objRes.numR = '';
-                                // objRes.type = '';
-                                
-                                const promissed = new Promise((resolve, reject) => {
-                                    // obiectul necesar lui Editor.js
-                                    let obj4EditorJS = {
-                                        success: '',
-                                        file: {
-                                            url: ''
-                                        }
-                                    };                                    
-                                    
+                                const promissed = new Promise((resolve, reject) => {                                   
                                     pubComm.on('resursa', (respObj) => {
-                                        // cazul primei trimiteri de resursă: setează uuid-ul proaspăt generat! Este cazul în care prima resursă trimisă este un fișier imagine.
+                                        // obiectul necesar lui Editor.js
+                                        let obj4EditorJS = {
+                                            success: respObj.success,
+                                            file: {
+                                                url: respObj.file,
+                                                size: response.size
+                                            }
+                                        };
+
+                                        // cazul primei trimiteri de resursă: setează UUID-ul proaspăt generat! Este cazul în care prima resursă trimisă este un fișier imagine.
                                         if (!RED.uuid) {
                                             RED.uuid = respObj.uuid;
                                         }
                                         // console.log('În cazul paste-ului de imagine, pe canalul resursa am primit următorul obiect: ', respObj);
-                                        obj4EditorJS.success = respObj.success;
-                                        obj4EditorJS.file.url = respObj.file;
+                                        // obj4EditorJS.success = respObj.success;
+                                        // obj4EditorJS.file.url = respObj.file;
 
                                         // constituie calea către imagine
                                         console.log(respObj.file);
@@ -1082,42 +1086,73 @@ function closeBag (evt) {
 
 // Afișează selectorul de imagini - https://codepen.io/kskhr/pen/pRwKjg
 /**
+ * Funcția este receptor pentru containerele imaginilor timbru
  * Funcția are rolul de a bifa și debifa imaginile din galeria celor expuse selecției.
  */
-function clickImgGal ()  {
-    $(".image-checkbox").each(function () {
-        if ($(this).find('input[type="checkbox"]').first().attr("checked")) {
-            $(this).addClass('image-checkbox-checked');
-        }
-        else {
-            $(this).removeClass('image-checkbox-checked');
-        }
-    });
-    $(this).toggleClass('image-checkbox-checked');
-    var checkbox = $(this).find('input[type="checkbox"]');
-    checkbox.prop("checked",!checkbox.prop("checked"));
+function clickImgGal () {
+    // selectează toate elementele care au clasa `.image-checkbox`
+    let elementContainer = document.querySelectorAll('.image-checkbox'); // e o HTMLColection de div-uri care conțin fiecare următorii copii: img, input, svg
+    // console.log(elementContainer.length); // 2
+    // console.log(this);
 
-    $(this).find('svg').toggleClass(function () {
-        if (checkbox.prop("checked")) {
-            return 'd-block';
-        } else {
-            return 'd-none';
-        }
+    // caută între cei trei copii elementul <input>
+    elementContainer.forEach( liveNode => {
+        // caută primul element <input type="checkbox">, care este în mod normal și primul care are atributul `checked`
+        let inputCollection = liveNode.querySelectorAll('input[type=checkbox]');
+        inputCollection.forEach(element => {
+
+
+            // adaugă-i acestui element clasa `image-checkbox-checked`
+            if (element.checked) {
+                element.classList.add('image-checkbox-checked');
+                
+                // TODO: Vezi dacă este selectat vreun alt element și dacă este, pune-le pe toate pe checked === false
+                // for (let sibling of elem.parentNode.children) {
+                //     // console.log(sibling);        
+                //     if (sibling !== checkbox) {
+                //         sibling.checkbox = false;
+                //         sibling.classList.remove('image-checkbox-checked');
+                //     }
+                // }
+
+
+            } else {
+                // altfel, sterge-i clasa `image-checkbox-checked`
+                element.classList.remove('image-checkbox-checked');
+            }
+        });
     });
 
-    if(checkbox.prop('checked')){
-        $(this).find('svg').removeClass('d-none');
-        $(this).find('svg').toggleClass('d-block');
+    this.classList.toggle('image-checkbox-checked');
+    var checkbox = this.querySelector('input[type=checkbox]');
+    // console.log(checkbox, checkbox.checked);
+
+    if(checkbox.checked === false) {
+        checkbox.checked = true;
+    } else {
+        checkbox.checked = false;
+    }
+
+    if (checkbox.checked === true) {
+        this.querySelector('svg').classList.add('d-block');
+    } else {
+        this.querySelector('svg').classList.add('d-none');
+    }
+
+    if(checkbox.checked === true){
+        this.querySelector('svg').classList.remove('d-none');
+        this.querySelector('svg').classList.toggle('d-block');
     }
 }
+
 var insertGal = document.getElementById('imgSelector');
 /**
- * Funcția generează toate elementele ce poartă imagini pentru a fi bifată cea care devine coperta resursei.
+ * Funcția generează toate elementele ce poartă imagini pentru a putea fi bifată cea care devine coperta resursei.
  */
 function pickCover () {
     insertGal.innerHTML = '';
     for (let img of imagini) {
-        console.log(img);
+        console.log('imaginea selectată pentru copertă este: ', img);
         
         let container = new createElement('div', '', [`col-xs-4`, `col-sm-3`, `col-md-2`, `nopad`, `text-center`], null).creeazaElem();
         container.addEventListener('click', clickImgGal);
@@ -1136,39 +1171,49 @@ function pickCover () {
     }
     return insertGal;
 }
+
 /**
  * Funcția are rolul de a colecta care dintre imagini va fi coperta și de a colecta etichetele completate de contribuitor.
  */
 function pas4 () {
-    var inputCheckGal = document.querySelectorAll('.inputCheckGal');
-    inputCheckGal.forEach(input => {
-        if (input.checked) {
-            RED.coperta = input.value;
-        }
+    //TODO: Colectează linkurile RED-urilor componente
+    // vezi id-ul `componenteRed` și introdu-se în array-ul `RED.related`
+    var newRelReds = document.getElementById('componenteRed');
+    var arrNewRelReds = newRelReds.value.split(',');
+    arrNewRelReds.forEach((relRed) => {
+        relRed = relRed.trim();
+        RED.relatedTo.push(relRed);
     });
+
     // colectarea etichetelor
+    // TODO: Diferențiază-le pe cele care sunt redactate cu `[]` de celelalte. Cele cu `[]` trebuie să genereze în backend colecții!!! IMPLEMENTEAZĂ!
     var newTags = document.getElementById('eticheteRed');
     var arrNewTags = newTags.value.split(',');
     arrNewTags.forEach((tag) => {
         tag = tag.trim(); // curăță de posibilele spații.
         RED.etichete.push(tag);
     });
+
+    // Completează RED.coperta cu linkul către imaginea bifată din galerie
+    var inputCheckGal = document.querySelectorAll('.inputCheckGal');
+    inputCheckGal.forEach(input => {
+        if (input.checked) {
+            RED.coperta = `${input.value}`;
+        }
+    });
 }
 
+/* === SALVAREA CONȚINUTULUI === */
 // fă o referință către butonul de trimitere a conținutului
 var saveContinutRes = document.querySelector('#continutRes');
 // la click, introdu conținutul în obiectul marea RED.
 saveContinutRes.addEventListener('click', function (evt) {
     evt.preventDefault();
-
-    
-    // salvarea conținutului introdus în editor. Este o problemă cu imaginile!!! Mai mult de două înlocuiește linkul ultimei introduse în toate
+    // salvarea conținutului introdus în editor.
     editorX.save().then((content) => {
-        console.log(content);
-
         // FIXME: Introdu un mecanism prin care editorul să țină minte conținutul introdus!!!
         RED.content = content;
-        pickCover();
+        pickCover(); // formează galeria pentru ca utilizatorul să poată selecta o imagine
     }).catch((e) => {
         console.log(e);
     });

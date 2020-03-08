@@ -178,25 +178,18 @@ module.exports = (express, app, passport, pubComm) => {
         // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
 
         const editorJs2html = require('./controllers/editorJs2HTML');
-        
+
         // adu înregistrarea din MongoDB după ce a fost încărcată o nouă resursă
-        Resursa.find({_id: req.params.idres}).populate({
+        Resursa.findById(req.params.idres).populate({
             path: 'competenteS'
         }).exec().then(resursa => {
-            if (resursa[0]) {
-                // resursa[0].content = editorJs2html(resursa[0].content); // înlocuirea conținutului care este JSON cu o variantă HTML.
-                let localizat = moment(resursa[0].date).locale('ro').format('LLL');
-                resursa[0].dataRo = `${localizat}`; // formatarea datei pentru limba română.
-            } else {
-                console.log(typeof(resursa[0]));
-            }
-            return resursa;
-        }).then(rezultat => {
-            // .then(rez => JSON.stringify(rez))
-            let x = JSON.stringify(rezultat);
-            // console.log(x);
+            let localizat = moment(resursa.date).locale('ro').format('LLL');
+            resursa.dataRo = `${localizat}`; // formatarea datei pentru limba română.
 
-            rezultat.editorContent = JSON.stringify(rezultat); // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată
+            // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
+            resursa.editorContent = JSON.stringify(resursa);
+
+            console.log(resursa.coperta);
 
             let scripts = [      
                 {script: '/js/redincredadmin.js'},
@@ -220,16 +213,16 @@ module.exports = (express, app, passport, pubComm) => {
             /* ====== VERIFICAREA CREDENȚIALELOR ====== */
             if(req.session.passport.user.roles.admin){
                 // Adaugă mecanismul de validare a resursei
-                if (rezultat[0].expertCheck) {
-                    rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
+                if (resursa.expertCheck) {
+                    resursa.validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
                 } else {
-                    rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck">`;
+                    resursa.validate = `<input type="checkbox" id="valid" class="expertCheck">`;
                 }
                 // Adaugă mecanismul de prezentare la public
-                if (rezultat[0].generalPublic) {
-                    rezultat[0].genPub = `<input type="checkbox" id="public" class="generalPublic" checked>`;
+                if (resursa.generalPublic) {
+                    resursa.genPub = `<input type="checkbox" id="public" class="generalPublic" checked>`;
                 } else {
-                    rezultat[0].genPub = `<input type="checkbox" id="public" class="generalPublic">`;
+                    resursa.genPub = `<input type="checkbox" id="public" class="generalPublic">`;
                 }                
                 res.render('resursa-admin', {
                     user:    req.user,
@@ -238,14 +231,14 @@ module.exports = (express, app, passport, pubComm) => {
                     scripts,
                     logoimg: "/img/red-logo-small30.png",
                     credlogo: "../img/CREDlogo.jpg",
-                    resursa: rezultat
+                    resursa: resursa
                 });
             } else if (confirmedRoles.includes('validator')) {
                 // Adaugă mecanismul de validare a resursei
-                if (rezultat[0].expertCheck) {
-                    rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
+                if (resursa.expertCheck) {
+                    resursa.validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
                 } else {
-                    rezultat[0].validate = `<input type="checkbox" id="valid" class="expertCheck">`;
+                    resursa.validate = `<input type="checkbox" id="valid" class="expertCheck">`;
                 }
                 res.render('resursa-validator', {
                     user:    req.user,
@@ -254,7 +247,7 @@ module.exports = (express, app, passport, pubComm) => {
                     scripts,
                     logoimg: "/img/red-logo-small30.png",
                     credlogo: "../img/CREDlogo.jpg",
-                    resursa: rezultat
+                    resursa: resursa
                 });
             } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
                 res.render('resursa', {
@@ -263,7 +256,7 @@ module.exports = (express, app, passport, pubComm) => {
                     style:   "/lib/fontawesome/css/fontawesome.min.css",
                     logoimg: "/img/red-logo-small30.png",
                     credlogo: "../img/CREDlogo.jpg",
-                    resursa: rezultat,
+                    resursa: resursa,
                     scripts
                 });
             } else {
@@ -271,6 +264,7 @@ module.exports = (express, app, passport, pubComm) => {
             }
         }).catch(err => {
             if (err) {
+                pubComm.emit('mesaje', `Nu pot să afișez resursa. Eroare: ${err}`);
                 console.log(err);
             }
         });
@@ -290,6 +284,7 @@ module.exports = (express, app, passport, pubComm) => {
     /* =========== CONSTRUCȚIA BAG-ULUI, INTRODUCEREA ÎNREGISTRĂRII, INTRODUCEREA ÎN ELASTICSEARCH ========= */
     let lastBag;   // este o referință către un bag deja deschis
     let lastUuid;  // referință către UUID-ul în efect
+    
     /* SOCKETURI!!! */
     pubComm.on('connect', (socket) => {
         // Ascultă mesajele
@@ -298,7 +293,7 @@ module.exports = (express, app, passport, pubComm) => {
         });
 
         // Primirea imaginilor pe socket conduce la crearea Bag-ului
-        socket.on('resursa', function cbRes (resourceFile) {
+        socket.on('resursa', function clbkResursa (resourceFile) {
             // creează calea pe care se va depozita.
             var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`; // FIXME: Folosește path.join în viitor să dăm și celor de pe Windows o șansă
 
@@ -307,21 +302,22 @@ module.exports = (express, app, passport, pubComm) => {
             strm.push(resourceFile.resF);  
             strm.push(null);
 
-            // dacă resursa primită nu are uuid, înseamnă că este prima. Tratează cazul primei resurse
+            // dacă resursa primită nu are UUID, înseamnă că este prima. Tratează cazul primei resurse
             if (!resourceFile.uuid) {
                 // setează lastUuid
                 lastUuid = uuidv1();
                 // ajustează calea adăugând fragmentul uuid
                 calea += `${lastUuid}`;
                 // generează bag-ul pentru user
-                lastBag = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează bag-ul
+                lastBag = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează BAG-ul
                 // adăugarea fișierului primit în Bag
                 strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));                
                 // construiește obiectul de răspuns necesar lui Editor.js
                 var responseObj = {
                     success: 1,
                     uuid: lastUuid,
-                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`
+                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`,
+                    size: resourceFile.size
                 };
                 // trimite înapoi în client obiectul de care are nevoie Editor.js
                 socket.emit('resursa', responseObj);
@@ -336,7 +332,8 @@ module.exports = (express, app, passport, pubComm) => {
                 var responseObj4AddedFile = {
                     success: 1,
                     uuid: resourceFile.uuid,
-                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${resourceFile.uuid}/data/${resourceFile.numR}`
+                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${resourceFile.uuid}/data/${resourceFile.numR}`,
+                    size: resourceFile.size
                 };
                 // trimite înapoi obiectul care reprezintă fișierul creat în Bag-ul resursei
                 socket.emit('resursa', responseObj4AddedFile);
@@ -350,7 +347,7 @@ module.exports = (express, app, passport, pubComm) => {
             // finalizarea creării Bag-ului
             if (lastBag) {
                 lastBag.finalize(() => {
-                    // FIXME: setează bag-ul ca depozit git
+                    // TODO: setează BAG-ul ca depozit git
                     socket.emit('closeBag', 'Am finalizat închiderea bag-ului');
                 });
             } else {

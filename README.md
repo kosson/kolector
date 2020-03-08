@@ -11,8 +11,11 @@ RED Colector este aplicația care gestionează Resurse Educaționale Deschise. A
 Acest efort este al echipei compuse din:
 
 - Nicolaie Constantinescu, developer (mailto:nicu.constantinescu@educred.ro);
-- Radu Vasile, developer (mailto:radu.vasile@educred.ro);
 - Liviu Constandache, analist date și workflow (mailto:liviu.constandache@educred.ro);
+- George Boroș, specialist infrastructură, (mailto:george.boros@educred.ro).
+
+Mulțumiri celor care au contribuit:
+
+- Radu Vasile, developer (mailto:radu.vasile@educred.ro);
 - Alina Crăciunescu, analist de date (mailto:alina.craciunescu@educred.ro);
 - Andreea Diana Scoda, analist (andreea.scoda@educred.ro);
-- George Boroș, specialist infrastructură, (mailto:george.boros@educred.ro).
