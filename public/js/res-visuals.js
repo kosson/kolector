@@ -20,7 +20,7 @@ pubComm.on('allRes', (resurse) => {
             {
                 data: '_id',
                 render: function clbkId (data, type, row) {
-                    return `<a href="${window.location.origin}/resurse/${data}">Deschide</a>`;
+                    return `<a href="${window.location.origin}/profile/resurse/${data}">Deschide</a>`;
                 }
             },
             {
