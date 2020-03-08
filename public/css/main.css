@@ -499,6 +499,7 @@ input[type='range']:focus {
 
 #showusers .card {
     height: 8rem;
+    min-width: 15rem;
 }
 
 .admUdesc__avatar {

@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const Resursa = require('../models/resursa-red');
 
 // ========== VERIFICAREA ROLURILOR ==========
 let checkRole = require('./controllers/checkRole.helper');
@@ -47,20 +48,20 @@ router.get('/', function clbkRouterRoot (req, res) {
     }
 });
 
-router.get('/:descriptor', function clbkRouterRoot (req, res) {
+router.get('/reds', function clbkRouterRoot (req, res) {
     // ACL
     let roles = ["admin", "validator"];
     
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
-
+    
     /* ====== VERIFICAREA CREDENȚIALELOR ====== */
     // Dacă avem un admin, atunci oferă acces neîngrădit
     if(req.session.passport.user.roles.admin){
         let scripts = [       
             {script: '/lib/moment/min/moment.min.js'},
             // {script: '/lib/timeline3/js/timeline.js'},
-            {script: '/js/red-visuals.js'}
+            {script: '/js/res-visuals.js'}
         ];
         res.render('reds-data-visuals', {
             title:   "REDs data visuals",

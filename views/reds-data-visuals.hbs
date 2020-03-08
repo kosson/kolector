@@ -1,6 +1,7 @@
 {{!< layout}}
 {{> nav-administrator}}
 {{> messages}}
+
 <div id="content">
     <h1>Aici se va dezvolta o pagină dedicată vizualizării datelor privind RED-urile</h1>
     <section class="container-fluid" id="res-visuals">
@@ -16,8 +17,13 @@
             </div>
         </div>
     </section>
-
-    {{#each scripts}}
-        <script src="{{script}}" charset="utf-8"></script>
-    {{/each}}
 </div>
+
+{{!-- Tabelul resurselor personale --}}
+<template id="userResTbl">
+    <div id="resurseTab" class=""></div>
+</template>
+
+{{#each scripts}}
+    <script src="{{script}}" charset="utf-8"></script>
+{{/each}}

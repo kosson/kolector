@@ -804,6 +804,14 @@ module.exports = (express, app, passport, pubComm) => {
                 console.log('Nu știu ce se de date să constitui. NU am primit descriptori');
             }            
         });
+
+        socket.on('allRes', () => {
+            Resursa.find({}).exec().then(allRes => {
+                socket.emit('allRes', allRes);
+            }).catch(error => {
+                console.log(error);
+            });
+        });
     });
     /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */
 
