@@ -1,7 +1,7 @@
 const es = require('elasticsearch');
 const esClient = new es.Client({
     host: process.env.ELASTIC_URL,
-    log: 'trace'
+    // log: 'trace'
 });
 esClient.ping({
     // ping usually has a 3000ms timeout

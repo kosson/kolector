@@ -11,7 +11,7 @@ router.get('/', function clbkRouterRoot (req, res) {
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
-    /* ====== VERIFICAREA CREDENȚIALELOR ====== */
+    /* === VERIFICAREA CREDENȚIALELOR === */
     // Dacă avem un admin, atunci oferă acces neîngrădit
     if(req.session.passport.user.roles.admin){
         let scripts = [       
@@ -67,6 +67,38 @@ router.get('/reds', function clbkRouterRoot (req, res) {
             title:   "REDs data visuals",
             user:    req.user,
             style:   "/lib/fontawesome/css/fontawesome.min.css",
+            logoimg: "/img/red-logo-small30.png",
+            credlogo: "../img/CREDlogo.jpg",
+            scripts,
+            activeAdmLnk: true
+        });
+    // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
+    } else {
+        res.redirect('/401');
+    }
+});
+
+router.get('/users', function clbkRouterRoot (req, res) {
+    // ACL
+    let roles = ["admin", "validator"];
+    
+    // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
+    let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
+    
+    /* ====== VERIFICAREA CREDENȚIALELOR ====== */
+    // Dacă avem un admin, atunci oferă acces neîngrădit
+    if(req.session.passport.user.roles.admin){
+        let scripts = [
+            // {script: '/lib/fontawesome/js/all.js'},
+            {script: '/js/users-visuals.js'}
+        ];
+        let styles = [
+            {"style": "/lib/fontawesome/css/fontawesome.min.css"}
+        ];
+        res.render('users-data-visuals', {
+            title:   "User data visuals",
+            user:    req.user,
+            style: styles,
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
             scripts,

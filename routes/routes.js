@@ -3,7 +3,7 @@ const fs          = require('fs-extra');
 const path        = require('path');
 // const querystring = require('querystring');
 const BagIt       = require('bagit-fs');
-const uuidv1      = require('uuid/v1');
+const { v1: uuidv1 } = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 const Readable    = require('stream').Readable;
 const mongoose    = require('mongoose');
 const moment      = require('moment');
@@ -188,8 +188,6 @@ module.exports = (express, app, passport, pubComm) => {
 
             // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
             resursa.editorContent = JSON.stringify(resursa);
-
-            console.log(resursa.coperta);
 
             let scripts = [      
                 {script: '/js/redincredadmin.js'},
@@ -805,9 +803,19 @@ module.exports = (express, app, passport, pubComm) => {
             }            
         });
 
+        // TOATE RESURSELE
         socket.on('allRes', () => {
             Resursa.find({}).exec().then(allRes => {
                 socket.emit('allRes', allRes);
+            }).catch(error => {
+                console.log(error);
+            });
+        });
+
+        // TOȚI UTILIZATORII
+        socket.on('allUsers', () => {
+            UserModel.find({}).exec().then(allUsers => {
+                socket.emit('allUsers', allUsers);
             }).catch(error => {
                 console.log(error);
             });

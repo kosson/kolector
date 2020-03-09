@@ -16,6 +16,9 @@ pubComm.on('allRes', (resurse) => {
     // https://datatables.net/manual/data/orthogonal-data
     $('.userResTbl').DataTable({
         data: resurse,
+        buttons: [
+            'copy', 'excel', 'pdf'
+        ],
         columns: [
             {
                 data: '_id',
@@ -24,12 +27,9 @@ pubComm.on('allRes', (resurse) => {
                 }
             },
             {
+                title: 'Validare',
                 data: 'expertCheck',
                 render: function clbkExpertChk (data, type, row) {
-                    // if ( type === 'display' || type === 'filter' ) {
-
-                    // }
-                    console.log(data);
                     if (data) {
                         return "validată";
                     } else {
@@ -37,10 +37,22 @@ pubComm.on('allRes', (resurse) => {
                     }
                 }
             },
-            {data: 'title'},
-            {data: 'autori'},
-            {data: 'description'},
-            {data: 'licenta'}
+            {
+                title: 'Title',
+                data: 'title'
+            },
+            {
+                title: 'Autori',
+                data: 'autori'
+            },
+            {
+                title: 'Descriere',
+                data: 'description'
+            },
+            {
+                title: 'Licență',
+                data: 'licenta'
+            }
         ]
     });
 });

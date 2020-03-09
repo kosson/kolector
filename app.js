@@ -1,11 +1,11 @@
 require('dotenv').config();
 const path           = require('path');
-const bodyParser     = require('body-parser');
 const logger         = require('morgan');
-const cookies        = require('cookie-parser');
 const express        = require('express');
-const cookieParser   = require('cookie-parser');
+const bodyParser     = require('body-parser');
+const cookies        = require('cookie-parser');
 const session        = require('express-session');
+const redis          = require('redis');
 const helmet         = require('helmet');
 const passport       = require('passport');
 const RedisStore     = require('connect-redis')(session);
@@ -56,23 +56,52 @@ function cbCsuri (data) {
 // app.use(logger('dev')); // TODO: Dă-i drumu în producție și creează un mecanism de rotire a logurilor. (combined)
 app.use(helmet());
 app.use(cors());
-// SESIUNI
-app.use(cookies());
-app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
-app.use(session({
-    secret: '19cR3D_aPP_Kosson', 
-    // name:   'redcolector',
+/* === SESIUNI */
+app.use(cookies());// Parse Cookie header and populate req.cookies with an object keyed by the cookie names
+
+/* === REDIS - configurare === */
+// creează clientul conform https://github.com/tj/connect-redis/blob/HEAD/migration-to-v4.md
+let redisClient = redis.createClient({
+    host: '127.0.0.1',
+    port: 6379,
+    db: 10
+});
+// creează sesiune
+let sessionMiddleware = session({
+    name:   'redcolector',
+    secret: '19cR3D_aPP_Kosson',
     genid: function(req) {
         return uuidv1(); // use UUIDs for session IDs
     },
-    store:  new RedisStore({
-		host: '127.0.0.1',
-		port: 6379
-    }),
+    store: new RedisStore({client: redisClient}),
+    unref: true,
 	proxy:  true,
     resave: false, 
-    saveUninitialized: true
-}));
+    saveUninitialized: true,
+    logErrors: true,
+})
+// stabilirea sesiunii de lucru prin încercări repetate. Vezi: https://github.com/expressjs/session/issues/99
+app.use(function (req, res, next) {
+    var tries = 3; // număr de încercări
+    function lookupSession (error) {
+        if (error) {
+            return next(error);
+        }
+        tries -= 1;
+
+        if (req.session !== undefined) {
+            return next();
+        }
+
+        if (tries < 0) {
+            return next(new Error('Nu am putut stabili o sesiune cu Redis chiar după trei încercări'));
+        }
+
+        sessionMiddleware(req, res, lookupSession);
+    };
+    lookupSession();
+});
+redisClient.on('error', console.error);
 
 // STATIC
 app.use(express.static(path.join(__dirname, '/public' )));

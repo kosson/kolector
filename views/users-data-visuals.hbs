@@ -2,8 +2,12 @@
 {{> nav-administrator}}
 {{> messages}}
 
+{{#each styles}}
+    <link rel="stylesheet" type="text/css" href="{{style}}">
+{{/each}}
+
 <div id="content">
-    <h1>Acces la toate resursele:</h1>
+    <h1>Accesarea tuturor administratorilor:</h1>
     <section class="container-fluid" id="res-visuals">
         {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
         <div id="visuals" class="">
