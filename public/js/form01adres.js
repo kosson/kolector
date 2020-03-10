@@ -1115,7 +1115,6 @@ function clickImgGal () {
                 //     }
                 // }
 
-
             } else {
                 // altfel, sterge-i clasa `image-checkbox-checked`
                 element.classList.remove('image-checkbox-checked');

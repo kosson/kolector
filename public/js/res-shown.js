@@ -1,5 +1,5 @@
-let editorDiv = document.querySelector('#codex-editor');
-let redObj = JSON.parse(editorDiv.dataset.content);
+let editor = document.querySelector('#codex-editor');
+let redObj = JSON.parse(editor.dataset.content);
 console.log(redObj.content.blocks);
 
 function renderBlks () {

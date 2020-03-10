@@ -243,7 +243,7 @@ git checkout master
 
 ### Instalarea resurselor cu Bower
 
-Imediat după aducerea resurselor de pe Github, este indicată instalarea din consola serverului a dependințelor externe necesare.
+Imediat după aducerea resurselor de pe Github, este indicată instalarea din consola serverului a dependințelor externe necesare. Toate dependințele necesare specificate în `bower.json` vor fi instalate în directorul specificat de `.bowerrc`. În cazul nostru, în `public/lib`.
 
 ```bash
 bower install
@@ -253,25 +253,6 @@ bower install
 
 Aceste dependințe sunt necesare pentru a realiza mediul de prezentare a datelor în format tabelar.
 
-```bash
-bower install --save jszip
-bower install --save pdfmake
-bower install --save datatables.net-bs4
-bower install --save datatables.net-autofill-bs4
-bower install --save datatables.net-buttons-bs4
-bower install --save datatables.net-colreorder-bs4
-bower install --save datatables.net-fixedcolumns-bs4
-bower install --save datatables.net-fixedheader-bs4
-bower install --save datatables.net-keytable-bs4
-bower install --save datatables.net-responsive-bs4
-bower install --save datatables.net-rowgroup-bs4
-bower install --save datatables.net-rowreorder-bs4
-bower install --save datatables.net-scroller-bs4
-bower install --save datatables.net-searchpanes-bs4
-bower install --save datatables.net-select-bs4
-```
-
-Toate dependințele necesare specificate în `bower.json` vor fi instalate în directorul specificat de `.bowerrc`. În cazul nostru, în `public/lib`.
 
 ### Crearea fișierului `.env`
 

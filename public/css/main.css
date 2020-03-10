@@ -380,7 +380,7 @@ input[type='range'] {
 input[type='range'],
 input[type='range']::-webkit-slider-runnable-track,
 input[type='range']::-webkit-slider-thumb {
-    -webkit-appearance: none;
+    -webkit-appearance: none;.image-checkbox
 }
 
 input[type='range']::-webkit-slider-runnable-track {
