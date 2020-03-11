@@ -2,6 +2,8 @@
 
 **Versiunea 2.2, Martie, 2020**
 
+![](img/ilustratii/REDsInCRED.png)
+
 ## Introducere
 
 Acest material descrie pașii pe care persoana care contribuie cu o resursă trebuie să-i parcurgă pentru a introduce o înregistrare viabilă. Formularul dedicat expune patru pași în succesiune, care la rândul lor, fiecare expun informații specifice.
@@ -37,7 +39,7 @@ Software-ul prevede eventualitatea folosirii sale în grupuri ale vorbitorilor d
 
 ### Responsabilitate (contribuitor)
 
-În secțiunea aceasta `Responsabilitate` este un câmp care va fi completat automat cu datele persoanei care s-a autentificat și care face contribuția. În baza adresei de email se va face generarea subdirectoarelor proprii fiecărui utilizator care contribuie cu resurse. 
+În secțiunea aceasta `Responsabilitate` este un câmp care va fi completat automat cu datele persoanei care s-a autentificat și care face contribuția. În baza adresei de email se va face generarea subdirectoarelor proprii fiecărui utilizator care contribuie cu resurse.
 
 Persoana care introduce RED-ul în sistem este considerat a fi contribuitorul acesteia. Un contribuitor poate fi autorul RED-ului, dar în cazul în care acesta este produsul a mai multor autori, unul dintre aceștia va fi desemnat să încarce resursa în sistem, fiind cel care *contribuie* RED-ul în sistem. În acest caz, contribuitorul poate fi considerat autor colectiv.
 
@@ -51,7 +53,7 @@ Autorii unei resurse pot fi o singură persoană, un grup, un colectiv, o instit
 
 ![](img/Pas1-ScurtaDescriereAResursei.png)
 
-Acest element este obligatoriu să fie completat. Este recomandabil să fie introduse două propoziții sau maxim o frază. Acest detaliu este foarte important pentru că dincolo de aspectele ce țin de natura funcțională, acesta este și textul care va apărea în prezentarea publică a resursei. 
+Acest element este obligatoriu să fie completat. Este recomandabil să fie introduse două propoziții sau maxim o frază. Acest detaliu este foarte important pentru că dincolo de aspectele ce țin de natura funcțională, acesta este și textul care va apărea în prezentarea publică a resursei.
 
 ### Alegerea licenței resursei
 
@@ -151,8 +153,8 @@ Odată parcus și acest ultim pas vom salva resursa și imediat vom fi trimiși 
 
 ## Administrare
 
-Unul din posibilele roluri pe care le poate juca un utilizator autentificat este cel de administrator. Administratorii pot face două operațiuni esențiale în economia existenței unui RED. 
-RED-urile care nu sunt verificate, au un marcaj fin de culoare galbenă atunci când sunt accesate de un administrator. 
+Unul din posibilele roluri pe care le poate juca un utilizator autentificat este cel de administrator. Administratorii pot face două operațiuni esențiale în economia existenței unui RED.
+RED-urile care nu sunt verificate, au un marcaj fin de culoare galbenă atunci când sunt accesate de un administrator.
 
 ![](img/VizualizareRED-ADMIN.png)
 

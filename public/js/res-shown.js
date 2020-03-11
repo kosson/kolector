@@ -1,16 +1,3 @@
-let editor = document.querySelector('#codex-editor');
-let redObj = JSON.parse(editor.dataset.content);
-console.log(redObj.content.blocks);
-
-function renderBlks () {
-    redObj.content.blocks.map(block => {
-        editorX.blocks.render(block);
-    });
-}
-
-// redObj.content.blocks.map(block => {
-//     editorX.blocks.render(block);
-// });
 /* === Integrarea lui EditorJS === https://editorjs.io */
 const editorX = new EditorJS({
     // placeholder: 'Introdu conținut care să nu fie mai mult de câteva paragrafe. Editorul nu poate fi folosit pentru compunere de resurse. Acestea trebuie să existe deja!!!',
@@ -18,7 +5,7 @@ const editorX = new EditorJS({
     /* onReady callback */
     onReady: () => {
         console.log('Editor.js e gata de treabă!');
-        console.log(editorX);
+        // console.log(editorX);
     },
     onChange: () => {console.log('Conținutul s-a modificat și ar trebui să apară un buton de salvare a acestuia')},
     /* id element unde se injectează editorul */
@@ -281,5 +268,3 @@ const editorX = new EditorJS({
      */
     // data: {}
 });
-
-console.log(typeof(editorX));

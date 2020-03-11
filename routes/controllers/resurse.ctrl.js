@@ -74,7 +74,7 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
     // console.log(req.session.passport.user.roles); // { rolInCRED: [], unit: [], admin: true }
 };
 
-/* AFIȘAREA UNEI SINGURE RESURSE */
+/* AFIȘAREA UNEI SINGURE RESURSE / ȘTERGERE / EDITARE */
 exports.loadOneResource = function loadOneResource (req, res, next) {
     // console.log(req.params);
     // var record = require('./resincredid.ctrl')(req.params); // aduce resursa și transformă conținutul din JSON în HTML
@@ -114,6 +114,7 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
 exports.describeResource = function describeResource (req, res, next) {
     // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
     let scripts = [
+        // EDITOR
         {script: '/lib/editorjs/editor.js'},
         {script: '/lib/editorjs/header.js'},
         {script: '/lib/editorjs/paragraph.js'},
@@ -125,6 +126,14 @@ exports.describeResource = function describeResource (req, res, next) {
         {script: '/lib/editorjs/code.js'},
         {script: '/lib/editorjs/quote.js'},
         {script: '/lib/editorjs/inlinecode.js'},
+        // DATATABLES
+        // {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
+        // {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+        // {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
+        // {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
+        // {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
+        // {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+        // FORM
         {script: '/js/form01adres.js'}
     ];
     // roluri pe care un cont le poate avea în proiectul CRED.

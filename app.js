@@ -15,7 +15,7 @@ const http           = require('http').createServer(app);
 const cors           = require('cors');
 const io             = require('socket.io')(http);
 const favicon        = require('serve-favicon');
-const uuidv1         = require('uuid/v1');
+const { v1: uuidv1 } = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 const i18n           = require('i18n');
 
 // minimal config

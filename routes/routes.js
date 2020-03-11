@@ -118,7 +118,7 @@ module.exports = (express, app, passport, pubComm) => {
         res.redirect('/resurse');
     });
     
-    // ========== LOGOUT ==========
+    /* === LOGOUT === */
     app.get('/logout', function(req, res){
         req.logout();
         // req.session.destroy(function (err) {
@@ -128,7 +128,7 @@ module.exports = (express, app, passport, pubComm) => {
         res.redirect('/');
     });
     
-    // ========== PROFILUL PROPRIU ==========
+    /* === PROFILUL PROPRIU === */
     app.get('/profile', makeSureLoggedIn.ensureLoggedIn(), function clbkProfile (req, res) {
         res.render('profile', {
             user:    req.user,
@@ -140,8 +140,8 @@ module.exports = (express, app, passport, pubComm) => {
         });
     });
 
-    // ACCESAREA PROPRIILOR RESURSE
-    app.get('/profile/resurse', makeSureLoggedIn.ensureLoggedIn(), function(req, res){
+    /* === ACCESAREA PROPRIILOR RESURSE === */
+    app.get('/profile/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (req, res){
             // console.dir(req.user.email);
             var count = require('./controllers/resincred.ctrl')(req.user);
             // console.log(count);
@@ -172,8 +172,8 @@ module.exports = (express, app, passport, pubComm) => {
         }
     );
 
-    // În cazul administratorilor, aceștia au acces la mecanismele de validare
-    app.get('/profile/resurse/:idres', User.ensureAuthenticated, function(req, res){
+    /* === VALIDARE / PUBLICARE /ȘTERGERE /EDITARE @ ->resursa -> resursa-admin [redincredadmin.js / res-shown.js] -> resursa-validator === */
+    app.get('/profile/resurse/:idres', User.ensureAuthenticated, function clbkProfResID (req, res){
         // Adu înregistrarea resursei cu toate câmpurile referință populate deja
         // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
 
@@ -189,8 +189,7 @@ module.exports = (express, app, passport, pubComm) => {
             // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
             resursa.editorContent = JSON.stringify(resursa);
 
-            let scripts = [      
-                {script: '/js/redincredadmin.js'},
+            let scripts = [
                 {script: '/lib/moment/min/moment.min.js'},
                 {script: '/lib/editorjs/editor.js'},
                 {script: '/lib/editorjs/header.js'},
@@ -203,12 +202,13 @@ module.exports = (express, app, passport, pubComm) => {
                 {script: '/lib/editorjs/code.js'},
                 {script: '/lib/editorjs/quote.js'},
                 {script: '/lib/editorjs/inlinecode.js'},
-                {script: '/js/res-shown.js'} 
+                // {script: '/js/res-shown.js'},
+                {script: '/js/redincredadmin.js'} 
             ];
             let roles = ["user", "cred", "validator"];
             let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
             
-            /* ====== VERIFICAREA CREDENȚIALELOR ====== */
+            /* === ADMIN === */
             if(req.session.passport.user.roles.admin){
                 // Adaugă mecanismul de validare a resursei
                 if (resursa.expertCheck) {
@@ -229,8 +229,9 @@ module.exports = (express, app, passport, pubComm) => {
                     scripts,
                     logoimg: "/img/red-logo-small30.png",
                     credlogo: "../img/CREDlogo.jpg",
-                    resursa: resursa
+                    resursa,
                 });
+            /* === VALIDATOR === */
             } else if (confirmedRoles.includes('validator')) {
                 // Adaugă mecanismul de validare a resursei
                 if (resursa.expertCheck) {
@@ -268,8 +269,8 @@ module.exports = (express, app, passport, pubComm) => {
         });
     });
 
-    // Sistem de asistență - HELP
-    app.get('/help', makeSureLoggedIn.ensureLoggedIn(), function (req, res) {
+    /* === Sistem de asistență - HELP === */
+    app.get('/help', makeSureLoggedIn.ensureLoggedIn(), function clbkHelp (req, res) {
         res.render('help', {
             user:    req.user,
             title:   "Asistență",
@@ -279,11 +280,11 @@ module.exports = (express, app, passport, pubComm) => {
         });
     });
 
-    /* =========== CONSTRUCȚIA BAG-ULUI, INTRODUCEREA ÎNREGISTRĂRII, INTRODUCEREA ÎN ELASTICSEARCH ========= */
+    /* === CONSTRUCȚIA BAG-ULUI, INTRODUCEREA ÎNREGISTRĂRII, INTRODUCEREA ÎN ELASTICSEARCH === */
     let lastBag;   // este o referință către un bag deja deschis
     let lastUuid;  // referință către UUID-ul în efect
     
-    /* SOCKETURI!!! */
+    /* === SOCKETURI!!! === */
     pubComm.on('connect', (socket) => {
         // Ascultă mesajele
         socket.on('mesaje', (mesaj) => {
@@ -424,10 +425,17 @@ module.exports = (express, app, passport, pubComm) => {
         // Ștergerea unei resurse
         socket.on('delresid', (resource) => {
             Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
-                if (err) throw err;
+                console.log('Documentul este: ', doc);
+
+                if (err) {
+                    console.log(err);
+                };
+
+                // Pas 1: Șterge înregistrarea din Elasticsearch
+
                 // TODO: Sterge fizic directorul cu totul
                 let dirPath = path.join(process.env.REPO_REL_PATH, resource.idContributor, resource.id);
-                // console.log(dirPath);
+                console.log('Calea constituită este: ', dirPath);
                 // fs.remove(dirPath, (err) => {
                 //     if(err) throw err;
                 //     console.log('Am șters directorul cu succes');
@@ -821,10 +829,10 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
     });
-    /* =========== CONSTRUCȚIA BAG-ULUI - END ========= */
+    /* === CONSTRUCȚIA BAG-ULUI - END === */
 
-    /* ========== ÎNCĂRCAREA UNUI fișier cu `multer` ========= */
-    var multer  = require('multer');
+    /* === ÎNCĂRCAREA UNUI fișier cu `multer` === */
+    var multer = require('multer');
     var multer2bag = require('./multer-bag-storage'); // încarcă mecanismul de storage special construit să gestioneze bag-uri!
 
     var storage = multer2bag({
@@ -840,7 +848,7 @@ module.exports = (express, app, passport, pubComm) => {
             // Aceasta este calea pentru cazul în care deja există creat directorul resursei pentru că a fost încărcat deja un fișier.
             let existingDataPath = `${process.env.REPO_REL_PATH}${req.user.email}/${lastUuid}`;
 
-            /* ======= Directorul utilizatorului nu există. Trebuie creat !!!! ========= */
+            /* === Directorul utilizatorului nu există. Trebuie creat !!!! === */
             if (!fs.existsSync(firstDataPath)) {
                 cb(null, firstDataPath);    // introdu primul fișier aici.
             } else if(fs.existsSync(existingDataPath)) {

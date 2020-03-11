@@ -4,6 +4,7 @@ const Resursa = require('../models/resursa-red');
 // ========== VERIFICAREA ROLURILOR ==========
 let checkRole = require('./controllers/checkRole.helper');
 
+/* === /administrator @->administrator === */
 router.get('/', function clbkRouterRoot (req, res) {
     // ACL
     let roles = ["admin", "validator"];
@@ -15,6 +16,13 @@ router.get('/', function clbkRouterRoot (req, res) {
     // Dacă avem un admin, atunci oferă acces neîngrădit
     if(req.session.passport.user.roles.admin){
         let scripts = [       
+            // DATATABLES
+            {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
+            {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
+            {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
+            {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
             {script: '/lib/moment/min/moment.min.js'},
             // {script: '/lib/timeline3/js/timeline.js'},
             {script: '/js/admin.js'}
@@ -61,7 +69,14 @@ router.get('/reds', function clbkRouterRoot (req, res) {
         let scripts = [       
             {script: '/lib/moment/min/moment.min.js'},
             // {script: '/lib/timeline3/js/timeline.js'},
-            {script: '/js/res-visuals.js'}
+            {script: '/js/res-visuals.js'},
+            // DATATABLES
+            {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
+            {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
+            {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
+            {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'}
         ];
         res.render('reds-data-visuals', {
             title:   "REDs data visuals",
@@ -90,7 +105,14 @@ router.get('/users', function clbkRouterRoot (req, res) {
     if(req.session.passport.user.roles.admin){
         let scripts = [
             // {script: '/lib/fontawesome/js/all.js'},
-            {script: '/js/users-visuals.js'}
+            {script: '/js/users-visuals.js'},
+            // DATATABLES
+            {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
+            {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
+            {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
+            {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'}
         ];
         let styles = [
             {"style": "/lib/fontawesome/css/fontawesome.min.css"}
