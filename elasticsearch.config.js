@@ -1,7 +1,11 @@
 const es = require('elasticsearch');
+// https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/client-configuration.html
 const esClient = new es.Client({
     host: process.env.ELASTIC_URL,
-    // log: 'trace'
+    maxRetries: 5,
+    requestTimeout: 60000,
+    sniffOnStart: true,
+    log: 'trace'
 });
 esClient.ping({
     // ping usually has a 3000ms timeout
@@ -23,6 +27,6 @@ const client = new Client({
     log: 'trace'
 });
 // client.info(console.log);
-
+// https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/index.html
 // module.exports = esClient;
 module.exports = client;

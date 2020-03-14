@@ -97,7 +97,7 @@ p > .md-image:only-child { display: inline-block; width: 100%; }
 #write .MathJax_Display { margin: 0.8em 0px 0px; }
 .md-math-block { width: 100%; }
 .md-math-block:not(:empty)::after { display: none; }
-[contenteditable="true"]:active, [contenteditable="true"]:focus { outline: 0px; box-shadow: none; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus, [contenteditable="false"]:active, [contenteditable="false"]:focus { outline: 0px; box-shadow: none; }
 .md-task-list-item { position: relative; list-style-type: none; }
 .task-list-item.md-task-list-item { padding-left: 0px; }
 .md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
@@ -141,7 +141,7 @@ a.md-print-anchor { white-space: pre !important; border-width: initial !importan
 .MathJax_SVG_Display svg { vertical-align: middle !important; margin-bottom: 0px !important; margin-top: 0px !important; }
 .os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
 .md-diagram-panel > svg { max-width: 100%; }
-[lang="mermaid"] svg, [lang="flow"] svg { max-width: 100%; height: auto; }
+[lang="flow"] svg, [lang="mermaid"] svg { max-width: 100%; height: auto; }
 [lang="mermaid"] .node text { font-size: 1rem; }
 table tr th { border-bottom: 0px; }
 video { max-width: 100%; display: block; margin: 0px auto; }
@@ -561,8 +561,8 @@ g.classGroup line {
 .pieTitleText {
   text-anchor: middle;
   font-size: 25px;
-  fill: #323D47;
-   }
+  fill: #eee;
+}
 
 .slice {
    }
@@ -1082,9 +1082,14 @@ code,
 kbd,
 tt,
 var {
-    background: rgba(0, 0, 0, 0.05);
     font-size: 0.875rem;
     font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+}
+
+code,
+tt,
+var {
+    background: rgba(0, 0, 0, 0.05);
 }
 
 kbd {
@@ -1756,6 +1761,6 @@ footer.ty-footer {
 </head>
 <body class='typora-export' >
 <div  id='write'  class = 'is-node'><h1><a name="administrare" class="md-header-anchor"></a><span>Administrare</span></h1><p><span>Colectorul RED oferă posibilitatea de a gestiona utilizatorii care și-au creat deja conturile.</span>
-<span>Pentru a crea un cont nu trebuie făcut nimic altceva decât o autentificare cu succes folosind contul de email al platformei Educred.ro.</span></p><h2><a name="administratorii" class="md-header-anchor"></a><span>Administratorii</span></h2><p><span>Acest rol este dobândit prin atribuirea de către un alt administrator al aplicației.</span></p><p><span>Administratorii pot să:</span></p><ul><li><span>valideze o resursă,</span></li><li><span>să trimită o resursă în zona publică,</span></li><li><span>califică alți useri ai aplicației cu rolul de administrator, dar pot revoca acest statut,</span></li><li><span>acordă roluri altor useri,</span></li><li><span>atribuie utilizatorilor așa-numite </span><em><span>unit</span></em><span>-uri, care pot fi de la instituția din care face parte utilizatorul, până la un curs în care s-a înscris.</span></li></ul><p><span>Acest rol este vârful pe care îl poate atinge un utilizator al aplicației.</span></p><p><span>Administratorii au la dispoziție accesul la secțiunea </span><strong><span>Administrare</span></strong><span> din meniul principal. Prin intermediul acestui meniu, se accesează zona de lucru centrată pe managementul celorlalte conturi.</span></p><h2><a name="validatorii" class="md-header-anchor"></a><span>Validatorii</span></h2><p><span>Utilizatorii care au dobândit rolul de validatori, pot accesa resursele unui utilizator în același mod cum o face un administrator - caută utilizatorul și accesează resursele create ale acestuia.</span></p><p><span>Validarea resurselor se va face din secțiunea </span><strong><span>Administrare</span></strong><span> a cărei link apare accesând mai întâi propriul profil de validator.</span></p><p><span>Accesarea fiecărei resurse va avea ca efect apariția mecanismului de validare. Bifarea sau debifarea resursei ca fiind validată fiind naturală.</span></p><h3><a name="căutarea-unui-user" class="md-header-anchor"></a><span>Căutarea unui user</span></h3><p><span>De cele mai multe ori ai nevoie să cauți un utilizator pentru a-i modifica statutul, calificându-l și pe acesta la statutul de administrator, ori pentru a atribui roluri noi sau pentru a încadra într-un unit nou un utilizator. Pentru a găsi un utilizator, se va folosi modului de căutare în care se va introduce textul după care se va face regăsirea urmat de apăsarea butonului </span><strong><span>Caută</span></strong><span>. Apăsarea tastei ENTER nu are niciun efect.</span></p><p><img src="img/administrare/CautareUser.png" referrerpolicy="no-referrer"></p><p><span>În momentul în care userul, pentru care există interes, a fost găsit folosind motorul de căutare, se va da un clic pe numele acestuia, care va avea drept efect aducerea unei fișe descriptive a stării acestuia.</span></p><p><img src="img/administrare/DetaliiUserGasit.png" referrerpolicy="no-referrer"></p><p><span>Suplimentar, fișa aduce și ultimele cinci contribuții la Colectorul RED.</span></p><h2><a name="roluri" class="md-header-anchor"></a><span>Roluri</span></h2><p><span>Administratorii pot atribui roluri din cele prestabilite. În acest moment, cel mai important, după cel de administrator, este cel de validator.</span></p></div>
+<span>Pentru a crea un cont nu trebuie făcut nimic altceva decât o autentificare cu succes folosind contul de email al platformei Educred.ro.</span></p><h2><a name="administratorii" class="md-header-anchor"></a><span>Administratorii</span></h2><p><span>Acest rol este dobândit prin atribuirea de către un alt administrator al aplicației.</span></p><p><span>Administratorii pot să:</span></p><ul><li><span>valideze o resursă,</span></li><li><span>să trimită o resursă în zona publică,</span></li><li><span>califică alți useri ai aplicației cu rolul de administrator, dar pot revoca acest statut,</span></li><li><span>acordă roluri altor useri,</span></li><li><span>atribuie utilizatorilor așa-numite </span><em><span>unit</span></em><span>-uri, care pot fi de la instituția din care face parte utilizatorul, până la un curs în care s-a înscris.</span></li></ul><p><span>Acest rol este vârful pe care îl poate atinge un utilizator al aplicației.</span></p><p><span>Administratorii au la dispoziție accesul la secțiunea </span><strong><span>Administrare</span></strong><span> din meniul principal. Prin intermediul acestui meniu, se accesează zona de lucru centrată pe managementul celorlalte conturi.</span></p><p><span>Administratorii pot atribui roluri din cele prestabilite. În acest moment, cel mai important, după cel de administrator, este cel de validator.</span></p><h3><a name="instrumente-la-îndemână" class="md-header-anchor"></a><span>Instrumente la îndemână</span></h3><p><span>La deschiderea panoului de administrare, se afișează două casete care indică câte Resurse Educaționale Deschise și câți utilizatori au cont creat în colector.</span></p><p><img src="img/administrare/Statistici01.png" referrerpolicy="no-referrer"></p><p><span>Aceste cifre sunt active acest lucru însemnând că vor conduce administratorul către panouri ce vor afișa în format tabelar datele existente.</span></p><p><span>Acesarea cifrei ce indică numărul resurselor, va conduce către afișarea într-un model tabelar.</span></p><p><img src="img/administrare/AccesLaToateResursele01.png" referrerpolicy="no-referrer"></p><p><span>Accesarea cifrei ce indică numărul utilizatorilor,  va conduce către afișarea într-un model tabelar.</span></p><p><img src="img/administrare/AccesareaUtilizatorilor.png" referrerpolicy="no-referrer"></p><p><span>Afișarea tabelară beneficiază de paginare pentru a putea organiza un număr mare de înregistrări și se pot facă căutări.</span></p><h2><a name="validatorii" class="md-header-anchor"></a><span>Validatorii</span></h2><p><span>Utilizatorii care au dobândit rolul de validatori, pot accesa resursele unui utilizator în același mod cum o face un administrator - caută utilizatorul și accesează resursele create ale acestuia.</span></p><p><span>Validarea resurselor se va face din secțiunea </span><strong><span>Administrare</span></strong><span> a cărei link apare accesând mai întâi propriul profil de validator.</span></p><p><span>Accesarea fiecărei resurse va avea ca efect apariția mecanismului de validare. Bifarea sau debifarea resursei ca fiind validată fiind naturală.</span></p><h3><a name="căutarea-unui-user" class="md-header-anchor"></a><span>Căutarea unui user</span></h3><p><span>De cele mai multe ori ai nevoie să cauți un utilizator pentru a-i modifica statutul, calificându-l și pe acesta la statutul de administrator, ori pentru a atribui roluri noi sau pentru a încadra într-un unit nou un utilizator. Pentru a găsi un utilizator, se va folosi modului de căutare în care se va introduce textul după care se va face regăsirea urmat de apăsarea butonului </span><strong><span>Caută</span></strong><span>. Apăsarea tastei ENTER nu are niciun efect.</span></p><p><img src="img/administrare/CautareUser.png" referrerpolicy="no-referrer"></p><p><span>În momentul în care userul, pentru care există interes, a fost găsit folosind motorul de căutare, se va da un clic pe numele acestuia, care va avea drept efect aducerea unei fișe descriptive a stării acestuia.</span></p><p><img src="img/administrare/DetaliiUserGasit.png" referrerpolicy="no-referrer"></p><p><span>Suplimentar, este afișat pe o scală a timpului resursele cu care respectivul utilizator a contribuit, dat aduce și ultimele cinci contribuții la Colectorul RED pentru a fi validate, dacă acest lucru este necesar.</span></p><p><img src="img/administrare/UltimeleResurseSiAfisareTemporal.png" referrerpolicy="no-referrer"></p></div>
 </body>
 </html>

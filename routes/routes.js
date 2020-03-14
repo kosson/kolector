@@ -1,5 +1,6 @@
 require('dotenv').config();
 const fs          = require('fs-extra');
+const archiver    = require('archiver');
 const path        = require('path');
 // const querystring = require('querystring');
 const BagIt       = require('bagit-fs');
@@ -25,9 +26,27 @@ module.exports = (express, app, passport, pubComm) => {
     // Încarcă controlerul necesar tratării rutelor de autentificare
     var User = require('./controllers/user.ctrl')(passport);
 
+    /* === FUNCȚII HELPER PENTRU LUCRUL CU SOCKET-URI */
+    // EMIT
+    function rre (nameEvt, payload) {
+        pubComm.on('connect', socket => {
+            return socket.emit(nameEvt, payload);
+        });
+    }
+    // ON
+    function rro (nameEvt, cb) {
+        pubComm.on('connect', socket => {
+            return socket.on(nameEvt, cb);
+        });
+    }
+
     // ========== ROOT ==================
     var index = require('./index');
     app.use('/', index);
+
+    // FORMULAR GOOGLE pentru strîngerea de resurse
+    var gformCatalogRes = require('./controllers/gformCatalogRes');
+    app.use('/gformcatalogres', gformCatalogRes);    
 
     // ========== ADMINISTRATOR ==========
     var admin = require('./administrator');
@@ -173,41 +192,90 @@ module.exports = (express, app, passport, pubComm) => {
     );
 
     /* === VALIDARE / PUBLICARE /ȘTERGERE /EDITARE @ ->resursa -> resursa-admin [redincredadmin.js / res-shown.js] -> resursa-validator === */
-    app.get('/profile/resurse/:idres', User.ensureAuthenticated, function clbkProfResID (req, res){
+    app.get('/profile/resurse/:idres', User.ensureAuthenticated, function clbkProfResID (req, res, next){
         // Adu înregistrarea resursei cu toate câmpurile referință populate deja
         // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
 
-        const editorJs2html = require('./controllers/editorJs2HTML');
+        // const editorJs2html = require('./controllers/editorJs2HTML');
+        let scripts = [
+            {script: '/lib/moment/min/moment.min.js'},
+            {script: '/lib/editorjs/editor.js'},
+            {script: '/lib/editorjs/header.js'},
+            {script: '/lib/editorjs/paragraph.js'},
+            {script: '/lib/editorjs/list.js'},
+            {script: '/lib/editorjs/image.js'},
+            {script: '/lib/editorjs/table.js'},
+            {script: '/lib/editorjs/attaches.js'},
+            {script: '/lib/editorjs/embed.js'},
+            {script: '/lib/editorjs/code.js'},
+            {script: '/lib/editorjs/quote.js'},
+            {script: '/lib/editorjs/inlinecode.js'},
+            // {script: '/js/res-shown.js'},
+            {script: '/js/redincredadmin.js'} 
+        ];
+        let roles = ["user", "cred", "validator"];
+        let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
         // adu înregistrarea din MongoDB după ce a fost încărcată o nouă resursă
         Resursa.findById(req.params.idres).populate({
             path: 'competenteS'
         }).exec().then(resursa => {
-            let localizat = moment(resursa.date).locale('ro').format('LLL');
-            resursa.dataRo = `${localizat}`; // formatarea datei pentru limba română.
-
-            // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
-            resursa.editorContent = JSON.stringify(resursa);
-
-            let scripts = [
-                {script: '/lib/moment/min/moment.min.js'},
-                {script: '/lib/editorjs/editor.js'},
-                {script: '/lib/editorjs/header.js'},
-                {script: '/lib/editorjs/paragraph.js'},
-                {script: '/lib/editorjs/list.js'},
-                {script: '/lib/editorjs/image.js'},
-                {script: '/lib/editorjs/table.js'},
-                {script: '/lib/editorjs/attaches.js'},
-                {script: '/lib/editorjs/embed.js'},
-                {script: '/lib/editorjs/code.js'},
-                {script: '/lib/editorjs/quote.js'},
-                {script: '/lib/editorjs/inlinecode.js'},
-                // {script: '/js/res-shown.js'},
-                {script: '/js/redincredadmin.js'} 
-            ];
-            let roles = ["user", "cred", "validator"];
-            let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
+            // console.log(resursa); // asta e moartă: http://localhost:8080/profile/resurse/5e2714c84449b236ce450091
+            /* === Resursa încă există în MongoDB === */
+            if (resursa._id) {
+                const obi = resursa;
             
+                let localizat = moment(resursa.date).locale('ro').format('LLL');
+                obi.dataRo = `${localizat}`; // formatarea datei pentru limba română.    
+        
+                // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
+                obi.editorContent = JSON.stringify(resursa);
+
+                // Dacă nu este indexată în Elasticsearch deja de `mongoose-elasticsearch-xp`, indexează aici!
+                esClient.exists({
+                    index: 'resursedus',
+                    id: req.params.idres
+                }).then(resFromIdx => {
+                    /* DACĂ RESURSA NU ESTE INDEXATĂ, CORECTEAZĂ! */
+                    if(resFromIdx.body == false && resFromIdx.statusCode === 404){
+                        resursa.esIndex(function clbkIdxOnDemand (err, res) {
+                            console.log('Am indexat: ', res);
+                            rre('mesaje', 'Pentru că nu am găsit înregistrarea în index, am reindexat-o');
+                        }); //https://www.npmjs.com/package/mongoose-elasticsearch-xp#indexing-on-demand
+                    }
+                    return resFromIdx;
+                }).catch(err => {
+                    console.log(err);
+                });
+                return obi;
+            } else {
+                // Caută resursa și în Elasticsearch. Dacă există indexată, dar a fost ștearsă din MongoDB, șterge-o din indexare / va apărea la căutare
+                esClient.exists({
+                    index: 'resursedus',
+                    id: req.params.idres
+                }).then(resFromIdx => {
+                    // console.log(resFromIdx);
+                    if(resFromIdx.statusCode !== 404){
+                        esClient.delete({
+                            id: req.params.idres,
+                            index: 'resursedus'
+                        }).then(dead => {
+                            // console.log(dead);
+                            rre('mesaje', `Resursa era încă indexată și am șters-o acum: (${dead.statusCode})`);
+                        }).catch(err => {
+                            rre('mesaje', `Am încercat să șterg din index, dar: ${err}`);
+                        });                        
+                    }
+                    return resFromIdx;
+                }).catch(err => {
+                    console.log(err);
+                }).finally(function clbkFinalSearchIdx () {
+                    rre('mesaje', `Resursa nu mai există. Am căutat peste tot!`); // Trimite mesaj în client
+                }); // http://localhost:8080/profile/resurse/5dc9602836fc7d626f4a5832
+                
+                return Promise.reject('Resursa nu mai există!'); // Rejectează promisiunea!
+            };
+        }).then(resursa => {
             /* === ADMIN === */
             if(req.session.passport.user.roles.admin){
                 // Adaugă mecanismul de validare a resursei
@@ -221,7 +289,8 @@ module.exports = (express, app, passport, pubComm) => {
                     resursa.genPub = `<input type="checkbox" id="public" class="generalPublic" checked>`;
                 } else {
                     resursa.genPub = `<input type="checkbox" id="public" class="generalPublic">`;
-                }                
+                }
+
                 res.render('resursa-admin', {
                     user:    req.user,
                     title:   "Administrare RED",
@@ -263,8 +332,9 @@ module.exports = (express, app, passport, pubComm) => {
             }
         }).catch(err => {
             if (err) {
-                pubComm.emit('mesaje', `Nu pot să afișez resursa. Eroare: ${err}`);
-                console.log(err);
+                // rre('mesaje', `Nu pot să afișez resursa. Este posibil să nu mai existe! Eroare: ${err}`);
+                // next(); // fugi pe următorul middleware / rută
+                res.redirect('/administrator/reds');
             }
         });
     });
@@ -424,24 +494,76 @@ module.exports = (express, app, passport, pubComm) => {
 
         // Ștergerea unei resurse
         socket.on('delresid', (resource) => {
-            Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
-                console.log('Documentul este: ', doc);
+            // console.log(resource);
+            let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, `${resource.content.identifier}`);
+            console.log('Calea constituită este: ', dirPath);
 
-                if (err) {
+                /* === CAZURI === */
+                // #1 Resursa nu are subdirector creat pentru că nu s-a încărcat nimic.
+                // #2 Resursa are subdirector și acesta trebuie șters sau... marcat pentru ștergere întârziată în caz că implementăm recuperare.
+
+                // TODO: detectează dacă există subdirector!!! Dacă da, șterge-l și șterge și din MongoDB, dar și din Elasticsearch.
+                // caută dacă există subdirector.
+                fs.ensureDir(dirPath, 0o2775).then(function clbkFsExists () {
+                    
+                    /* === ARHIVEAZĂ === */
+                    // Verifică dacă în rădăcina userului există subdirectorul `deleted`. Dacă nu, creează-l!!!
+                    var path2deleted = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, 'deleted');
+                    fs.ensureDir(path2deleted, 0o2775).then(function clbkDeletedExist () {
+                        // Vezi dacă există un subdirector al resursei, iar dacă există șterge tot conținutul său [https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/emptyDir.md#emptydirdir-callback]
+                        var path2deres = `${path2deleted}/${resource.content.identifier}`;
+                        console.log('Fac arhiva pe calea: ', path2deres);
+                        // dacă directorul a fost constituit și este gol, să punem arhiva resursei șterse
+                        var output = fs.createWriteStream(path2deres + `${resource.content.identifier}.zip`);
+                        var archive = archiver('zip', {
+                            zlib: { level: 9 } // Sets the compression level.
+                        });
+                        // generează arhiva din directorul țintă
+                        archive.directory(dirPath, path2deres);
+                        // constituie arhiva!                   
+                        archive.pipe(output);
+                        // WARNINGS
+                        archive.on('warning', function(err) {
+                            if (err.code === 'ENOENT') {
+                                // log warning
+                                console.log('Atenție, la arhivare a dat warning Error NO ENTry', err);
+                            } else {
+                                // throw error
+                                throw err;
+                            }
+                        });
+                        // ERRORS
+                        archive.on('error', function(err) {
+                            throw err;
+                        });
+                        // Când se încheie procesul de arhivare
+                        output.on('close', function() {
+                            console.log(archive.pointer() + ' total bytes');
+                            console.log('archiver has been finalized and the output file descriptor has closed.');
+                            rre('mesaje', 'Resursa a intrat în conservare!');
+                            rre('delresid', {bytes: archive.pointer()});
+
+                            // Șterge resursa din MONGODB și din Elasticsearch!!!
+                            Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
+                                // console.log('Documentul este: ', doc);
+                
+                                if (err) {
+                                    console.log(err);
+                                };
+                
+                                // Șterge înregistrarea din Elasticsearch -> https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#_delete
+                                esClient.delete({
+                                    id: doc._id,
+                                    index: 'resursedus'
+                                });
+                            });
+                        });
+                        // FINALIZEAZĂ ARHIVAREA
+                        archive.finalize();
+                    });
+                }).catch(err => {
                     console.log(err);
-                };
-
-                // Pas 1: Șterge înregistrarea din Elasticsearch
-
-                // TODO: Sterge fizic directorul cu totul
-                let dirPath = path.join(process.env.REPO_REL_PATH, resource.idContributor, resource.id);
-                console.log('Calea constituită este: ', dirPath);
-                // fs.remove(dirPath, (err) => {
-                //     if(err) throw err;
-                //     console.log('Am șters directorul cu succes');
-                //     socket.emit('delresid', 'Salut, client, am șters resursa: ', resource.id, 'contribuită de: ', resource.idContributor);
-                // });
-            });
+                });
         });
 
         // Aducerea resurselor pentru un id (email) și trimiterea în client

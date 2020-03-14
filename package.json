@@ -1,6 +1,6 @@
 {
   "name": "redcolector",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Aplicația pentru colectare de RED-uri",
   "main": "app.js",
   "scripts": {
@@ -34,6 +34,7 @@
   "homepage": "https://github.com/kosson/redcolector#readme",
   "dependencies": {
     "@elastic/elasticsearch": "^7.6.0",
+    "archiver": "^3.1.1",
     "bagit-fs": "^1.1.1",
     "bagit-tools": "0.0.0",
     "bcrypt": "^4.0.1",

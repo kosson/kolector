@@ -18,34 +18,58 @@
 
 {{!-- secțiune întâmpinare --}}
 <div class="caption text-center">
-
     <div class="os-animation" data-animation="bounceInUp" data-delay=".3s">
-        <ul class="nav justify-content-center">
-            <li class="nav-item">
-                <a class="nav-link active" href="#"><img src="img/intrumentestructurale-1.png" alt="Instrumente Structurale logo."></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"><img src="img/ue-1.png" alt="Uniunea Europeană logo."></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"><img src="img/guvern-1.png" alt="Uniunea Europeană logo."></a>
-            </li>
-        </ul>
+        <h1>Colectorul de Resurse Educaționale Deschise</h1>
     </div>
     <div class="os-animation" data-animation="bounceInUp" data-delay=".4s">
-        <h1>Bine ai venit!</h1>
+        <p>Folosiți formularele de mai jos pentru a contribui cu propriile experiențe, instrumente sau metode. </br>Intenția este de a culege cât mai rapid, dat fiind contextul actual, cele mai bune experiențe la baza cărora stă, de obicei, un larg instrumentar.</p>
     </div>
-
     <div class="os-animation" data-animation="bounceInUp" data-delay=".5s">
-        <p>Colectorul de Resurse Educaționale Deschise este o aplicație creată în cadrul proiectului <em>CRED-Curriculum relevant, educație deschisă pentru toți</em>– cod SMIS 2014+:118327
-Proiect cofinanțat din Fondul Social European prin Programul Operațional Capital Uman 2014-2020</p>
+        <section id="cataloage">
+            <div class="gforms">
+                {{!-- Primul formular --}}
+                <div class="c-card" style="border-right: .1rem solid olive;">
+                    <div class="c-header">
+                        <div class="c-header-img" style="background-image: url('img/CatalogulDeResurseEducationale.png');"></div>
+                        <div class="c-title">
+                            <h5>Catalogul de resurse digitale cu utilizare educațională</h5>
+                        </div>
+                    </div>                    
+                    <div class="c-body">
+                        <h6 class="c-subtitle">Eu știu o resursa, tu știi o resursa, dacă le împărtășim între noi, fiecare vom ști două resurse.</h6>
+                        <p class="c-descr">Vă invităm să împărtășiți resursele educaționale (colecții de resurse și instrumente digitale) pe care le considerați utile în învățare.
+    Prin completarea acestui formular vă exprimați acordul pentru a împărtăși cu ceilalți colegi materialele propuse, alături de numele dvs. în calitate de propunător al materialului.</p>
+                        <a class="c-link" href="https://docs.google.com/forms/d/e/1FAIpQLSekK6RY6VprNe6ozDbwJXhcohoEjAnwSR1vvpdeD3vxPjQ_Yg/viewform?usp=sf_link" target="_black" role="button">Accesează</a>
+                        {{!-- <a href="#" class="card-link">Another link</a> --}}
+                    </div>
+                </div>
+
+                {{!-- Al doilea formular --}}
+                <div class="c-card">
+                    <div class="c-header">
+                        <div class="c-header-img" style="background-image: url('img/CatalogDeInstrumenteEducationaleheader.png');"></div>
+                        <div class="c-title">
+                            <h5>Catalogul de instrumente digitale cu utilizare educațională</h5>
+                        </div>
+                    </div>                    
+                    <div class="c-body">
+                        <h6 class="c-subtitle">Vrem să aflăm ce instrumente digitale folosiți pentru a interacționa cu elevii.</h6>
+                        <p class="c-descr">Vă invităm să împărtășiți instrumente educaționale digitale pe care le considerați utile în învățare.
+    Prin completarea acestui formular vă exprimați acordul pentru a împărtăși cu ceilalți colegi materialele propuse, alături de numele dvs. în calitate de propunător al materialului.</p>
+                        <a class="c-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdMr7tCl-fSc_d248mxtRw7nSOHbzs5Q8qT5SAQU17z905k4A/viewform?usp=sf_link" target="_black" role="button">Accesează</a>
+                        {{!-- <a href="#" class="card-link">Another link</a> --}}
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
             
-    <div class="os-animation" data-animation="bounceInUp" data-delay=".6s">
+    {{!-- <div class="os-animation" data-animation="bounceInUp" data-delay=".6s">
         <a class="btn btn-outline-light btn-lg" href="/resursepublice">Zona resurselor deschise public</a>
-    </div>
+    </div> --}}
 
 </div>
+
 {{!-- secțiune întâmpinare final--}}
 <!--- Indicator săgeată -->
 <a class="down-arrow" href="#resurse">
@@ -53,6 +77,7 @@ Proiect cofinanțat din Fondul Social European prin Programul Operațional Capit
         <i class="fas fa-angle-down" aria-hidden="true"></i>
     </div>
 </a>
+
 {{!-- <div class="container"> --}}
     {{!-- {{> mainInfo}} --}}
 <div class="offset">
@@ -61,7 +86,7 @@ Proiect cofinanțat din Fondul Social European prin Programul Operațional Capit
             Ultimele resurse disponibile public
         </h3>
     </div>
-    <div id="" class="resurse os-animation" data-animation="fadeInUp">
+    <div id="resurse" class="resurse os-animation" data-animation="fadeInUp">
         <div class="resurse">
             {{!-- Background video --}}
             <div class="bg-video">
@@ -93,8 +118,6 @@ Proiect cofinanțat din Fondul Social European prin Programul Operațional Capit
                     </div>
                 </div>
             {{/each}}
-
         </div>
-
     </div>
 </div>

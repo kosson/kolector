@@ -19,6 +19,26 @@ Acest rol este vârful pe care îl poate atinge un utilizator al aplicației.
 
 Administratorii au la dispoziție accesul la secțiunea **Administrare** din meniul principal. Prin intermediul acestui meniu, se accesează zona de lucru centrată pe managementul celorlalte conturi.
 
+Administratorii pot atribui roluri din cele prestabilite. În acest moment, cel mai important, după cel de administrator, este cel de validator.
+
+### Instrumente la îndemână
+
+La deschiderea panoului de administrare, se afișează două casete care indică câte Resurse Educaționale Deschise și câți utilizatori au cont creat în colector.
+
+![](img/administrare/Statistici01.png)
+
+Aceste cifre sunt active acest lucru însemnând că vor conduce administratorul către panouri ce vor afișa în format tabelar datele existente.
+
+Acesarea cifrei ce indică numărul resurselor, va conduce către afișarea într-un model tabelar.
+
+![](img/administrare/AccesLaToateResursele01.png)
+
+Accesarea cifrei ce indică numărul utilizatorilor,  va conduce către afișarea într-un model tabelar.
+
+![](img/administrare/AccesareaUtilizatorilor.png)
+
+Afișarea tabelară beneficiază de paginare pentru a putea organiza un număr mare de înregistrări și se pot facă căutări.
+
 ## Validatorii
 
 Utilizatorii care au dobândit rolul de validatori, pot accesa resursele unui utilizator în același mod cum o face un administrator - caută utilizatorul și accesează resursele create ale acestuia.
@@ -37,8 +57,6 @@ De cele mai multe ori ai nevoie să cauți un utilizator pentru a-i modifica sta
 
 ![](img/administrare/DetaliiUserGasit.png)
 
-Suplimentar, fișa aduce și ultimele cinci contribuții la Colectorul RED.
+Suplimentar, este afișat pe o scală a timpului resursele cu care respectivul utilizator a contribuit, dat aduce și ultimele cinci contribuții la Colectorul RED pentru a fi validate, dacă acest lucru este necesar.
 
-## Roluri
-
-Administratorii pot atribui roluri din cele prestabilite. În acest moment, cel mai important, după cel de administrator, este cel de validator.
+![](img/administrare/UltimeleResurseSiAfisareTemporal.png)
