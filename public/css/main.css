@@ -813,3 +813,32 @@ input[type='range']:focus {
     font-size: small;
     font-weight: 200;
 }
+
+/* GESTIONARE INFOTOKENS */
+#tools {
+    display: flex;
+}
+
+.infotoken {
+    width: 20rem;
+    margin: .3rem;
+}
+
+.infotoken__head {
+    position: relative;
+}
+
+.infotoken__head__cover img {
+    width: 20rem;
+    border-radius: .8rem;
+}
+
+.infotoken__head__cover--nr {
+    background-color: olive;
+    color: white;
+    position: absolute;
+    top: -.8rem;
+    right: 0;
+    padding: .3rem;
+    border-radius: .4rem;
+}

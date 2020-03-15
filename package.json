@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/kosson/redcolector#readme",
   "dependencies": {
-    "@elastic/elasticsearch": "^7.6.0",
+    "@elastic/elasticsearch": "^7.6.1",
     "archiver": "^3.1.1",
     "bagit-fs": "^1.1.1",
     "bagit-tools": "0.0.0",
@@ -49,7 +49,7 @@
     "express": "^4.17.1",
     "express-hbs": "^2.3.1",
     "express-session": "^1.17.0",
-    "fast-csv": "^4.1.1",
+    "fast-csv": "^4.1.3",
     "fs": "0.0.2",
     "fs-extra": "^8.1.0",
     "helmet": "^3.21.3",

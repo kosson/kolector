@@ -124,7 +124,7 @@ module.exports = (express, app, passport, pubComm) => {
     app.post('/login', passport.authenticate('local-login', {
         successRedirect: '/', // redirectează userul logat cu succes către pagina de landing
         failureRedirect: '/login'    // dacă a apărut o eroare, reîncarcă userului pagina de login TODO: Fă să apară un mesaj de eroare!!!
-    }));
+    }));    
 
     // ========== AUTH ==========
     app.get('/auth', User.auth); // Încarcă template-ul hbs pentru afișarea butonului de autorizare
@@ -160,7 +160,7 @@ module.exports = (express, app, passport, pubComm) => {
     });
 
     /* === ACCESAREA PROPRIILOR RESURSE === */
-    app.get('/profile/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (req, res){
+    app.get('/profile/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (req, res) {
             // console.dir(req.user.email);
             var count = require('./controllers/resincred.ctrl')(req.user);
             // console.log(count);
@@ -190,6 +190,14 @@ module.exports = (express, app, passport, pubComm) => {
             });
         }
     );
+
+    app.get('/tools', makeSureLoggedIn.ensureLoggedIn(), function clbkInTools (req, res) {
+
+    });
+
+    app.get('/recomand', makeSureLoggedIn.ensureLoggedIn(), function clbkInTools (req, res) {
+        
+    });
 
     /* === VALIDARE / PUBLICARE /ȘTERGERE /EDITARE @ ->resursa -> resursa-admin [redincredadmin.js / res-shown.js] -> resursa-validator === */
     app.get('/profile/resurse/:idres', User.ensureAuthenticated, function clbkProfResID (req, res, next){

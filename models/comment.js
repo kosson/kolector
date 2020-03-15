@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
-// const User     = require('./user');
 const mexp     = require('mongoose-elasticsearch-xp');
 
 let Comment = new mongoose.Schema({
-    continut: String,
+    _id: Schema.Types.ObjectId,
+    titlu: String,
+    contributor: String,
+    continut: {},
+    value: Number,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
