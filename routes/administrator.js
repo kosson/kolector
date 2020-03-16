@@ -74,10 +74,13 @@ router.get('/reds', function clbkAdmReds (req, res) {
             {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
             {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
             {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+            {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
+            {script: '/lib/datatables.net-responsive-dt/js/dataTables.responsive.min.js'},
             {script: '/js/res-visuals.js'},
         ];
         let styles = [
-            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'}
+            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'},
+            {style: '/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css'}
         ];
         res.render('reds-data-visuals', {
             title:   "REDs data visuals",
@@ -114,10 +117,13 @@ router.get('/users', function clbkAdmUsr (req, res) {
             {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
             {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
-            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'}
+            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+            {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
+            {script: '/lib/datatables.net-responsive-dt/js/dataTables.responsive.min.js'}
         ];
         let styles = [
-            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'}
+            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'},
+            {style: '/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css'}
         ];
         res.render('users-data-visuals', {
             title:   "User data visuals",

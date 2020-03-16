@@ -794,6 +794,7 @@ function disciplineBifate () {
         // modelarea tabelului 
         $(document).ready(function() {
             var table = $('#competenteS').DataTable({
+                responsive: true,
                 "order": [[ 0, "asc" ]],
                 "dom": '<"toolbar">frtip',
                 data: CSlist,
@@ -822,7 +823,24 @@ function disciplineBifate () {
                     {title: "Competența specifică", "data": "nume"},
                     {title: "Competența generală", "data": "parteA" }
                     // {title: "activitati", "data": "activitati[, * ]"}
-                ]
+                ],
+                language: {
+                    "sProcessing":   "Procesează...",
+                    "sLengthMenu":   "Afișează _MENU_ înregistrări pe pagină",
+                    "sZeroRecords":  "Nu am găsit nimic - ne pare rău",
+                    "sInfo":         "Afișate de la _START_ la _END_ din _TOTAL_ înregistrări",
+                    "sInfoEmpty":    "Afișate de la 0 la 0 din 0 înregistrări",
+                    "sInfoFiltered": "(filtrate dintr-un total de _MAX_ înregistrări)",
+                    "sInfoPostFix":  "",
+                    "sSearch":       "Caută:",
+                    "sUrl":          "",
+                    "oPaginate": {
+                        "sFirst":    "Prima",
+                        "sPrevious": "Precedenta",
+                        "sNext":     "Următoarea",
+                        "sLast":     "Ultima"
+                    }
+                }
             });
             // Adăugarea de informații în toolbar
             $("div.toolbar").html('<strong>Pentru a încadra corect activitățile (cunoștințe, abilități, atitudini) fiecărei competențe, apăsați semnul plus.</strong>');

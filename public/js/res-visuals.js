@@ -15,6 +15,7 @@ pubComm.on('allRes', (resurse) => {
     // console.log(resurse.resurse);
     // https://datatables.net/manual/data/orthogonal-data
     $('.userResTbl').DataTable({
+        responsive: true,
         data: resurse,
         buttons: [
             'copy', 'excel', 'pdf'
@@ -53,7 +54,24 @@ pubComm.on('allRes', (resurse) => {
                 title: 'Licență',
                 data: 'licenta'
             }
-        ]
+        ],
+        language: {
+            "sProcessing":   "Procesează...",
+            "sLengthMenu":   "Afișează _MENU_ înregistrări pe pagină",
+            "sZeroRecords":  "Nu am găsit nimic - ne pare rău",
+            "sInfo":         "Afișate de la _START_ la _END_ din _TOTAL_ înregistrări",
+            "sInfoEmpty":    "Afișate de la 0 la 0 din 0 înregistrări",
+            "sInfoFiltered": "(filtrate dintr-un total de _MAX_ înregistrări)",
+            "sInfoPostFix":  "",
+            "sSearch":       "Caută:",
+            "sUrl":          "",
+            "oPaginate": {
+                "sFirst":    "Prima",
+                "sPrevious": "Precedenta",
+                "sNext":     "Următoarea",
+                "sLast":     "Ultima"
+            }
+        }
     });
 });
 

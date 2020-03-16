@@ -12,9 +12,10 @@ uResTbl.appendChild(divResurseTabelare);                   // append tabel la di
 pubComm.emit('allUsers');
 pubComm.on('allUsers', (resurse) => {
     // RANDEAZĂ TABELUL
-    console.log(resurse);
+    // console.log(resurse);
     // https://datatables.net/manual/data/orthogonal-data
     var table = $('.userResTbl').DataTable({
+        responsive: true,
         data: resurse,
         ordering: true,
         info: true,
@@ -89,7 +90,24 @@ pubComm.on('allUsers', (resurse) => {
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf'
-        ]
+        ],
+        language: {
+            "sProcessing":   "Procesează...",
+            "sLengthMenu":   "Afișează _MENU_ înregistrări pe pagină",
+            "sZeroRecords":  "Nu am găsit nimic - ne pare rău",
+            "sInfo":         "Afișate de la _START_ la _END_ din _TOTAL_ înregistrări",
+            "sInfoEmpty":    "Afișate de la 0 la 0 din 0 înregistrări",
+            "sInfoFiltered": "(filtrate dintr-un total de _MAX_ înregistrări)",
+            "sInfoPostFix":  "",
+            "sSearch":       "Caută:",
+            "sUrl":          "",
+            "oPaginate": {
+                "sFirst":    "Prima",
+                "sPrevious": "Precedenta",
+                "sNext":     "Următoarea",
+                "sLast":     "Ultima"
+            }
+        }
     });
 });
 
