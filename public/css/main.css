@@ -39,11 +39,11 @@
 }
 
 /* GENERAL */
-footer {
-    display: flex;
+.footer {
+    /* display: flex;
     z-index: 10;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: center; */
     position: relative;
     text-align: center;
 }
