@@ -4,7 +4,7 @@ const archiver    = require('archiver');
 const path        = require('path');
 // const querystring = require('querystring');
 const BagIt       = require('bagit-fs');
-const { v1: uuidv1 } = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
+const {v1: uuidv1} = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 const Readable    = require('stream').Readable;
 const mongoose    = require('mongoose');
 const moment      = require('moment');
@@ -191,14 +191,6 @@ module.exports = (express, app, passport, pubComm) => {
         }
     );
 
-    app.get('/tools', makeSureLoggedIn.ensureLoggedIn(), function clbkInTools (req, res) {
-
-    });
-
-    app.get('/recomand', makeSureLoggedIn.ensureLoggedIn(), function clbkInTools (req, res) {
-        
-    });
-
     /* === VALIDARE / PUBLICARE /ȘTERGERE /EDITARE @ ->resursa -> resursa-admin [redincredadmin.js / res-shown.js] -> resursa-validator === */
     app.get('/profile/resurse/:idres', User.ensureAuthenticated, function clbkProfResID (req, res, next){
         // Adu înregistrarea resursei cu toate câmpurile referință populate deja
@@ -357,6 +349,15 @@ module.exports = (express, app, passport, pubComm) => {
             credlogo: "../img/CREDlogo.jpg"
         });
     });
+
+    app.get('/tools', makeSureLoggedIn.ensureLoggedIn(), function clbkInTools (req, res) {
+
+    });
+
+    app.get('/recomand', makeSureLoggedIn.ensureLoggedIn(), function clbkInTools (req, res) {
+        
+    });
+
 
     /* === CONSTRUCȚIA BAG-ULUI, INTRODUCEREA ÎNREGISTRĂRII, INTRODUCEREA ÎN ELASTICSEARCH === */
     let lastBag;   // este o referință către un bag deja deschis
@@ -1046,9 +1047,9 @@ module.exports = (express, app, passport, pubComm) => {
         // Creează logica de ștergere a resursei care nu mai există în Frontend. Altfel, te vei trezi cu hardul plin de fișiere orfane.
         res.send(JSON.stringify(resObj));
     });
-    // ========== ÎNCĂRCAREA UNUI FIȘIER cu `multer` - END =========
+    // === ÎNCĂRCAREA UNUI FIȘIER cu `multer` - END ===
 
-    // ========== 401 - NEPERMIS ==========
+    // === 401 - NEPERMIS ===
     app.get('/401', function(req, res){
         res.status(401);
         res.render('nepermis', {
@@ -1058,7 +1059,7 @@ module.exports = (express, app, passport, pubComm) => {
         });
     });
 
-    //========== 404 - NEGĂSIT ==========
+    //=== 404 - NEGĂSIT ===
     app.use('*', function (req, res, next) {
         res.render('negasit', {
             title:    "404",

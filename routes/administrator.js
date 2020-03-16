@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const Resursa = require('../models/resursa-red');
 
-// ========== VERIFICAREA ROLURILOR ==========
+// === VERIFICAREA ROLURILOR ===
 let checkRole = require('./controllers/checkRole.helper');
 
 /* === /administrator @->administrator === */
-router.get('/', function clbkRouterRoot (req, res) {
+router.get('/', function clbkAdmRoot (req, res) {
     // ACL
     let roles = ["admin", "validator"];
     
@@ -24,9 +24,9 @@ router.get('/', function clbkRouterRoot (req, res) {
             {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
             {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
             {script: '/lib/moment/min/moment.min.js'},
-            // {script: '/lib/timeline3/js/timeline.js'},
             {script: '/js/admin.js'}
         ];
+
         res.render('administrator', {
             title:   "administrator",
             user:    req.user,
@@ -56,7 +56,7 @@ router.get('/', function clbkRouterRoot (req, res) {
     }
 });
 
-router.get('/reds', function clbkRouterRoot (req, res) {
+router.get('/reds', function clbkAdmReds (req, res) {
     // ACL
     let roles = ["admin", "validator"];
     
@@ -67,16 +67,17 @@ router.get('/reds', function clbkRouterRoot (req, res) {
     // Dacă avem un admin, atunci oferă acces neîngrădit
     if(req.session.passport.user.roles.admin){
         let scripts = [       
-            {script: '/lib/moment/min/moment.min.js'},
-            // {script: '/lib/timeline3/js/timeline.js'},
-            {script: '/js/res-visuals.js'},
-            // DATATABLES
+            {script: '/lib/moment/min/moment.min.js'},            
             {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
             {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
             {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
             {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
-            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'}
+            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+            {script: '/js/res-visuals.js'},
+        ];
+        let styles = [
+            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'}
         ];
         res.render('reds-data-visuals', {
             title:   "REDs data visuals",
@@ -85,6 +86,7 @@ router.get('/reds', function clbkRouterRoot (req, res) {
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
             scripts,
+            styles,
             activeAdmLnk: true
         });
     // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
@@ -93,7 +95,7 @@ router.get('/reds', function clbkRouterRoot (req, res) {
     }
 });
 
-router.get('/users', function clbkRouterRoot (req, res) {
+router.get('/users', function clbkAdmUsr (req, res) {
     // ACL
     let roles = ["admin", "validator"];
     
@@ -115,15 +117,15 @@ router.get('/users', function clbkRouterRoot (req, res) {
             {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'}
         ];
         let styles = [
-            {"style": "/lib/fontawesome/css/fontawesome.min.css"}
+            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'}
         ];
         res.render('users-data-visuals', {
             title:   "User data visuals",
             user:    req.user,
-            style: styles,
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
             scripts,
+            styles,
             activeAdmLnk: true
         });
     // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
