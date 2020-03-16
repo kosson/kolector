@@ -1,6 +1,20 @@
 {{!< layout}}
 {{> nav-resurse}}
-{{> messages}}
+
+    {{!-- <div class="searchFrm container">
+        <form id="searchResInCRED">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="resursaCred">Căutare o resursă creată în CRED</span>
+                </div>
+                <input type="text" id="findUserField" class="form-control" placeholder="introdu un cuvânt cheie, o sintagmă" aria-label="resursaCred" aria-describedby="resursaCred">
+                <div class="input-group-append">
+                    <button id="findUserBtn" class="btn btn-outline-secondary" type="button">Caută</button>
+                </div>
+            </div>
+        </form>
+    </div> --}}
+
     <div id="" class="resurse">
         {{!-- Background video --}}
         <div class="bg-video">
@@ -11,6 +25,7 @@
                 Browserul tău nu are support pentru caracteristicile web moderne. Actualizează-l!
             </video>
         </div>
+
         {{#each resurse}}
             <div class="card">
                 <div class="card-header">

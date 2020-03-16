@@ -557,7 +557,7 @@ input[type='range']:focus {
     padding: 2rem;
 }
 
-/* ZONA DE ADMINISTRARE */
+/* === ZONA DE ADMINISTRARE === */
 
 #searchU {
     max-width: 40%;
@@ -841,4 +841,13 @@ input[type='range']:focus {
     right: 0;
     padding: .3rem;
     border-radius: .4rem;
+}
+
+/* === SEARCH în RESURSE === */
+
+.searchFrm {
+    max-width: 40%;
+    text-align: center;
+    margin: 0 auto;
+    padding: 1rem;
 }

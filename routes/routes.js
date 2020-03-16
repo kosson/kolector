@@ -134,7 +134,7 @@ module.exports = (express, app, passport, pubComm) => {
     
     // RUTA PE CARE VINE RĂSPUNSUL SERVERULUI DE AUTORIZARE
     app.get('/callback', passport.authenticate('google', { failureRedirect: '/auth'}), function(req, res) {
-        res.redirect('/resurse');
+        res.redirect('/');
     });
     
     /* === LOGOUT === */

@@ -35,7 +35,7 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
                 newResultArr.push(obi);
             });
             res.render('resurse', {
-                title:   "Resurse publice",
+                title:   "CRED RED-uri",
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "img/rED-logo192.png",
                 user:    req.user,
