@@ -1,5 +1,3 @@
-console.log('M-am încărcat');
-
 // Resurse afișate tabelar
 var TblTmpl = document.querySelector('#userResTbl'); // ref către template-ul resurselor în format tabelar
 var cloneTbl = TblTmpl.content.cloneNode(true);      // clonarea template-ului pentru afișare tabelară
@@ -11,20 +9,34 @@ uResTbl.appendChild(divResurseTabelare);                   // append tabel la di
 
 pubComm.emit('allRes');
 pubComm.on('allRes', (resurse) => {
+    let newResultArr = []; // noul array al obiectelor resursă
+    resurse.map(function clbkMapResult (obi) {
+        obi.dataRo = moment(obi.date).locale('ro').format('LLL');
+        newResultArr.push(obi);
+    });
     // RANDEAZĂ TABELUL
-    // console.log(resurse.resurse);
     // https://datatables.net/manual/data/orthogonal-data
     $('.userResTbl').DataTable({
         responsive: true,
-        data: resurse,
-        buttons: [
-            'copy', 'excel', 'pdf'
-        ],
+        data: newResultArr,
+        ordering: true,
+        info: true,
         columns: [
             {
+                title: 'Data',
+                data: {
+                    _: 'dataRo',
+                    sort: 'date'
+                },
+                render: function clbkTimeFormat (data, type, row) {
+                    return `<p>${data}</p>`;
+                }
+            },
+            {
+                title: 'Accesează',
                 data: '_id',
                 render: function clbkId (data, type, row) {
-                    return `<a href="${window.location.origin}/profile/resurse/${data}">Deschide</a>`;
+                    return `<a href="${window.location.origin}/profile/resurse/${data}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">${data.slice(0,5)}...</a>`;
                 }
             },
             {
@@ -32,9 +44,20 @@ pubComm.on('allRes', (resurse) => {
                 data: 'expertCheck',
                 render: function clbkExpertChk (data, type, row) {
                     if (data) {
-                        return "validată";
+                        return `<p class="resvalid">validată</p>`;
                     } else {
-                        return "nevalidată";
+                        return `<p class="resinvalid">nevalidată</p>`;
+                    }
+                }
+            },
+            { 
+                title: 'Publică',
+                data: 'generalPublic',
+                render: function clbkGenPub (data, type, row) {
+                    if (data) {
+                        return `<p class="respublic">public</p>`;
+                    } else {
+                        return `<p class="resinvalid">internă</p>`;
                     }
                 }
             },

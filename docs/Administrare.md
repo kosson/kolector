@@ -33,7 +33,7 @@ Acesarea cifrei ce indică numărul resurselor, va conduce către afișarea înt
 
 ![](img/administrare/AccesLaToateResursele01.png)
 
-Accesarea cifrei ce indică numărul utilizatorilor,  va conduce către afișarea într-un model tabelar.
+Accesarea cifrei ce indică numărul utilizatorilor, va conduce către afișarea într-un model tabelar.
 
 ![](img/administrare/AccesareaUtilizatorilor.png)
 

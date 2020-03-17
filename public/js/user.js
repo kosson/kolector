@@ -1,30 +1,5 @@
 // ======== CĂUTAREA UNUI UTILIZATOR
-// --> Adaugă receptor pe butonul din formularul de căutare
-var findUserBtn = document.querySelector("#findUserBtn");
-findUserBtn.addEventListener('click', function clbkFindUser (evt) {
-    evt.preventDefault();
-    pubComm.emit('person', document.querySelector('#findUserField').value); // Emite pe `person` în backend
-});
-
-pubComm.on('person', (data) => {
-    renderUsr.innerHTML = '';
-    // console.log(data);
-    showUser(data);
-    // console.log(data.hits.hits);
-    // Afișează eroare în cazul în care înregistrarea nu este indexată.
-    if (data.length === 0) {
-        $.toast({
-            heading: 'Neindexat, poate?',
-            text: "Utilizatorul căutat, fie nu există, fie nu a fost indexat. Acum îl voi căuta în baza de date și încerc o reindexare",
-            position: 'top-center',
-            showHideTransition: 'fade',
-            icon: 'error',
-            hideAfter: 7000
-        });
-        // TODO: reindexează userul!
-        // pubComm.emit('person', {'reindex': '1'});
-    }
-});
+pubComm.emit('personrecord', window.location.pathname.split('/').pop());
 
 var userTmpl = document.querySelector('#usertpl');    // Pas 1 - Fă o referință către template
 var renderUsr = document.getElementById('showusers'); // Pas 2 - Fă o referință către elementul din DOM unde va fi inserat conținutul rezultat din compilarea template-ului
@@ -86,92 +61,91 @@ TimelineObj = {
 
 // Primirea detaliilor privind utilizatorul ales
 pubComm.on('personrecord', function clblPersReds (resurse) {
+    // console.log(resurse.resurse);
     renderUsrDetails.innerHTML = '';
     userFile = resurse;
 
-    // TODO: Transformă `resurse` într-un subset necesar lui Timeline
-    TimelineObj.title.text.headline = resurse.googleProfile.name;
-    TimelineObj.title.text.text = `Acestea sunt resursele contribuite afișate temporal`;
+    showUserDetails(resurse); // AFIȘEAZĂ detaliile utilizatorului
 
-    resurse.resurse.map(function clbkResursa2Timeline (resursa) {
-        let discipline = resursa.discipline.join(', '); // flat-out discipline
-        let images = [];
+    if(resurse.resurse.length > 0) {
+        TimelineObj.title.text.headline = resurse.googleProfile.name;
+        TimelineObj.title.text.text = `Acestea sunt resursele contribuite afișate temporal`;
 
-        // doar dacă ai blocuri, alimentezi array-ul imaginilor
-        if (resursa.blocks) {
-            resursa.content.blocks.map( part => {
-                if (part.type === 'image') {
-                    images.push(part);
-                }
-            });
-        }
-        let data = new Date(`${resursa.date}`);
-        let transformedObject = {
-            media: {
-                url: images.length ? `${images[0].data.file.url}` : '',
-                caption: images.length ? `${images[0].data.file.caption}` : '',
-                credit: '',
-                thumbnail: '',
-                alt: images.length ? `${images[0].data.file.caption}` : '',
-                title: `${resursa.title}`,
-                link: `/resurse/${resursa._id}`,
-                link_target: '_blank'
-            },
-            unique_id: resursa._id,
-            start_date: {
-                year: data.getFullYear(),
-                month: data.getMonth(),
-                day: data.getDay(),
-                hour: data.getHours(),
-                minute: data.getMinutes(),
-                second: data.getSeconds(),
-                millisecond: ''
-            },
-            text: {
-                headline: `${resursa.title}`,
-                text: `
-                    <p class="tmlAuth">${resursa.autori}</p>
-                    <p class="tmlDescr">Descriere: ${resursa.description}</p>
-                    <p class="tmlDisc">Discipline: ${discipline}</p>
-                    <p class="tmlLic">${resursa.licenta}</p>
-                `
-            },
-            background: {
-                url: `${resursa.coperta}`
+        resurse.resurse.map(function clbkResursa2Timeline (resursa) {
+            let discipline = resursa.discipline.join(', '); // flat-out discipline
+            let images = [];
+
+            // doar dacă ai blocuri, alimentezi array-ul imaginilor
+            if (resursa.blocks) {
+                resursa.content.blocks.map( part => {
+                    if (part.type === 'image') {
+                        images.push(part);
+                    }
+                });
             }
-        };
-        TimelineObj.events.push(transformedObject);
-    });
-
-    showUserDetails(resurse); // AFIȘEAZĂ resursele (tip card Bootstrap 4) pe care le-a creat utilizatorul
-
-    // RANDEAZA TIMELINE_UL
-    new TL.Timeline('timeline-embed', TimelineObj, tmlOptions);
-
-    // RANDEAZĂ TABELUL
-    // console.log(resurse.resurse);
-    // https://datatables.net/manual/data/orthogonal-data
-    $('.userResTbl').DataTable({
-        data: resurse.resurse,
-        columns: [
-            {
-                title: 'ID',
-                data: '_id',
-                render: function clbkId (data, type, row) {
-                    return `<a href="${window.location.origin}/profile/resurse/${data}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">${data.slice(0,5)}...</a>`;
+            let data = new Date(`${resursa.date}`);
+            let transformedObject = {
+                media: {
+                    url: images.length ? `${images[0].data.file.url}` : '',
+                    caption: images.length ? `${images[0].data.file.caption}` : '',
+                    credit: '',
+                    thumbnail: '',
+                    alt: images.length ? `${images[0].data.file.caption}` : '',
+                    title: `${resursa.title}`,
+                    link: `/resurse/${resursa._id}`,
+                    link_target: '_blank'
+                },
+                unique_id: resursa._id,
+                start_date: {
+                    year: data.getFullYear(),
+                    month: data.getMonth(),
+                    day: data.getDay(),
+                    hour: data.getHours(),
+                    minute: data.getMinutes(),
+                    second: data.getSeconds(),
+                    millisecond: ''
+                },
+                text: {
+                    headline: `${resursa.title}`,
+                    text: `
+                        <p class="tmlAuth">${resursa.autori}</p>
+                        <p class="tmlDescr">Descriere: ${resursa.description}</p>
+                        <p class="tmlDisc">Discipline: ${discipline}</p>
+                        <p class="tmlLic">${resursa.licenta}</p>
+                    `
+                },
+                background: {
+                    url: `${resursa.coperta}`
                 }
-            },
+            };
+            TimelineObj.events.push(transformedObject);
+        });
+
+        // RANDEAZA TIMELINE_UL
+        new TL.Timeline('timeline-embed', TimelineObj, tmlOptions);
+
+        // RANDEAZĂ TABELUL
+        // console.log(resurse.resurse);
+        // https://datatables.net/manual/data/orthogonal-data
+        $('.userResTbl').DataTable({
+            data: resurse.resurse,
+            columns: [
                 {
-                    title: 'Verificată',
+                    data: '_id',
+                    render: function clbkId (data, type, row) {
+                        return `<a href="${window.location.origin}/profile/resurse/${data}">Deschide</a>`;
+                    }
+                },
+                {
                     data: 'expertCheck',
                     render: function clbkExpertChk (data, type, row) {
                         // if ( type === 'display' || type === 'filter' ) {
 
                         // }
                         if (data) {
-                            return `<p class="resvalid">validată</p>`;
+                            return "validată";
                         } else {
-                            return `<p class="resinvalid">nevalidată</p>`;
+                            return "nevalidată";
                         }
                     }
                 },
@@ -186,27 +160,13 @@ pubComm.on('personrecord', function clblPersReds (resurse) {
                         }
                     }
                 },
-            {
-                title: 'Titlul',
-                data: 'title',
-                render: function clbkTitleRender (data, type, row) {
-                    return `<p class="restitle">${data}</p>`
-                }
-            },
-            {
-                title: 'Autor',
-                data: 'autori'
-            },
-            {
-                title: 'Descriere',
-                data: 'description'
-            },
-            {
-                title: 'Licență',
-                data: 'licenta'
-            }
-        ]
-    });
+                {data: 'title'},
+                {data: 'autori'},
+                {data: 'description'},
+                {data: 'licenta'}
+            ]
+        });
+    }
 });
 
 // Referință către template
@@ -403,55 +363,3 @@ pubComm.on('addUnit', (resurce) => {
 pubComm.on('addRole', (resurce) => {
     console.log(resurce);
 });
-
-
-// DATELE STATISTICE
-pubComm.emit('stats', {descriptors: ['reds', 'users']}); // Se pasează descriptorii pentru care se dorește aducerea datelor corespondente. Prin convenție, fiecare descriptor înseamnă un set de date.
-// la primirea datelor statistice, se generează articole.
-pubComm.on('stats', (stats) => {
-    if (stats.hasOwnProperty('reds')) {
-        const resObi = {
-            descriptor: 'reds',
-            categorie: 'Resurse Educaționale Deschise',
-            figure: stats.reds
-        };
-        populateStatisticArticle(resObi);
-    } else if (stats.hasOwnProperty('users')) {
-        const userObi = {
-            descriptor: 'users',
-            categorie: 'Conturi utilizatori existente',
-            figure: stats.users
-        };
-        populateStatisticArticle(userObi);
-    }
-});
-
-var restatsEntry = document.querySelector('#restats'); // Ancora din DOM a elementului deja existent
-var statsTmpl = document.querySelector('#statstpl'); // ref la template
-
-/**
- * Funcția `populateStatisticArticle` are rolul de a popula template-ul dedicat datelor statistice pentru un anumit descriptor
- * Funcția este acționată la primirea pe evenimentul `stats` prin cascadarea switch...case.
- * @param {Object} data Sunt datele care vin din backend pentru datele statistice sumare
- */
-function populateStatisticArticle (data) {
-    // console.log(data);
-    // clonează nodul în care vom crea dinamic elementele DOM 
-    var cloneStatsContent = statsTmpl.content.cloneNode(true); // clonarea template-ului pentru statistici
-
-    // <article> care joacă rol de container
-    let articleInStats = cloneStatsContent.querySelector('.stats__article');
-    articleInStats.classList.add(data.descriptor);
-
-    // <h5> care joacă rol de titlu
-    let titleInStats = cloneStatsContent.querySelector('.stat__title');
-    titleInStats.textContent = data.categorie;
-
-    // <a> care joacă rol de link către o pagină dedicată afișării tuturor respectivelor resurse.
-    let aInParaInStats = cloneStatsContent.querySelector('.stat__figure');
-    aInParaInStats.href = `/administrator/${data.descriptor}`; // TODO: pagina care se va deschide, va fi dedicată unor vizualizări pe datele despre toate resursele
-    aInParaInStats.setAttribute("href", `/administrator/${data.descriptor}`);
-    aInParaInStats.textContent = data.figure;
-
-    restatsEntry.appendChild(cloneStatsContent);
-}

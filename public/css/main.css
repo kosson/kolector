@@ -534,6 +534,7 @@ input[type='range']:focus {
     border: .1rem;
     border-style: solid;
 }
+
 /* TRATAREA LOGURILOR */
 .logentry {
     border: .1rem;
@@ -850,4 +851,28 @@ input[type='range']:focus {
     text-align: center;
     margin: 0 auto;
     padding: 1rem;
+}
+
+/* === STAREA RESURSELOR LA ADMINISTRARE === */
+
+.resvalid, .resinvalid, .redpublic {
+    font-size: larger;
+}
+
+.resvalid {
+    color: yellow;
+    text-shadow: -1px -1px 1px rgba(255,255,255,.1), 1px 1px 1px rgba(0,0,0,.5);
+}
+
+
+.resinvalid {
+    color: red;
+}  
+
+.respublic {
+    color: green;
+}
+
+.restitle {
+    font-weight: bolder;
 }

@@ -1,5 +1,3 @@
-console.log('M-am încărcat');
-
 // Resurse afișate tabelar
 var TblTmpl = document.querySelector('#userResTbl'); // ref către template-ul resurselor în format tabelar
 var cloneTbl = TblTmpl.content.cloneNode(true);      // clonarea template-ului pentru afișare tabelară
@@ -11,12 +9,16 @@ uResTbl.appendChild(divResurseTabelare);                   // append tabel la di
 
 pubComm.emit('allUsers');
 pubComm.on('allUsers', (resurse) => {
-    // RANDEAZĂ TABELUL
-    // console.log(resurse);
+    // console.log(moment.locales());
+    let newResultArr = []; // noul array al obiectelor resursă
+    resurse.map(function clbkMapResult (obi) {
+        obi.dataRo = moment(obi.date).locale('ro').format('LLL');
+        newResultArr.push(obi);
+    });
     // https://datatables.net/manual/data/orthogonal-data
     var table = $('.userResTbl').DataTable({
         responsive: true,
-        data: resurse,
+        data: newResultArr,
         ordering: true,
         info: true,
         columns: [
@@ -31,7 +33,16 @@ pubComm.on('allUsers', (resurse) => {
                 title: 'Id',
                 data: '_id',
                 render: function clbkId (data, type, row) {
-                    // return `<a href="${window.location.origin}/profile/resurse/${data}">Deschide</a>`;
+                    return `<a href="/administrator/users/${data}" role="button" class="btn btn-primary btn-sm btn-block">${data}</a>`;
+                }
+            },
+            {
+                title: 'Data',
+                data: {
+                    _: 'dataRo',
+                    sort: 'created'
+                },
+                render: function clbkTimeFormat (data, type, row) {
                     return `<p>${data}</p>`;
                 }
             },
@@ -49,7 +60,10 @@ pubComm.on('allUsers', (resurse) => {
             },
             {
                 title: 'Email',
-                data: 'email'
+                data: 'email',
+                // render: function clblEmail (data, type, row) {
+                    
+                // }
             },
             {
                 title: 'Nume',
@@ -61,7 +75,7 @@ pubComm.on('allUsers', (resurse) => {
             },
             {
                 title: 'Roluri',
-                data: 'roles.rolInCRED',
+                data: 'roles.rolInCRED[, ]',
                 // render: function clbkRole (data, type, full, meta) {
                 //     console.log(data);
                 //     if ( type === 'display'  || type === 'filter' ) {
@@ -71,7 +85,7 @@ pubComm.on('allUsers', (resurse) => {
             },
             {
                 title: 'Unități',
-                data: 'roles.unit',
+                data: 'roles.unit[, ]',
                 // render: function clbkRole (data, type, row) {
                 //     // console.log(data);
                 //     if ( type === 'display'  || type === 'filter' ) {

@@ -1,24 +1,8 @@
 {{!< layout}}
 {{> nav-administrator}}
 
-{{#each styles}}
-    <link rel="stylesheet" type="text/css" href="{{style}}">
-{{/each}}
-
 <div id="content">
-    <h1>Bine ai venit în zona de administrare!</h1>
-    {{!-- <div id="foci">
-        <button id="allUsers" type="button" class="btn btn-primary">Toți utilizatorii</button>
-        <button id="allUnits" type="button" class="btn btn-primary">Unități</button>
-        <button id="allComps" type="button" class="btn btn-primary">Competențe specifice</button>    
-    </div> --}}
-    {{!-- <br> --}}
     <section class="container-fluid" id="userres">
-        {{!-- Statisticile care conduc la rezultate --}}
-        <div id="restats">
-            {{!-- Rezultatul compilării template-ului cu date statistice va fi introdus aici --}}
-        </div>
-
         {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
         <div id="contributii" class="">
             {{!-- Background video --}}
@@ -28,24 +12,6 @@
                     <source src="img/coverr-typing-in-laptop-1578678668153.mp4" type="video/mp4">
                     Browserul tău nu are support pentru caracteristicile web moderne. Actualizează-l!
                 </video>
-            </div>
-            
-            {{!-- Formularul câmpului de căutare --}}
-            <form id="searchU">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="useremail">@educred.ro</span>
-                    </div>
-                    <input type="text" id="findUserField" class="form-control" placeholder="Caută un utilizator, fie după email, fie după nume" aria-label="useremail" aria-describedby="useremail">
-                    <div class="input-group-append">
-                        <button id="findUserBtn" class="btn btn-outline-secondary" type="button">Caută</button>
-                    </div>
-                </div>
-            </form>
-
-            {{!-- UTILIZATORII GĂSIȚI ÎN ELASTICSEARCH --}}
-            <div id="showusers" class="">                
-                {{!-- Va fi inserat rezultatul compilării aici! --}}
             </div>
 
             {{!-- DETALIILE PENTRU UN UTILIZATOR SELECTAT --}}
@@ -138,7 +104,7 @@
 
     {{!-- Tabelul resurselor personale --}}
     <template id="userResTbl">
-        <div id="resurseTab" class="tableDisplay"></div>
+        <div id="resurseTab" class=""></div>
     </template>
 
     {{#each scripts}}
