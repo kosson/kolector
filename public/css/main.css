@@ -876,3 +876,9 @@ input[type='range']:focus {
 .restitle {
     font-weight: bolder;
 }
+
+/* === GESTIONARE TABELE cu formuri === */
+
+.formtbls thead th {
+    padding: 2rem;
+}
