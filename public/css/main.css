@@ -882,3 +882,20 @@ input[type='range']:focus {
 .formtbls thead th {
     padding: 2rem;
 }
+
+/* FORMAREA BUTOANELOR DISCIPLINELOR */
+
+#discipline {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.discbtn {
+    /* background-color: rgb(229, 127, 255) !important; */
+}
+
+.btn-success { background-color: red; }
+
+.disciplina {
+    margin: .2rem;
+}
