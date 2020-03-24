@@ -542,6 +542,7 @@ niveluri.forEach(function cbNiveluri (checkbox) {
     checkbox.addEventListener('click', (event) => {
         // FIXME: Date sunt hardcodate în formular cu atribute `data=*`. Am dorit reducerea la maxim a atingerii bazei de date.
         var data = JSON.parse(JSON.stringify(event.target.dataset)); // constituie un obiect cu toate datele din `data=*` a checkbox-ului de clasă.
+        // console.log(data);
 
         // Dacă sunt elemente în `niveluri` care au uncheck, șterge disciplinele asociate!
         if(event.target.checked === false) {
@@ -552,11 +553,45 @@ niveluri.forEach(function cbNiveluri (checkbox) {
             }
         } else {
             // dacă event.target.checked a fost bifat - avem `checked`, vom genera elementele checkbox.
+
+            //FIXME: Generează clase dupa primele trei caractere din data="abc"
+            // Construiește un Map colector
+            const CLASIFICATION = new Set();
+            const STRUCTURE = new Map();
+
+            //::constituie un array de entități unice
+            for (let [k, v] of Object.entries(data)) {                
+                // izolează primele trei litere din k
+                let classNameRegExp = /[a-z]+((\d)?|[A-Z])/gm; // codul clasei de obiecte
+                let className = k.match(classNameRegExp).shift();
+                let level = k.match(classNameRegExp).pop().split('').pop();
+                const MAPPING = {
+                    class: className,
+                    discipline: [
+                        {csscls: k, name: v}
+                    ]
+                };
+                console.log(MAPPING);
+
+
+                // verifică dacă în map deja există o înregistrare având cheia k. Dacă da, îmbogățește acea înregistrare.
+                // console.log(k);
+            };
+
+            // let classes = data.reduce(function clbkReducerData (ac, el, idx, arr) {
+
+            // });
+
+            //TODO: Pentru fiecare clasă, generează câte un tab în care 
+            //TODO: încarci elemente checkbox pentru fiecare element data 
+
+
+
             for (let [key, val] of Object.entries(data)) {
                 // crearea checkbox - urilor
                 let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': val, autocomplete: "off", value: key}).creeazaElem();
                 let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-info', 'btn-sm'], {}).creeazaElem(val);
-                let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', key], {"data-toggle": "buttons", onclick: "actSwitcher()"}).creeazaElem();          
+                let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', key], {"data-toggle": "buttons", onclick: "actSwitcher()"}).creeazaElem();           
                 labelBtn.appendChild(inputCheckBx);
                 divBtnGroupToggle.appendChild(labelBtn);
                 discipline.appendChild(divBtnGroupToggle);

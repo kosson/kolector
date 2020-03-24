@@ -891,7 +891,7 @@ input[type='range']:focus {
 }
 
 .discbtn {
-    /* background-color: rgb(229, 127, 255) !important; */
+    background-color: rgb(229, 127, 255);
 }
 
 .btn-success { background-color: red; }
