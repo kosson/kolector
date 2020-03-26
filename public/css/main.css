@@ -886,8 +886,8 @@ input[type='range']:focus {
 /* FORMAREA BUTOANELOR DISCIPLINELOR */
 
 #discipline {
-    display: flex;
-    flex-wrap: wrap;
+    /* display: flex;
+    flex-wrap: wrap; */
 }
 
 .discbtn {
@@ -898,4 +898,22 @@ input[type='range']:focus {
 
 .disciplina {
     margin: .2rem;
+}
+
+/* FORMAREA OPȚIUNILOR LA MOMENTUL ALEGERII DISCIPLINELOR */
+#multilevdisc {
+    display: flex;
+    border-top: #999 solid .1rem;
+    padding: .3rem;
+}
+
+#v-pills-tabContent {
+    /* display: flex; */
+    /* flex-wrap: wrap; */
+    /* flex-direction: row; */
+    position: relative;
+}
+
+#v-pills-tab {
+    /* width: 30%; */
 }

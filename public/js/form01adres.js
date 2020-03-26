@@ -531,74 +531,644 @@ function creeazaTitluAlternativHelper (id, insertie) {
     insertie.appendChild(divInputGroup);
 }
 
+const mapCodDisc2Arie = new Map();
+// CLASA 0
+mapCodDisc2Arie.set("0", 
+    [
+        {
+            cod: "lbmat0", parent: "lbrom0", nume: "Limba și literatura romana (pt. elevi care învață în limba maternă)",
+            coduriDiscipline: []
+        },
+        {
+            cod: "lbmod0", parent: "lbrom0", nume: "Limbi moderne",
+            coduriDiscipline: []            
+        },
+        {
+            cod: "lbrom0", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom0']            
+        },
+        {
+            cod: "matstnat0", parent: "", nume: "Matematică și științe ale naturii",
+            coduriDiscipline: []         
+        },
+        {
+            cod: "mat0", parent: "matstnat0", nume: "Matematică",
+            coduriDiscipline: ['mateMed0']
+        },
+        {
+            cod: "omsoc0", parent: "", nume: "Om și societate",
+            coduriDiscipline: ['relOrt0', 'relRomcatro0']            
+        },
+        {
+            cod: "arte0", parent: "", nume: "Arte",
+            coduriDiscipline: ['artViz0']            
+        }
+    ]
+);
+mapCodDisc2Arie.set("1", 
+    [
+        {
+            cod: "lbmat1", parent: "lbrom1", nume: "Limba și literatura romana (pt. elevi care învață în limba maternă)",
+            coduriDiscipline: []
+        },
+        {
+            cod: "lbmod1", parent: "lbrom1", nume: "Limbi moderne",
+            coduriDiscipline: []            
+        },
+        {
+            cod: "lbrom1", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom1']            
+        },
+        {
+            cod: "matstnat1", parent: "", nume: "Matematică și științe ale naturii",
+            coduriDiscipline: []         
+        },
+        {
+            cod: "mat1", parent: "matstnat1", nume: "Matematică",
+            coduriDiscipline: ['mateMed1']
+        },
+        {
+            cod: "omsoc1", parent: "", nume: "Om și societate",
+            coduriDiscipline: ['relOrt1', 'relRomcatro1']            
+        },
+        {
+            cod: "arte1", parent: "", nume: "Arte",
+            coduriDiscipline: ['artViz1']            
+        }
+    ]
+);
+mapCodDisc2Arie.set("2", 
+    [
+        {
+            cod: "lbmat2", parent: "lbrom1", nume: "Limba și literatura romana (pt. elevi care învață în limba maternă)",
+            coduriDiscipline: []
+        },
+        {
+            cod: "lbmod2", parent: "lbrom1", nume: "Limbi moderne",
+            coduriDiscipline: []            
+        },
+        {
+            cod: "lbrom2", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom2']            
+        },
+        {
+            cod: "matstnat2", parent: "", nume: "Matematică și științe ale naturii",
+            coduriDiscipline: []         
+        },
+        {
+            cod: "mat2", parent: "matstnat2", nume: "Matematică",
+            coduriDiscipline: ['mateMed2']
+        },
+        {
+            cod: "omsoc2", parent: "", nume: "Om și societate",
+            coduriDiscipline: ['relOrt2', 'relRomcatro2']            
+        },
+        {
+            cod: "arte2", parent: "", nume: "Arte",
+            coduriDiscipline: ['artViz2']            
+        }
+    ]
+);
+mapCodDisc2Arie.set("3", 
+    [
+        {
+            cod: "lbmat3", parent: "lbrom1", nume: "Limba și literatura romana (pt. elevi care învață în limba maternă)",
+            coduriDiscipline: []
+        },
+        {
+            cod: "lbmod3", parent: "lbrom1", nume: "Limbi moderne",
+            coduriDiscipline: []            
+        },
+        {
+            cod: "lbrom3", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom3']            
+        },
+        {
+            cod: "matstnat3", parent: "", nume: "Matematică și științe ale naturii",
+            coduriDiscipline: []         
+        },
+        {
+            cod: "mat3", parent: "matstnat3", nume: "Matematică",
+            coduriDiscipline: ['mateMed3']
+        },
+        {
+            cod: "stn3", parent: "matstnat2", nume: "Științe ale naturii",
+            coduriDiscipline: ['stanat3']
+        },
+        {
+            cod: "omsoc3", parent: "", nume: "Om și societate",
+            coduriDiscipline: ['relOrt3', 'relRomcatro3']            
+        },
+        {
+            cod: "arte3", parent: "", nume: "Arte",
+            coduriDiscipline: ['artViz3']            
+        },
+        {
+            cod: "edciv3", parent: "", nume: "Educație civică",
+            coduriDiscipline: ['edciv3']            
+        },
+        {
+            cod: "jocmi3", parent: "", nume: "Educație fizică, sport și sănătate",
+            coduriDiscipline: ['jocmi3']            
+        }
+    ]
+);
+mapCodDisc2Arie.set("4", 
+    [
+        {
+            cod: "lbmat4", parent: "lbrom4", nume: "Limba și literatura romana (pt. elevi care învață în limba maternă)",
+            coduriDiscipline: []
+        },
+        {
+            cod: "lbmod4", parent: "lbrom4", nume: "Limbi moderne",
+            coduriDiscipline: []            
+        },
+        {
+            cod: "lbrom4", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom4']            
+        },
+        {
+            cod: "matstnat4", parent: "", nume: "Matematică și științe ale naturii",
+            coduriDiscipline: []         
+        },
+        {
+            cod: "mat4", parent: "matstnat4", nume: "Matematică",
+            coduriDiscipline: ['mateMed4']
+        },
+        {
+            cod: "stn4", parent: "matstnat4", nume: "Științe ale naturii",
+            coduriDiscipline: ['stanat4']
+        },
+        {
+            cod: "omsoc4", parent: "", nume: "Om și societate",
+            coduriDiscipline: ['relOrt4', 'relRomcatro4']            
+        },
+        {
+            cod: "arte4", parent: "", nume: "Arte",
+            coduriDiscipline: ['artViz4']            
+        },
+        {
+            cod: "edciv4", parent: "", nume: "Educație civică",
+            coduriDiscipline: ['edciv4']            
+        },
+        {
+            cod: "jocmi4", parent: "", nume: "Educație fizică, sport și sănătate",
+            coduriDiscipline: ['jocmi4']            
+        },
+        {
+            cod: "ist4", parent: "", nume: "Istorie",
+            coduriDiscipline: ['isto4']            
+        },
+        {
+            cod: "geo4", parent: "", nume: "Geografie",
+            coduriDiscipline: ['geo4']       
+        }
+    ]
+);
+mapCodDisc2Arie.set("5", 
+    [        
+        {
+            cod: "lbcom5", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: []            
+        },
+        {
+            cod: "lbmat5", parent: "lbcom5", nume: "Limbi materne",
+            coduriDiscipline: ['lbmatBulgara5', 'lbmatCeha5', 'lbmatCroata5', 'lbmatGermana5', 'lbmatGeringer5', 'lbmatItaliana5', 'lbmatMaghiara5', 'lbmatMaginmag5', 'lbmatNeogreaca5', 'lbmatPolona5', 'lbmatRroma5', 'lbmatRusa5', 'lbmatSarba5', 'lbmatSlovaca5', 'lbmatTurca5', 'lbmatUcraina5']
+        },
+        {
+            cod: "lbmodunu5", parent: "lbcom5", nume: "Limbi moderne 1",
+            coduriDiscipline: ['lbmod1Engleza5', 'lbmod1EngInt5', 'lbmod1Franceza5', 'lbmod1FraInt5', 'lbmod1Italiana5', 'lbmod1ItaInt5', 'lbmod1Spaniola5', 'lbmod1SpanInt5', 'lbmod1Ebraica5', 'lbmod1Germana5', 'lbmod1GerInt5', 'lbmod1Rusa5', 'lbmod1RusInt5', 'lbmod1Japoneza5', 'lbmod1JapInt5']            
+        },
+        {
+            cod: "lbmoddoi5", parent: "lbcom5", nume: "Limbi moderne 2",
+            coduriDiscipline: ['lbmod2Chineza5', 'lbmod2Engleza5', 'lbmod2Franceza5', 'lbmod2Italiana5', 'lbmod2Spaniola5', 'lbmod2Turca5', 'lbmod2Germana5', 'lbmod2Japoneza5', 'lbmod2Rusa5', 'lbmod2Portugheza5']            
+        },
+        {
+            cod: "lbrom5", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom5', 'lbcomRomMag5']            
+        },
+        {
+            cod: "matstnat5", parent: "", nume: "Matematică și științe ale naturii",
+            coduriDiscipline: []         
+        },
+        {
+            cod: "mat5", parent: "matstnat5", nume: "Matematică",
+            coduriDiscipline: ['mat5']
+        },
+        {
+            cod: "stn5", parent: "matstnat4", nume: "Științe ale naturii",
+            coduriDiscipline: ['bio5']
+        },
+        {
+            cod: "omsoc5", parent: "", nume: "Om și societate",
+            coduriDiscipline: ['edusoc5', 'ist5', 'geo5']            
+        },
+        {
+            cod: "omsocrel5", parent: "omsoc5", nume: "Religii",
+            coduriDiscipline: ['relAdvz5', 'relBapt5', 'relCrdev5', 'relEvca5', 'relGrcat5', 'relMus5', 'relOrt5', 'relOrtritv5', 'relOrtucr5', 'relPen5', 'relRef5', 'relRefmag5', 'relRomcatro5', 'relRomcatmg5', 'relRomcatlbmg5', 'relUnit5']            
+        },
+        {
+            cod: "arte5", parent: "", nume: "Arte",
+            coduriDiscipline: ['artEdpl5', 'artEdmz5', 'artTsd5', 'artEdmuzGer5', 'artEdmuzIta5', 'artEdmuzMag5', 'artEdmuzMagr5', 'artEdmuzPol5', 'artEdmuzRrm5', 'artEdmuzSrb5', 'artEdmuzSlv5', 'artEdmuzTur5', 'artEdmuzUcr5']            
+        },
+        {
+            cod: "edfizsp5", parent: "", nume: "Educație fizică, sport și sănătate",
+            coduriDiscipline: ['fiz5']            
+        },
+        {
+            cod: "edfizspps5", parent: "edfizsp5", nume: "Pregătire sportivă practică",
+            coduriDiscipline: ['fizpAtl5', 'fizpBad5', 'fizpBas5', 'fizpBab5', 'fizpCan5', 'fizpDns5', 'fizpFot5', 'fizpGif5', 'fizpHim5', 'fizpHir5', 'fizpHal5', 'fizpHan5', 'fizpHok5', 'fizpHoi5', 'fizpInt5', 'fizpJud5', 'fizpKca5', 'fizpKrt5', 'fizpGro5', 'fizpLpl5', 'fizpOsp5', 'fizpPar5', 'fizpPav5', 'fizpPpa5', 'fizpRgb5', 'fizpSne5', 'fizpSia5', 'fizpSap5', 'fizpSbi5', 'fizpSfd5', 'fizpSor5', 'fizpSsr5', 'fizpScr5', 'fizpSfb5', 'fizpSae5', 'fizpSah5', 'fizpTen5', 'fizpTem5', 'fizpVol5', 'fizpYht5']            
+        },
+        {
+            cod: "tech5", parent: "", nume: "Tehnologii",
+            coduriDiscipline: ['tecEdtap5', 'tecInfo5']            
+        },
+        {
+            cod: "consor5", parent: "", nume: "Consiliere și orientare",
+            coduriDiscipline: ['consEd5']            
+        },
+        {
+            cod: "currsc5", parent: "", nume: "Curriculum la decizia școlii ",
+            coduriDiscipline: ['crrIst5', 'crrLect5', 'crrGrne5', 'crrMicr5', 'crrMatsc5', 'crrEdvit5', 'crrRadlt5']            
+        }
+    ]
+);
+mapCodDisc2Arie.set("6", 
+    [        
+        {
+            cod: "lbcom6", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: []            
+        },
+        {
+            cod: "lbmat6", parent: "lbcom6", nume: "Limbi materne",
+            coduriDiscipline: ['lbmatBulgara6', 'lbmatCeha6', 'lbmatCroata6', 'lbmatGermana6', 'lbmatGeringer6', 'lbmatItaliana6', 'lbmatMaghiara6', 'lbmatMaginmag6', 'lbmatNeogreaca6', 'lbmatPolona6', 'lbmatRroma6', 'lbmatRusa6', 'lbmatSarba6', 'lbmatSlovaca6', 'lbmatTurca6', 'lbmatUcraina6']
+        },
+        {
+            cod: "lbmodunu6", parent: "lbcom6", nume: "Limbi moderne 1",
+            coduriDiscipline: ['lbmod1Engleza6', 'lbmod1EngInt6', 'lbmod1Franceza6', 'lbmod1FraInt6', 'lbmod1Italiana6', 'lbmod1ItaInt6', 'lbmod1Spaniola6', 'lbmod1SpanInt6', 'lbmod1Ebraica6', 'lbmod1Germana6', 'lbmod1GerInt6', 'lbmod1Rusa6', 'lbmod1RusInt6', 'lbmod1Japoneza6', 'lbmod1JapInt6']            
+        },
+        {
+            cod: "lbmoddoi6", parent: "lbcom6", nume: "Limbi moderne 2",
+            coduriDiscipline: ['lbmod2Chineza6', 'lbmod2Engleza6', 'lbmod2Franceza6', 'lbmod2Italiana6', 'lbmod2Spaniola6', 'lbmod2Turca6', 'lbmod2Germana6', 'lbmod2Japoneza6', 'lbmod2Rusa6', 'lbmod2Portugheza6']            
+        },
+        {
+            cod: "lbrom6", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom6', 'lbcomRomMag6']            
+        },
+        {
+            cod: "matstnat6", parent: "", nume: "Matematică și științe ale naturii",
+            coduriDiscipline: []         
+        },
+        {
+            cod: "mat6", parent: "matstnat6", nume: "Matematică",
+            coduriDiscipline: ['mat6']
+        },
+        {
+            cod: "stn6", parent: "matstnat6", nume: "Științe ale naturii",
+            coduriDiscipline: ['bio6']
+        },
+        {
+            cod: "fiz6", parent: "matstnat6", nume: "Fizică",
+            coduriDiscipline: ['fiz6']
+        },
+        {
+            cod: "omsoc6", parent: "", nume: "Om și societate",
+            coduriDiscipline: ['edusoc6', 'ist6', 'geo6']            
+        },
+        {
+            cod: "isttrad6", parent: "omsoc6", nume: "Istorie minorități",
+            coduriDiscipline: ['minBulgara6', 'minBulRom6', 'minCeha6', 'minCehRom6', 'minCroata6', 'minCroRom6', 'minGermana6', 'minGerRom6', 'minItaliena6', 'minItaRom6', 'minMaghiara6', 'minMagRom6', 'minMaghiararom6', 'minElene6', 'minEleRom6', 'minPoloneza6', 'minPolRom6', 'minRrome6', 'minRrmRom6', 'minRusilip6', 'minRusRom6', 'minSarba6', 'minSrbRom6', 'minSlovace6', 'minSlvRom6', 'minTurce6', 'minTrtRom6', 'minUcraina6', 'minUcrRom6']            
+        },
+        {
+            cod: "omsocrel6", parent: "omsoc6", nume: "Religii",
+            coduriDiscipline: ['relAdvz6', 'relBapt6', 'relCrdev6', 'relEvca6', 'relGrcat6', 'relMus6', 'relOrt6', 'relOrtritv6', 'relOrtucr6', 'relPen6', 'relRef6', 'relRefmag6', 'relRomcatro6', 'relRomcatmg6', 'relRomcatlbmg6', 'relUnit6']            
+        },
+        {
+            cod: "arte6", parent: "", nume: "Arte",
+            coduriDiscipline: ['artEdpl6', 'artEdmz6', 'artTsd6', 'artEdmuzGer6', 'artEdmuzIta6', 'artEdmuzMag6', 'artEdmuzMagr6', 'artEdmuzPol6', 'artEdmuzRrm6', 'artEdmuzSrb6', 'artEdmuzSlv6', 'artEdmuzTur6', 'artEdmuzUcr6']            
+        },
+        {
+            cod: "edfizsp6", parent: "", nume: "Educație fizică, sport și sănătate",
+            coduriDiscipline: ['fiz6']            
+        },
+        {
+            cod: "edfizspps6", parent: "edfizsp6", nume: "Pregătire sportivă practică",
+            coduriDiscipline: ['fizpAtl6', 'fizpBad6', 'fizpBas6', 'fizpBab6', 'fizpCan6', 'fizpDns6', 'fizpFot6', 'fizpGif6', 'fizpHim6', 'fizpHir6', 'fizpHal6', 'fizpHan6', 'fizpHok6', 'fizpHoi6', 'fizpInt6', 'fizpJud6', 'fizpKca6', 'fizpKrt6', 'fizpGro6', 'fizpLpl6', 'fizpOsp6', 'fizpPar6', 'fizpPav6', 'fizpPpa6', 'fizpRgb6', 'fizpSne6', 'fizpSia6', 'fizpSap6', 'fizpSbi6', 'fizpSfd6', 'fizpSor6', 'fizpSsr6', 'fizpScr6', 'fizpSfb6', 'fizpSae6', 'fizpSah6', 'fizpTen6', 'fizpTem6', 'fizpVol6', 'fizpYht6']            
+        },
+        {
+            cod: "tech6", parent: "", nume: "Tehnologii",
+            coduriDiscipline: ['tecEdtap6', 'tecInfo6']            
+        },
+        {
+            cod: "consor6", parent: "", nume: "Consiliere și orientare",
+            coduriDiscipline: ['consEd5', 'consAbad6']            
+        },
+        {
+            cod: "currsc6", parent: "", nume: "Curriculum la decizia școlii ",
+            coduriDiscipline: ['crrIst6', 'crrLect6', 'crrGrne6', 'crrMicr6', 'crrMatsc6', 'crrEdvit6', 'crr-radlt6']            
+        }
+    ]
+);
+mapCodDisc2Arie.set("7", 
+    [        
+        {
+            cod: "lbcom7", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: []            
+        },
+        {
+            cod: "lbmat7", parent: "lbcom7", nume: "Limbi materne",
+            coduriDiscipline: ['lbmatBulgara7', 'lbmatCeha7', 'lbmatCroata7', 'lbmatGermana7', 'lbmatGeringer7', 'lbmatItaliana7', 'lbmatMaghiara7', 'lbmatMaginmag7', 'lbmatNeogreaca7', 'lbmatPolona7', 'lbmatRroma7', 'lbmatRusa7', 'lbmatSarba7', 'lbmatSlovaca7', 'lbmatTurca7', 'lbmatUcraina7']
+        },
+        {
+            cod: "lbmodunu7", parent: "lbcom7", nume: "Limbi moderne 1",
+            coduriDiscipline: ['lbmod1Engleza7', 'lbmod1EngInt7', 'lbmod1Franceza7', 'lbmod1FraInt7', 'lbmod1Italiana7', 'lbmod1ItaInt7', 'lbmod1Spaniola7', 'lbmod1SpanInt7', 'lbmod1Ebraica7', 'lbmod1Germana7', 'lbmod1GerInt7', 'lbmod1Rusa7', 'lbmod1RusInt7', 'lbmod1Japoneza7', 'lbmod1JapInt7']            
+        },
+        {
+            cod: "lbmoddoi7", parent: "lbcom7", nume: "Limbi moderne 2",
+            coduriDiscipline: ['lbmod2Chineza7', 'lbmod2Engleza7', 'lbmod2Franceza7', 'lbmod2Italiana7', 'lbmod2Spaniola7', 'lbmod2Turca7', 'lbmod2Germana7', 'lbmod2Japoneza7', 'lbmod2Rusa7', 'lbmod2Portugheza7']            
+        },
+        {
+            cod: "lbrom7", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom7', 'lbcomRomMag6', 'lbcomLat7']            
+        },
+        {
+            cod: "matstnat7", parent: "", nume: "Matematică și științe ale naturii",
+            coduriDiscipline: []         
+        },
+        {
+            cod: "mat7", parent: "matstnat7", nume: "Matematică",
+            coduriDiscipline: ['mat7']
+        },
+        {
+            cod: "stn7", parent: "matstnat6", nume: "Științe ale naturii",
+            coduriDiscipline: ['bio7']
+        },
+        {
+            cod: "fiz7", parent: "matstnat7", nume: "Fizică",
+            coduriDiscipline: ['fiz7']
+        },
+        {
+            cod: "chim7", parent: "matstnat7", nume: "Chimie",
+            coduriDiscipline: ['chim7']
+        },
+        {
+            cod: "omsoc7", parent: "", nume: "Om și societate",
+            coduriDiscipline: ['edusoc7', 'ist7', 'geo7']            
+        },
+        {
+            cod: "isttrad7", parent: "omsoc7", nume: "Istorie minorități",
+            coduriDiscipline: ['minBulgara7', 'minBulRom7', 'minCeha7', 'minCehRom7', 'minCroata7', 'minCroRom7', 'minGermana7', 'minGerRom7', 'minItaliena7', 'minItaRom7', 'minMaghiara7', 'minMagRom7', 'minMaghiararom7', 'minElene7', 'minEleRom7', 'minPoloneza7', 'minPolRom7', 'minRrome7', 'minRrmRom7', 'minRusilip7', 'minRusRom7', 'minSarba7', 'minSrbRom7', 'minSlovace7', 'minSlvRom7', 'minTurce7', 'minTrtRom7', 'minUcraina7', 'minUcrRom7']            
+        },
+        {
+            cod: "omsocrel7", parent: "omsoc7", nume: "Religii",
+            coduriDiscipline: ['relAdvz7', 'relBapt7', 'relCrdev7', 'relEvca7', 'relGrcat7', 'relMus7', 'relOrt7', 'relOrtritv7', 'relOrtucr7', 'relPen7', 'relRef7', 'relRefmag7', 'relRomcatro7', 'relRomcatmg7', 'relRomcatlbmg7', 'relUnit7']            
+        },
+        {
+            cod: "arte7", parent: "", nume: "Arte",
+            coduriDiscipline: ['artEdpl7', 'artEdmz7', 'artTsd7', 'artEdmuzGer7', 'artEdmuzIta7', 'artEdmuzMag7', 'artEdmuzMagr7', 'artEdmuzPol7', 'artEdmuzRrm7', 'artEdmuzSrb7', 'artEdmuzSlv7', 'artEdmuzTur7', 'artEdmuzUcr7']            
+        },
+        {
+            cod: "edfizsp7", parent: "", nume: "Educație fizică, sport și sănătate",
+            coduriDiscipline: ['fiz7']            
+        },
+        {
+            cod: "edfizspps7", parent: "edfizsp7", nume: "Pregătire sportivă practică",
+            coduriDiscipline: ['fizpAtl7', 'fizpBad7', 'fizpBas7', 'fizpBab7', 'fizpCan7', 'fizpDns7', 'fizpFot7', 'fizpGif7', 'fizpHim7', 'fizpHir7', 'fizpHal7', 'fizpHan7', 'fizpHok7', 'fizpHoi7', 'fizpInt7', 'fizpJud7', 'fizpKca7', 'fizpKrt7', 'fizpGro7', 'fizpLpl7', 'fizpOsp7', 'fizpPar7', 'fizpPav7', 'fizpPpa7', 'fizpRgb7', 'fizpSne7', 'fizpSia7', 'fizpSap7', 'fizpSbi7', 'fizpSfd7', 'fizpSor7', 'fizpSsr7', 'fizpScr7', 'fizpSfb7', 'fizpSae7', 'fizpSah7', 'fizpTen7', 'fizpTem7', 'fizpVol7', 'fizpYht7']            
+        },
+        {
+            cod: "tech7", parent: "", nume: "Tehnologii",
+            coduriDiscipline: ['tecEdtap7', 'tecInfo7', 'tecEd7']            
+        },
+        {
+            cod: "consor7", parent: "", nume: "Consiliere și orientare",
+            coduriDiscipline: ['consEd7', 'consAbad7']            
+        },
+        {
+            cod: "currsc7", parent: "", nume: "Curriculum la decizia școlii ",
+            coduriDiscipline: ['crrIst7', 'crrLect7', 'crrGrne7', 'crrMicr7', 'crrMatsc7', 'crrEdvit7', 'crr-radlt7']            
+        }
+    ]
+);
+mapCodDisc2Arie.set("8", 
+    [        
+        {
+            cod: "lbcom8", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: []            
+        },
+        {
+            cod: "lbmat8", parent: "lbcom8", nume: "Limbi materne",
+            coduriDiscipline: ['lbmatBulgara8', 'lbmatCeha8', 'lbmatCroata8', 'lbmatGermana8', 'lbmatGeringer8', 'lbmatItaliana8', 'lbmatMaghiara8', 'lbmatMaginmag8', 'lbmatNeogreaca8', 'lbmatPolona8', 'lbmatRroma8', 'lbmatRusa8', 'lbmatSarba8', 'lbmatSlovaca8', 'lbmatTurca8', 'lbmatUcraina8']
+        },
+        {
+            cod: "lbmodunu8", parent: "lbcom8", nume: "Limbi moderne 1",
+            coduriDiscipline: ['lbmod1Engleza8', 'lbmod1EngInt8', 'lbmod1Franceza8', 'lbmod1FraInt8', 'lbmod1Italiana8', 'lbmod1ItaInt8', 'lbmod1Spaniola8', 'lbmod1SpanInt8', 'lbmod1Ebraica8', 'lbmod1Germana8', 'lbmod1GerInt8', 'lbmod1Rusa8', 'lbmod1RusInt8', 'lbmod1Japoneza8', 'lbmod1JapInt8']            
+        },
+        {
+            cod: "lbmoddoi8", parent: "lbcom8", nume: "Limbi moderne 2",
+            coduriDiscipline: ['lbmod2Chineza8', 'lbmod2Engleza8', 'lbmod2Franceza8', 'lbmod2Italiana8', 'lbmod2Spaniola8', 'lbmod2Turca8', 'lbmod2Germana8', 'lbmod2Japoneza8', 'lbmod2Rusa8', 'lbmod2Portugheza8']            
+        },
+        {
+            cod: "lbrom8", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom8', 'lbcomRomMag6', 'lbcomLat8']            
+        },
+        {
+            cod: "matstnat8", parent: "", nume: "Matematică și științe ale naturii",
+            coduriDiscipline: []         
+        },
+        {
+            cod: "mat8", parent: "matstnat8", nume: "Matematică",
+            coduriDiscipline: ['mat8']
+        },
+        {
+            cod: "stn8", parent: "matstnat6", nume: "Științe ale naturii",
+            coduriDiscipline: ['bio8']
+        },
+        {
+            cod: "fiz8", parent: "matstnat8", nume: "Fizică",
+            coduriDiscipline: ['fiz8']
+        },
+        {
+            cod: "chim8", parent: "matstnat8", nume: "Chimie",
+            coduriDiscipline: ['chim8']
+        },
+        {
+            cod: "omsoc8", parent: "", nume: "Om și societate",
+            coduriDiscipline: ['edusoc8', 'ist8', 'geo8']            
+        },
+        {
+            cod: "omsocrel8", parent: "omsoc8", nume: "Religii",
+            coduriDiscipline: ['relAdvz8', 'relBapt8', 'relCrdev8', 'relEvca8', 'relGrcat8', 'relMus8', 'relOrt8', 'relOrtritv8', 'relOrtucr8', 'relPen8', 'relRef8', 'relRefmag8', 'relRomcatro8', 'relRomcatmg8', 'relRomcatlbmg8', 'relUnit8']            
+        },
+        {
+            cod: "arte8", parent: "", nume: "Arte",
+            coduriDiscipline: ['artEdpl8', 'artEdmz8', 'artTsd8', 'artEdmuzGer8', 'artEdmuzIta8', 'artEdmuzMag8', 'artEdmuzMagr8', 'artEdmuzPol8', 'artEdmuzRrm8', 'artEdmuzSrb8', 'artEdmuzSlv8', 'artEdmuzTur8', 'artEdmuzUcr8']            
+        },
+        {
+            cod: "edfizsp8", parent: "", nume: "Educație fizică, sport și sănătate",
+            coduriDiscipline: ['fiz8']            
+        },
+        {
+            cod: "edfizspps8", parent: "edfizsp8", nume: "Pregătire sportivă practică",
+            coduriDiscipline: ['fizpAtl8', 'fizpBad8', 'fizpBas8', 'fizpBab8', 'fizpCan8', 'fizpDns8', 'fizpFot8', 'fizpGif8', 'fizpHim8', 'fizpHir8', 'fizpHal8', 'fizpHan8', 'fizpHok8', 'fizpHoi8', 'fizpInt8', 'fizpJud8', 'fizpKca8', 'fizpKrt8', 'fizpGro8', 'fizpLpl8', 'fizpOsp8', 'fizpPar8', 'fizpPav8', 'fizpPpa8', 'fizpRgb8', 'fizpSne8', 'fizpSia8', 'fizpSap8', 'fizpSbi8', 'fizpSfd8', 'fizpSor8', 'fizpSsr8', 'fizpScr8', 'fizpSfb8', 'fizpSae8', 'fizpSah8', 'fizpTen8', 'fizpTem8', 'fizpVol8', 'fizpYht8']            
+        },
+        {
+            cod: "tech8", parent: "", nume: "Tehnologii",
+            coduriDiscipline: ['tecEdtap8', 'tecInfo8', 'tecEd8']            
+        },
+        {
+            cod: "consor8", parent: "", nume: "Consiliere și orientare",
+            coduriDiscipline: ['consEd8', 'consAbad8']            
+        },
+        {
+            cod: "currsc8", parent: "", nume: "Curriculum la decizia școlii ",
+            coduriDiscipline: ['crrIst8', 'crrLect8', 'crrGrne8', 'crrMicr8', 'crrMatsc8', 'crrEdvit8', 'crr-radlt8']            
+        }
+    ]
+);
+/**
+ * Funcția are rolul de a face o căutare în map=ul `mapCodDisc2Arie` pentru a extrage numele Ariei
+ */
+function extragNumeArie (nivelCod) {
+    let arie;
+    mapCodDisc2Arie.forEach ((v, k, m) => {
+        // console.log("cheia este ", k, "valoarea este ", v);
+        if (nivelCod.nivel === k) {
+            for (let obi of v) {                
+                if (obi.coduriDiscipline.includes(nivelCod.cod)) {
+                    arie = obi.nume;                    
+                }
+            }
+        }
+    });
+    return arie;
+};
+
 /* === Constituirea selectorului pentru disciplină === */
-var niveluri = document.querySelectorAll('.nivel'); // array de clasele selectate
+var niveluri = document.querySelectorAll('.nivel'); // array de clase selectate
 var discipline = document.querySelector('#discipline');
+const DISCMAP = new Map();
+// Constituirea FRAGMENTULUI de DOM [Bootstra 4 Vertical pills]
+let multilevdisc = new createElement('section', 'multilevdisc', '', '').creeazaElem();
+let tablist = new createElement('div', 'v-pills-tab', ['nav', 'flex-column', 'nav-pills'], {role: "tablist", 'aria-orientation': "vertical"}).creeazaElem();
+let tabcontent = new createElement('div', 'v-pills-tabContent', ['tab-content'], '').creeazaElem();
+multilevdisc.appendChild(tablist);
+multilevdisc.appendChild(tabcontent);
+discipline.appendChild(multilevdisc);
 /**
  * Pentru fiecare clasă bifată, adaugă un listener la `click`, care va genera input checkbox-uri în baza datelor din `data=*` (Bootstrap 4)
  * Parcurge un array al claselor existente și pentru fiecare selectată, generează inputbox-uri care arată ca butoane.
  */
 niveluri.forEach(function cbNiveluri (checkbox) {
+    // pentru fiecare element checkbox, adaugă un eveniment
     checkbox.addEventListener('click', (event) => {
         // FIXME: Date sunt hardcodate în formular cu atribute `data=*`. Am dorit reducerea la maxim a atingerii bazei de date.
-        var data = JSON.parse(JSON.stringify(event.target.dataset)); // constituie un obiect cu toate datele din `data=*` a checkbox-ului de clasă.
-        // console.log(data);
+        const data = JSON.parse(JSON.stringify(event.target.dataset)); // constituie un obiect cu toate datele din `data=*` a checkbox-ului de clasă.
+        const STRUCTURE = structDiscipline({cl:event.target.value, data}); // remodelează disciplinele după seturi aparținând unei arii generate din primele trei caractele ale data=*
+        //console.log("Structure este: ",STRUCTURE); // {nivel: "5", 5: {art: [], bio5: []}}
+
+        // încărcarea setutului de discipline pentru nivelul pentru care s-a dat click
+        if (!DISCMAP.has(STRUCTURE.nivel)) {
+            DISCMAP.set(STRUCTURE.nivel, STRUCTURE.rezultat);
+        }
+
+        // Info primare pentru constituire interfață
+        let n = STRUCTURE.nivel; // -> 8, de exemplu
+        let objSeturi = STRUCTURE.rezultat[n]; // {art: [], bio5: []}
 
         // Dacă sunt elemente în `niveluri` care au uncheck, șterge disciplinele asociate!
         if(event.target.checked === false) {
-            // Pentru fiecare valoare din data, șterge elementul din discipline
-            for (let [k, v] of Object.entries(data)) {
-                let elemExistent = document.querySelector(`.${k}`); // k este codul disciplinei care a fost pus drept clasă în vederea modelării cu CSS (culoare, etc)
-                discipline.removeChild(elemExistent); // șterge disciplina din array-ul elementelor DOM
+            let cheiclase = Object.keys(objSeturi);
+            for (let dicscls of cheiclase) {;
+                let elemExistent = document.querySelector(`.${dicscls}`); // k este codul disciplinei care a fost pus drept clasă în vederea modelării cu CSS (culoare, etc)
+                tablist.removeChild(elemExistent); // șterge disciplina din array-ul elementelor DOM
             }
-        } else {
-            // dacă event.target.checked a fost bifat - avem `checked`, vom genera elementele checkbox.
-
-            //FIXME: Generează clase dupa primele trei caractere din data="abc"
-            // Construiește un Map colector
-            const CLASIFICATION = new Set();
-            const STRUCTURE = new Map();
-
-            //::constituie un array de entități unice
-            for (let [k, v] of Object.entries(data)) {                
-                // izolează primele trei litere din k
-                let classNameRegExp = /[a-z]+((\d)?|[A-Z])/gm; // codul clasei de obiecte
-                let className = k.match(classNameRegExp).shift();
-                let level = k.match(classNameRegExp).pop().split('').pop();
-                const MAPPING = {
-                    class: className,
-                    discipline: [
-                        {csscls: k, name: v}
-                    ]
-                };
-                console.log(MAPPING);
-
-
-                // verifică dacă în map deja există o înregistrare având cheia k. Dacă da, îmbogățește acea înregistrare.
-                // console.log(k);
-            };
-
-            // let classes = data.reduce(function clbkReducerData (ac, el, idx, arr) {
-
-            // });
-
-            //TODO: Pentru fiecare clasă, generează câte un tab în care 
-            //TODO: încarci elemente checkbox pentru fiecare element data 
-
-
-
-            for (let [key, val] of Object.entries(data)) {
-                // crearea checkbox - urilor
-                let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': val, autocomplete: "off", value: key}).creeazaElem();
-                let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-info', 'btn-sm'], {}).creeazaElem(val);
-                let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', key], {"data-toggle": "buttons", onclick: "actSwitcher()"}).creeazaElem();           
-                labelBtn.appendChild(inputCheckBx);
-                divBtnGroupToggle.appendChild(labelBtn);
-                discipline.appendChild(divBtnGroupToggle);
+            tabcontent.innerHTML='';
+        } else {            
+            // {art: [], bio5: []}
+            for (let prop in objSeturi) {
+                
+                if (objSeturi.hasOwnProperty(prop)) {
+                    const setArr = objSeturi[prop];
+                    let menuSet = new Set(); // set pentru a verifica dublarea elementelor de meniu
+                    for (let obi of setArr) {
+                        //console.log(obi.codsdisc); //artViz0
+                        
+                        // caută numele ariei și afișează numele corect -> funcția `extragNumeArie`
+                        let numeArie = extragNumeArie({nivel: n, cod: obi.codsdisc}); //{ codsdisc: "artViz0", nume: "Arte vizuale și abilități practice"}
+                        if (!menuSet.has(numeArie)) {
+                            menuSet.add(numeArie);                            
+                            // generează linkurile care stau vertical
+                            var serdiscbtn = new createElement('a', `v-pills-${prop}-tab`, ['nav-link', `${prop}`], {"data-toggle":"pill", href: `#v-pills-${prop}`, role: "tab", "aria-controls": `v-pills-${prop}`, 'aria-selected': 'true'}).creeazaElem(numeArie);
+                            tablist.appendChild(serdiscbtn);
+                            // creează div-ul care ține disciplinele afișate ca butoane
+                            var dicpanes = new createElement('div', `v-pills-${prop}`, ['tab-pane', 'fade', 'show'], {role: "tabpanel", "aria-labelledby": `v-pills-${prop}-tab`}).creeazaElem();
+                        }
+ 
+                        // generează checkbox-urile
+                        for (let obidisc of objSeturi[prop]) {
+                            if (!menuSet.has(obidisc.codsdisc)) {
+                                menuSet.add(obidisc.codsdisc);
+                                //console.log(obidisc); // Object { codsdisc: "lbcomRom5", nume: "Limba și literatura română" }
+                                let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': obidisc.codsdisc, autocomplete: "off", value: obidisc.nume}).creeazaElem();
+                                let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-info', 'btn-sm'], {}).creeazaElem(obidisc.nume);
+                                let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', obidisc.codsdisc], {"data-toggle": "buttons", onclick: "actSwitcher()"}).creeazaElem();           
+                                labelBtn.appendChild(inputCheckBx);
+                                divBtnGroupToggle.appendChild(labelBtn);
+                                dicpanes.appendChild(divBtnGroupToggle);
+                            }
+                        }
+                        tabcontent.appendChild(dicpanes);
+                    }
+                }
             }
         }
     });
 });
+
+/**
+ * Funcția are rolul să structureze disciplinele în raport cu Aria în care stau
+ * Aria va fi codificată extrăgând un fragment din numele care este precizat în data=*
+ * @param {Object} discs Este un obiect cu toate disciplinele din setul data=*
+ */
+function structDiscipline (discs = {}) {
+    let arrOfarr = Object.entries(discs.data); // transformă înregistrările obiectului în array-uri
+    // redu înregistrarea `arrOfarr` la un obiect consolidat.
+    const obj = {
+        nivel: '',
+        rezultat: {}
+    };
+    let claseDisc = new Set(); // constituie un Set cu clasele
+    obj.rezultat = arrOfarr.reduce((ac, elem, idx, arr) => {
+        let classNameRegExp = /[a-z]+((\d)?|[A-Z])/gm;
+        let className = elem[0].match(classNameRegExp).shift(); // Generează clase dupa primele trei caractere din data="abc"
+        claseDisc.add(className);
+        let level = elem[0].match(classNameRegExp).pop().split('').pop();
+        obj.nivel = level;
+
+        // definirea structurii de date când ac la început este undefined
+        if (Object.keys(ac).length === 0 && ac.constructor === Object) {
+            // dacă obiectul este gol, introdu prima înregistrare, care dă astfel și structura
+            ac[level] = {};
+            ac[level][className] = [
+                {codsdisc: elem[0], nume: elem[1]}
+            ];            
+        } else {
+            // în cazul în care obiectul este deja populat, verifică dacă setul de discipline (`className`) există deja
+            if(className in ac[level]) {
+                ac[level][className].push({codsdisc: elem[0], nume: elem[1]}); // dacă există, adaugă disciplina array-ului existent
+            } else {
+                // dacă nu avem set de discipline pentru `className`-ul descoperit, se va constitui unul și se va introduce prima înregistrare în array
+                ac[level][className] = className;
+                ac[level][className] = [
+                    {codsdisc: elem[0], nume: elem[1]}
+                ]; 
+            }
+        }
+        return ac;
+    },{});
+
+    return obj;
+}
 
 /* ==== Prezentarea competențelor specifice ==== */
 // Locul de inserție al tabelului
@@ -802,20 +1372,8 @@ function addMeDeleteMe () {
  * Funcția `diciplineBifate` este listener pentru butonul „Alege competențele specifice” - `#actTable`
  * Are rolul de a aduce competențele specifice pentru disciplinele bifate folosind socketurile.
  * Apelează funcțiile `tabelFormater(data)` și `activitatiRepopulareChecks()` la momentul când se apasă pe butonul plus
- * Încarcă și obiectul `RED`, care colectează datele de formular: `RED.discipline` și `RED.etichete`
  */
 function disciplineBifate () {
-    // un array necesar pentru a captura valorile input checkbox-urilor bifate
-    let values = [];
-
-    // trimite în `values` valorile din input checkboxurile bifate în elementul părinte #discipline
-    document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value, dataset}) => {
-        values.push(value);
-
-        // ==== RED.discipline ====
-        RED.discipline.push(dataset.nume);
-    });
-    // console.log(values);
 
     // ori de câte ori va fi apăsată o disciplină, se emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ]). 
     pubComm.emit('csuri', values);
@@ -920,7 +1478,7 @@ compSpecPaginator.addEventListener('click', (ev) => {
 
 /* ========== COLECTAREA DATELOR DIN FORM ============= */
 
-/* ====== Pasul 1 ====== */
+/* === Pasul 1 === */
 /**
  * Funcția are rolul de a popula obiectul `RED` cu datele din formular de la `Pas 1`.
  */
@@ -1045,12 +1603,21 @@ function pas2 () {
         }
     });
 
-    // ==== RED.discipline RED.etichete ====
-    // disciplinele și etichetele sunt încărcate din funcția `disciplineBifate()`; selectează toate checkbox-urile checked.
-    document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach((element) => {
-        if (RED.discipline.indexOf(element.value) === -1) {
+    // === RED.discipline RED.etichete ===
+    // un array necesar pentru a captura valorile input checkbox-urilor bifate
+    let values = [];
+
+    // trimite în `values` valorile din input checkboxurile bifate în elementul părinte #discipline
+    // document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value, dataset}) => {
+    document.querySelectorAll("#v-pills-tabContent input[type='checkbox']:checked").forEach(({value, dataset}) => {
+        values.push(value);
+
+        // ==== RED.discipline ====
+        RED.discipline.push(dataset.nume);
+
+        if (RED.discipline.indexOf(value) === -1) {
             // RED.discipline.push(element.value);
-            RED.etichete.push(element.value);
+            RED.etichete.push(value);
         }
     });
 
