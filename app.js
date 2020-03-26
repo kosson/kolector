@@ -41,7 +41,7 @@ const mongoose = require('./mongoose.config');
  * @param {Arrray} data sunt codurile disciplinelor selectate
  */
 function cbCsuri (data) {
-    // console.log(data);// De ex: [ 'arteviz3', 'stanat3' ]
+    console.log(data);// De ex: [ 'arteviz3', 'stanat3' ]
     
     const CSModel = require('./models/competenta-specifica');
     // Proiecția se constituie pe același câmp, dar pe valorile primite prin socket.

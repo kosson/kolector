@@ -161,12 +161,21 @@ sudo systemctl restart mongodb
 În cazul în care dorești autentificare specific pe o bază de date, mai întâi trebuie să te autentifici din consola MongoDB și apoi să faci o modificare.
 
 ```text
+use admin
 db.auth({user: "nume_administrator", pwd: "paR0laMea1nfa1libila"})
 1
 db.grantRolesToUser("nume_administrator", ["readWrite", {role: "readWrite", db: "redcolector"}])
 ```
 
 În cazul în care baze de date conține mai multe baze aparținând diferitelor aplicații, va trebui să ceri administratorului sau dacă tu ai aceste drepturi să adaugi drepturi de scriere/citire pentru baza de date a aplicației colectorului.
+
+Pentru a investiga ce roluri ai ca user în cazuri de depanare: `db.getUser('nume_user')`.
+
+Pentru a face backup și restore la bază, ai nevoie să menționezi aceste drepturi. Mai întâi autentifică-te la db.admin.
+
+```text
+db.grantRolesToUser("user_pentru_backup", ["backup", "restore"])
+```
 
 În cazul în care ești administratorul, te autentifici din consola `mongo`, selectezi baza de date `admin`, după care te autentifici.
 
@@ -175,7 +184,7 @@ use admin
 db.auth('numeleAdminului', 'parolaSa')
 ```
 
-Mai întâi, asigură-te că nu trebuie doar să modifici ceea ce există, căutând dreturile administratorului.
+Mai întâi, asigură-te că nu trebuie doar să modifici ceea ce există, căutând drepturile administratorului.
 
 ```bash
 db.system.users.find()
@@ -186,6 +195,19 @@ Acum, introdu drepturi de scriere/citire pentru o anumită bază de date.
 ```bash
 db.grantRolesToUser('numeleAdminului', ['readWrite', {role: 'readWrite', db: 'numeleBazeiDeDate'}])
 ```
+
+Poți adăuga un user special pentru o bază de date anume:
+
+```json
+db.createUser({
+    user: 'user_nou',
+    pwd: 'parola_noua',
+    roles: [
+        { role: 'readWrite', db: 'baza_De_date' }
+    ]
+})
+```
+Acest scenariu este util dacă dorești să ai un user anume pentru o bază de date. Posibil pentru backup și restaurări ale datelor.
 
 ## Instalarea Elasticsearch
 

@@ -531,6 +531,7 @@ function creeazaTitluAlternativHelper (id, insertie) {
     insertie.appendChild(divInputGroup);
 }
 
+//FIXME: Generează automat datele din data=* dacă se poate!!!
 const mapCodDisc2Arie = new Map();
 // CLASA 0
 mapCodDisc2Arie.set("0", 
@@ -649,7 +650,7 @@ mapCodDisc2Arie.set("3",
         },
         {
             cod: "mat3", parent: "matstnat3", nume: "Matematică",
-            coduriDiscipline: ['mateMed3']
+            coduriDiscipline: ['mat3']
         },
         {
             cod: "stn3", parent: "matstnat2", nume: "Științe ale naturii",
@@ -676,6 +677,10 @@ mapCodDisc2Arie.set("3",
 mapCodDisc2Arie.set("4", 
     [
         {
+            cod: "lbrom4", parent: "", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom4']            
+        },
+        {
             cod: "lbmat4", parent: "lbrom4", nume: "Limba și literatura romana (pt. elevi care învață în limba maternă)",
             coduriDiscipline: []
         },
@@ -684,16 +689,12 @@ mapCodDisc2Arie.set("4",
             coduriDiscipline: []            
         },
         {
-            cod: "lbrom4", parent: "", nume: "Limbă și comunicare",
-            coduriDiscipline: ['lbcomRom4']            
-        },
-        {
             cod: "matstnat4", parent: "", nume: "Matematică și științe ale naturii",
             coduriDiscipline: []         
         },
         {
             cod: "mat4", parent: "matstnat4", nume: "Matematică",
-            coduriDiscipline: ['mateMed4']
+            coduriDiscipline: ['mat4']
         },
         {
             cod: "stn4", parent: "matstnat4", nume: "Științe ale naturii",
@@ -717,7 +718,7 @@ mapCodDisc2Arie.set("4",
         },
         {
             cod: "ist4", parent: "", nume: "Istorie",
-            coduriDiscipline: ['isto4']            
+            coduriDiscipline: ['ist4']            
         },
         {
             cod: "geo4", parent: "", nume: "Geografie",
@@ -761,7 +762,19 @@ mapCodDisc2Arie.set("5",
         },
         {
             cod: "omsoc5", parent: "", nume: "Om și societate",
-            coduriDiscipline: ['edusoc5', 'ist5', 'geo5']            
+            coduriDiscipline: []            
+        },
+        {
+            cod: "educsoc5", parent: "omsoc5", nume: "Educație socială",
+            coduriDiscipline: ['edusoc5']            
+        },
+        {
+            cod: "isto5", parent: "omsoc5", nume: "Istorie",
+            coduriDiscipline: ['ist5']            
+        },
+        {
+            cod: "geog5", parent: "omsoc5", nume: "Geografie",
+            coduriDiscipline: ['geo5']            
         },
         {
             cod: "omsocrel5", parent: "omsoc5", nume: "Religii",
@@ -773,15 +786,15 @@ mapCodDisc2Arie.set("5",
         },
         {
             cod: "edfizsp5", parent: "", nume: "Educație fizică, sport și sănătate",
-            coduriDiscipline: ['fiz5']            
+            coduriDiscipline: ['fizic5']            
         },
         {
             cod: "edfizspps5", parent: "edfizsp5", nume: "Pregătire sportivă practică",
-            coduriDiscipline: ['fizpAtl5', 'fizpBad5', 'fizpBas5', 'fizpBab5', 'fizpCan5', 'fizpDns5', 'fizpFot5', 'fizpGif5', 'fizpHim5', 'fizpHir5', 'fizpHal5', 'fizpHan5', 'fizpHok5', 'fizpHoi5', 'fizpInt5', 'fizpJud5', 'fizpKca5', 'fizpKrt5', 'fizpGro5', 'fizpLpl5', 'fizpOsp5', 'fizpPar5', 'fizpPav5', 'fizpPpa5', 'fizpRgb5', 'fizpSne5', 'fizpSia5', 'fizpSap5', 'fizpSbi5', 'fizpSfd5', 'fizpSor5', 'fizpSsr5', 'fizpScr5', 'fizpSfb5', 'fizpSae5', 'fizpSah5', 'fizpTen5', 'fizpTem5', 'fizpVol5', 'fizpYht5']            
+            coduriDiscipline: ['pfizAtl5', 'pfizBad5', 'pfizBas5', 'pfizBab5', 'pfizCan5', 'pfizDns5', 'pfizFot5', 'pfizGif5', 'pfizGim5', 'pfizGir5', 'pfizHal5', 'pfizHan5', 'pfizHok5', 'pfizHoi5', 'pfizInt5', 'pfizJud5', 'pfizKca5', 'pfizKrt5', 'pfizGro5', 'pfizLpl5', 'pfizOsp5', 'pfizPar5', 'pfizPav5', 'pfizPpa5', 'pfizRgb5', 'pfizSne5', 'pfizSia5', 'pfizSap5', 'pfizSbi5', 'pfizSfd5', 'pfizSor5', 'pfizSsr5', 'pfizScr5', 'pfizSfb5', 'pfizSae5', 'pfizSah5', 'pfizTen5', 'pfizTem5', 'pfizVol5', 'pfizYht5']            
         },
         {
             cod: "tech5", parent: "", nume: "Tehnologii",
-            coduriDiscipline: ['tecEdtap5', 'tecInfo5']            
+            coduriDiscipline: ['tecEdtap5', 'tecInfo5', 'tecEd5']            
         },
         {
             cod: "consor5", parent: "", nume: "Consiliere și orientare",
@@ -833,7 +846,19 @@ mapCodDisc2Arie.set("6",
         },
         {
             cod: "omsoc6", parent: "", nume: "Om și societate",
-            coduriDiscipline: ['edusoc6', 'ist6', 'geo6']            
+            coduriDiscipline: []            
+        },
+        {
+            cod: "educsoc6", parent: "omsoc6", nume: "Educație socială",
+            coduriDiscipline: ['edusoc6']            
+        },
+        {
+            cod: "isto6", parent: "omsoc6", nume: "Istorie",
+            coduriDiscipline: ['ist6']            
+        },
+        {
+            cod: "geog6", parent: "omsoc6", nume: "Geografie",
+            coduriDiscipline: ['geo6']            
         },
         {
             cod: "isttrad6", parent: "omsoc6", nume: "Istorie minorități",
@@ -849,19 +874,19 @@ mapCodDisc2Arie.set("6",
         },
         {
             cod: "edfizsp6", parent: "", nume: "Educație fizică, sport și sănătate",
-            coduriDiscipline: ['fiz6']            
+            coduriDiscipline: ['fizic6']            
         },
         {
             cod: "edfizspps6", parent: "edfizsp6", nume: "Pregătire sportivă practică",
-            coduriDiscipline: ['fizpAtl6', 'fizpBad6', 'fizpBas6', 'fizpBab6', 'fizpCan6', 'fizpDns6', 'fizpFot6', 'fizpGif6', 'fizpHim6', 'fizpHir6', 'fizpHal6', 'fizpHan6', 'fizpHok6', 'fizpHoi6', 'fizpInt6', 'fizpJud6', 'fizpKca6', 'fizpKrt6', 'fizpGro6', 'fizpLpl6', 'fizpOsp6', 'fizpPar6', 'fizpPav6', 'fizpPpa6', 'fizpRgb6', 'fizpSne6', 'fizpSia6', 'fizpSap6', 'fizpSbi6', 'fizpSfd6', 'fizpSor6', 'fizpSsr6', 'fizpScr6', 'fizpSfb6', 'fizpSae6', 'fizpSah6', 'fizpTen6', 'fizpTem6', 'fizpVol6', 'fizpYht6']            
+            coduriDiscipline: ['pfizAtl6', 'pfizBad6', 'pfizBas6', 'pfizBab6', 'pfizCan6', 'pfizDns6', 'pfizFot6', 'pfizGif6', 'pfizGim6', 'pfizGir6', 'pfizHal6', 'pfizHan6', 'pfizHok6', 'pfizHoi6', 'pfizInt6', 'pfizJud6', 'pfizKca6', 'pfizKrt6', 'pfizGro6', 'pfizLpl6', 'pfizOsp6', 'pfizPar6', 'pfizPav6', 'pfizPpa6', 'pfizRgb6', 'pfizSne6', 'pfizSia6', 'pfizSap6', 'pfizSbi6', 'pfizSfd6', 'pfizSor6', 'pfizSsr6', 'pfizScr6', 'pfizSfb6', 'pfizSae6', 'pfizSah6', 'pfizTen6', 'pfizTem6', 'pfizVol6', 'pfizYht6']            
         },
         {
             cod: "tech6", parent: "", nume: "Tehnologii",
-            coduriDiscipline: ['tecEdtap6', 'tecInfo6']            
+            coduriDiscipline: ['tecEdtap6', 'tecInfo6', 'tecEd6']            
         },
         {
             cod: "consor6", parent: "", nume: "Consiliere și orientare",
-            coduriDiscipline: ['consEd5', 'consAbad6']            
+            coduriDiscipline: ['consEd6', 'consAbad6']            
         },
         {
             cod: "currsc6", parent: "", nume: "Curriculum la decizia școlii ",
@@ -889,7 +914,7 @@ mapCodDisc2Arie.set("7",
         },
         {
             cod: "lbrom7", parent: "", nume: "Limbă și comunicare",
-            coduriDiscipline: ['lbcomRom7', 'lbcomRomMag6', 'lbcomLat7']            
+            coduriDiscipline: ['lbcomRom7', 'lbcomRomMag7', 'lbcomLat7']            
         },
         {
             cod: "matstnat7", parent: "", nume: "Matematică și științe ale naturii",
@@ -913,7 +938,23 @@ mapCodDisc2Arie.set("7",
         },
         {
             cod: "omsoc7", parent: "", nume: "Om și societate",
-            coduriDiscipline: ['edusoc7', 'ist7', 'geo7']            
+            coduriDiscipline: []            
+        },
+        {
+            cod: "educsoc7", parent: "omsoc7", nume: "Educație socială",
+            coduriDiscipline: ['edusoc7']            
+        },
+        {
+            cod: "isto7", parent: "omsoc7", nume: "Istorie",
+            coduriDiscipline: ['ist7']            
+        },
+        {
+            cod: "geog7", parent: "omsoc7", nume: "Geografie",
+            coduriDiscipline: ['geo7']            
+        },
+        {
+            cod: "cultciv7", parent: "omsoc7", nume: "Cultură civică",
+            coduriDiscipline: ['cultciv7']            
         },
         {
             cod: "isttrad7", parent: "omsoc7", nume: "Istorie minorități",
@@ -929,11 +970,11 @@ mapCodDisc2Arie.set("7",
         },
         {
             cod: "edfizsp7", parent: "", nume: "Educație fizică, sport și sănătate",
-            coduriDiscipline: ['fiz7']            
+            coduriDiscipline: ['fizic7']            
         },
         {
             cod: "edfizspps7", parent: "edfizsp7", nume: "Pregătire sportivă practică",
-            coduriDiscipline: ['fizpAtl7', 'fizpBad7', 'fizpBas7', 'fizpBab7', 'fizpCan7', 'fizpDns7', 'fizpFot7', 'fizpGif7', 'fizpHim7', 'fizpHir7', 'fizpHal7', 'fizpHan7', 'fizpHok7', 'fizpHoi7', 'fizpInt7', 'fizpJud7', 'fizpKca7', 'fizpKrt7', 'fizpGro7', 'fizpLpl7', 'fizpOsp7', 'fizpPar7', 'fizpPav7', 'fizpPpa7', 'fizpRgb7', 'fizpSne7', 'fizpSia7', 'fizpSap7', 'fizpSbi7', 'fizpSfd7', 'fizpSor7', 'fizpSsr7', 'fizpScr7', 'fizpSfb7', 'fizpSae7', 'fizpSah7', 'fizpTen7', 'fizpTem7', 'fizpVol7', 'fizpYht7']            
+            coduriDiscipline: ['pfizAtl7', 'pfizBad7', 'pfizBas7', 'pfizBab7', 'pfizCan7', 'pfizDns7', 'pfizFot7', 'pfizGif7', 'pfizGim7', 'pfizGir7', 'pfizHal7', 'pfizHan7', 'pfizHok7', 'pfizHoi7', 'pfizInt7', 'pfizJud7', 'pfizKca7', 'pfizKrt7', 'pfizGro7', 'pfizLpl7', 'pfizOsp7', 'pfizPar7', 'pfizPav7', 'pfizPpa7', 'pfizRgb7', 'pfizSne7', 'pfizSia7', 'pfizSap7', 'pfizSbi7', 'pfizSfd7', 'pfizSor7', 'pfizSsr7', 'pfizScr7', 'pfizSfb7', 'pfizSae7', 'pfizSah7', 'pfizTen7', 'pfizTem7', 'pfizVol7', 'pfizYht7']            
         },
         {
             cod: "tech7", parent: "", nume: "Tehnologii",
@@ -968,8 +1009,8 @@ mapCodDisc2Arie.set("8",
             coduriDiscipline: ['lbmod2Chineza8', 'lbmod2Engleza8', 'lbmod2Franceza8', 'lbmod2Italiana8', 'lbmod2Spaniola8', 'lbmod2Turca8', 'lbmod2Germana8', 'lbmod2Japoneza8', 'lbmod2Rusa8', 'lbmod2Portugheza8']            
         },
         {
-            cod: "lbrom8", parent: "", nume: "Limbă și comunicare",
-            coduriDiscipline: ['lbcomRom8', 'lbcomRomMag6', 'lbcomLat8']            
+            cod: "lbrom8", parent: "lbcom8", nume: "Limbă și comunicare",
+            coduriDiscipline: ['lbcomRom8', 'lbcomRomMag8', 'lbcomLat8']            
         },
         {
             cod: "matstnat8", parent: "", nume: "Matematică și științe ale naturii",
@@ -993,7 +1034,19 @@ mapCodDisc2Arie.set("8",
         },
         {
             cod: "omsoc8", parent: "", nume: "Om și societate",
-            coduriDiscipline: ['edusoc8', 'ist8', 'geo8']            
+            coduriDiscipline: []            
+        },
+        {
+            cod: "educsoc8", parent: "omsoc8", nume: "Educație socială",
+            coduriDiscipline: ['edusoc8']            
+        },
+        {
+            cod: "isto8", parent: "omsoc8", nume: "Istorie",
+            coduriDiscipline: ['ist8']            
+        },
+        {
+            cod: "geog8", parent: "omsoc8", nume: "Geografie",
+            coduriDiscipline: ['geo8']            
         },
         {
             cod: "omsocrel8", parent: "omsoc8", nume: "Religii",
@@ -1005,11 +1058,11 @@ mapCodDisc2Arie.set("8",
         },
         {
             cod: "edfizsp8", parent: "", nume: "Educație fizică, sport și sănătate",
-            coduriDiscipline: ['fiz8']            
+            coduriDiscipline: ['fizic8']            
         },
         {
             cod: "edfizspps8", parent: "edfizsp8", nume: "Pregătire sportivă practică",
-            coduriDiscipline: ['fizpAtl8', 'fizpBad8', 'fizpBas8', 'fizpBab8', 'fizpCan8', 'fizpDns8', 'fizpFot8', 'fizpGif8', 'fizpHim8', 'fizpHir8', 'fizpHal8', 'fizpHan8', 'fizpHok8', 'fizpHoi8', 'fizpInt8', 'fizpJud8', 'fizpKca8', 'fizpKrt8', 'fizpGro8', 'fizpLpl8', 'fizpOsp8', 'fizpPar8', 'fizpPav8', 'fizpPpa8', 'fizpRgb8', 'fizpSne8', 'fizpSia8', 'fizpSap8', 'fizpSbi8', 'fizpSfd8', 'fizpSor8', 'fizpSsr8', 'fizpScr8', 'fizpSfb8', 'fizpSae8', 'fizpSah8', 'fizpTen8', 'fizpTem8', 'fizpVol8', 'fizpYht8']            
+            coduriDiscipline: ['pfizAtl8', 'pfizBad8', 'pfizBas8', 'pfizBab8', 'pfizCan8', 'pfizDns8', 'pfizFot8', 'pfizGif8', 'pfizGim8', 'pfizGir8', 'pfizHal8', 'pfizHan8', 'pfizHok8', 'pfizHoi8', 'pfizInt8', 'pfizJud8', 'pfizKca8', 'pfizKrt8', 'pfizGro8', 'pfizLpl8', 'pfizOsp8', 'pfizPar8', 'pfizPav8', 'pfizPpa8', 'pfizRgb8', 'pfizSne8', 'pfizSia8', 'pfizSap8', 'pfizSbi8', 'pfizSfd8', 'pfizSor8', 'pfizSsr8', 'pfizScr8', 'pfizSfb8', 'pfizSae8', 'pfizSah8', 'pfizTen8', 'pfizTem8', 'pfizVol8', 'pfizYht8']            
         },
         {
             cod: "tech8", parent: "", nume: "Tehnologii",
@@ -1021,20 +1074,25 @@ mapCodDisc2Arie.set("8",
         },
         {
             cod: "currsc8", parent: "", nume: "Curriculum la decizia școlii ",
-            coduriDiscipline: ['crrIst8', 'crrLect8', 'crrGrne8', 'crrMicr8', 'crrMatsc8', 'crrEdvit8', 'crr-radlt8']            
+            coduriDiscipline: ['crrIst8', 'crrLect8', 'crrGrne8', 'crrMicr8', 'crrMatsc8', 'crrEdvit8', 'crrRadlt8']            
         }
     ]
 );
+
 /**
  * Funcția are rolul de a face o căutare în map=ul `mapCodDisc2Arie` pentru a extrage numele Ariei
+ * @ param {Object} obidisc //{nivel: n, cod: obi.codsdisc} //{ codsdisc: "artViz0", nume: "Arte vizuale și abilități practice"}
  */
-function extragNumeArie (nivelCod) {
+function extragNumeArie (obidisc) {
     let arie;
     mapCodDisc2Arie.forEach ((v, k, m) => {
-        // console.log("cheia este ", k, "valoarea este ", v);
-        if (nivelCod.nivel === k) {
-            for (let obi of v) {                
-                if (obi.coduriDiscipline.includes(nivelCod.cod)) {
+        // caută în clasa specificată de obidisc.nivel, înregistrarea în map de tip Array cu obiecte
+        if (obidisc.nivel === k) {
+            // pentru setul găsit
+            for (let obi of v) {  
+                // caută în array-ul codurilor disciplinelor arondate unei arii a unui an              
+                if (obi.coduriDiscipline.includes(obidisc.cod)) {
+                    // dacă am găsit-o, returnează!
                     arie = obi.nume;                    
                 }
             }
@@ -1064,7 +1122,7 @@ niveluri.forEach(function cbNiveluri (checkbox) {
         // FIXME: Date sunt hardcodate în formular cu atribute `data=*`. Am dorit reducerea la maxim a atingerii bazei de date.
         const data = JSON.parse(JSON.stringify(event.target.dataset)); // constituie un obiect cu toate datele din `data=*` a checkbox-ului de clasă.
         const STRUCTURE = structDiscipline({cl:event.target.value, data}); // remodelează disciplinele după seturi aparținând unei arii generate din primele trei caractele ale data=*
-        //console.log("Structure este: ",STRUCTURE); // {nivel: "5", 5: {art: [], bio5: []}}
+        // console.log("Structure este: ",STRUCTURE); // {nivel: "5", 5: {art: [], bio5: []}}
 
         // încărcarea setutului de discipline pentru nivelul pentru care s-a dat click
         if (!DISCMAP.has(STRUCTURE.nivel)) {
@@ -1073,7 +1131,7 @@ niveluri.forEach(function cbNiveluri (checkbox) {
 
         // Info primare pentru constituire interfață
         let n = STRUCTURE.nivel; // -> 8, de exemplu
-        let objSeturi = STRUCTURE.rezultat[n]; // {art: [], bio5: []}
+        let objSeturi = STRUCTURE.rezultat[n]; //16 seturi -> {art: [], bio5: []}
 
         // Dacă sunt elemente în `niveluri` care au uncheck, șterge disciplinele asociate!
         if(event.target.checked === false) {
@@ -1082,35 +1140,45 @@ niveluri.forEach(function cbNiveluri (checkbox) {
                 let elemExistent = document.querySelector(`.${dicscls}`); // k este codul disciplinei care a fost pus drept clasă în vederea modelării cu CSS (culoare, etc)
                 tablist.removeChild(elemExistent); // șterge disciplina din array-ul elementelor DOM
             }
+            // șterge conținutul din DOM
             tabcontent.innerHTML='';
         } else {            
-            // {art: [], bio5: []}
+            // pentru fiecare proprietate din `objSeturi`
             for (let prop in objSeturi) {
-                
+                // asigură-te că nu sunt introduse și proprietăți moștenite
                 if (objSeturi.hasOwnProperty(prop)) {
-                    const setArr = objSeturi[prop];
-                    let menuSet = new Set(); // set pentru a verifica dublarea elementelor de meniu
+                    const setArr = objSeturi[prop]; // constituie un array de array-uri cu discipline
+
+                    let menuSet = new Set(); // set pentru a evita cazul dublării elementelor de meniu
+                    let elemSet = new Set();
+                    
                     for (let obi of setArr) {
-                        //console.log(obi.codsdisc); //artViz0
-                        
-                        // caută numele ariei și afișează numele corect -> funcția `extragNumeArie`
+                        // console.log(prop); // 16 bucăți
+                        /* === PENTRU TOATE DISCIPLINELE CARE AU ACEEAȘI ARIE, SE CREEAZĂ UN SINGUR ELEMENT DE MENIU === */
+                        // caută numele ariei și afișează numele ariei în locul codului `prop`. Valorile sunt extrase din `mapCodDisc2Arie` -> funcția `extragNumeArie`
                         let numeArie = extragNumeArie({nivel: n, cod: obi.codsdisc}); //{ codsdisc: "artViz0", nume: "Arte vizuale și abilități practice"}
+
+                        // obi -> { codsdisc: "lbcomRom5", nume: "Limba și literatura română" }
+                        // Creează un element de meniu vertical acum că ai numele ariei/disciplinei
                         if (!menuSet.has(numeArie)) {
                             menuSet.add(numeArie);                            
-                            // generează linkurile care stau vertical
-                            var serdiscbtn = new createElement('a', `v-pills-${prop}-tab`, ['nav-link', `${prop}`], {"data-toggle":"pill", href: `#v-pills-${prop}`, role: "tab", "aria-controls": `v-pills-${prop}`, 'aria-selected': 'true'}).creeazaElem(numeArie);
-                            tablist.appendChild(serdiscbtn);
+                            // generează linkurile care stau vertical(`prop` are primele trei sau patru caractere ale unui set de discipline)
+                            var serdiscbtn = new createElement('a', `v-pills-${prop}-tab`, ['nav-link', `${prop}`], {"data-toggle":"pill", href: `#v-pills-${prop}`, role: "tab", "aria-controls": `v-pills-${prop}`}).creeazaElem(numeArie);
                             // creează div-ul care ține disciplinele afișate ca butoane
                             var dicpanes = new createElement('div', `v-pills-${prop}`, ['tab-pane', 'fade', 'show'], {role: "tabpanel", "aria-labelledby": `v-pills-${prop}-tab`}).creeazaElem();
                         }
- 
+                        // console.log(menuSet);
+                        tablist.appendChild(serdiscbtn);
                         // generează checkbox-urile
                         for (let obidisc of objSeturi[prop]) {
-                            if (!menuSet.has(obidisc.codsdisc)) {
-                                menuSet.add(obidisc.codsdisc);
+                            if (!elemSet.has(obidisc.codsdisc)) {
+                                elemSet.add(obidisc.codsdisc);
                                 //console.log(obidisc); // Object { codsdisc: "lbcomRom5", nume: "Limba și literatura română" }
                                 let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': obidisc.codsdisc, autocomplete: "off", value: obidisc.nume}).creeazaElem();
                                 let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-info', 'btn-sm'], {}).creeazaElem(obidisc.nume);
+                                labelBtn.textContent += ` `; //adaugă un spațiu între numar și textul butonului.
+                                let clasaInfo         = new createElement('span', '', ['badge','badge-light'], {}).creeazaElem(n);
+                                labelBtn.appendChild(clasaInfo);
                                 let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', obidisc.codsdisc], {"data-toggle": "buttons", onclick: "actSwitcher()"}).creeazaElem();           
                                 labelBtn.appendChild(inputCheckBx);
                                 divBtnGroupToggle.appendChild(labelBtn);
@@ -1374,6 +1442,19 @@ function addMeDeleteMe () {
  * Apelează funcțiile `tabelFormater(data)` și `activitatiRepopulareChecks()` la momentul când se apasă pe butonul plus
  */
 function disciplineBifate () {
+    // un array necesar pentru a captura valorile input checkbox-urilor bifate
+    let values = [];
+
+    // trimite în `values` valorile din input checkboxurile bifate în elementul părinte #discipline
+    document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value, dataset}) => {
+        // console.log("dataset este ", dataset, "iar value este ", value);
+        values.push(dataset.nume);
+
+        // ==== RED.discipline ====
+        RED.discipline.push(value);
+        RED.etichete.push(value);
+    });
+    // console.log(values);
 
     // ori de câte ori va fi apăsată o disciplină, se emite apel socket către baza de date și extrage conform selecției, un subset  (ex: [ "matexpmed2", "comlbrom2" ]). 
     pubComm.emit('csuri', values);
@@ -1603,21 +1684,14 @@ function pas2 () {
         }
     });
 
-    // === RED.discipline RED.etichete ===
-    // un array necesar pentru a captura valorile input checkbox-urilor bifate
-    let values = [];
-
-    // trimite în `values` valorile din input checkboxurile bifate în elementul părinte #discipline
+    // === RED.etichete ===
     // document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value, dataset}) => {
     document.querySelectorAll("#v-pills-tabContent input[type='checkbox']:checked").forEach(({value, dataset}) => {
-        values.push(value);
 
-        // ==== RED.discipline ====
-        RED.discipline.push(dataset.nume);
-
-        if (RED.discipline.indexOf(value) === -1) {
+        if (RED.discipline.indexOf(dataset.nume) === -1) {
             // RED.discipline.push(element.value);
             RED.etichete.push(value);
+            RED.etichete.push(dataset.nume);
         }
     });
 
@@ -1653,16 +1727,16 @@ function pas3 () {
     // introducerea grupurilor țintă selectare din options
     var grup = document.getElementById('valid-grup');
     RED.grupuri = getMeSelected(grup, false);
-    var domeniu = document.getElementById('valid-domeniu');
-    RED.domeniu = getMeSelected(domeniu, true);
-    var functii = document.getElementById('valid-functii');
-    RED.functii = getMeSelected(functii, true);
+    // var domeniu = document.getElementById('valid-domeniu');
+    // RED.domeniu = getMeSelected(domeniu, true);
+    // var functii = document.getElementById('valid-functii');
+    // RED.functii = getMeSelected(functii, true);
     var demersuri = document.getElementById('valid-demersuri');
     RED.demersuri = getMeSelected(demersuri, false);
-    var spatii = document.getElementById('valid-spatii');
-    RED.spatii = getMeSelected(spatii, true);
-    var invatarea = document.getElementById('valid-invatarea');
-    RED.invatarea = getMeSelected(invatarea, true);
+    // var spatii = document.getElementById('valid-spatii');
+    // RED.spatii = getMeSelected(spatii, true);
+    // var invatarea = document.getElementById('valid-invatarea');
+    // RED.invatarea = getMeSelected(invatarea, true);
     RED.dependinte = document.getElementById('dependinte').value;
     RED.bibliografie = document.getElementById('bibliografie').value;
 
@@ -1671,7 +1745,6 @@ function pas3 () {
         var elemBadge = new createElement('span', '', ['badge', 'badge-info', 'm-1'], null).creeazaElem(`${tag}`);
         tagsElems.appendChild(elemBadge);
     });
-    
 }
 
 /**

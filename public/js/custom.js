@@ -167,7 +167,7 @@ $(document).ready(function () {
     //Mergi la pasul patru al formularului
     $('#next-5').click(function () {
       pas3(); // colectează datele de la pasul 3 al formularului.
-      console.log(RED);
+      // console.log(RED);
       // ascunde divul cu id-ul `trei și arată-l pe cel cu id-ul `patru`
       $('#trei').hide();
       $('#patru').show();

@@ -366,12 +366,12 @@ module.exports = (express, app, passport, pubComm) => {
     
     /* === SOCKETURI!!! === */
     pubComm.on('connect', (socket) => {
-        // Ascultă mesajele
+        // === MESAJE === ::Ascultă mesajele
         socket.on('mesaje', (mesaj) => {
             console.log(mesaj);
         });
 
-        // Primirea imaginilor pe socket conduce la crearea Bag-ului
+        // === RESURSA === ::Primirea imaginilor pe socket conduce la crearea Bag-ului
         socket.on('resursa', function clbkResursa (resourceFile) {
             // creează calea pe care se va depozita.
             var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`; // FIXME: Folosește path.join în viitor să dăm și celor de pe Windows o șansă
@@ -421,7 +421,7 @@ module.exports = (express, app, passport, pubComm) => {
             }
         });
 
-        // În momentul în care se va apăsa butonul care creează resursa, se va închide și Bag-ul.
+        // === CLOSEBAG === ::În momentul în care se va apăsa butonul care creează resursa, se va închide și Bag-ul.
         socket.on('closeBag', () => {
             // finalizarea creării Bag-ului
             if (lastBag) {
@@ -434,6 +434,7 @@ module.exports = (express, app, passport, pubComm) => {
             }
         });
 
+        // === LOG ===
         socket.on('log', (entry) => {
             var log = new Log({
                 _id: new mongoose.Types.ObjectId(),
@@ -451,7 +452,7 @@ module.exports = (express, app, passport, pubComm) => {
             });            
         });
 
-        // Introducerea resursei în baza de date MongoDB la finalizarea completării FORM01
+        // === RED === ::Introducerea resursei în baza de date MongoDB la finalizarea completării FORM01
         socket.on('red', (RED) => {
             // gestionează cazul în care nu ai un uuid generat pentru că resursa educațională, adică nu are niciun fișier încărcat
             if (!RED.uuid) {
@@ -502,7 +503,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
 
-        // Ștergerea unei resurse
+        // === DELRESID === ::Ștergerea unei resurse
         socket.on('delresid', (resource) => {
             // console.log(resource);
             let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, `${resource.content.identifier}`);
@@ -555,12 +556,10 @@ module.exports = (express, app, passport, pubComm) => {
 
                             // Șterge resursa din MONGODB și din Elasticsearch!!!
                             Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
-                                // console.log('Documentul este: ', doc);
-                
+                                // console.log('Documentul este: ', doc);                
                                 if (err) {
                                     console.log(err);
-                                };
-                
+                                };                
                                 // Șterge înregistrarea din Elasticsearch -> https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#_delete
                                 esClient.delete({
                                     id: doc._id,
@@ -576,7 +575,7 @@ module.exports = (express, app, passport, pubComm) => {
                 });
         });
 
-        // Aducerea resurselor pentru un id (email) și trimiterea în client
+        // === MKADMIN === ::Aducerea resurselor pentru un id (email) și trimiterea în client
         socket.on('mkAdmin', (userSet) => {    
             // Atenție: https://mongoosejs.com/docs/deprecations.html#-findandmodify-
             let docUser = UserModel.findOne({_id: userSet.id}, 'admin');
@@ -603,7 +602,7 @@ module.exports = (express, app, passport, pubComm) => {
             }   
         });
 
-        // Adaugă rol nou
+        // === ADDROLE === ::Adaugă rol nou
         socket.on('addRole', (newRoles) => {
             let docUser = UserModel.findOne({_id: newRoles.id}, 'roles');
             // dacă vreunul din rolurile trimise nu există deja în array-ul din profilul utilizatorului, acesta va fi adăugat.
@@ -623,7 +622,7 @@ module.exports = (express, app, passport, pubComm) => {
             // console.log(newRoles);
         });
 
-        // Adaugă unit nou pentru utilizator
+        // === ADDUNIT === ::Adaugă unit nou pentru utilizator
         socket.on('addUnit', (newUnits) => {
             let docUser = UserModel.findById(newUnits.id);
 
@@ -646,7 +645,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
 
-        // Validarea resursei
+        // === VALIDATERES === ::Validarea resursei
         socket.on('validateRes', (queryObj) => {
             // eveniment declanșat din redincredadmin.js
             let resQuery = Resursa.findOne({_id: queryObj._id}, 'expertCheck');
@@ -660,7 +659,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
 
-        // setarea resursei drept publică
+        // === SETPUBRES === ::setarea resursei drept publică
         socket.on('setPubRes', (queryObj) => {
             // eveniment declanșat din redincredadmin.js
             let resQuery = Resursa.findOne({_id: queryObj._id}, 'generalPublic');
@@ -674,7 +673,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
 
-        // căutarea resurselor după disciplinele selectate
+        // === SEARCHRESDISC === ::căutarea resurselor după disciplinele selectate
         socket.on('searchresdisc', (queryObj) => {
             // console.log(queryObj);
             let resQuery = Resursa.find({
@@ -686,7 +685,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
         
-        // căutarea termenilor în Elasticsearch
+        // === SEARCHRES === ::Căutarea termenilor în Elasticsearch
         socket.on('searchres', (queryString) => {
             const body = {
                 query: {
@@ -706,7 +705,7 @@ module.exports = (express, app, passport, pubComm) => {
             }).catch(console.log);
         });
 
-        // căutarea unui utilizator
+        // === PERSON === ::căutarea unui utilizator
         socket.on('person', queryString => {
             // FIXME: Sanetizează inputul care vine prin `queryString`!!! E posibil să fie flood. Taie dimensiunea la un singur cuvânt!!!
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html
@@ -867,7 +866,7 @@ module.exports = (express, app, passport, pubComm) => {
             searchES7(); // declanșează execuția funcției de căutare!
         });
 
-        // FIȘA completă de utilizator
+        // === PERSONRECORD === ::FIȘA completă de utilizator
         socket.on('personrecord', id => {
             // TODO: constituie un query care să aducă înregistrarea de user și ultimele sale 5 contribuții RED
             // https://mongoosejs.com/docs/api.html#model_Model.populate
@@ -900,7 +899,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
 
-        // STATS GENERAL
+        // === STATS === ::STATS GENERAL
         socket.on('stats', (projectionObj) => {
             if (projectionObj) {
                 // pentru fiecare dintre descriptori adu un set de date pe care-l trimiți în frontend
@@ -936,7 +935,7 @@ module.exports = (express, app, passport, pubComm) => {
             }            
         });
 
-        // TOATE RESURSELE
+        // === ALLRES === ::TOATE RESURSELE
         socket.on('allRes', () => {
             Resursa.find({}).exec().then(allRes => {
                 socket.emit('allRes', allRes);
@@ -945,7 +944,7 @@ module.exports = (express, app, passport, pubComm) => {
             });
         });
 
-        // TOȚI UTILIZATORII
+        // === ALLUSERS === ::TOȚI UTILIZATORII
         socket.on('allUsers', () => {
             UserModel.find({}).exec().then(allUsers => {
                 socket.emit('allUsers', allUsers);

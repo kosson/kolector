@@ -5,12 +5,23 @@ const Papa  = require('papaparse');
 const csv   = require('fast-csv');
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGO_LOCAL_CONN, {
-    auth: { "authSource": "admin" },
-    user: process.env.MONGO_USER,
-    pass: process.env.MONGO_PASSWD,
-    useNewUrlParser: true, 
-    useUnifiedTopology: true
+mongoose.set('useCreateIndex', true); // Deprecation warning
+
+if (process.env.NODE_ENV !== "test") {
+    mongoose.connect(process.env.MONGO_LOCAL_CONN, {
+        auth: { "authSource": "admin" },
+        user: process.env.MONGO_USER,
+        pass: process.env.MONGO_PASSWD,
+        useNewUrlParser: true, 
+        useUnifiedTopology: true
+    });
+}
+mongoose.connection.on('error', function () {
+    console.warn('Conectare eșuată!');
+    process.exit();
+});
+mongoose.connection.once('open', function () {
+    console.log("Conectare la baza de date făcută cu succes");
 });
 // const writeF = fs.createWriteStream('CSuriX.json', 'utf8'); // Generează un JSON în caz că acest lucru este necesar. Să fie acolo.
 
@@ -79,8 +90,8 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
         return new Promise((resolve) => {
             const dataArray = [];
             return csv.parseFile(path, { headers: true })
-                      .on('data', function clbkOnData (data) { dataArray.push(data); })
-                      .on('end', function clbkOnEnd () { resolve(dataArray); });
+                .on('data', function clbkOnData (data) { dataArray.push(data); })
+                .on('end', function clbkOnEnd () { resolve(dataArray); });
         });
     });
 
@@ -109,7 +120,7 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
                     csvStream.end();
                 });
 }
-// generează fișierul consolidat cu toate câmpurile din toate csv-urile
+// generează fișierul consolidat cu toate câmpurile din toate csv-urile sau atunci când mai introduci un calup nou de date.
 // concatCSVAndOutput(read(dir), `${dir}/all.csv`); // linie activată doar în cazul în care baza este goală și nu există generat deja fișierul all.csv
 
 const readF = fs.createReadStream(`${dir}/all.csv`, 'utf8'); // Creează stream Read din fișierul CSV sursă.
