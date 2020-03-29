@@ -4,7 +4,10 @@
     <div id="container" class="container">
         {{#each logentries}}
             <article class="logentry p-1 mt-1">
-                <h3>{{this.title}}</h3>
+                <div class="logtitle">
+                    <h3>{{this.title}}</h3>
+                    <p>Autor: {{this.idContributor}}, din {{this.dataRo}}</p>
+                </div>
                 <div class="logcontent">
                     {{{this.content}}}
                 </div>

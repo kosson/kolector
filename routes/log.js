@@ -1,8 +1,9 @@
-var express = require('express');
-var router  = express.Router();
-const mongoose    = require('mongoose');
+var express      = require('express');
+var router       = express.Router();
+const mongoose   = require('mongoose');
+const moment     = require('moment');
 var content2html = require('./controllers/editorJs2HTML');
-const Log         = require('../models/logentry'); // Adu modelul unei înregistrări de jurnal
+const Log        = require('../models/logentry'); // Adu modelul unei înregistrări de jurnal
 
 // ========== VERIFICAREA ROLURILOR ==========
 let checkRole = require('./controllers/checkRole.helper');
@@ -17,7 +18,10 @@ router.get('/', function (req, res, next) {
 
     if (confirmedRoles.length > 0) {
         promiseLogPub.then((entries) => {
+            let newResultArr = []; // noul array al obiectelor resursă
             entries.map(entry => {
+                entry.dataRo = moment(entry.date).locale('ro').format('LLL');
+                newResultArr.push(entry);
                 entry.content = content2html(entry.content);
             });
             let scripts = [     
@@ -30,7 +34,8 @@ router.get('/', function (req, res, next) {
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/red-logo-small30.png",
                 credlogo: "../img/CREDlogo.jpg",
-                logentries: entries
+                user:    req.user,
+                logentries: newResultArr
             });
         }).catch((err) => {
             if (err) throw err;
