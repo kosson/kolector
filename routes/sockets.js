@@ -11,6 +11,7 @@ const validator   = require('validator');
 const esClient    = require('../elasticsearch.config');
 const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
 const UserModel   = require('../models/user'); // Adu modelul unui user
+const Log         = require('../models/logentry'); 
 
 module.exports = function sockets (pubComm) {
     /* === FUNCȚII HELPER PENTRU LUCRUL CU SOCKET-URI */
