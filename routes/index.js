@@ -4,20 +4,20 @@ const moment   = require('moment');
 const mongoose = require('mongoose');
 const Resursa  = require('../models/resursa-red'); // Adu modelul resursei
 
-//TODO: Adu-mi ultimele 10 resurse care sunt marcate a fi publice
-Resursa.where({'generalPublic': true}).countDocuments(function cbCountResPub (err, count) {
-    if (err) throw err;
-    // console.log('Numărul resurselor este: ', count);
-});
+// console.log(result.length);
+router.get('/', function clbkTootRoute (req, res, next) {
+    // let localizat = moment(result.date).locale('ro').format('LLL');
+    // result.dataRo = `${localizat}`; // formatarea datei pentru limba română.
 
-let resursePublice = Resursa.find({'generalPublic': true}).sort({"date": -1}).limit(8);
-let promiseResPub = resursePublice.exec();
-promiseResPub.then((result) => {
-    // console.log(result.length);
-    router.get('/', function (req, res, next) {
-        // let localizat = moment(result.date).locale('ro').format('LLL');
-        // result.dataRo = `${localizat}`; // formatarea datei pentru limba română.
-        
+    //TODO: Adu-mi ultimele 10 resurse care sunt marcate a fi publice
+    Resursa.where({'generalPublic': true}).countDocuments(function cbCountResPub (err, count) {
+        if (err) throw err;
+        // console.log('Numărul resurselor este: ', count);
+    });
+
+    let resursePublice = Resursa.find({'generalPublic': true}).sort({"date": -1}).limit(8);
+    let promiseResPub = resursePublice.exec();
+    promiseResPub.then((result) => {
         let newResultArr = [];
 
         result.map(function clbkMapResult (obi) {
@@ -36,9 +36,9 @@ promiseResPub.then((result) => {
             resurse: newResultArr,
             scripts
         });
+    }).catch((err) => {
+        if (err) throw err;
     });
-}).catch((err) => {
-    if (err) throw err;
 });
 
 module.exports = router;

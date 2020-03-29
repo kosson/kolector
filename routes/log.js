@@ -1,7 +1,8 @@
 var express = require('express');
 var router  = express.Router();
-var Log     = require('../models/logentry');
+const mongoose    = require('mongoose');
 var content2html = require('./controllers/editorJs2HTML');
+const Log         = require('../models/logentry'); // Adu modelul unei înregistrări de jurnal
 
 // ========== VERIFICAREA ROLURILOR ==========
 let checkRole = require('./controllers/checkRole.helper');

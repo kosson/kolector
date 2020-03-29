@@ -36,7 +36,7 @@ pubComm.on('allRes', (resurse) => {
                 title: 'Accesează',
                 data: '_id',
                 render: function clbkId (data, type, row) {
-                    return `<a href="${window.location.origin}/profile/resurse/${data}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">${data.slice(0,5)}...</a>`;
+                    return `<a href="${window.location.origin}/administrator/reds/${data}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">${data.slice(0,5)}...</a>`;
                 }
             },
             {

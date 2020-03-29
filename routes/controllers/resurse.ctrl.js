@@ -110,7 +110,7 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
         });
 };
 
-/* FORM DESCRIERE RESURSE */
+/* FORM DESCRIERE RESURSE (ADAUGĂ) */
 exports.describeResource = function describeResource (req, res, next) {
     // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
     let scripts = [
@@ -126,13 +126,6 @@ exports.describeResource = function describeResource (req, res, next) {
         {script: '/lib/editorjs/code.js'},
         {script: '/lib/editorjs/quote.js'},
         {script: '/lib/editorjs/inlinecode.js'},
-        // DATATABLES
-        // {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-        // {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
-        // {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-        // {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-        // {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
-        // {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
         // FORM
         {script: '/js/form01adres.js'}
     ];

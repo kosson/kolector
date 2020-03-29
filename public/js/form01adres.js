@@ -1282,7 +1282,7 @@ function tabelFormater (data) {
     var frmAddAct = $(`<input type="text" aria-label="descrierea noii activități propuse" class="form-control ${data.cod}-add" placeholder="Aici vei introduce descrierea noii activități propuse" aria-describedby="basic-addon2"></input>`);
     // adăugarea butonul necesar introducerii de activități arbitrare
     var btnWrap   = $('<div class="input-group-append">');
-    var btnAdd    = $(`<buton type="button" id="${data.cod}-add" class="btn btn-warning">Adaugă o nouă activitate</div>`).wrap(`<div class="input-group-append">`);
+    var btnAdd    = $(`<buton type="button" id="${data.cod}-add" class="btn btn-warning">Adaugă o nouă activitate de învățare</div>`).wrap(`<div class="input-group-append">`);
     btnWrap.append(btnAdd); // adaugă elementul buton
     wrapper.append(frmAddAct);
     wrapper.append(btnWrap);
