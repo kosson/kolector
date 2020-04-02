@@ -1,9 +1,11 @@
 require('dotenv').config();
 /* ==== DEPENDINȚE ==== */
+const util     = require('util');
 const express  = require('express');
 const router   = express.Router();
 const mongoose = require('mongoose');
 const moment   = require('moment');
+const redisClient= require('../redis.config');
 // Încarcă mecanismele de verificare ale rolurilor
 let makeSureLoggedIn = require('connect-ensure-login');
 let checkRole = require('./controllers/checkRole.helper');
@@ -52,7 +54,7 @@ router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (
 );
 
 /* === VALIDARE / PUBLICARE /ȘTERGERE /EDITARE @ ->resursa -> resursa-admin [redincredadmin.js / res-shown.js] -> resursa-validator === */
-router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), function clbkProfResID (req, res, next){
+router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProfResID (req, res, next){
     // Adu înregistrarea resursei cu toate câmpurile referință populate deja
     // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
 
@@ -76,10 +78,12 @@ router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), function clbkPr
     let roles = ["user", "cred", "validator"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
-    // adu înregistrarea din MongoDB după ce a fost încărcată o nouă resursă
-    Resursa.findById(req.params.idres).populate({
+    // Dacă nu sunt datele în cache-ul REDIS, răspunde cu date din bază și actualizează cache-ul.
+    const query = Resursa.findById(req.params.idres).populate({
         path: 'competenteS'
-    }).exec().then(resursa => {
+    });
+    
+    query.then(resursa => {
         // console.log(resursa); // asta e moartă: http://localhost:8080/profile/resurse/5e2714c84449b236ce450091
         /* === Resursa încă există în MongoDB === */
         if (resursa._id) {

@@ -6,7 +6,7 @@ const express        = require('express');
 const bodyParser     = require('body-parser');
 const cookies        = require('cookie-parser');
 const session        = require('express-session');
-const redis          = require('redis');
+const redisClient    = require('./redis.config');
 const helmet         = require('helmet');
 const passport       = require('passport');
 const responseTime   = require('response-time');
@@ -57,13 +57,6 @@ app.use(cookies());// Parse Cookie header and populate req.cookies with an objec
 // TIMP RĂSPUNS ÎN HEADER
 app.use(responseTime())
 
-/* === REDIS - configurare === */
-// creează clientul conform https://github.com/tj/connect-redis/blob/HEAD/migration-to-v4.md
-let redisClient = redis.createClient({
-    host: '127.0.0.1',
-    port: 6379,
-    db: 10
-});
 // creează sesiune
 let sessionMiddleware = session({
     name:   'redcolector',
@@ -99,7 +92,6 @@ app.use(function (req, res, next) {
     };
     lookupSession();
 });
-redisClient.on('error', console.error);
 
 // STATIC
 app.use(express.static(path.join(__dirname, '/public' )));

@@ -8,6 +8,8 @@ const Resursa = require('../../models/resursa-red'); // Adu modelul resursei
 // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
 let checkRole     = require('./checkRole.helper');
 let editorJs2html = require('./editorJs2HTML');
+// cere helperul pentru cache-ing
+require('./cache.helper');
 
 /* AFIȘAREA RESURSELOR */
 exports.loadRootResources = function loadRootResources (req, res, next) {
@@ -78,16 +80,17 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
 exports.loadOneResource = function loadOneResource (req, res, next) {
     // console.log(req.params);
     // var record = require('./resincredid.ctrl')(req.params); // aduce resursa și transformă conținutul din JSON în HTML
-    Resursa.findById(req.params.id).populate({
+    let query = Resursa.findById(req.params.id).populate({
             path: 'competenteS'
-        }).exec().then( (resursa) => {
+        }).cache();
+
+    query.then( (resursa) => {
             if (resursa) {
                 resursa.content = editorJs2html(resursa.content);
                 let localizat   = moment(resursa.date).locale('ro').format('LLL');
                 resursa.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
             } else {
                 console.log(`Nu a putut fi adusă resursa!`);
-                pubcomm.emit('mesaje', `Nu am putut aduce resursa!`);
             }
             return resursa;
         }).then(result => {

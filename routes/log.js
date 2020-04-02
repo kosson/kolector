@@ -8,7 +8,7 @@ const Log        = require('../models/logentry'); // Adu modelul unei înregistr
 // ========== VERIFICAREA ROLURILOR ==========
 let checkRole = require('./controllers/checkRole.helper');
 
-router.get('/', function (req, res, next) {
+router.get('/', function clbkLog (req, res, next) {
     // Setare hardcodată de ACL
     let roles = ["user", "cred"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
