@@ -1,6 +1,7 @@
 {{!< layout}}
 {{> nav-profile}}
 {{> messages}}
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
 <div>
     <h1>{{user.googleProfile.name}}</h1>
     {{!-- <img src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" width="50"> --}}

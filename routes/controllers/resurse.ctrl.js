@@ -10,6 +10,7 @@ let checkRole     = require('./checkRole.helper');
 let editorJs2html = require('./editorJs2HTML');
 // cere helperul pentru cache-ing
 require('./cache.helper');
+const {clearHash} = require('./cache.helper');
 
 /* AFIȘAREA RESURSELOR */
 exports.loadRootResources = function loadRootResources (req, res, next) {
@@ -19,9 +20,9 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
-    // Adu-mi ultimele 8 resursele validate în ordinea ultimei intrări, te rog! Hey, hey, Mr. Serverman!
-    let resursePublice = Resursa.find({'expertCheck': 'true'}).sort({"date": -1}).limit(8);
-    let promiseResPub  = resursePublice.exec();
+    // Adu-mi ultimele 8 resursele validate în ordinea ultimei intrări, te rog! Hey, hey, Mr. Serverman!        
+    let resursePublice = Resursa.find({'expertCheck': 'true'}).sort({"date": -1}).limit(8).cache({key: req.user.id});
+    // let promiseResPub  = resursePublice.exec();
 
     // SCRIPTURI
     let scripts = [       
@@ -30,16 +31,20 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
     
     /* ====== VERIFICAREA CREDENȚIALELOR ====== */
     if(req.session.passport.user.roles.admin){
-        promiseResPub.then((result) => {
-            let newResultArr = []; // noul array al obiectelor resursă
-            result.map(function clbkMapResult (obi) {
-                obi.dataRo = moment(obi.date).locale('ro').format('LLL');
-                newResultArr.push(obi);
+        // promiseResPub.then((result) => {
+        resursePublice.then((result) => {
+            let newResultArr = result.map(function clbkMapResult (obi) {
+                const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+                // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
+                newObi.dataRo = moment(obi.date).locale('ro').format('LLL');
+                // newResultArr.push(newObi);
+                return newObi;
             });
             res.render('resurse', {
                 title:   "CRED RED-uri",
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "img/rED-logo192.png",
+                csfrToken: req.csrfToken(),
                 user:    req.user,
                 resurse: newResultArr,
                 activeResLnk: true,
@@ -51,7 +56,8 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
             }
         });
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
-        promiseResPub.then((result) => {
+        // promiseResPub.then((result) => {
+        resursePublice.then((result) => {
             let newResultArr = []; // noul array al obiectelor resursă
             result.map(function clbkMapResult (obi) {
                 obi.dataRo = moment(obi.date).locale('ro').format('LLL');
@@ -61,6 +67,7 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
                 title:   "Resurse publice",
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "img/rED-logo192.png",
+                csfrToken: req.csrfToken(),
                 user:    req.user,
                 resurse: newResultArr,
                 scripts
@@ -82,17 +89,17 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
     // var record = require('./resincredid.ctrl')(req.params); // aduce resursa și transformă conținutul din JSON în HTML
     let query = Resursa.findById(req.params.id).populate({
             path: 'competenteS'
-        }).cache();
+        });
 
     query.then( (resursa) => {
-            if (resursa) {
-                resursa.content = editorJs2html(resursa.content);
-                let localizat   = moment(resursa.date).locale('ro').format('LLL');
-                resursa.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+            if (resursa._doc) {
+                resursa._doc.content = editorJs2html(resursa.content);
+                let localizat = moment(resursa.date).locale('ro').format('LLL');
+                resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
             } else {
                 console.log(`Nu a putut fi adusă resursa!`);
             }
-            return resursa;
+            return Object.assign({}, resursa._doc);// Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
         }).then(result => {
             let scripts = [
                 {script: '/lib/moment/min/moment.min.js'}      
@@ -103,6 +110,7 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/red-logo-small30.png",
                 credlogo: "../img/CREDlogo.jpg",
+                csfrToken: req.csrfToken(),
                 resursa: result,
                 scripts
             });
@@ -146,6 +154,7 @@ exports.describeResource = function describeResource (req, res, next) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/rED-logo192.png",
             credlogo:"/img/CREDlogo.jpg",
+            csfrToken: req.csrfToken(),
             scripts
         });
         // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
@@ -156,6 +165,7 @@ exports.describeResource = function describeResource (req, res, next) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/rED-logo192.png",
             credlogo:"/img/CREDlogo.jpg",
+            csfrToken: req.csrfToken(),
             scripts
         });
     } else {
@@ -170,7 +180,7 @@ exports.uploadResource = function uploadResource (req, res, next) {
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
     if (Object.keys(req.files).length == 0) {
-        return res.status(400).send('No files were uploaded.');
+        return res.status(400).send('Nu s-a încărcat nimic.');
     }
 
     /* === VERIFICAREA CREDENȚIALELOR === */

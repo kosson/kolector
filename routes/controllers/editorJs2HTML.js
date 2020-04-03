@@ -3,6 +3,7 @@ const moment = require('moment');
 function content2html (resursa) {
     let articleHTML = '';
     if (resursa) {
+        // generează conținut HTML pentru fiecare dintre blocurile întâlnite
         resursa.blocks.map(obj => {
             switch (obj.type) {
                 case 'paragraph':

@@ -11,7 +11,7 @@ const validator   = require('validator');
 const esClient    = require('../elasticsearch.config');
 const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
 const UserModel   = require('../models/user'); // Adu modelul unui user
-const Log         = require('../models/logentry'); 
+const Log         = require('../models/logentry');
 
 module.exports = function sockets (pubComm) {
     /* === FUNCȚII HELPER PENTRU LUCRUL CU SOCKET-URI */
@@ -55,7 +55,7 @@ module.exports = function sockets (pubComm) {
         // === RESURSA === ::Primirea imaginilor pe socket conduce la crearea Bag-ului
         socket.on('resursa', function clbkResursa (resourceFile) {
             // creează calea pe care se va depozita.
-            var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`; // FIXME: Folosește path.join în viitor să dăm și celor de pe Windows o șansă
+            var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
 
             // Transformarea Buffer-ului primit într-un stream `Readable`
             var strm = new Readable();
@@ -108,6 +108,7 @@ module.exports = function sockets (pubComm) {
             if (lastBag) {
                 lastBag.finalize(() => {
                     // TODO: setează BAG-ul ca depozit git
+                    
                     socket.emit('closeBag', 'Am finalizat închiderea bag-ului');
                 });
             } else {
@@ -366,7 +367,7 @@ module.exports = function sockets (pubComm) {
             });
         });
         
-        // === SEARCHRES === ::Căutarea termenilor în Elasticsearch
+        // === SEARCHRES === ::Căutarea resurselor în Elasticsearch
         socket.on('searchres', (queryString) => {
             const body = {
                 query: {

@@ -2,6 +2,7 @@ require('dotenv').config();
 const path           = require('path');
 const logger         = require('morgan');
 const compression    = require('compression');
+const csrf           = require('csurf');
 const express        = require('express');
 const bodyParser     = require('body-parser');
 const cookies        = require('cookie-parser');
@@ -25,6 +26,9 @@ const esClient       = require('./elasticsearch.config');
 
 // stabilirea locației de upload
 // let upload = multer({dest: path.join(__dirname, '/uploads')});
+
+// activarea protecției csurf
+const csrfProtection = csrf({ cookie: true });
 
 // minimal config
 i18n.configure({
@@ -53,6 +57,7 @@ app.use(cors());
 
 // SESIUNI
 app.use(cookies());// Parse Cookie header and populate req.cookies with an object keyed by the cookie names
+app.use(csrfProtection); // activarea protecției la CSURF 
 
 // TIMP RĂSPUNS ÎN HEADER
 app.use(responseTime())
@@ -70,7 +75,11 @@ let sessionMiddleware = session({
     resave: false, 
     saveUninitialized: true,
     logErrors: true,
-})
+    cookie: {
+        maxAge: 3600000
+    }
+});
+
 // stabilirea sesiunii de lucru prin încercări repetate. Vezi: https://github.com/expressjs/session/issues/99
 app.use(function (req, res, next) {
     var tries = 3; // număr de încercări

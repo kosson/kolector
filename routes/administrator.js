@@ -41,6 +41,7 @@ router.get('/', function clbkAdmRoot (req, res) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
+            csfrToken: req.csrfToken(),
             scripts,
             styles,
             activeAdmLnk: true
@@ -58,6 +59,7 @@ router.get('/', function clbkAdmRoot (req, res) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
+            csfrToken: req.csrfToken(),
             scripts
         });
     } else {
@@ -99,6 +101,7 @@ router.get('/reds', function clbkAdmReds (req, res) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
+            csfrToken: req.csrfToken(),
             scripts,
             styles,
             activeAdmLnk: true
@@ -192,12 +195,14 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
         }).then(resursa => {
             /* === ADMIN === */
             if(req.session.passport.user.roles.admin){
-                // Adaugă mecanismul de validare a resursei
+
+                // Adaugă mecanismul de validare al resursei
                 if (resursa.expertCheck) {
                     resursa.validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
                 } else {
                     resursa.validate = `<input type="checkbox" id="valid" class="expertCheck">`;
                 }
+                
                 // Adaugă mecanismul de prezentare la public
                 if (resursa.generalPublic) {
                     resursa.genPub = `<input type="checkbox" id="public" class="generalPublic" checked>`;
@@ -212,6 +217,7 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
                     scripts,
                     logoimg: "/img/red-logo-small30.png",
                     credlogo: "../img/CREDlogo.jpg",
+                    csfrToken: req.csrfToken(),
                     resursa,
                 });
             } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
@@ -221,6 +227,7 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
                     style:   "/lib/fontawesome/css/fontawesome.min.css",
                     logoimg: "/img/red-logo-small30.png",
                     credlogo: "../img/CREDlogo.jpg",
+                    csfrToken: req.csrfToken(),
                     resursa: resursa,
                     scripts
                 });
@@ -271,6 +278,7 @@ router.get('/users', function clbkAdmUsr (req, res) {
             user:    req.user,
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
+            csfrToken: req.csrfToken(),
             scripts,
             styles,
             activeAdmLnk: true
@@ -317,6 +325,7 @@ router.get('/users/:id', function clbkAdmRoot (req, res) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
+            csfrToken: req.csrfToken(),
             scripts,
             styles,
             activeAdmLnk: true
@@ -349,6 +358,7 @@ router.get('/users/:id', function clbkAdmRoot (req, res) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
+            csfrToken: req.csrfToken(),
             scripts,
             styles
         });

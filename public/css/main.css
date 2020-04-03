@@ -914,6 +914,20 @@ input[type='range']:focus {
     position: relative;
 }
 
-#v-pills-tab {
-    /* width: 30%; */
+/* FORMATAREA AFIȘĂRII UNEI RESURSE PUBLICULUI */
+
+.comprespub {
+    padding: .5rem;
+}
+
+.descrres {
+    display: flex;
+}
+
+.descrres p {
+    margin-left: .2rem;
+}
+
+.discsrespub i {
+    color: black;
 }

@@ -53,6 +53,7 @@ router.get('/:id', function tertiumResource (req, res, next) {
                 scripts,
                 logoimg: "/img/red-logo-small30.png",
                 credlogo: "../img/CREDlogo.jpg",
+                csfrToken: req.csrfToken(),
                 resursa: resursa
             });
         } else {

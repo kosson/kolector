@@ -12,7 +12,8 @@ router.get('/', makeSureLoggedIn.ensureLoggedIn(), function clbkHelp (req, res) 
         title:   "Asistență",
         style:   "/lib/fontawesome/css/fontawesome.min.css",
         logoimg: "/img/red-logo-small30.png",
-        credlogo: "../img/CREDlogo.jpg"
+        credlogo: "../img/CREDlogo.jpg",
+        csfrToken: req.csrfToken()
     });
 });
 

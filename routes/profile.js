@@ -9,7 +9,9 @@ const redisClient= require('../redis.config');
 // Încarcă mecanismele de verificare ale rolurilor
 let makeSureLoggedIn = require('connect-ensure-login');
 let checkRole = require('./controllers/checkRole.helper');
+// MODELE
 const Resursa = require('../models/resursa-red'); // Adu modelul resursei
+// CONFIGURARI ACCES SERVICII
 const esClient= require('../elasticsearch.config');
 
 /* === PROFILUL PROPRIU === */
@@ -20,18 +22,22 @@ router.get('/', makeSureLoggedIn.ensureLoggedIn(), function clbkProfile (req, re
         style:   "/lib/fontawesome/css/fontawesome.min.css",
         logoimg: "/img/red-logo-small30.png",
         credlogo: "../img/CREDlogo.jpg",
+        csfrToken: req.csrfToken(),
         activePrfLnk: true
     });
 });
 
 /* === ACCESAREA PROPRIILOR RESURSE === */
 router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (req, res) {
-        var count = require('./controllers/resincred.ctrl')(req.user);
+        var count = require('./controllers/resincred.ctrl')(req.user);        
         count.then(result => {
-            let newResultArr = []; // noul array al obiectelor resursă
-            result.map(function clbkMapResult (obi) {
-                obi.dataRo = moment(obi.date).locale('ro').format('LLL');
-                newResultArr.push(obi);
+
+            let newResultArr = result.map(function clbkMapResult (obi) {
+                const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+                // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
+                newObi.dataRo = moment(obi.date).locale('ro').format('LLL');
+                // newResultArr.push(newObi);
+                return newObi;
             });
 
             let scripts = [       
@@ -44,6 +50,7 @@ router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/red-logo-small30.png",
                 credlogo: "../img/CREDlogo.jpg",
+                csfrToken: req.csrfToken(),
                 resurse: newResultArr,
                 scripts
             });
@@ -54,7 +61,7 @@ router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (
 );
 
 /* === VALIDARE / PUBLICARE /ȘTERGERE /EDITARE @ ->resursa -> resursa-admin [redincredadmin.js / res-shown.js] -> resursa-validator === */
-router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProfResID (req, res, next){
+router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProfResID (req, res, next){
     // Adu înregistrarea resursei cu toate câmpurile referință populate deja
     // FIXME: verifică dacă există în Elasticsearch înregistrarea corespondentă, dacă nu folosește .esSynchronize() a lui mongoose-elasticsearch-xp
 
@@ -78,13 +85,15 @@ router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), async function 
     let roles = ["user", "cred", "validator"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
-    // Dacă nu sunt datele în cache-ul REDIS, răspunde cu date din bază și actualizează cache-ul.
+    // caută resursa în bază
     const query = Resursa.findById(req.params.idres).populate({
         path: 'competenteS'
     });
     
+    // reformatare obiect resursă și căutarea corespondentului în Elasticsearch cu reindexare, dacă nu există în bază, șterge ghost-ul din ES
     query.then(resursa => {
         // console.log(resursa); // asta e moartă: http://localhost:8080/profile/resurse/5e2714c84449b236ce450091
+
         /* === Resursa încă există în MongoDB === */
         if (resursa._id) {
             const obi = resursa;
@@ -95,12 +104,12 @@ router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), async function 
             // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
             obi.editorContent = JSON.stringify(resursa);
 
-            // Dacă nu este indexată în Elasticsearch deja de `mongoose-elasticsearch-xp`, indexează aici!
+            // Dacă nu este indexată în Elasticsearch deja prin acțiunea `mongoose-elasticsearch-xp`, indexează aici!
             esClient.exists({
                 index: 'resursedus',
                 id: req.params.idres
             }).then(resFromIdx => {
-                /* DACĂ RESURSA NU ESTE INDEXATĂ, CORECTEAZĂ! */
+                /* DACĂ RESURSA NU ESTE INDEXATĂ, introdu-o în indexul Elasticsearch */
                 if(resFromIdx.body == false && resFromIdx.statusCode === 404){
                     resursa.esIndex(function clbkIdxOnDemand (err, res) {
                         console.log('Am indexat: ', res);
@@ -111,9 +120,11 @@ router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), async function 
             }).catch(err => {
                 console.log(err);
             });
-            return obi;
+            
+            // trimite obi pe următorul then
+            return Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
         } else {
-            // Caută resursa și în Elasticsearch. Dacă există indexată, dar a fost ștearsă din MongoDB, șterge-o din indexare / va apărea la căutare
+            // Caută resursa și în Elasticsearch. Dacă există indexată, dar a fost ștearsă din MongoDB, șterge-o din indexare, altfel va apărea la căutare
             esClient.exists({
                 index: 'resursedus',
                 id: req.params.idres
@@ -162,6 +173,7 @@ router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), async function 
                 scripts,
                 logoimg: "/img/red-logo-small30.png",
                 credlogo: "../img/CREDlogo.jpg",
+                csfrToken: req.csrfToken(),
                 resursa,
             });
         /* === VALIDATOR === */
@@ -179,6 +191,7 @@ router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), async function 
                 scripts,
                 logoimg: "/img/red-logo-small30.png",
                 credlogo: "../img/CREDlogo.jpg",
+                csfrToken: req.csrfToken(),
                 resursa: resursa
             });
         } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
@@ -188,6 +201,7 @@ router.get('/resurse/:idres', makeSureLoggedIn.ensureLoggedIn(), async function 
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/red-logo-small30.png",
                 credlogo: "../img/CREDlogo.jpg",
+                csfrToken: req.csrfToken(),
                 resursa: resursa,
                 scripts
             });

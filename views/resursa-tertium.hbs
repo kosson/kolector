@@ -1,7 +1,7 @@
 {{!< editare-res}}
 {{> nav-resurse}}
 {{> messages}}
-
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
 <div id="resursaincredadm" class="resurse">
     <div data-id="{{resursa._id}}" data-contribuitor="{{resursa.idContributor}}" data-content="{{json resursa}}" id="{{resursa._id}}" class="resursa">
         {{#if resursa.coperta}}

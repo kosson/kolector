@@ -21,19 +21,23 @@ router.get('/', function clbkTootRoute (req, res, next) {
         let newResultArr = [];
 
         result.map(function clbkMapResult (obi) {
-            obi.dataRo = moment(obi.date).locale('ro').format('LLL');
-            newResultArr.push(obi);
+            const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+            // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
+            newObi.dataRo = moment(newObi.date).locale('ro').format('LLL');
+            newResultArr.push(Object.assign(newObi));
         });
         
         let scripts = [       
             {script: '/lib/moment/min/moment.min.js'}
         ];
+        
         res.render('index', {
             title:   "RED colector",
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "img/rED-logo192.png",
             user:    req.user,
             resurse: newResultArr,
+            csfrToken: req.csrfToken(),
             scripts
         });
     }).catch((err) => {

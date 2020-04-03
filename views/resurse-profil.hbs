@@ -6,13 +6,15 @@
         <script src="{{script}}" charset="utf-8"></script>
     {{/each}}
 
+    <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
     <h3>Resursele cu care ai contribuit</h3>
     <div id="resurseincred" class="resurse">
         {{#each resurse}}
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">
-                        <a class="btn btn-dark" href="resurse/{{this.id}}" class="">{{this.title}}</a>
+                        <a class="btn btn-dark" href="{{this._id}}" class="">{{title}}</a>
                     </h5>                                   
                 </div>
                 <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">

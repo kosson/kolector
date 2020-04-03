@@ -13,17 +13,21 @@ router.get('/', function clbkLog (req, res, next) {
     let roles = ["user", "cred"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
-    let loguriPublice = Log.find().sort({"date": -1}).limit(10);
+    let loguriPublice = Log.find().sort({"date": -1}).limit(10); // doar ultimele zece anunțuri.
     let promiseLogPub = loguriPublice.exec();
 
     if (confirmedRoles.length > 0) {
         promiseLogPub.then((entries) => {
             let newResultArr = []; // noul array al obiectelor resursă
-            entries.map(entry => {
-                entry.dataRo = moment(entry.date).locale('ro').format('LLL');
-                newResultArr.push(entry);
-                entry.content = content2html(entry.content);
+
+            entries.map(function clbkLogAdd (obi) {
+                const newObi = Object.assign({}, obi); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+                // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
+                newObi.dataRo = moment(newObi.date).locale('ro').format('LLL');
+                newObi.content = content2html(obi.content);
+                newResultArr.push(newObi);
             });
+
             let scripts = [     
                 {script: '/lib/moment/min/moment.min.js'}        
             ];
@@ -34,6 +38,7 @@ router.get('/', function clbkLog (req, res, next) {
                 style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg: "/img/red-logo-small30.png",
                 credlogo: "../img/CREDlogo.jpg",
+                csfrToken: req.csrfToken(),
                 user:    req.user,
                 logentries: newResultArr
             });
@@ -69,6 +74,7 @@ router.get('/new', function (req, res) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
+            csfrToken: req.csrfToken(),
             scripts
         });
     } else {

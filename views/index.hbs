@@ -5,6 +5,8 @@
     <script src="{{script}}" charset="utf-8"></script>
 {{/each}}
 
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
 {{!-- secțiunea landing --}}
 <div class="landing">
     <div class="home-wrap">
@@ -248,7 +250,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">
-                            <a class="btn btn-dark" href="/resursepublice/{{this.id}}" class="">{{this.title}}</a>
+                            <a class="btn btn-dark" href="/resursepublice/{{this._id}}" class="">{{this.title}}</a>
                         </h5>                                   
                     </div>
                     <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">

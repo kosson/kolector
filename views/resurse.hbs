@@ -1,5 +1,6 @@
 {{!< layout}}
 {{> nav-resurse}}
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
 
     <div class="searchFrm container">
         <form id="searchResInCRED">
@@ -30,7 +31,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">
-                        <a class="btn btn-dark" href="/resurse/{{this.id}}" class="">{{this.title}}</a>
+                        <a class="btn btn-dark" href="/resurse/{{this._id}}" class="">{{this.title}}</a>
                     </h5>
                     <h6 class="card-subtitle mb-2">{{this.autori}}</h6>
                     <span class="text-muted">{{this.dataRo}}</span>                                   

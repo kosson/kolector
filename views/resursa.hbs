@@ -1,6 +1,9 @@
 {{!< layout}}
 {{> nav-resurse}}
 {{> messages}}
+
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
 <div id="resursaincredadm" class="resurse">
     {{#each resursa}}
         <div data-id="{{this._id}}" data-contribuitor="{{this.idContributor}}" id="{{this._id}}" class="resursa">
