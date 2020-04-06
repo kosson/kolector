@@ -12,6 +12,7 @@ const esClient    = require('../elasticsearch.config');
 const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
 const UserModel   = require('../models/user'); // Adu modelul unui user
 const Log         = require('../models/logentry');
+const {findInIdx} = require('./controllers/elasticsearch.ctrl');
 
 module.exports = function sockets (pubComm) {
     /* === FUNCȚII HELPER PENTRU LUCRUL CU SOCKET-URI */
@@ -369,22 +370,14 @@ module.exports = function sockets (pubComm) {
         
         // === SEARCHRES === ::Căutarea resurselor în Elasticsearch
         socket.on('searchres', (queryString) => {
-            const body = {
-                query: {
-                    query_string: {
-                        "query": queryString,
-                        "fuzziness": "auto",
-                        "fields": ["title", "description", "etichete", "discipline"]
-                    }
-                }
-            };
+            // console.log(queryString);
             // TODO: Integrează gestionarea cuvintelor evidențiate returnate de Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
-            searchDoc('resursedus', body, (err, result) => {
-                if (err) console.log(err);
-                return result;
-            }).then((result) => {
-                socket.emit('searchres', result.hits.hits);
-            }).catch(console.log);
+            // typeof(findInIdx('resursedus', queryString));
+            const rezProm = findInIdx('resursedus', queryString);
+            rezProm.then(r => {                
+                socket.emit('searchres', r.body.hits.hits);
+            }).catch(e => console.log(e));
+            
         });
 
         // === PERSON === ::căutarea unui utilizator

@@ -26,7 +26,8 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
 
     // SCRIPTURI
     let scripts = [       
-        {script: '/lib/moment/min/moment.min.js'}
+        {script: '/lib/moment/min/moment.min.js'},
+        {script: '/js/redincredall.js'}
     ];
     
     /* ====== VERIFICAREA CREDENȚIALELOR ====== */
