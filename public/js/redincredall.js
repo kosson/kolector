@@ -1,7 +1,3 @@
-const RESULTS_PER_PAGE = 8;
-let page = 1;
-let frompg = (page - 1) * RESULTS_PER_PAGE;
-
 const primare = document.getElementById('primare');
 const searchResIntBtn = document.getElementById('searchResIntBtn');
 searchResIntBtn.addEventListener('click', function clbkSeachBtn () {

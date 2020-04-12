@@ -22,7 +22,6 @@ const io             = require('socket.io')(http);
 const favicon        = require('serve-favicon');
 const { v1: uuidv1 } = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 const i18n           = require('i18n');
-const esClient       = require('./elasticsearch.config');
 
 // stabilirea locației de upload
 // let upload = multer({dest: path.join(__dirname, '/uploads')});

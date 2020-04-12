@@ -1,0 +1,25 @@
+{
+    "roles": {
+        "rolInCRED": [ "admin", "cred" ],
+        "unit": [ "global" ],
+        "admin": true,
+        "public": false
+    },
+    "ecusoane": [],
+    "recomandari": [],
+    "contributions": [],
+    "_id": "5e93241bbd44ad09ecebcf92",
+    "email": "nicu.constantinescu@educred.ro",
+    "googleID": "103709393546585199870",
+    "googleProfile": {
+        "name": "Nicu Constantinescu",
+        "given_name": "Nicu",
+        "family_name": "Constantinescu",
+        "picture": "https://lh3.googleusercontent.com/a-/AOh14GiEFf7BinnnJLqy8mdnBtuyivtsnMsHjF_Z657V5g",
+        "token": "ya29.a0Ae4lvC12Iy_fciFSyAn6LHz_5OkEuzAcR1V4EZZ76rR9qIi_i3NsMicmBXMoNSVlqdJW0N0mB_TuLyOY9gl9JRn6SY_gDN-9cnU9_7D89ROhSxvmCS_B7I2KijbEtllYwu1-vPvwD6GYJ2Wl0RWGFEkpKgvR7ko6MjWr",
+        "token_type": "Bearer",
+        "expires_in": "3599"
+    },
+    "created": "2020-04-12T14:22:19.794Z",
+    "__v": 0
+}

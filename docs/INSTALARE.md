@@ -116,7 +116,7 @@ Din shell-ul obținut către MongoDB, treci la utilizarea bazei de date `admin`.
 > use admin
 ```
 
-În acest moment, vei crea un cond te utilizator care să fie administrator de baze de date.
+În acest moment, vei crea un cont de utilizator care să fie administrator de baze de date.
 
 ```text
 db.createUser({user:"nume_administrator",pwd:"paR0laMea1nfa1libila",roles:[{role:"userAdminAnyDatabase",db:"admin"}]})
@@ -136,7 +136,10 @@ Successfully added user: {
 }
 ```
 
+Din acest moment, baza este gata să fie folosită.
 Pentru mai multe detalii, consultă și https://docs.mongodb.com/manual/tutorial/create-users/. Se va ieși din consola MongoDB introducând comanda `exit`.
+
+##### MongoDB versiunea 3.4 - 3.6
 
 În fișierul `/etc/mongodb.conf` trebuie activată rularea securizată prin editarea cu drepturi sudo.
 
@@ -157,6 +160,12 @@ MongoDB trebuie repornit.
 ```bash
 sudo systemctl restart mongodb
 ```
+
+##### MongoDB 4.2 ->
+
+În cazul versiunilor 4 nu mai este necesară modificarea lui `/etc/mongodb.conf`.
+
+##### Autentificare pe bază
 
 În cazul în care dorești autentificare specific pe o bază de date, mai întâi trebuie să te autentifici din consola MongoDB și apoi să faci o modificare.
 
@@ -190,25 +199,6 @@ Mai întâi, asigură-te că nu trebuie doar să modifici ceea ce există, căut
 db.system.users.find()
 ```
 
-Acum, introdu drepturi de scriere/citire pentru o anumită bază de date.
-
-```bash
-db.grantRolesToUser('numeleAdminului', ['readWrite', {role: 'readWrite', db: 'numeleBazeiDeDate'}])
-```
-
-Poți adăuga un user special pentru o bază de date anume:
-
-```json
-db.createUser({
-    user: 'user_nou',
-    pwd: 'parola_noua',
-    roles: [
-        { role: 'readWrite', db: 'baza_De_date' }
-    ]
-})
-```
-Acest scenariu este util dacă dorești să ai un user anume pentru o bază de date. Posibil pentru backup și restaurări ale datelor.
-
 ## Instalarea Elasticsearch
 
 Asigură-te că ai instalată Java rulând comanda `java -v`. Dacă nu ai un răspuns, va trebui instalat Java.
@@ -231,7 +221,7 @@ Verifică dacă a fost adăugată calea către binare rulând `echo $PATH`. Rul�
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 ```
 
-Dacă ai un răspuns `OK`, atunci poți proceda la introducerea în lista depzozitelor (directorul `sources.list.d`), pe cel al lui Elasticsearch.
+Dacă ai un răspuns `OK`, atunci poți proceda la introducerea în lista depozitelor (directorul `sources.list.d`), pe cel al lui Elasticsearch.
 
 ```bash
 sudo sh -c 'echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" > /etc/apt/sources.list.d/elastic-7.x.list'

@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== "test") {
     });
 }
 mongoose.connection.on('error', function () {
-    console.warn('Conectare eșuată!');
+    console.warn('Conectarea la MongoDB a eșuat!');
     process.exit();
 });
 mongoose.connection.once('open', function () {

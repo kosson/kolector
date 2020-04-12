@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema   = mongoose.Schema;
-const mexp     = require('mongoose-elasticsearch-xp').v7;
+// const mexp     = require('mongoose-elasticsearch-xp').v7;
 
 var LogentrySchema = new mongoose.Schema({
     _id: Schema.Types.ObjectId,
@@ -20,6 +20,6 @@ var LogentrySchema = new mongoose.Schema({
     contorAcces: Number
 });
 
-LogentrySchema.plugin(mexp);
+// LogentrySchema.plugin(mexp);
 
 module.exports = mongoose.model('logentry', LogentrySchema);

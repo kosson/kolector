@@ -1,8 +1,17 @@
-const userModel = require('../../models/user');
+const User = require('../../models/user');
 const mongoose  = require('mongoose');
 
+/**
+ * Funcția `googleStrategy` are rolul de a crea înregistrările de utilizatori în MongoDB și de a trimite spre indexare lui Elasticsearch obiectul document creat.
+ * @param {String} request Este chiar `process.env.GOOGLE_CLIENT_ID`
+ * @param {String} accessToken Este chiar `process.env.GOOGLE_CLIENT_SECRET`
+ * @param {String} refreshToken Este calea: `process.env.BASE_URL + "/callback"`
+ * @param {String} params Este valoarea `'select_account'`
+ * @param {Boolean} profile Are valoarea `true`
+ * @param {Function} done Callback
+ */
 function googleStrategy (request, accessToken, refreshToken, params, profile, done) {
-    // popularea modelului cu date
+    // constituirea obiectului cu date pentru a popula modelul
     const record = {
         _id: new mongoose.Types.ObjectId(),
         email: profile._json.email,
@@ -25,10 +34,15 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
         },
         created: Date.now()
     };
+
+    /* === Crearea primului utilizator [admin] === */
+    const userModel = mongoose.model('user', User);
+
     // numără câte înregistrări sunt în colecție.
-    // var noRecs = userModel.find().estimatedDocumentCount( (err, count) => { // FIXME: Folosește secvența când faci upgrade la MongoDB 4.0.3 sau peste
-    userModel.find().countDocuments( (err, count) => {
-        // DACĂ nu găsește nicio înregistrare, creează direct pe prima care va fi și admin
+    userModel.find().estimatedDocumentCount( async function (err, count) { // FIXME: Folosește secvența când faci upgrade la MongoDB 4.0.3 sau peste
+    // userModel.find().countDocuments( (err, count) => {
+        if (err) console.error;
+        // DACĂ nu găsește nicio înregistrare, creează direct pe prima care va fi și administratorul aplicației
         if (count == 0) {
             record.roles.rolInCRED.push('admin'); // introdu rolul de administrator în array-ul rolurilor
             // FIXME: [ROLURI] Ieși din hardocadarea rolurilor. Constituie un mecanism separat de acordare ale acestora. Primul admin ca trebuie să aibă un mecanism de creare de roluri noi și acordare ale acestora.
@@ -38,12 +52,18 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
 
             // Constituie documentul Mongoose pentru modelul `UserModel`.
             const userObj = new userModel(record);
-            // Salvează documentul în bază! În același timp, profilul a fi indexat în Elasticsearch (vezi în model!).
-            userObj.save(function (err, user) {
-                if (err) throw new Error('Eroarea la salvarea userului este: ', err.message);
-                // console.log("Salvez user în bază!");
-                done(null, user);
-            });
+            try {
+                // Salvează documentul în bază! 
+                // FIXME: Indexează în Elasticsearch!!!.
+                await userObj.save(function clbkSaveFromGStrat (err, user) {                
+                    if (err) throw new Error('Eroarea la salvarea userului este: ', err.message);
+                    console.log("Salvez user în bază!");
+                    // console.log(user);
+                    done(null, user.toObject({ virtuals: true }));
+                });
+            } catch (error) {
+                console.log(error);
+            }
         // DACĂ sunt înregistrări în colecție, caută după email dacă deja există
         } else {
             userModel.findOne({ email: profile._json.email }, (err, user) => {

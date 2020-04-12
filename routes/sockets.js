@@ -179,10 +179,14 @@ module.exports = function sockets (pubComm) {
             // SAVE!!! INDEXARE ÎN ACELAȘI MOMENT!
             var pResEd = resursaEducationala.populate('competenteS').execPopulate(); // returnează o promisiune
             pResEd.then(res => {
+                // FIXME: Trimite înregistrarea și în Elasticsearch și creează și un fișier json pe hard în subdirectorul red-ului
+                // Mai creează un git pentru director, fă primul commit și abia după aceea salvează în baza de date.
+                // #1: Transformă obiectul RED-ului într-un JSON.
                 res.save();
                 socket.emit('red', res);
             }).catch(err => {
                 if (err) throw err;
+                //FIXME: dacă e vreo eroare, distruge directorul de pe hard și șterge înregistrarea din Elasticsearch
             });
         });
 

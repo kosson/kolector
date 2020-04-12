@@ -1776,7 +1776,6 @@ function closeBag (evt) {
     });
 }
 
-
 // Afișează selectorul de imagini - https://codepen.io/kskhr/pen/pRwKjg
 /**
  * Funcția este receptor pentru containerele imaginilor timbru
@@ -1881,6 +1880,8 @@ function pas4 () {
     // TODO: Diferențiază-le pe cele care sunt redactate cu `[]` de celelalte. Cele cu `[]` trebuie să genereze în backend colecții!!! IMPLEMENTEAZĂ!
     var newTags = document.getElementById('eticheteRed');
     var arrNewTags = newTags.value.split(',');
+
+    // AICI fă diferența între taguri și colecții.
     arrNewTags.forEach((tag) => {
         tag = tag.trim(); // curăță de posibilele spații.
         RED.etichete.push(tag);
@@ -1898,13 +1899,21 @@ function pas4 () {
 /* === SALVAREA CONȚINUTULUI === */
 // fă o referință către butonul de trimitere a conținutului
 var saveContinutRes = document.querySelector('#continutRes');
-// la click, introdu conținutul în obiectul marea RED.
+// la click, introdu conținutul în obiectul mare RED.
 saveContinutRes.addEventListener('click', function (evt) {
     evt.preventDefault();
     // salvarea conținutului introdus în editor.
     editorX.save().then((content) => {
         // FIXME: Introdu un mecanism prin care editorul să țină minte conținutul introdus!!!
-        RED.content = content;
+
+        // verifică dacă proprietatea `content` este populată.
+        if (!('content' in RED)) {
+            RED['content'] = content; // Dacă nu există introduc `content` drept valoare.
+        } else if (typeof(RED.content) === 'object' && RED.content !== null) {
+            RED.content = null; // Dacă există deja, mai întâi setează `content` la `null` 
+            RED.content = content; // și apoi introdu noua valoare.
+        }
+
         pickCover(); // formează galeria pentru ca utilizatorul să poată selecta o imagine
     }).catch((e) => {
         console.log(e);

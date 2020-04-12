@@ -1,5 +1,5 @@
 require('dotenv').config();
-const fs    = require('fs');
+const fs    = require('fs-extra');
 const path  = require('path');
 const Papa  = require('papaparse');
 const csv   = require('fast-csv');
@@ -55,18 +55,19 @@ function foldOneField (data) {
 // TODO: DEZVOLTĂ MAI DEPARTE ÎNTR-UN AUTOMATOR!!!
 /* ============ OBȚINEREA CĂILOR TUTUROR FIȘIERELOR =============== */
 // De la https://gist.github.com/kethinov/6658166
-var dir = 'csvuri'; // este numele directorului în care vor sta toate fișierele care trebuie concatenate
+var dir = 'surse'; // este numele directorului în care vor sta toate fișierele care trebuie concatenate
 /**
  * Funcția area rolul de a genera un Array cu toate fișierele existente în directorul desemnat prin variabila `dir`
  * @param {String} dir Numele directorului în care se află fișierele care trebuie concatenate
  */
 const read = (dir) =>
     fs.readdirSync(dir)
-        .reduce((files, file) =>
-            fs.statSync(path.join(dir, file)).isDirectory() ?
-                files.concat(read(path.join(dir, file))) :
-                files.concat(path.join(dir, file)),
-            []);
+        .reduce((files, file) => {
+            let pth = fs.statSync(path.join(dir, file)).isDirectory() ?
+                        files.concat(read(path.join(dir, file))) :
+                        files.concat(path.join(dir, file));
+            return pth;
+        },[]);
 
 // În caz că vrei să afișezi numele fișierelor prelucrate în vreun context viitor, activeză fragmentul !!!
 // walk('/csvuri/').then((res) => {
@@ -84,6 +85,8 @@ const read = (dir) =>
  * @returns {Promise}
  */
 function concatCSVAndOutput(csvFilePaths, outputFilePath) {
+    console.log(csvFilePaths);
+    
     // construiești un array de promisiuni
     const promises = csvFilePaths.map((path) => {
         // pentru fiecare fișier CSV, generează o promisiune.
@@ -118,12 +121,14 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
                     });
 
                     csvStream.end();
-                });
+                    process.exit();
+                }).catch(error => console.error);
+                
 }
 // generează fișierul consolidat cu toate câmpurile din toate csv-urile sau atunci când mai introduci un calup nou de date.
-// concatCSVAndOutput(read(dir), `${dir}/all.csv`); // linie activată doar în cazul în care baza este goală și nu există generat deja fișierul all.csv
+//concatCSVAndOutput(read(dir), `csvuri/all.csv`); // linie activată doar în cazul în care baza este goală și nu există generat deja fișierul all.csv
 
-const readF = fs.createReadStream(`${dir}/all.csv`, 'utf8'); // Creează stream Read din fișierul CSV sursă.
+const readF = fs.createReadStream(`csvuri/all.csv`, 'utf8'); // Creează stream Read din fișierul CSV sursă.
 
 /* ======= PRELUCRAREA CSV-ului ============  */
 Papa.parse(readF, {
@@ -185,7 +190,7 @@ Papa.parse(readF, {
         
         // scrie datele în bază
         const CSModel = require('../models/competenta-specifica');
-        // mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție la fiecare load!.
+        //mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție la fiecare load!.
         
         CSModel.insertMany(folded, function cbInsMany (err, result) {
             if (err) {

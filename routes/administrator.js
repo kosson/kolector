@@ -148,7 +148,7 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
                 // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
                 obi.editorContent = JSON.stringify(resursa);
 
-                // Dacă nu este indexată în Elasticsearch deja de `mongoose-elasticsearch-xp`, indexează aici!
+                // Dacă nu este indexată în Elasticsearch deja, indexează aici!
                 esClient.exists({
                     index: 'resursedus',
                     id: req.params.id

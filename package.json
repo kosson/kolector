@@ -1,6 +1,6 @@
 {
   "name": "redcolector",
-  "version": "0.7.2",
+  "version": "0.7.5",
   "description": "Aplicația pentru colectare de RED-uri",
   "main": "app.js",
   "scripts": {
@@ -47,7 +47,6 @@
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
     "dotenv": "^8.2.0",
-    "elasticsearch": "^16.7.1",
     "express": "^4.17.1",
     "express-hbs": "^2.3.2",
     "express-session": "^1.17.0",
