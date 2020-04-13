@@ -100,6 +100,108 @@ var ResursaSchema = new mongoose.Schema({
     
 });
 
+/**
+ * Funcția are rolul de a verifica dacă indexul (aliasul) există.
+ * Dacă indexul nu există va fi creat și va fi indexat primul document.
+ * În cazul în care indexul există, va fi creat document dacă acesta nu există deja.
+ * @param {Object} doc Este un obiect tip document de Mongoose
+ */
+async function searchCreateIdx (doc) {
+    try {
+        // constituirea unui subset de câmpuri pentru înregistrarea Elasticsearch// Cannot read property '_id' of null
+        const data = {
+            id:                doc._id,
+            date:              doc.date,
+            idContributor:     doc.idContributor,
+            autori:            doc.autori,
+            langRED:           doc.langRED,
+            title:             doc.title,
+            titleI18n:         doc.titleI18n,
+            arieCurriculara:   doc.arieCurriculara,
+            level:             doc.level,
+            discipline:        doc.discipline,
+            disciplinePropuse: doc.disciplinePropuse,
+            competenteGen:     doc.competenteGen,
+            grupuri:           doc.grupuri,
+            domeniu:           doc.domeniu,
+            functii:           doc.functii,
+            demersuri:         doc.demersuri,
+            spatii:            doc.spatii,
+            invatarea:         doc.invatarea,
+            description:       doc.description,
+            identifier:        doc.identifier,
+            dependinte:        doc.dependinte,
+            coperta:           doc.coperta,
+            content:           editorJs2TXT(doc.content),
+            bibliografie:      doc.bibliografie,
+            contorAcces:       doc.contorAcces,
+            generalPublic:     doc.generalPublic,
+            contorDescarcare:  doc.contorDescarcare,
+            etichete:          doc.etichete,
+            utilMie:           doc.utilMie,
+            expertCheck:       doc.expertCheck
+        };
+
+        // fii foarte atent, testează după alias, nu după indexul pentru care se creează alias-ul.
+        await esClient.indices.exists(
+            {index: process.env.RES_IDX_ALS}, 
+            {errorTrace: true}
+        ).then(async function clbkAfterExist (rezultat) {
+            //console.log(rezultat);
+            try {                    
+                if (rezultat.statusCode === 404) {
+                    console.log("Indexul și alias-ul nu există. Le creez acum!");
+                    
+                    // creează indexul
+                    await esClient.indices.create({
+                        index: process.env.RES_IDX_ES7,
+                        body: userES7
+                    },{errorTrace: true}).then(r => {
+                        console.log('Am creat indexul resedus cu detaliile: ', r.statusCode);
+                    }).catch(e => console.error);
+
+                    // creează alias la index
+                    await esClient.indices.putAlias({
+                        index: process.env.RES_IDX_ES7,
+                        name: process.env.RES_IDX_ALS
+                    },{errorTrace: true}).then(r => {
+                        console.log('Am creat alias-ul resedus0 cu detaliile: ', r.statusCode);
+                    }).catch(e => console.error);
+                    
+                    // INDEXEAZĂ DOCUMENT!!!
+                    await esClient.create({
+                        id: data.id,
+                        index: process.env.RES_IDX_ALS,
+                        refresh: "true",
+                        body: data
+                    }); 
+                } else {
+                    // Verifică dacă nu cumva documentul deja există în index
+                    const {body} = await esClient.exists({
+                        index: process.env.RES_IDX_ALS,
+                        id: data.id
+                    });
+                    
+                    if (body == false) {            
+                        // INDEXEAZĂ DOCUMENT!!!
+                        await esClient.create({
+                            id: data.id,
+                            index: process.env.RES_IDX_ALS,
+                            refresh: "true",
+                            body: data
+                        }); 
+                        console.log("Am reindexat o resursă!");
+                    }
+                }
+            } catch (error) {
+                if (error) console.error;
+            }
+        });
+    } catch (error) {
+        console.log(error);  
+    }
+};
+
 /* === HOOKS === */
 // PRE
 
@@ -114,40 +216,7 @@ ResursaSchema.pre('remove', function hRemoveCb() {
 
 // POST
 ResursaSchema.post('save', function clbkPostSave1 (doc, next) {
-    const doc2JSON = JSON.stringify(doc);
-    // transformă doc.content.blocks într-un singur câmp de text.
-    const content2txt = editorJs2TXT(doc.content);
-    doc.content = content2txt; // înlocuiește în doc.content
-
-    // Indexează-l în Elasticsearch!
-    // #1 Mai întâi, vezi dacă indexul există. Dacă nu, creează-l cu mapping dedicat.
-    if (esClient.indices.exists({index: 'resursedus'}) === 400) {
-        // creează indexul
-        esClient.indices.create({
-            index: "resursedus",
-            body: resursaRedES7
-        });
-        // creează alias la index
-        esClient.indices.putAlias({
-            index: "resursedus",
-            name: "reds0"
-        });
-        // TRIMITE primul document!
-        esClient.create({
-            id: doc._id,
-            index: "reds0",
-            refresh: "true",
-            body: doc
-        });
-        return next();
-    }
-    // #2 Indexul există, trimite documentul!
-    esClient.create({
-        id: doc._id,
-        index: "reds0",
-        refresh: "true",
-        body: doc
-    });
+    searchCreateIdx(doc);
     next();
     /* TODO: === Scrie întreg obiectul doc ca JSON pe harddisk în subdirectorul resursei și constituie primul git commit având drept mesaj `${idConstributor} fecit!`*/
 });

@@ -1868,7 +1868,7 @@ function pickCover () {
  */
 function pas4 () {
     //TODO: Colectează linkurile RED-urilor componente
-    // vezi id-ul `componenteRed` și introdu-se în array-ul `RED.related`
+    // vezi id-ul `componenteRed` și introdu-le în array-ul `RED.related`
     var newRelReds = document.getElementById('componenteRed');
     var arrNewRelReds = newRelReds.value.split(',');
     arrNewRelReds.forEach((relRed) => {

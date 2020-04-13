@@ -67,7 +67,7 @@ async function searchCreateIdx (doc) {
 
         // fii foarte atent, testează după alias, nu după indexul pentru care se creează alias-ul.
         await esClient.indices.exists(
-            {index: process.env.URS_IDX_ALS}, 
+            {index: process.env.USR_IDX_ALS}, 
             {errorTrace: true}
         ).then(async function clbkAfterExist (rezultat) {
             //console.log(rezultat);
@@ -86,7 +86,7 @@ async function searchCreateIdx (doc) {
                     // creează alias la index
                     await esClient.indices.putAlias({
                         index: process.env.USR_IDX_ES7,
-                        name: process.env.URS_IDX_ALS
+                        name: process.env.USR_IDX_ALS
                     },{errorTrace: true}).then(r => {
                         console.log('Am creat alias-ul users0 cu detaliile: ', r.statusCode);
                     }).catch(e => console.error);
@@ -94,14 +94,14 @@ async function searchCreateIdx (doc) {
                     // INDEXEAZĂ DOCUMENT!!!
                     await esClient.create({
                         id: data.id,
-                        index: process.env.URS_IDX_ALS,
+                        index: process.env.USR_IDX_ALS,
                         refresh: "true",
                         body: data
                     }); 
                 } else {
                     // Verifică dacă nu cumva documentul deja există în index
                     const {body} = await esClient.exists({
-                        index: process.env.URS_IDX_ALS,
+                        index: process.env.USR_IDX_ALS,
                         id: data.id
                     });
                     
@@ -109,7 +109,7 @@ async function searchCreateIdx (doc) {
                         // INDEXEAZĂ DOCUMENT!!!
                         await esClient.create({
                             id: data.id,
-                            index: process.env.URS_IDX_ALS,
+                            index: process.env.USR_IDX_ALS,
                             refresh: "true",
                             body: data
                         }); 
@@ -139,7 +139,7 @@ User.post(/^find/, async function clbkUsrFind (doc, next) {
     if (Array.isArray(doc)){
         doc.map(async (user) => {
             const {body} = await esClient.exists({
-                index: process.env.URS_IDX_ALS,
+                index: process.env.USR_IDX_ALS,
                 id: user._id
             });
             // console.log("Userul este indexat în ES? ", body);            

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const mexp     = require('mongoose-elasticsearch-xp');
 
 let Resursa = new mongoose.Schema({
     _id: Schema.Types.ObjectId,
@@ -15,7 +14,5 @@ let Resursa = new mongoose.Schema({
         ref: 'comment'
     }
 });
-
-Resursa.plugin(mexp);
 
 module.exports = new mongoose.model('resursa', Resursa);

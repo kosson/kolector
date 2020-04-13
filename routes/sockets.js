@@ -13,6 +13,7 @@ const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
 const UserSchema  = require('../models/user'); // Adu schema unui user
 const Log         = require('../models/logentry');
 const {findInIdx} = require('./controllers/elasticsearch.ctrl');
+const editorJs2HTML= require('../routes/controllers/editorJs2HTML'); 
 
 module.exports = function sockets (pubComm) {
     /* === FUNCȚII HELPER PENTRU LUCRUL CU SOCKET-URI */
@@ -72,7 +73,7 @@ module.exports = function sockets (pubComm) {
                 // generează bag-ul pentru user
                 lastBag = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează BAG-ul
                 // adăugarea fișierului primit în Bag
-                strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));                
+                strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`)); // SCRIE PE HARD               
                 // construiește obiectul de răspuns necesar lui Editor.js
                 var responseObj = {
                     success: 1,
@@ -80,7 +81,7 @@ module.exports = function sockets (pubComm) {
                     file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`,
                     size: resourceFile.size
                 };
-                // trimite înapoi în client obiectul de care are nevoie Editor.js
+                // trimite înapoi în client obiectul de care are nevoie Editor.js pentru confirmare
                 socket.emit('resursa', responseObj);
             } else if (resourceFile.uuid && lastUuid === resourceFile.uuid) {
                 // dacă lastUuid este același cu cel primit din client, avem de-a face cu aceeași resursă
@@ -96,7 +97,7 @@ module.exports = function sockets (pubComm) {
                     file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${resourceFile.uuid}/data/${resourceFile.numR}`,
                     size: resourceFile.size
                 };
-                // trimite înapoi obiectul care reprezintă fișierul creat în Bag-ul resursei
+                // trimite înapoi obiectul necesar confirmării operațiunii lui Editor.js
                 socket.emit('resursa', responseObj4AddedFile);
             } else {
                 const err = new Error('message', 'nu pot încărca... se încearcă crearea unui bag nou');
@@ -107,9 +108,7 @@ module.exports = function sockets (pubComm) {
         socket.on('closeBag', () => {
             // finalizarea creării Bag-ului
             if (lastBag) {
-                lastBag.finalize(() => {
-                    // TODO: setează BAG-ul ca depozit git
-                    
+                lastBag.finalize(() => {                    
                     socket.emit('closeBag', 'Am finalizat închiderea bag-ului');
                 });
             } else {
@@ -143,7 +142,8 @@ module.exports = function sockets (pubComm) {
             }
             // Încarcă modelul cu date!!!
             var resursaEducationala = new Resursa({
-                _id:             new mongoose.Types.ObjectId(),
+                // _id:             new mongoose.Types.ObjectId(),
+                _id:             RED.uuid,
                 date:            Date.now(),
                 identifier:      RED.uuid,
                 idContributor:   RED.idContributor,
@@ -179,13 +179,29 @@ module.exports = function sockets (pubComm) {
             // SAVE!!! INDEXARE ÎN ACELAȘI MOMENT!
             var pResEd = resursaEducationala.populate('competenteS').execPopulate(); // returnează o promisiune
             pResEd.then(res => {
-                // FIXME: Trimite înregistrarea și în Elasticsearch și creează și un fișier json pe hard în subdirectorul red-ului
+                // Trimite înregistrarea și în Elasticsearch și creează și un fișier json pe hard în subdirectorul red-ului [FIXED::`post`hook pe schemă la `save`]
                 // Mai creează un git pentru director, fă primul commit și abia după aceea salvează în baza de date.
+
+                // TODO: Scrie JSON-ul editorJs2HTML(RED.content);
+
+                const newRes = Object.assign({}, RED);
+                // creează calea pe care se va depozita.
+                let calea = `${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`;
+                console.log(calea);
+                
+                let existBag = BagIt(calea, 'sha256');
+                let strm = new Readable();
+                strm.push(JSON.stringify(newRes)); // FIXME: Nu generează bytestream din JSON. VEzi cum se face.
+                // introdu un nou fișier în Bag-ul existent al resursei
+                strm.pipe(existBag.createWriteStream(`${uuidv1()}.json`)); // scrie un JSON pe HDD în Bag-ul resursei
+
+                // TODO: Verifică dacă s-a scris fișierul pe hard. Dacă s-a scris, generează un depozit git cu ce există în directorul resursei și apoi salvează resursa în MongoDB.
+
                 // #1: Transformă obiectul RED-ului într-un JSON.
                 res.save(); // aplică un hook `post` pentru a scrie pe hard înregistrarea ca JSON
                 socket.emit('red', res); // se emite înregistrarea către frontend.
             }).catch(err => {
-                if (err) throw err;
+                if (err) console.error;
                 //FIXME: dacă e vreo eroare, distruge directorul de pe hard și șterge înregistrarea din Elasticsearch
             });
         });
