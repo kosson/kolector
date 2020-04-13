@@ -10,7 +10,7 @@ const mongoose    = require('mongoose');
 const validator   = require('validator');
 const esClient    = require('../elasticsearch.config');
 const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
-const UserModel   = require('../models/user'); // Adu modelul unui user
+const UserSchema  = require('../models/user'); // Adu schema unui user
 const Log         = require('../models/logentry');
 const {findInIdx} = require('./controllers/elasticsearch.ctrl');
 
@@ -182,8 +182,8 @@ module.exports = function sockets (pubComm) {
                 // FIXME: Trimite înregistrarea și în Elasticsearch și creează și un fișier json pe hard în subdirectorul red-ului
                 // Mai creează un git pentru director, fă primul commit și abia după aceea salvează în baza de date.
                 // #1: Transformă obiectul RED-ului într-un JSON.
-                res.save();
-                socket.emit('red', res);
+                res.save(); // aplică un hook `post` pentru a scrie pe hard înregistrarea ca JSON
+                socket.emit('red', res); // se emite înregistrarea către frontend.
             }).catch(err => {
                 if (err) throw err;
                 //FIXME: dacă e vreo eroare, distruge directorul de pe hard și șterge înregistrarea din Elasticsearch
@@ -265,6 +265,7 @@ module.exports = function sockets (pubComm) {
         // === MKADMIN === ::Aducerea resurselor pentru un id (email) și trimiterea în client
         socket.on('mkAdmin', (userSet) => {    
             // Atenție: https://mongoosejs.com/docs/deprecations.html#-findandmodify-
+            const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
             let docUser = UserModel.findOne({_id: userSet.id}, 'admin');
             if (userSet.admin == true) {                
                 docUser.exec(function clbkSetAdmTrue(error, doc) {
@@ -291,6 +292,7 @@ module.exports = function sockets (pubComm) {
 
         // === ADDROLE === ::Adaugă rol nou
         socket.on('addRole', (newRoles) => {
+            const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
             let docUser = UserModel.findOne({_id: newRoles.id}, 'roles');
             // dacă vreunul din rolurile trimise nu există deja în array-ul din profilul utilizatorului, acesta va fi adăugat.
             docUser.exec(function clbkAddRole (error, doc) {
@@ -311,6 +313,7 @@ module.exports = function sockets (pubComm) {
 
         // === ADDUNIT === ::Adaugă unit nou pentru utilizator
         socket.on('addUnit', (newUnits) => {
+            const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
             let docUser = UserModel.findById(newUnits.id);
 
             docUser.exec(function clbkAddArrUnit (error, doc) {
@@ -384,7 +387,7 @@ module.exports = function sockets (pubComm) {
             
         });
 
-        // === PERSON === ::căutarea unui utilizator
+        // === PERSON === ::căutarea unui utilizator și reglarea înregistrărilor dintre ES și MONGODB
         socket.on('person', queryString => {
             // FIXME: Sanetizează inputul care vine prin `queryString`!!! E posibil să fie flood. Taie dimensiunea la un singur cuvânt!!!
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html
@@ -405,18 +408,19 @@ module.exports = function sockets (pubComm) {
             async function searchES7 () {
                 try {
                     const {body} = await esClient.search({
-                        index: 'users', 
+                        index: 'users0', 
                         body: searchqry
                     });
-                    // AM ÎNREGISTRĂRI ÎN INDEX
+                    // DACĂ AM ÎNREGISTRĂRI ÎN INDEX-ul Elasticsearch
                     if (body.hits.hits.length > 0) {               
-                        // pentru fiecare id din elasticsearch, cauta daca există o înregistrare în MongoDB. Dacă nu există în Mongo, șterge din Elastic.
+                        // pentru fiecare id din elasticsearch, cauta daca există o înregistrare în MongoDB. Dacă nu există în MongoDB, șterge din Elastic.
                         body.hits.hits.map((user) => {
                             // dacă documentul nu există în MongoDB, șterge înregistrarea din Elastic
+                            const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
                             UserModel.exists({_id: user._id}).then((result) => {
                                 if (!result) {
                                     esClient.delete({
-                                        index: 'users',
+                                        index: 'users0',
                                         type: 'user',
                                         id: user._id
                                     }).then((res) => {
@@ -439,21 +443,26 @@ module.exports = function sockets (pubComm) {
                         });                    
                         // TODO: Aici ai putea testa daca ai date; daca nu ai date, tot aici ai putea face căutarea în baza Mongoose să vezi dacă există.     
                     } else {
-                        // NU EXISTĂ ÎNREGISTRĂRI ÎN INDEX 
+                        // NU EXISTĂ ÎNREGISTRĂRI ÎN INDEX-ul ELASTICSEARCH
                         // TODO: Caută dacă adresa de email există în MongoDB. Dacă există și nu apare în index, indexeaz-o!
                         let trimStr = validator.trim(queryString);
                         // PAS 1 -> Analizează dacă `queryString` este un email
                         if (validator.isEmail(trimStr)) {
                             // caută în MongoDB dacă există emailul. În cazul în care există, indexează-l în Elasticsearch!
+                            const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
                             UserModel.exists({email: queryString}).then(async (result) => {
-                                if (result) {
-                                    await esClient.index({
-                                        index: 'users',
-                                        body: result
-                                    });
-                                    // forțează reindexarea pentru a putea afișa rezultatul la următoarea căutare!!!
-                                    await client.indices.refresh({ index: 'users' });
-                                    socket.emit('mesaje', `Am interogat baza de date și am găsit un email neindexat pe care l-am reindexat. Caută acum din nou!`);
+                                try {
+                                    if (result) {
+                                        await esClient.index({
+                                            index: 'users0',
+                                            body: result
+                                        });
+                                        // forțează reindexarea pentru a putea afișa rezultatul la următoarea căutare!!!
+                                        await client.indices.refresh({ index: 'users' });
+                                        socket.emit('mesaje', `Am interogat baza de date și am găsit un email neindexat pe care l-am reindexat. Caută acum din nou!`);
+                                    }                                    
+                                } catch (error) {
+                                    console.error(error);
                                 }
                             }).catch((error) => {
                                 if (error) {
@@ -472,73 +481,9 @@ module.exports = function sockets (pubComm) {
 
                     // CAZUL index_not_found_exception
                     if (error.body.error.type == "index_not_found_exception") {
-                        console.log("no index");
-                        // https://github.com/jbdemonte/mongoose-elasticsearch-xp#creating-mappings-on-demand
-                        // https://github.com/jbdemonte/mongoose-elasticsearch-xp/blob/master/test/es7/model-mapping.js
-                        // https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-lang-analyzer.html#romanian-analyzer
-                        UserModel.esCreateMapping({
-                            // Vezi dacă este absolut necesară introducerea obiectului de configurare aici!
-                            settings: {
-                                analysis: {
-                                    filter: {
-                                        // elision: {
-                                        //     type: 'elision',
-                                        //     articles: ['l', 'm', 't', 'qu', 'n', 's', 'j', 'd'],
-                                        // },
-                                    },
-                                    analyzer: {
-                                        custom_romanian_analyzer: {
-                                            tokenizer: 'standard',
-                                            filter: [
-                                                "lowercase",
-                                                "romanian_stop",
-                                                "romanian_keywords",
-                                                "romanian_stemmer"
-                                            ],
-                                        },
-                                        tag_analyzer: {
-                                            tokenizer: 'keyword',
-                                            filter: ['asciifolding', 'lowercase'],
-                                        },
-                                    },
-                                },
-                            },
-                        }).then(function (response) {
-                            //https://github.com/jbdemonte/mongoose-elasticsearch-xp/blob/master/test/es7/model-mapping.js
-                            const options = UserModel.esOptions();
-                            return options.client.indices.getSettings({
-                                index: options.index,
-                            });
-
-                            console.log("Response: ", response);
-                            // În cazul în care indexul nu există (considerăm că deja avem înregistrări în MongoDB care nu au fost indexate deja în ES7), 
-                            // constitue unul nou din colecția existentă în MongoDB. Acesta este cazul în care faci backup doar la MongoDB și ai nevoie să reindexezi
-            
-                            UserModel.on('es-bulk-sent', function () {
-                                console.log('buffer sent');
-                            });
-            
-                            UserModel.on('es-bulk-data', function (doc) {
-                                console.log('Introduc ' + doc);
-                            });
-                            
-                            UserModel.on('es-bulk-error', function (err) {
-                                console.error(err);
-                            });
-                            
-                            UserModel
-                                .esSynchronize()
-                                .then(function () {
-                                    console.log('Verifică acum');
-                            });
-                        }).catch(function(error){
-                            console.log("putMapping Error: ", error);
-                        });
-
-
+                        console.error("Nu am gîsit indexul utilizatorilor!!! Vezi dacă serverul de Elasticsearch este pornit.");
                     } else if(error.body.error.type != "index_not_found_exception") {
-                        console.log("error: elasticsearch client search");
-                        console.log(error);
+                        console.error("Este o eroare pe care nu pot să o apreciez. Detalii: ", error);
                     }
                 }
             }
@@ -549,10 +494,10 @@ module.exports = function sockets (pubComm) {
         socket.on('personrecord', id => {
             // TODO: constituie un query care să aducă înregistrarea de user și ultimele sale 5 contribuții RED
             // https://mongoosejs.com/docs/api.html#model_Model.populate
-
+            const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
             UserModel.findById(id, function clbkFindById (error, user) {
                 if (error) {
-                    console.log(error);
+                    console.error(error);
                     socket.emit('mesaje', 'A dat eroare căutarea...');
                 }
                 // setează opțiunile pentru căutare
@@ -599,6 +544,7 @@ module.exports = function sockets (pubComm) {
                             }                    
                         });
                     } else if (descriptor === 'users') {
+                        const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
                         const TotalUsers = UserModel.estimatedDocumentCount({}, function clbkUsersTotal (error, result) {
                             if (error) {
                                 console.log(error);
@@ -625,6 +571,7 @@ module.exports = function sockets (pubComm) {
 
         // === ALLUSERS === ::TOȚI UTILIZATORII
         socket.on('allUsers', () => {
+            const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
             UserModel.find({}).exec().then(allUsers => {
                 socket.emit('allUsers', allUsers);
             }).catch(error => {

@@ -39,9 +39,9 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
     const userModel = mongoose.model('user', User);
 
     // numără câte înregistrări sunt în colecție.
-    userModel.find().estimatedDocumentCount( async function (err, count) { // FIXME: Folosește secvența când faci upgrade la MongoDB 4.0.3 sau peste
-    // userModel.find().countDocuments( (err, count) => {
+    userModel.find().estimatedDocumentCount( async function (err, count) {
         if (err) console.error;
+        
         // DACĂ nu găsește nicio înregistrare, creează direct pe prima care va fi și administratorul aplicației
         if (count == 0) {
             record.roles.rolInCRED.push('admin'); // introdu rolul de administrator în array-ul rolurilor
@@ -71,6 +71,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
                 // Dacă userul există deja, treci pe următorul middleware.
                 if(user) {
                     // console.log(user.roles);
+                    // este prelucrat de hook-ul `.post(/^find/` ceea ce implică o indexare în Elasticsearch, dacă nu există deja (vezi schema user).
                     done(null, user); 
                 } else {
                     // FIXME: Aici se restricționează accesul la platformă doar celor care au email la domeniul educred.
@@ -85,7 +86,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
                     // TODO: Elaborează pe conceptul de grupuri, subgrupe, relație formatori-curs-formabili
                     record.roles.unit.push('global'); // unitatea este necesară pentru a face segregări ulterioare în funcție de apartenența la o unitate orice ar însemna aceasta
                     
-                    // constituie documentul în baza modelului `UserModel` și salvează-l în bază. Atenție, va fi indexat și în Elasticsearch (vezi modelul).
+                    // constituie documentul în baza modelului `UserModel` și salvează-l în bază. Atenție, va fi indexat și în Elasticsearch (vezi middleware `save` pe `post`).
                     const newUserObj = new userModel(record);
                     newUserObj.save(function (err, user) {
                         if (err) throw err;
