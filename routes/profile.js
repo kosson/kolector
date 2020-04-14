@@ -111,6 +111,7 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
             }).then(resFromIdx => {
                 /* DACĂ RESURSA NU ESTE INDEXATĂ, introdu-o în indexul Elasticsearch */
                 if(resFromIdx.body == false && resFromIdx.statusCode === 404){
+                    // FIXME: TypeError: resursa.esIndex is not a function
                     resursa.esIndex(function clbkIdxOnDemand (err, res) {
                         console.log('Am indexat: ', res);
                         rre('mesaje', 'Pentru că nu am găsit înregistrarea în index, am reindexat-o');

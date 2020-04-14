@@ -142,8 +142,8 @@ module.exports = function sockets (pubComm) {
             }
             // Încarcă modelul cu date!!!
             var resursaEducationala = new Resursa({
-                // _id:             new mongoose.Types.ObjectId(),
-                _id:             RED.uuid,
+                _id:             new mongoose.Types.ObjectId(),
+                // _id:             RED.uuid,
                 date:            Date.now(),
                 identifier:      RED.uuid,
                 idContributor:   RED.idContributor,
@@ -190,15 +190,39 @@ module.exports = function sockets (pubComm) {
                 console.log(calea);
                 
                 let existBag = BagIt(calea, 'sha256');
+
+                const data = Buffer.from(JSON.stringify(newRes));
                 let strm = new Readable();
-                strm.push(JSON.stringify(newRes)); // FIXME: Nu generează bytestream din JSON. VEzi cum se face.
+                strm._read = () => {} // _read is required but you can noop it
+                strm.push(data);
+                strm.push(null);
+                
                 // introdu un nou fișier în Bag-ul existent al resursei
                 strm.pipe(existBag.createWriteStream(`${uuidv1()}.json`)); // scrie un JSON pe HDD în Bag-ul resursei
 
                 // TODO: Verifică dacă s-a scris fișierul pe hard. Dacă s-a scris, generează un depozit git cu ce există în directorul resursei și apoi salvează resursa în MongoDB.
-
-                // #1: Transformă obiectul RED-ului într-un JSON.
-                res.save(); // aplică un hook `post` pentru a scrie pe hard înregistrarea ca JSON
+                res.save().then(async function clbkOnRedSave (red) {
+                    console.log(red);
+                    
+                    // verifică dacă în bază a fost scrisă înregistrarea
+                    let pDoc = await Resursa.findOne({_id: red._id}).exec();
+                    console.log(pDoc);
+                    
+                    pDoc.then(async (record) => {
+                        console.log(record);
+                        if (record) {
+                            done(null, doc);
+                        } else {
+                            // delete the uploaded resources
+                            fs.ensureDir(`${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`, 0o2775).then(async function clbkFsExists () {
+                                // TODO: scrie logica de ștergere a directorului în cazul în care a eșuat crearea înregistrării în MongoDB.
+                                await fs.remove(`${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`);
+                            }).then(() => {
+                                console.log('Am șters directorul în urma operațiunii eșuate de creere a înregistrării în MongoDB.')
+                            }).catch(e => console.error);
+                        }
+                    }).catch(error => console.error);
+                }); // aplică un hook `post` pentru a scrie pe hard înregistrarea ca JSON
                 socket.emit('red', res); // se emite înregistrarea către frontend.
             }).catch(err => {
                 if (err) console.error;
@@ -210,7 +234,7 @@ module.exports = function sockets (pubComm) {
         socket.on('delresid', (resource) => {
             // console.log(resource);
             let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, `${resource.content.identifier}`);
-            console.log('Calea constituită este: ', dirPath);
+            // console.log('Calea constituită este: ', dirPath);
 
                 /* === CAZURI === */
                 // #1 Resursa nu are subdirector creat pentru că nu s-a încărcat nimic.
@@ -226,7 +250,7 @@ module.exports = function sockets (pubComm) {
                     fs.ensureDir(path2deleted, 0o2775).then(function clbkDeletedExist () {
                         // Vezi dacă există un subdirector al resursei, iar dacă există șterge tot conținutul său [https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/emptyDir.md#emptydirdir-callback]
                         var path2deres = `${path2deleted}/${resource.content.identifier}`;
-                        console.log('Fac arhiva pe calea: ', path2deres);
+                        // console.log('Fac arhiva pe calea: ', path2deres);
                         // dacă directorul a fost constituit și este gol, să punem arhiva resursei șterse
                         var output = fs.createWriteStream(path2deres + `${resource.content.identifier}.zip`);
                         var archive = archiver('zip', {
@@ -273,6 +297,8 @@ module.exports = function sockets (pubComm) {
                         // FINALIZEAZĂ ARHIVAREA
                         archive.finalize();
                     });
+                    /* === ȘTERGE SUBDIRECTOR === */
+                    // FIXME: introdu logică de ștergere a subdirectorului după ce s-a făcut arhivarea.
                 }).catch(err => {
                     console.log(err);
                 });

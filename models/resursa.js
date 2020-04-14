@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 let Resursa = new mongoose.Schema({
-    _id: Schema.Types.ObjectId,
+    _id:  mongoose.Types.ObjectId,
     name: String,
     email: String,
     link: String,

@@ -45,7 +45,7 @@ var User = new Schema({
  */
 async function searchCreateIdx (doc) {
     try {
-        // constituirea unui subset de câmpuri pentru înregistrarea Elasticsearch// Cannot read property '_id' of null
+        // constituirea unui subset de câmpuri pentru înregistrarea Elasticsearch
         const data = {
             id: doc._id,
             created: doc.created,
