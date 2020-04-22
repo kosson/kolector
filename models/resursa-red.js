@@ -1,9 +1,11 @@
+require('dotenv').config();
 const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
 const CompetentaS   = require('./competenta-specifica');
 const esClient      = require('../elasticsearch.config');
-const resursaRedES7 = require('./resursa-red-es7');
+const schema = require('./resursa-red-es7');
 const editorJs2TXT  = require('../routes/controllers/editorJs2TXT'); 
+const ES7Helper     = require('./model-helpers/es7-helper');
 
 var softwareSchema = new mongoose.Schema({
     nume:     {
@@ -29,9 +31,10 @@ var ResursaSchema = new mongoose.Schema({
     // #1. INIȚIALIZARE ÎNREGISTRARE
     date:          Date,  // este data la care resursa intră în sistem. Data este introdusă automat la momentul în care este trimisă către baza de date.
     idContributor: {type: String},// este id-ul celui care a introdus resursa.
+    emailContrib:  String,
     autori:        {type: String},// Dacă sunt mai mulți autori, vor fi adăugați cu virgule între ei.
     langRED:       String,  // Este limba primară a resursei. Modelul ar fi 'ro', care indică limba pentru care s-a optat la deschiderea formularului pentru depunederea resursei. Valoarea va fi conform ISO 639-1 (https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
-
+    uuid:          String,  // Este numele subdirectorului în care sunt depozitate resursele
     // #2. TITLU ȘI RESPONSABILITATE
     title: {        
         type: String,  // Aici se introduce titlul lucrării în limba de elaborare
@@ -100,108 +103,6 @@ var ResursaSchema = new mongoose.Schema({
     
 });
 
-/**
- * Funcția are rolul de a verifica dacă indexul (aliasul) există.
- * Dacă indexul nu există va fi creat și va fi indexat primul document.
- * În cazul în care indexul există, va fi creat document dacă acesta nu există deja.
- * @param {Object} doc Este un obiect tip document de Mongoose
- */
-async function searchCreateIdx (doc) {
-    try {
-        // constituirea unui subset de câmpuri pentru înregistrarea Elasticsearch// Cannot read property '_id' of null
-        const data = {
-            id:                doc._id,
-            date:              doc.date,
-            idContributor:     doc.idContributor,
-            autori:            doc.autori,
-            langRED:           doc.langRED,
-            title:             doc.title,
-            titleI18n:         doc.titleI18n,
-            arieCurriculara:   doc.arieCurriculara,
-            level:             doc.level,
-            discipline:        doc.discipline,
-            disciplinePropuse: doc.disciplinePropuse,
-            competenteGen:     doc.competenteGen,
-            grupuri:           doc.grupuri,
-            domeniu:           doc.domeniu,
-            functii:           doc.functii,
-            demersuri:         doc.demersuri,
-            spatii:            doc.spatii,
-            invatarea:         doc.invatarea,
-            description:       doc.description,
-            identifier:        doc.identifier,
-            dependinte:        doc.dependinte,
-            coperta:           doc.coperta,
-            content:           editorJs2TXT(doc.content),
-            bibliografie:      doc.bibliografie,
-            contorAcces:       doc.contorAcces,
-            generalPublic:     doc.generalPublic,
-            contorDescarcare:  doc.contorDescarcare,
-            etichete:          doc.etichete,
-            utilMie:           doc.utilMie,
-            expertCheck:       doc.expertCheck
-        };
-
-        // fii foarte atent, testează după alias, nu după indexul pentru care se creează alias-ul.
-        await esClient.indices.exists(
-            {index: process.env.RES_IDX_ALS}, 
-            {errorTrace: true}
-        ).then(async function clbkAfterExist (rezultat) {
-            //console.log(rezultat);
-            try {                    
-                if (rezultat.statusCode === 404) {
-                    console.log("Indexul și alias-ul nu există. Le creez acum!");
-                    
-                    // creează indexul
-                    await esClient.indices.create({
-                        index: process.env.RES_IDX_ES7,
-                        body: userES7
-                    },{errorTrace: true}).then(r => {
-                        console.log('Am creat indexul resedus cu detaliile: ', r.statusCode);
-                    }).catch(e => console.error);
-
-                    // creează alias la index
-                    await esClient.indices.putAlias({
-                        index: process.env.RES_IDX_ES7,
-                        name: process.env.RES_IDX_ALS
-                    },{errorTrace: true}).then(r => {
-                        console.log('Am creat alias-ul resedus0 cu detaliile: ', r.statusCode);
-                    }).catch(e => console.error);
-                    
-                    // INDEXEAZĂ DOCUMENT!!!
-                    await esClient.create({
-                        id: data.id,
-                        index: process.env.RES_IDX_ALS,
-                        refresh: "true",
-                        body: data
-                    }); 
-                } else {
-                    // Verifică dacă nu cumva documentul deja există în index
-                    const {body} = await esClient.exists({
-                        index: process.env.RES_IDX_ALS,
-                        id: data.id
-                    });
-                    
-                    if (body == false) {            
-                        // INDEXEAZĂ DOCUMENT!!!
-                        await esClient.create({
-                            id: data.id,
-                            index: process.env.RES_IDX_ALS,
-                            refresh: "true",
-                            body: data
-                        }); 
-                        console.log("Am reindexat o resursă!");
-                    }
-                }
-            } catch (error) {
-                if (error) console.error;
-            }
-        });
-    } catch (error) {
-        console.log(error);  
-    }
-};
-
 /* === HOOKS === */
 // PRE
 
@@ -214,11 +115,179 @@ ResursaSchema.pre('remove', function hRemoveCb() {
     }).then(() => next()); // -> acesta este momentul în care putem spune că înregistrarea a fost eliminată complet.
 });
 
-// POST
+// POST -> Indexare în Elasticsearch!
 ResursaSchema.post('save', function clbkPostSave1 (doc, next) {
-    searchCreateIdx(doc);
+    let obi = Object.assign({}, doc._doc);
+    // verifică dacă există conținut
+    var content2txt = '';
+    if ('content' in obi) {
+        content2txt = editorJs2TXT(obi.content.blocks); // transformă obiectul în text
+    }
+    // indexează documentul
+    const data = {
+        id:               obi._id,
+        date:             obi.date,
+        idContributor:    obi.idContributor,
+        emailContrib:     obi.emailContrib,
+        uuid:             obi.uuid,
+        autori:           obi.autori,
+        langRED:          obi.langRED,
+        title:            obi.title,
+        titleI18n:        obi.titleI18n,
+        arieCurriculara:  obi.arieCurriculara,
+        level:            obi.level,
+        discipline:       obi.discipline,
+        disciplinePropuse:obi.disciplinePropuse,
+        competenteGen:    obi.competenteGen,
+        grupuri:          obi.grupuri,
+        domeniu:          obi.demersuri,
+        spatii:           obi.spatii,
+        invatarea:        obi.invatarea,
+        description:      obi.description,
+        dependinte:       obi.dependinte,
+        coperta:          obi.coperta,
+        content:          content2txt,
+        bibliografie:     obi.bibliografie,
+        contorAcces:      obi.contorAcces,
+        generalPublic:    obi.generalPublic,
+        contorDescarcare: obi.contorDescarcare,
+        etichete:         obi.etichete,
+        utilMie:          obi.utilMie,
+        expertCheck:      obi.expertCheck
+    };
+
+    ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
     next();
-    /* TODO: === Scrie întreg obiectul doc ca JSON pe harddisk în subdirectorul resursei și constituie primul git commit având drept mesaj `${idConstributor} fecit!`*/
+    /* 
+        TODO: === Constituie primul git commit având drept mesaj `${idConstributor} fecit!`
+        TODO: === Constituie in fișier HTML index.html în subdirectorul `data`. Va fi primul pas către realizarea de EPUB-uri și alte formate tip pachet.
+    */
+});
+
+// Adăugare middleware pe `post` pentru toate operațiunile `find`
+ResursaSchema.post(/^find/, async function clbkResFind (doc, next) {
+    // Când se face căutarea unei resurse folosindu-se metodele`find`, `findOne`, `findOneAndUpdate`, vezi dacă a fost indexat. Dacă nu, indexează-l!
+
+    // cazul `find` când rezultatele sunt multiple într-un array.
+    if (Array.isArray(doc)){
+        doc.map(function (res) {
+            try {                
+                // verifică dacă înregistrarea din Mongo există în ES?
+                ES7Helper.recExists(res._id, process.env.RES_IDX_ALS).then(e => {
+                    if (e === false) {
+                        let obi = Object.assign({}, res._doc);
+                        // verifică dacă există conținut
+                        var content2txt = '';
+                        if ('content' in obi) {
+                            content2txt = editorJs2TXT(obi.content.blocks); // transformă obiectul în text
+                        }
+                        // indexează documentul
+                        const data = {
+                            id:               obi._id,
+                            date:             obi.date,
+                            idContributor:    obi.idContributor,
+                            emailContrib:     obi.emailContrib,
+                            uuid:             obi.uuid,
+                            autori:           obi.autori,
+                            langRED:          obi.langRED,
+                            title:            obi.title,
+                            titleI18n:        obi.titleI18n,
+                            arieCurriculara:  obi.arieCurriculara,
+                            level:            obi.level,
+                            discipline:       obi.discipline,
+                            disciplinePropuse:obi.disciplinePropuse,
+                            competenteGen:    obi.competenteGen,
+                            grupuri:          obi.grupuri,
+                            domeniu:          obi.demersuri,
+                            spatii:           obi.spatii,
+                            invatarea:        obi.invatarea,
+                            description:      obi.description,
+                            dependinte:       obi.dependinte,
+                            coperta:          obi.coperta,
+                            content:          content2txt,
+                            bibliografie:     obi.bibliografie,
+                            contorAcces:      obi.contorAcces,
+                            generalPublic:    obi.generalPublic,
+                            contorDescarcare: obi.contorDescarcare,
+                            etichete:         obi.etichete,
+                            utilMie:          obi.utilMie,
+                            expertCheck:      obi.expertCheck
+                        };
+    
+                        ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
+                    }   
+                }).catch((error) => {
+                    console.error(JSON.stringify(error, null, 2));
+                });            
+            } catch (error) {
+                console.error(JSON.stringify(error, null, 2));
+            }
+        });
+    } else {
+        // console.log("De pe hook-ul `post` metoda ^find, ramura unui singur document: ", doc.title);
+        
+        try {
+            // verifică dacă înregistrarea din Mongo există în ES?
+            // console.log("ramura unui singur document - THEN: ", doc.title, "cu id: ", doc._id);
+            ES7Helper.recExists(doc._id, process.env.RES_IDX_ALS).then(function (e) {                
+                if (e === false) {
+
+                    console.log("ramura unui singur document - THEN: ", doc.title);
+
+                    let obi = Object.assign({}, doc._doc);
+                    
+                    //FIXME: Aici apare eroare: UnhandledPromiseRejectionWarning: ResponseError: mapper_parsing_exception
+
+                    // verifică dacă există conținut
+                    var content2txt = '';
+                    if ('content' in obi) {
+                        content2txt = editorJs2TXT(obi.content.blocks); // transformă obiectul în text
+                    }
+                    // indexează documentul
+                    const data = {
+                        id:               obi._id,
+                        date:             obi.date,
+                        idContributor:    obi.idContributor,
+                        emailContrib:     obi.emailContrib,
+                        uuid:             obi.uuid,
+                        autori:           obi.autori,
+                        langRED:          obi.langRED,
+                        title:            obi.title,
+                        titleI18n:        obi.titleI18n,
+                        arieCurriculara:  obi.arieCurriculara,
+                        level:            obi.level,
+                        discipline:       obi.discipline,
+                        disciplinePropuse:obi.disciplinePropuse,
+                        competenteGen:    obi.competenteGen,
+                        grupuri:          obi.grupuri,
+                        domeniu:          obi.demersuri,
+                        spatii:           obi.spatii,
+                        invatarea:        obi.invatarea,
+                        description:      obi.description,
+                        dependinte:       obi.dependinte,
+                        coperta:          obi.coperta,
+                        content:          content2txt,
+                        bibliografie:     obi.bibliografie,
+                        contorAcces:      obi.contorAcces,
+                        generalPublic:    obi.generalPublic,
+                        contorDescarcare: obi.contorDescarcare,
+                        etichete:         obi.etichete,
+                        utilMie:          obi.utilMie,
+                        expertCheck:      obi.expertCheck
+                    };
+
+                    // console.log("Înainte de indexare ramura documentului unic ", data._id, data.content2txt);
+
+                    ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
+                }   
+            }).catch((error) => {
+                console.error(JSON.stringify(error, null, 2));
+            });   
+        } catch (error) {
+            console.error(JSON.stringify(error, null, 2));
+        }
+    }
+    next();
 });
 
 module.exports = mongoose.model('resursedu', ResursaSchema);

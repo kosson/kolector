@@ -1,19 +1,22 @@
-/* ==== DEPENDINȚE ==== */
+require('dotenv').config();
+/* === DEPENDINȚE === */
 const moment = require('moment');
-
-/* ==== MODELE ==== */
+/* === MODELE === */
 const Resursa = require('../../models/resursa-red'); // Adu modelul resursei
-
-/* ==== HELPERE  ==== */
+/* === HELPERE === */
 // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
 let checkRole     = require('./checkRole.helper');
 let editorJs2html = require('./editorJs2HTML');
 // cere helperul pentru cache-ing
 require('./cache.helper');
 const {clearHash} = require('./cache.helper');
+let cookieHelper  = require('./cookie2obj.helper');
 
-/* AFIȘAREA RESURSELOR */
+/* === AFIȘAREA RESURSELOR === */
 exports.loadRootResources = function loadRootResources (req, res, next) {
+    // Indexul de căutare
+    let idxRes = process.env.RES_IDX_ALS;
+
     // ACL
     let roles = ["user", "validator"];
     
@@ -31,7 +34,7 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
         {script: '/js/redincredall.js'}
     ];
     
-    /* ====== VERIFICAREA CREDENȚIALELOR ====== */
+    /* === VERIFICAREA CREDENȚIALELOR === */
     if(req.session.passport.user.roles.admin){
         // promiseResPub.then((result) => {
         resursePublice.then((result) => {
@@ -43,40 +46,47 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
                 return newObi;
             });
             res.render('resurse', {
-                title:   "CRED RED-uri",
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                logoimg: "img/rED-logo192.png",
-                csfrToken: req.csrfToken(),
-                user:    req.user,
-                resurse: newResultArr,
+                title:        "CRED RED-uri",
+                style:        "/lib/fontawesome/css/fontawesome.min.css",
+                logoimg:      "img/rED-logo192.png",
+                csfrToken:    req.csrfToken(),
+                user:         req.user,
+                resurse:      newResultArr,
                 activeResLnk: true,
+                resIdx:       idxRes,
                 scripts
             });
         }).catch((err) => {
             if (err) {
-                console.log(err);
+                console.log(JSON.stringify(err.body, null, 2));
             }
         });
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
         // promiseResPub.then((result) => {
-        resursePublice.then((result) => {
+        resursePublice.then(function (result) {
             let newResultArr = []; // noul array al obiectelor resursă
             result.map(function clbkMapResult (obi) {
                 obi.dataRo = moment(obi.date).locale('ro').format('LLL');
                 newResultArr.push(obi);
             });
+        
+            console.log("Hmmmm", idxRes, roles);
+            
+            
             res.render('resurse', {
-                title:   "Resurse publice",
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                logoimg: "img/rED-logo192.png",
-                csfrToken: req.csrfToken(),
-                user:    req.user,
-                resurse: newResultArr,
+                title:        "Resurse publice",
+                style:        "/lib/fontawesome/css/fontawesome.min.css",
+                logoimg:      "img/rED-logo192.png",
+                csfrToken:    req.csrfToken(),
+                user:         req.user,
+                resurse:      newResultArr,
+                activeResLnk: true,
+                resIdx:       idxRes,
                 scripts
             });
         }).catch((err) => {
             if (err) {
-                console.log(err);
+                console.log(JSON.stringify(err.body, null, 2));
             }
         });
     } else {
@@ -118,13 +128,16 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
             });
         }).catch(err => {
             if (err) {
-                console.log(err);
+                console.log(JSON.stringify(err.body, null, 2));
             }
         });
 };
 
 /* FORM DESCRIERE RESURSE (ADAUGĂ) */
 exports.describeResource = function describeResource (req, res, next) {
+    const cookieObj = cookieHelper.cock2obj(req.headers.cookie);
+    
+    // console.log("Sesiunea de la /resurse/adaugă arată așa: ", req.session);
     // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
     let scripts = [
         // EDITOR
@@ -134,11 +147,14 @@ exports.describeResource = function describeResource (req, res, next) {
         {script: '/lib/editorjs/list.js'},
         {script: '/lib/editorjs/image.js'},
         {script: '/lib/editorjs/table.js'},
+        {script: '/lib/editorjs/ajax.js'},
         {script: '/lib/editorjs/attaches.js'},
         {script: '/lib/editorjs/embed.js'},
         {script: '/lib/editorjs/code.js'},
         {script: '/lib/editorjs/quote.js'},
         {script: '/lib/editorjs/inlinecode.js'},
+        // UPLOADER
+        {script: '/js/uploader.js'},
         // FORM
         {script: '/js/form01adres.js'}
     ];
@@ -156,7 +172,8 @@ exports.describeResource = function describeResource (req, res, next) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/rED-logo192.png",
             credlogo:"/img/CREDlogo.jpg",
-            csfrToken: req.csrfToken(),
+            // csrfToken: cookieObj._csrf,
+            csrfToken: req.csrfToken(),
             scripts
         });
         // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
@@ -167,7 +184,8 @@ exports.describeResource = function describeResource (req, res, next) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/rED-logo192.png",
             credlogo:"/img/CREDlogo.jpg",
-            csfrToken: req.csrfToken(),
+            // csrfToken: cookieObj._csrf,
+            csrfToken: req.csrfToken(),
             scripts
         });
     } else {
@@ -175,7 +193,7 @@ exports.describeResource = function describeResource (req, res, next) {
     }
 };
 
-/* ÎNCĂRCAREA RESURSELOR */
+/* ÎNCĂRCAREA RESURSELOR (inactiv) */
 exports.uploadResource = function uploadResource (req, res, next) {
     let roles = ["user", "educred", "validator"];
 

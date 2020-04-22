@@ -28,6 +28,8 @@ const resursaRedES7 = {
         properties: {
             date:             {type: "date"},
             idContributor:    {type: "keyword"},
+            emailContrib:     {type: "keyword"},
+            uuid:             {type: "keyword"},
             autori:           {type: "text"},
             langRED:          {type: "keyword"},
             title:            {type: "text"},

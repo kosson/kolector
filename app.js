@@ -2,11 +2,11 @@ require('dotenv').config();
 const path           = require('path');
 const logger         = require('morgan');
 const compression    = require('compression');
-const csrf           = require('csurf');
 const express        = require('express');
 const bodyParser     = require('body-parser');
 const cookies        = require('cookie-parser');
 const session        = require('express-session');
+const csrf           = require('csurf');
 const redisClient    = require('./redis.config');
 const helmet         = require('helmet');
 const passport       = require('passport');
@@ -23,11 +23,28 @@ const favicon        = require('serve-favicon');
 const { v1: uuidv1 } = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 const i18n           = require('i18n');
 
+// === ÎNCĂRCAREA RUTELOR ===
+const UserPassport = require('./routes/controllers/user.ctrl')(passport);
+let index          = require('./routes/index');
+let authG          = require('./routes/authGoogle/authG');
+let callbackG      = require('./routes/authGoogle/callbackG');
+let login          = require('./routes/login');
+let logout         = require('./routes/logout');
+let administrator  = require('./routes/administrator');
+let tertium        = require('./routes/tertium');
+let resurse        = require('./routes/resurse');
+let log            = require('./routes/log');
+let resursepublice = require('./routes/resursepublice');
+let profile        = require('./routes/profile');
+let tags           = require('./routes/tags');
+let tools          = require('./routes/tools');
+let help           = require('./routes/help');
+
+var pubComm = io.of('/redcol');
+const sockets = require('./routes/sockets')(pubComm);
+
 // stabilirea locației de upload
 // let upload = multer({dest: path.join(__dirname, '/uploads')});
-
-// activarea protecției csurf
-const csrfProtection = csrf({ cookie: true });
 
 // minimal config
 i18n.configure({
@@ -36,10 +53,6 @@ i18n.configure({
     directory: __dirname + "/locales"
 });
 
-// TODO: creează un socket namespace
-var pubComm = io.of('/redcol');
-const sockets = require('./routes/sockets')(pubComm);
-
 const mongoose = require('./mongoose.config');
 
 // === MIDDLEWARE-UL aplicației===
@@ -47,6 +60,13 @@ const mongoose = require('./mongoose.config');
 app.use(logger('combined', {
     skip: function (req, res) { return res.statusCode < 400 }
 })); // TODO: Dă-i drumu în producție și creează un mecanism de rotire a logurilor. ('combined')
+// app.use(logger('dev'));
+
+// STATIC
+app.use(express.static(path.join(__dirname, '/public' )));
+app.use('/repo', express.static(path.join(__dirname, 'repo')));
+// app.use(fileUpload());
+app.use(favicon(path.join(__dirname,  'public', 'favicon.ico')));
 
 // PROTECȚIE
 app.use(helmet());
@@ -54,12 +74,12 @@ app.use(helmet());
 // CORS
 app.use(cors());
 
-// SESIUNI
-app.use(cookies());// Parse Cookie header and populate req.cookies with an object keyed by the cookie names
-app.use(csrfProtection); // activarea protecției la CSURF 
+// PROCESAREA CORPULUI CERERII
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-// TIMP RĂSPUNS ÎN HEADER
-app.use(responseTime())
+// === SESIUNI ===
+app.use(cookies());// Parse Cookie header and populate req.cookies with an object keyed by the cookie names
 
 // creează sesiune
 let sessionMiddleware = session({
@@ -101,15 +121,25 @@ app.use(function (req, res, next) {
     lookupSession();
 });
 
-// STATIC
-app.use(express.static(path.join(__dirname, '/public' )));
-app.use('/repo', express.static(path.join(__dirname, 'repo')));
-// app.use(fileUpload());
-app.use(favicon(path.join(__dirname,  'public', 'favicon.ico')));
+// Instanțiază Passport și restaurează starea sesiunii dacă aceasta există
+app.use(passport.initialize());
+app.use(passport.session());
 
-// PROCESAREA CORPULUI CERERII
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// UPLOAD
+let upload = require('./routes/upload')(pubComm);
+app.use('/upload', upload);
+
+// activarea protecției csurf
+const csrfProtection = csrf({cookie: true});
+//https://github.com/expressjs/csurf/issues/21
+// app.use(function (req, res, next) {
+//     if (req.url === '/repo') return next();
+//     csrfProtection(req, res, next);
+// })
+app.use(csrfProtection); // activarea protecției la CSURF 
+
+// TIMP RĂSPUNS ÎN HEADER
+app.use(responseTime());
 
 // vezi http://expressjs.com/api.html#app.locals
 // app.locals({
@@ -137,10 +167,6 @@ app.enable('trust proxy');
 // INIȚTALIZARE I18N
 app.use(i18n.init); // instanțiere modul i18n - este necesar ca înainte de a adăuga acest middleware să fie cerut cookies
 
-// Instanțiază Passport și restaurează starea sesiunii dacă aceasta există
-app.use(passport.initialize());
-app.use(passport.session());
-
 // === COMPRESIE ===
 function shouldCompress (req, res) {
     if (req.headers['x-no-compression']) {
@@ -152,42 +178,22 @@ function shouldCompress (req, res) {
 }
 app.use(compression({ filter: shouldCompress }));
 
-// === GESTIONAREA RUTELOR ===
-// const routes = require('./routes/routes')(pubComm);
-const UserPassport = require('./routes/controllers/user.ctrl')(passport);
-// app.use(routes);
-let index          = require('./routes/index');
-let authG          = require('./routes/authGoogle/authG');
-let callbackG      = require('./routes/authGoogle/callbackG');
-let login          = require('./routes/login');
-let logout         = require('./routes/logout');
-let administrator  = require('./routes/administrator');
-let tertium        = require('./routes/tertium');
-let resurse        = require('./routes/resurse');
-let log            = require('./routes/log');
-let resursepublice = require('./routes/resursepublice');
-let profile        = require('./routes/profile');
-let tags           = require('./routes/tags');
-let tools          = require('./routes/tools');
-let upload         = require('./routes/upload')(pubComm);
-let help           = require('./routes/help');
+// === MIDDLEWARE-ul RUTELOR ===
+app.use('/',               csrfProtection, index);
+app.use('/auth',           authG);
+app.use('/callback',       callbackG);
+app.use('/login',          login);
+app.use('/logout',         logout);
+app.use('/resursepublice', csrfProtection, resursepublice);
+app.use('/tertium',        csrfProtection, tertium);
+app.use('/help',           csrfProtection, help);
+app.use('/administrator',  csrfProtection, UserPassport.ensureAuthenticated, administrator);
+app.use('/resurse',        csrfProtection, UserPassport.ensureAuthenticated, resurse);
+app.use('/log',            csrfProtection, UserPassport.ensureAuthenticated, log);
+app.use('/profile',        csrfProtection, profile);
+app.use('/tags',           csrfProtection, tags);
+app.use('/tools',          csrfProtection, tools);
 
-// === ROOT ===
-app.use('/', index);
-app.use('/auth', authG);
-app.use('/callback', callbackG);
-app.use('/login', login);
-app.use('/logout', logout);
-app.use('/resursepublice', resursepublice);
-app.use('/tertium', tertium);
-app.use('/help', help);
-app.use('/administrator', UserPassport.ensureAuthenticated, administrator);
-app.use('/resurse', UserPassport.ensureAuthenticated, resurse);
-app.use('/log', UserPassport.ensureAuthenticated, log);
-app.use('/profile', profile);
-app.use('/tags', tags);
-app.use('/tools', tools);
-app.use('/repo', upload);
 
 // === 401 - NEPERMIS ===
 app.get('/401', function(req, res){

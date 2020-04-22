@@ -1,8 +1,5 @@
 {{!< layout}}
 {{> nav-resurse}}
-
-
-
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
 
     <template id="paginator">
@@ -25,7 +22,7 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title">
-                    <a id="restitlelnk" class="btn btn-dark" role="button" class=""></a>
+                    <a id="restitlelnk" class="btn btn-dark" role="button" title="Caută resurse (maxim 250 de caractere)" class=""></a>
                 </h5>                                
             </div>
             <div class="card-body">
@@ -42,7 +39,7 @@
                 </div>
                 <input type="text" id="fragSearchDocs" class="form-control" placeholder="introdu un cuvânt cheie, o sintagmă" aria-label="resursaCred" aria-describedby="resursaCred">
                 <div class="input-group-append">
-                    <button id="searchResIntBtn" class="btn btn-outline-secondary" type="button">Caută</button>
+                    <button id="searchResIntBtn" data-idx="{{this.resIdx}}" class="btn btn-outline-secondary" type="button">Caută</button>
                 </div>
             </div>
         </form>

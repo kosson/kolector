@@ -1,7 +1,19 @@
+var csrftoken = document.getElementsByName('_csrf')[0].value;
+var cookie2obj = document.cookie.split(/; */).reduce((obj, str) => {
+    if (str === "") return obj;
+    const eq = str.indexOf('=');
+    const key = eq > 0 ? str.slice(0, eq) : str;
+    let val = eq > 0 ? str.slice(eq + 1) : null;
+    if (val != null) try { val = decodeURIComponent(val); } catch(ex) { e => console.error }
+    obj[key] = val;
+    return obj;
+}, {});
+
 // colectorul datelor din form
 var RED = {
     expertCheck: false,
     uuid: '',
+    emailContrib: '',
     langRED: '',
     title: '',
     titleI18n: [],
@@ -19,7 +31,8 @@ var RED = {
     etichete: []
 };
 
-let imagini = new Set(); // un array cu toate imaginile care au fost introduse în document.
+let imagini = new Set(); // un `Set` cu toate imaginile care au fost introduse în document.
+let fisiere = new Set(); // un `Set` cu toate fișierele care au fost introduse în document la un moment dat (înainte de `onchange`).
 
 // este necesar pentru a primi uuid-ul generat la încărcarea unui fișier mai întâi de orice în Editor.js. Uuid-ul este trimis din multer
 pubComm.on('uuid', (id) => {
@@ -29,7 +42,7 @@ pubComm.on('uuid', (id) => {
 
 /* === Integrarea lui EditorJS === https://editorjs.io */
 const editorX = new EditorJS({
-    placeholder: 'Introdu conținut care să nu fie mai mult de câteva paragrafe. Editorul nu poate fi folosit pentru compunere de resurse. Acestea trebuie să existe deja!!!',
+    placeholder: 'Introdu conținut descriptiv de nu mai mult de câteva paragrafe. Nu folosi editorul pentru crearea resursei. Aceasta trebuie să existe deja.',
     logLevel: 'VERBOSE', 
     /* VERBOSE 	Show all messages (default)
         INFO 	Show info and debug messages
@@ -38,8 +51,9 @@ const editorX = new EditorJS({
 
     /* onReady callback */
     onReady: () => {
-        console.log('Editor.js e gata de treabă!');
+        console.log('Editor.js e gata de treabă! Tokenu csrf generat din server pe rută este: ', csrftoken);
     },
+
     /* id element unde se injectează editorul */
     holder: 'codex-editor',
     /* Activează autofocus */ 
@@ -66,11 +80,15 @@ const editorX = new EditorJS({
             inlineToolbar: true
         },
         attaches: {
-            class: AttachesTool,
-            buttonText: 'Încarcă un fișier',
+            class: AttachesToolPlus,            
             config: {
-                endpoint: `${location.origin}/repo`
+                endpoint: `${location.origin}/upload`,
+                data: {
+                    uuid: RED.uuid,
+                    id: RED.idContributor
+                }
             },
+            buttonText: 'Încarcă un fișier',
             errorMessage: 'Nu am putut încărca fișierul.'
         },
         inlineCode: {
@@ -100,7 +118,6 @@ const editorX = new EditorJS({
             config: {
                 /* === providing custom uploading methods === */
                 uploader: {
-
                     /**
                      * ÎNCARCĂ FIȘIERUL DE PE HARD!!!
                      * @param {File} file - Fișierul încărcat ca prim parametru
@@ -112,9 +129,9 @@ const editorX = new EditorJS({
 
                         // => construcția obiectul care va fi trimis către server
                         let objRes = {
-                            user: RED.idContributor, // este de forma "5e31bbd8f482274f3ef29103" [înainte este email-ul]
+                            user: RED.idContributor, // este de forma "5e31bbd8f482274f3ef29103" [înainte era email-ul]
                             name: RED.nameUser, // este de forma "Nicu Constantinescu"
-                            uuid: RED.uuid,  // dacă deja a fost trimisă o primă resursă, înseamnă că în RED.uuid avem valoare deja. Dacă nu, la prima încărcare, serverul va emite unul înapoi în client
+                            uuid: RED.uuid,  // dacă deja a fost trimisă o primă resursă, înseamnă că în `RED.uuid` avem valoare deja. Dacă nu, la prima încărcare, serverul va emite unul înapoi în client
                             resF: file,      // este chiar fișierul: lastModified: 1583135975000  name: "Sandro_Botticelli_083.jpg" size: 2245432 type: "image/jpeg"
                             numR: file.name, // name: "Sandro_Botticelli_083.jpg"
                             type: file.type, // type: "image/jpeg"
@@ -127,7 +144,7 @@ const editorX = new EditorJS({
                          * @param {Function} reject `callback-ul declanșat la respingerea promisiunii`
                          */
                         function executor (resolve, reject) {
-                            // console.log('Cand încarc un fișier, trimit următorul obiect: ', objRes);
+                            // console.log('Cand încarc un fișier, trimit obiectul: ', objRes);
                             
                             // TRIMITE ÎN SERVER
                             pubComm.emit('resursa', objRes); // TRIMITE RESURSA către server. Serverul creează bag-ul și scrie primul fișier!!! [UUID creat!]
@@ -144,10 +161,8 @@ const editorX = new EditorJS({
                                 var urlAll = new URL(`${respObj.file}`);
                                 var path = urlAll.pathname;   // de forma "/repo/5e31bbd8f482274f3ef29103/5af78e50-5ebb-11ea-9dcc-f50399016f10/data/628px-European_Union_main_map.svg.png"
                                 // obj4EditorJS.file.url = path; // introducerea url-ului nou format în obiectul de răspuns pentru Editor.js
-                                
-                                // FIXME: !!!!!!!!!!!
-                                /* Obiectul necesar lui Editor.js după ce fișierul a fost trimis. 
-                                După ce trimiți fișierul, Editor.js se așteaptă ca acesta să fie populat */                            
+
+                                /* Editor.js se așteaptă ca acesta să fie populat după ce fișierul a fost trimis. */                            
                                 const obj4EditorJS = {
                                     success: respObj.success,
                                     file: {
@@ -155,13 +170,8 @@ const editorX = new EditorJS({
                                         size: respObj.file.size
                                     }
                                 };
-                                
-                                // completarea proprietăților așteptate de EditorJS în cazul succesului.
-                                // obj4EditorJS.success = respObj.success; // 1
-                                // obj4EditorJS.file.url = respObj.file; // Așa era preluat url-ul de obiectul succes până la 0.5.3
-                                
 
-                                // TODO: verifică dacă respectiva cale există sau nu în Set.
+                                // Adaugă imaginea încărcată în `Set`-ul `imagini`.
                                 if (!imagini.has(path)) {
                                     imagini.add(path); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
                                 }
@@ -296,7 +306,7 @@ const editorX = new EditorJS({
                             })
                             .catch((error) => {
                                 if (error) {
-                                    pubComm.emit('mesaje', `Am eșuat cu următoarele detalii: ${error}`);
+                                    pubComm.emit('messaje', `Am eșuat cu următoarele detalii: ${error}`);
                                 }
                             });
                     }
@@ -315,6 +325,103 @@ const editorX = new EditorJS({
                 captionPlaceholder: 'Autorul citatului',
             }
         }
+    },
+
+    // de fiecare dată când se modifică conținutul, actualizează `RED.content`.
+    onChange: () => {
+        editorX.save().then((content) => {    
+            // verifică dacă proprietatea `content` este populată.
+            if (!('content' in RED)) {
+                RED['content'] = content; // Dacă nu există introduc `content` drept valoare.
+            } else if (typeof(RED.content) === 'object' && RED.content !== null) {
+                RED.content = null; // Dacă există deja, mai întâi setează `content` la `null` 
+                RED.content = content; // și apoi introdu noua valoare.
+                
+                // === Logică de ștergere de pe HDD a imaginilor care au fost șterse din editor ===
+                // Pas 1 Fă un set cu imaginile care au rămas după ultimul `onchange`
+                const imgsInEditor = RED.content.blocks.map((element) => {
+                    if (element.type === 'image') {
+                        const newUrl = new URL(element.data.file.url);
+                        let path = newUrl.pathname;
+                        // console.log("Am extras următoarea cale din url: ", path);
+                        return path;
+                    }
+                });
+                // console.log("Imaginile care au rămas în editor după ultima modificare: ", imgsInEditor);
+                // Pas 2 Compară-le cu cu este în `Set`-ul `images`.
+                const toDelete = Array.from(imagini).map((path) => {
+                    // Caută în imaginile după ultima modificare
+                    if (!imgsInEditor.includes(path)){
+                        return path;
+                    }
+                });
+                // console.log("Ce este în toDelete ", toDelete);
+                
+                if (toDelete.length > 0) {                    
+                    toDelete.forEach(function clbk4Eac (path) {
+                        if (path) {
+                            imagini.delete(path);
+                            // extrage numele fișierului din `fileUrl`
+                            let fileName = path.split('/').pop();
+                            // emite un eveniment de ștergere a fișierului din subdirectorul resursei.                            
+                            pubComm.emit('delfile', {
+                                uuid: RED.uuid,
+                                idContributor: RED.idContributor,
+                                fileName: fileName
+                            });
+                            pubComm.on('delfile', (mesagge) => {
+                                console.log(message);
+                            });
+                        }
+                    });
+                }
+                // === Logică de ștergere de pe HDD a fișierelor care nu mai există în client
+                // Pas 1 Adaugă la căile existente în `fișiere` ulimele fișierele adăugate după ultimul `onchange`
+                const filesInEditor = RED.content.blocks.map((element) => {
+                    if (element.type === 'attaches') {
+                        const newUrl = new URL(decodeURIComponent(element.data.file.url)); // decodează linkul
+                        console.log("După folosirea lui decode, ai următorul link: ", newUrl);
+                        
+                        let path = newUrl.pathname; // extrage calea
+                        console.log("Am extras următoarea cale a documentului din url: ", path);
+                        fisiere.add(path); // adaugă calea în fisiere. Dacă există deja, nu va fi adăugat.
+                        return path;
+                    }
+                });
+                
+                // Fă verificările dacă cel puțin un document a fost adăugat
+                if(fisiere.size > 0) {
+                    let FtoDelete = Array.from(fisiere).map((path) => {
+                        // Caută în setul fișierelor după ultima modificare
+                        if (!filesInEditor.includes(path)){
+                            return path;
+                        }
+                    });
+                    if (FtoDelete.length > 0) {                    
+                        FtoDelete.forEach(function clbk4Eac2Del (path) {
+                            if (path) {
+                                fisiere.delete(path);
+                                // extrage numele fișierului din `fileUrl`
+                                let fileName = path.split('/').pop();
+                                // emite un eveniment de ștergere a fișierului din subdirectorul resursei                                
+                                pubComm.emit('delfile', {
+                                    uuid: RED.uuid,
+                                    idContributor: RED.idContributor,
+                                    fileName: fileName
+                                });
+                                pubComm.on('delfile', (messagge) => {
+                                    console.log(messagge);
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+            pickCover(); // formează galeria pentru ca utilizatorul să poată selecta o imagine
+
+        }).catch((e) => {
+            console.log(e);
+        });
     }
     /**
      * Previously saved data that should be rendered
@@ -1596,6 +1703,9 @@ function pas1 () {
         }
     }
     // Adaugă emailul 
+    var emailContrib  = document.querySelector('#emailContrib').value;
+    RED.emailContrib  = emailContrib;
+    // Adaugă id-ul utilizatorului care face propunerea
     var idUser        = document.querySelector('#idUser').value;    
     RED.idContributor = idUser;
     // Adaugă numele și prenumele utilizatorului
@@ -1798,7 +1908,7 @@ function clickImgGal () {
             if (element.checked) {
                 element.classList.add('image-checkbox-checked');
                 
-                // TODO: Vezi dacă este selectat vreun alt element și dacă este, pune-le pe toate pe checked === false
+                // FIXME: Vezi dacă este selectat vreun alt element și dacă este, pune-le pe toate pe checked === false
                 // for (let sibling of elem.parentNode.children) {
                 //     // console.log(sibling);        
                 //     if (sibling !== checkbox) {
@@ -1867,7 +1977,6 @@ function pickCover () {
  * Funcția are rolul de a colecta care dintre imagini va fi coperta și de a colecta etichetele completate de contribuitor.
  */
 function pas4 () {
-    //TODO: Colectează linkurile RED-urilor componente
     // vezi id-ul `componenteRed` și introdu-le în array-ul `RED.related`
     var newRelReds = document.getElementById('componenteRed');
     var arrNewRelReds = newRelReds.value.split(',');
@@ -1896,31 +2005,28 @@ function pas4 () {
     });
 }
 
-/* === SALVAREA CONȚINUTULUI === */
-// fă o referință către butonul de trimitere a conținutului
-var saveContinutRes = document.querySelector('#continutRes');
-// la click, introdu conținutul în obiectul mare RED.
+/* === USERUL RENUNȚĂ === */
+// fă o referință către butonul de ștergere
+var saveContinutRes = document.querySelector('#submitWrap');
+// la click, emite ordinul de ștergere
 saveContinutRes.addEventListener('click', function (evt) {
     evt.preventDefault();
-    // salvarea conținutului introdus în editor.
-    editorX.save().then((content) => {
-        // FIXME: Introdu un mecanism prin care editorul să țină minte conținutul introdus!!!
-
-        // verifică dacă proprietatea `content` este populată.
-        if (!('content' in RED)) {
-            RED['content'] = content; // Dacă nu există introduc `content` drept valoare.
-        } else if (typeof(RED.content) === 'object' && RED.content !== null) {
-            RED.content = null; // Dacă există deja, mai întâi setează `content` la `null` 
-            RED.content = content; // și apoi introdu noua valoare.
-        }
-
-        pickCover(); // formează galeria pentru ca utilizatorul să poată selecta o imagine
-    }).catch((e) => {
-        console.log(e);
-    });
+    // șterge subdirectorul creat cu tot ce există
+    if (RED.uuid) {
+        pubComm.emit('deldir', {
+            content: {
+                idContributor: RED.idContributor,
+                identifier: RED.uuid
+            }
+        });
+        pubComm.on('deldir', (detalii) => {
+            alert(detalii);
+            window.location.href = '/profile/resurse';
+        })
+    }
 });
 
-/* ========== TRIMITEREA DATELOR FORMULARULUI ============== */
+/* === TRIMITEREA DATELOR FORMULARULUI === */
 var submitBtn = document.querySelector('#submit');
 submitBtn.addEventListener('click', (evt) => {
     pas4();
@@ -1928,7 +2034,6 @@ submitBtn.addEventListener('click', (evt) => {
     pubComm.emit('red', RED); // vezi în routes.js -> socket.on('red', (RED) => {...
     // aștept răspunsul de la server și redirecționez utilizatorul către resursa tocmai creată.
     pubComm.on('red', (red) => {
-        // console.log(red); // FIXME: Dezactivează!
-        window.location.href = '/profile/resurse/' + red._id;
+        window.location.href = '/profile/resurse';
     });
 });

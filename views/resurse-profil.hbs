@@ -1,12 +1,10 @@
 {{!< layout}}
 {{> nav-resurse}}
 {{> messages}}
-
-    {{#each scripts}}
-        <script src="{{script}}" charset="utf-8"></script>
-    {{/each}}
-
     <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+    {{#each styles}}
+    <link rel="stylesheet" type="text/css" href="{{style}}">
+    {{/each}}
 
     <h3>Resursele cu care ai contribuit</h3>
     <div id="resurseincred" class="resurse">
@@ -30,3 +28,29 @@
             </div>
         {{/each}}
     </div>
+
+    {{!-- Adu-mi toate resursele utilizatorului --}}
+    <div id="content">
+        <h1>Acces la toate resursele:</h1>
+        <section class="container-fluid" id="res-visuals">
+            {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
+            <div id="visuals" class="tableDisplay" data-usrid="{{this.user.id}}" >
+                {{!-- Background video --}}
+                <div class="bg-video">
+                    <video class="bg-video__content" autoplay muted loop>
+                        {{!-- https://coverr.co/videos/modem-lights-u4MPlcF4EE --}}
+                        <source src="/img/coverr-typing-in-laptop-1578678668153.mp4" type="video/mp4">
+                        Browserul tău nu are support pentru caracteristicile web moderne. Actualizează-l!
+                    </video>
+                </div>
+            </div>
+        </section>
+    </div>
+    {{!-- Tabelul resurselor personale --}}
+    <template id="userResTbl" data-sort='[[ 0, "asc" ]]'>
+        <div id="resurseTab" class=""></div>
+    </template>
+
+    {{#each scripts}}
+        <script src="{{script}}" charset="utf-8"></script>
+    {{/each}}

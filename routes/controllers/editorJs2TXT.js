@@ -1,8 +1,9 @@
-function content2text (resursa) {
+function content2text (blocuri) {
     let articleTXT = '';
-    if (resursa) {
-        // generează conținut HTML pentru fiecare dintre blocurile întâlnite
-        resursa.blocks.map(obj => {
+    // console.log("În editorJs2TXT am primit: ", blocuri);
+    if (blocuri.length > 0) {
+        // generează fragmente text pentru fiecare dintre blocurile întâlnite
+        blocuri.map(obj => {
             switch (obj.type) {
                 case 'paragraph':
                     articleTXT += `${obj.data.text}\n`;
@@ -52,7 +53,6 @@ function content2text (resursa) {
                     return '';
             }
         });
-        resursa.content = articleTXT;
     }
     return articleTXT;
 }

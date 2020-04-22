@@ -1,10 +1,18 @@
 const primare = document.getElementById('primare');
-const searchResIntBtn = document.getElementById('searchResIntBtn');
-searchResIntBtn.addEventListener('click', function clbkSeachBtn () {
+
+// === BUTONUL DE SEARCH ===
+const searchResIntBtn = document.getElementById('searchResIntBtn'); // butonul de search
+let index = searchResIntBtn.dataset.idx; // extrage indexul din atributul data.
+searchResIntBtn.addEventListener('click', function clbkSeachBtnResInterne () {
     const fragSearch = document.getElementById('fragSearchDocs').value;
+    if (fragSearch.length > 250) {
+        fragSearch = fragSearch.slice(0, 250);
+    }
+    console.log(fragSearch, "pe", index);
+    
     // primul pas, curăță de conținut id-ul `primare`
     primare.innerHTML = '';
-    pubComm.emit('searchres',  fragSearch);
+    pubComm.emit('searchres', {index, fragSearch}); // emite eveniment în backend
 });
 
 /* === afișarea rezultatelor === */

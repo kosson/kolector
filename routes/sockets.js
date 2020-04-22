@@ -4,7 +4,7 @@ const archiver    = require('archiver');
 const path        = require('path');
 // const querystring = require('querystring');
 const BagIt       = require('bagit-fs');
-const {v1: uuidv1} = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
+const {v4: uuidv4}= require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 const Readable    = require('stream').Readable;
 const mongoose    = require('mongoose');
 const validator   = require('validator');
@@ -12,8 +12,10 @@ const esClient    = require('../elasticsearch.config');
 const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
 const UserSchema  = require('../models/user'); // Adu schema unui user
 const Log         = require('../models/logentry');
-const {findInIdx} = require('./controllers/elasticsearch.ctrl');
-const editorJs2HTML= require('../routes/controllers/editorJs2HTML'); 
+const editorJs2HTML= require('../routes/controllers/editorJs2HTML');
+
+// funcțiile de căutare
+const {findInIdx, aggFromIdx} = require('./controllers/elasticsearch.ctrl');
 
 module.exports = function sockets (pubComm) {
     /* === FUNCȚII HELPER PENTRU LUCRUL CU SOCKET-URI */
@@ -54,9 +56,22 @@ module.exports = function sockets (pubComm) {
             });
         }); // apel al funcția `cbCsuri` de mai jos
 
-        // === RESURSA === ::Primirea imaginilor pe socket conduce la crearea Bag-ului
+        // === RESURSA === ::Primește fișiere, fapt care conduce la crearea Bag-ului, dacă userul alege încărcarea prima dată a unui fișier.
         socket.on('resursa', function clbkResursa (resourceFile) {
-            // creează calea pe care se va depozita.
+            /* 
+                Obiectul primit `resourceFile` este `objRes` din `form01adres` și are următoarea semnătură
+                {
+                    user: RED.idContributor, // este de forma "5e31bbd8f482274f3ef29103" [înainte era email-ul]
+                    name: RED.nameUser,      // este de forma "Nicu Constantinescu"
+                    uuid: RED.uuid,          // dacă deja a fost trimisă o primă resursă, înseamnă că în `RED.uuid` avem valoare deja. Dacă nu, la prima încărcare, serverul va emite unul înapoi în client
+                    resF: file,              // este chiar fișierul: lastModified: 1583135975000  name: "Sandro_Botticelli_083.jpg" size: 2245432 type: "image/jpeg"
+                    numR: file.name,         // name: "Sandro_Botticelli_083.jpg"
+                    type: file.type,         // type: "image/jpeg"
+                    size: file.size
+                };
+            */
+            
+            // creez calea către subdirectorul corespunzător userului
             var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
 
             // Transformarea Buffer-ului primit într-un stream `Readable`
@@ -67,10 +82,10 @@ module.exports = function sockets (pubComm) {
             // dacă resursa primită nu are UUID, înseamnă că este prima. Tratează cazul primei resurse
             if (!resourceFile.uuid) {
                 // setează lastUuid
-                lastUuid = uuidv1();
+                lastUuid = uuidv4();
                 // ajustează calea adăugând fragmentul uuid
                 calea += `${lastUuid}`;
-                // generează bag-ul pentru user
+                // generează bag-ul pentru user particularizând cu email-ul
                 lastBag = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează BAG-ul
                 // adăugarea fișierului primit în Bag
                 strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`)); // SCRIE PE HARD               
@@ -83,8 +98,9 @@ module.exports = function sockets (pubComm) {
                 };
                 // trimite înapoi în client obiectul de care are nevoie Editor.js pentru confirmare
                 socket.emit('resursa', responseObj);
-            } else if (resourceFile.uuid && lastUuid === resourceFile.uuid) {
-                // dacă lastUuid este același cu cel primit din client, avem de-a face cu aceeași resursă
+            // } else if (resourceFile.uuid && lastUuid === resourceFile.uuid) {
+            } else if (resourceFile.uuid) {
+                // dacă este primit un uuid din client, scrie fișierul în acel uuid!!
                 // setează calea către directorul deja existent al resursei
                 calea += `${resourceFile.uuid}`;
                 lastBag = BagIt(calea, 'sha256');
@@ -101,52 +117,24 @@ module.exports = function sockets (pubComm) {
                 socket.emit('resursa', responseObj4AddedFile);
             } else {
                 const err = new Error('message', 'nu pot încărca... se încearcă crearea unui bag nou');
+                console.error(err.message);                
             }
-        });
-
-        // === CLOSEBAG === ::În momentul în care se va apăsa butonul care creează resursa, se va închide și Bag-ul.
-        socket.on('closeBag', () => {
-            // finalizarea creării Bag-ului
-            if (lastBag) {
-                lastBag.finalize(() => {                    
-                    socket.emit('closeBag', 'Am finalizat închiderea bag-ului');
-                });
-            } else {
-                socket.emit('closeBag', 'Nu e niciun bag.');
-            }
-        });
-
-        // === LOG ===
-        socket.on('log', (entry) => {
-            var log = new Log({
-                _id: new mongoose.Types.ObjectId(),
-                date: Date.now(),
-                title: entry.title,
-                idContributor: entry.idContributor,
-                autor: entry.autor,
-                content: entry.content,
-                contorAcces: entry.contorAcces
-            });
-            log.save().then((result) => {
-                socket.emit('log', result);
-            }).catch(err => {
-                if (err) throw err;
-            });            
         });
 
         // === RED === ::Introducerea resursei în baza de date MongoDB la finalizarea completării FORM01
         socket.on('red', (RED) => {
             // gestionează cazul în care nu ai un uuid generat pentru că resursa educațională, adică nu are niciun fișier încărcat
             if (!RED.uuid) {
-                RED.uuid = uuidv1();
+                RED.uuid = uuidv4();
             }
             // Încarcă modelul cu date!!!
             var resursaEducationala = new Resursa({
                 _id:             new mongoose.Types.ObjectId(),
-                // _id:             RED.uuid,
                 date:            Date.now(),
                 identifier:      RED.uuid,
                 idContributor:   RED.idContributor,
+                uuid:            RED.uuid,
+                emailContrib:    RED.emailContrib,
                 autori:          RED.nameUser,
                 langRED:         RED.langRED,
                 title:           RED.title,
@@ -180,54 +168,106 @@ module.exports = function sockets (pubComm) {
             var pResEd = resursaEducationala.populate('competenteS').execPopulate(); // returnează o promisiune
             pResEd.then(res => {
                 // Trimite înregistrarea și în Elasticsearch și creează și un fișier json pe hard în subdirectorul red-ului [FIXED::`post`hook pe schemă la `save`]
-                // Mai creează un git pentru director, fă primul commit și abia după aceea salvează în baza de date.
+                // TODO: Mai creează un git pentru director, fă primul commit și abia după aceea salvează în baza de date.
 
-                // TODO: Scrie JSON-ul editorJs2HTML(RED.content);
-
+                /* === Scrie JSON-ul înregistrării în `data` === */
                 const newRes = Object.assign({}, RED);
+                newRes._id = res._id; // introdu în obiectul JSON id-ul înregistrării din MongoDB -> Recovery latter!
                 // creează calea pe care se va depozita.
                 let calea = `${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`;
-                console.log(calea);
-                
+                // ref pe Bag-ul existent
                 let existBag = BagIt(calea, 'sha256');
-
+                // transformă în Buffer obiecul newRes
                 const data = Buffer.from(JSON.stringify(newRes));
                 let strm = new Readable();
-                strm._read = () => {} // _read is required but you can noop it
+                strm._read = () => {} // _read este necesar!!!
                 strm.push(data);
-                strm.push(null);
-                
+                strm.push(null);                
                 // introdu un nou fișier în Bag-ul existent al resursei
-                strm.pipe(existBag.createWriteStream(`${uuidv1()}.json`)); // scrie un JSON pe HDD în Bag-ul resursei
+                strm.pipe(existBag.createWriteStream(`${uuidv4()}.json`)); // scrie un JSON pe HDD în Bag-ul resursei
 
-                // TODO: Verifică dacă s-a scris fișierul pe hard. Dacă s-a scris, generează un depozit git cu ce există în directorul resursei și apoi salvează resursa în MongoDB.
-                res.save().then(async function clbkOnRedSave (red) {
-                    console.log(red);
-                    
-                    // verifică dacă în bază a fost scrisă înregistrarea
-                    let pDoc = await Resursa.findOne({_id: red._id}).exec();
-                    console.log(pDoc);
-                    
-                    pDoc.then(async (record) => {
-                        console.log(record);
-                        if (record) {
-                            done(null, doc);
-                        } else {
-                            // delete the uploaded resources
-                            fs.ensureDir(`${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`, 0o2775).then(async function clbkFsExists () {
-                                // TODO: scrie logica de ștergere a directorului în cazul în care a eșuat crearea înregistrării în MongoDB.
-                                await fs.remove(`${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`);
-                            }).then(() => {
-                                console.log('Am șters directorul în urma operațiunii eșuate de creere a înregistrării în MongoDB.')
-                            }).catch(e => console.error);
-                        }
-                    }).catch(error => console.error);
-                }); // aplică un hook `post` pentru a scrie pe hard înregistrarea ca JSON
-                socket.emit('red', res); // se emite înregistrarea către frontend.
+                /* === SAVARE RESURSĂ ÎN MONGO === */
+                res.save(); // Se aplică un hook `post` pentru a indexa în ES!
+                socket.emit('red', res); // se emite înregistrarea către frontend. Dacă frontendul primește înregistrare, va redirecta către resursă.
             }).catch(err => {
                 if (err) console.error;
-                //FIXME: dacă e vreo eroare, distruge directorul de pe hard și șterge înregistrarea din Elasticsearch
+                // Dacă e vreo eroare, distruge directorul de pe hard!
+                fs.ensureDir(`${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`, 0o2775).then(async function clbkFsExists () {
+                    // TODO: scrie logica de ștergere a directorului în cazul în care a eșuat crearea înregistrării în MongoDB.
+                    await fs.remove(`${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`);
+                }).then(() => {
+                    console.log('Am șters directorul în urma operațiunii eșuate de creare a înregistrării în MongoDB.')
+                }).catch(error => {
+                    console.error(JSON.stringify(error.body, null, 2));
+                });
             });
+        });
+
+        // === CLOSEBAG === ::În momentul în care se va apăsa butonul care creează resursa, se va închide și Bag-ul.
+        socket.on('closeBag', () => {
+            // finalizarea creării Bag-ului
+            if (lastBag) {
+                lastBag.finalize(() => {                    
+                    socket.emit('closeBag', 'Am finalizat închiderea bag-ului');
+                });
+            } else {
+                socket.emit('closeBag', 'Nu e niciun bag.');
+            }
+        });
+
+        // === LOG ===
+        socket.on('log', (entry) => {
+            var log = new Log({
+                _id: new mongoose.Types.ObjectId(),
+                date: Date.now(),
+                title: entry.title,
+                idContributor: entry.idContributor,
+                autor: entry.autor,
+                content: entry.content,
+                contorAcces: entry.contorAcces
+            });
+            log.save().then((result) => {
+                socket.emit('log', result);
+            }).catch(err => {
+                if (err) throw err;
+            });            
+        });
+
+        /* === DELFILE === */
+        socket.on('delfile', (components) => {
+            let cleanFileName = decodeURIComponent(components.fileName);
+            let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${components.idContributor}/`, `${components.uuid}/`, `data/`, `${cleanFileName}`);
+            console.log("Fișierul pe care trebuie să-l șterg este: ", dirPath);
+            
+            /* === ȘTERGE FIȘIER === */
+            fs.remove(dirPath, function clbkDirFolder (error) {
+                if (error) {
+                    console.error(error);
+                }
+                rre('mesaje', `Am șters fișierul ${cleanFileName}`);
+                socket.emit('delfile', `Am șters fișierul ${cleanFileName}`);
+            });
+        });
+
+        // === DELDIR === ::Ștergerea subdirectorului unei resurse
+        socket.on('deldir', (resource) => {
+            // console.log(resource);
+            let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, `${resource.content.identifier}`);
+            // console.log('Calea constituită este: ', dirPath);
+
+                // Șterge din MongoDB, din Elasticsearch, precum și de pe hard
+                // caută dacă există subdirector.
+                fs.ensureDir(dirPath, 0o2775).then(function clbkFsExists () {
+                    /* === ȘTERGE SUBDIRECTOR === */
+                    fs.remove(dirPath, function clbkDirFolder (error) {
+                        if (error) {
+                            console.error(error);
+                        }
+                        pubComm.emit('deldir', `Am șters subdirectorul ${resource.content.identifier}`);
+                    });
+                }).catch(err => {
+                    console.log(err);
+                });
         });
 
         // === DELRESID === ::Ștergerea unei resurse
@@ -240,7 +280,7 @@ module.exports = function sockets (pubComm) {
                 // #1 Resursa nu are subdirector creat pentru că nu s-a încărcat nimic.
                 // #2 Resursa are subdirector și acesta trebuie șters sau... marcat pentru ștergere întârziată în caz că implementăm recuperare.
 
-                // TODO: detectează dacă există subdirector!!! Dacă da, șterge-l și șterge și din MongoDB, dar și din Elasticsearch.
+                // Șterge din MongoDB, din Elasticsearch, precum și de pe hard
                 // caută dacă există subdirector.
                 fs.ensureDir(dirPath, 0o2775).then(function clbkFsExists () {
                     
@@ -251,6 +291,7 @@ module.exports = function sockets (pubComm) {
                         // Vezi dacă există un subdirector al resursei, iar dacă există șterge tot conținutul său [https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/emptyDir.md#emptydirdir-callback]
                         var path2deres = `${path2deleted}/${resource.content.identifier}`;
                         // console.log('Fac arhiva pe calea: ', path2deres);
+
                         // dacă directorul a fost constituit și este gol, să punem arhiva resursei șterse
                         var output = fs.createWriteStream(path2deres + `${resource.content.identifier}.zip`);
                         var archive = archiver('zip', {
@@ -274,37 +315,44 @@ module.exports = function sockets (pubComm) {
                         archive.on('error', function(err) {
                             throw err;
                         });
+
                         // Când se încheie procesul de arhivare
                         output.on('close', function() {
-                            console.log(archive.pointer() + ' total bytes');
-                            console.log('archiver has been finalized and the output file descriptor has closed.');
+                            // console.log('Arhivarea s-a încheiat și descriptorul fișierului s-a închis: ', archive.pointer() + ' total bytes');
                             rre('mesaje', 'Resursa a intrat în conservare!');
-                            rre('delresid', {bytes: archive.pointer()});
+                            // rre('delresid', {bytes: archive.pointer()});
 
-                            // Șterge resursa din MONGODB și din Elasticsearch!!!
+                            /* === ȘTERGE SUBDIRECTOR === */
+                            fs.remove(dirPath, function clbkDirFolder (error) {
+                                if (error) {
+                                    console.error(error);
+                                }
+                                rre('mesaje', 'Am șters subdirectorul resursei.');
+                            });
+
+                            /* === Șterge din MONGODB și din Elasticsearch === */
                             Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
                                 // console.log('Documentul este: ', doc);                
                                 if (err) {
                                     console.log(err);
                                 };                
-                                // Șterge înregistrarea din Elasticsearch -> https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#_delete
+                                // Șterge înregistrarea din Elasticsearch
                                 esClient.delete({
                                     id: doc._id,
-                                    index: 'resursedus'
+                                    index: process.env.RES_IDX_ALS,
+                                    refresh: true
                                 });
                             });
                         });
                         // FINALIZEAZĂ ARHIVAREA
                         archive.finalize();
                     });
-                    /* === ȘTERGE SUBDIRECTOR === */
-                    // FIXME: introdu logică de ștergere a subdirectorului după ce s-a făcut arhivarea.
                 }).catch(err => {
                     console.log(err);
                 });
         });
 
-        // === MKADMIN === ::Aducerea resurselor pentru un id (email) și trimiterea în client
+        // === MKADMIN === ::Aducerea fișei unui singur id (email) și trimiterea în client
         socket.on('mkAdmin', (userSet) => {    
             // Atenție: https://mongoosejs.com/docs/deprecations.html#-findandmodify-
             const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
@@ -314,7 +362,7 @@ module.exports = function sockets (pubComm) {
                     if (error) console.log(error);
                     doc.roles.admin = true;
                     doc.save().then(() => {
-                        socket.emit('mesaje', 'Felicitări, ai devenit administrator!');
+                        rre('mesaje', 'Felicitări, ai devenit administrator!');
                     }).catch(err => {
                         if (err) throw err;
                     });
@@ -324,7 +372,7 @@ module.exports = function sockets (pubComm) {
                     if (error) console.log(error);
                     doc.roles.admin = false;
                     doc.save().then(() => {
-                        socket.emit('mesaje', 'Ai luat dreptul de administrare!');
+                        rre('mesaje', 'Ai luat dreptul de administrare!');
                     }).catch(err => {
                         if (err) throw err;
                     });
@@ -377,7 +425,7 @@ module.exports = function sockets (pubComm) {
             });
         });
 
-        // === VALIDATERES === ::Validarea resursei
+        // === VALIDATERES === ::Validarea resursei `expertCheck` - true / false
         socket.on('validateRes', (queryObj) => {
             // eveniment declanșat din redincredadmin.js
             let resQuery = Resursa.findOne({_id: queryObj._id}, 'expertCheck');
@@ -385,6 +433,17 @@ module.exports = function sockets (pubComm) {
                 doc.expertCheck = queryObj.expertCheck;
                 doc.save().then(newdoc => {
                     socket.emit('validateRes', {expertCheck: newdoc.expertCheck});
+                    // Introdu upsert-ul pentru a actualiza și înregistrarea din Elasticsearch
+                    esClient.update({
+                        index: process.env.RES_IDX_ALS,
+                        id: queryObj._id,
+                        body: {
+                            script: 'ctx._source.expertCheck = ' + queryObj.expertCheck
+                        },
+                        refresh: true
+                    }).then(result => {
+                        console.log(result.body.result);
+                    }).catch(err => console.error);
                 }).catch(err => {
                     if (err) throw err;
                 });
@@ -398,7 +457,19 @@ module.exports = function sockets (pubComm) {
             resQuery.exec(function (err, doc) {
                 doc.generalPublic = queryObj.generalPublic;
                 doc.save().then(newdoc => {
-                    socket.emit('setPubRes', {generalPublic: newdoc.generalPublic});
+                    rre('setPubRes', {generalPublic: newdoc.generalPublic});
+
+                    // Introdu upsert-ul pentru a actualiza și înregistrarea din Elasticsearch
+                    esClient.update({
+                        index: process.env.RES_IDX_ALS,
+                        id: queryObj._id,
+                        body: {
+                            script: 'ctx._source.generalPublic = ' + queryObj.generalPublic
+                        },
+                        refresh: true
+                    }).then(result => {
+                        console.log(result.body.result);
+                    }).catch(err => console.error);
                 }).catch(err => {
                     if (err) throw err;
                 });
@@ -418,15 +489,27 @@ module.exports = function sockets (pubComm) {
         });
         
         // === SEARCHRES === ::Căutarea resurselor în Elasticsearch
-        socket.on('searchres', (queryString) => {
-            // console.log(queryString);
+        socket.on('searchres', (query) => {
+            // scoate spații pe capete și trunchiază textul.
+            let trimmedQ = query.fragSearch.trim();
+            let queryString = '';
+            if (trimmedQ.length > 250) {
+                queryString = trimmedQ.slice(0, 250);
+            } else {
+                queryString = trimmedQ;
+            }
             // TODO: Integrează gestionarea cuvintelor evidențiate returnate de Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
-            // typeof(findInIdx('resursedus', queryString));
-            const rezProm = findInIdx('resursedus', queryString);
-            rezProm.then(r => {                
+            // resurse căutate după termenii cheie
+            const rezProm = findInIdx(query.index, trimmedQ, [["expertCheck", true]]);
+            rezProm.then(r => {              
                 socket.emit('searchres', r.body.hits.hits);
             }).catch(e => console.log(e));
-            
+
+            // agregare făcută după termenii cheie
+            // const aggProm = aggFromIdx(query.index, trimmedQ);
+            // aggProm.then(r => {              
+            //     socket.emit('searchres', r.body.hits.hits);
+            // }).catch(e => console.log(e)); 
         });
 
         // === PERSON === ::căutarea unui utilizator și reglarea înregistrărilor dintre ES și MONGODB
@@ -606,6 +689,15 @@ module.exports = function sockets (pubComm) {
         socket.on('allRes', () => {
             Resursa.find({}).exec().then(allRes => {
                 socket.emit('allRes', allRes);
+            }).catch(error => {
+                console.log(error);
+            });
+        });
+
+        // === PERSONALRES === ::TOATE RESURSELE UNUI UTILIZATOR
+        socket.on('usrRes', (id) => {
+            Resursa.find({idContributor: id}).exec().then(pRes => {
+                socket.emit('usrRes', pRes);
             }).catch(error => {
                 console.log(error);
             });

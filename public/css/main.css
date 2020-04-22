@@ -541,7 +541,7 @@ input[type='range']:focus {
     border-style: solid;
 }
 
-/* GESTIONAREA FORMULARULUI */
+/* === GESTIONAREA FORMULARULUI === */
 #form01adres {
     background-color: antiquewhite;
     height: 100%;
@@ -556,6 +556,10 @@ input[type='range']:focus {
 #form03 {
     margin: 0 auto;
     padding: 2rem;
+}
+
+#submitWrap {
+    padding-top: 1rem;
 }
 
 /* === ZONA DE ADMINISTRARE === */
@@ -627,7 +631,7 @@ input[type='range']:focus {
     background-color: beige;
 }
 
-/* RESURSĂ UNICĂ AFIȘATĂ */
+/* === RESURSĂ UNICĂ AFIȘATĂ === */
 
 .resursa {
     background-color: transparent;

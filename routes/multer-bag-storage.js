@@ -1,4 +1,4 @@
-var fs       = require('fs');
+var fs       = require('fs-extra');
 var path     = require('path');
 var BagIt    = require('bagit-fs');
 
@@ -18,6 +18,7 @@ Multer2Bag.prototype._handleFile = function _handleFile (req, file, cb) {
         var bag = BagIt(path, 'sha256', {'Contact-Name': `${req.user.googleProfile.name}`});
         var fileName = file.originalname;
 
+        // asigură originalitatea fișierelor.
         if (file.originalname === 'image.png') {
             fileName = file.originalname + `${Date.now()}`;
         }

@@ -1,7 +1,8 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const esClient = require('../elasticsearch.config');
-const userES7  = require('./user-es7');
+const schema  = require('./user-es7');
+const ES7Helper= require('./model-helpers/es7-helper');
 
 // Definirea unei scheme necesare verificării existenței utilizatorului.
 var Schema = mongoose.Schema;
@@ -37,119 +38,89 @@ var User = new Schema({
     virtuals: true
 }});
 
-/**
- * Funcția are rolul de a verifica dacă indexul (aliasul) există.
- * Dacă indexul nu există va fi creat și va fi indexat primul document.
- * În cazul în care indexul există, va fi creat document dacă acesta nu există deja.
- * @param {Object} doc Este un obiect tip document de Mongoose
- */
-async function searchCreateIdx (doc) {
-    try {
-        // constituirea unui subset de câmpuri pentru înregistrarea Elasticsearch
-        const data = {
-            id: doc._id,
-            created: doc.created,
-            email: doc.email,
-            roles: {
-                admin:     doc.roles.admin,
-                public:    doc.roles.public,
-                rolInCRED: doc.roles.rolInCRED,
-                unit:      doc.roles.unit
-            },
-            ecusoane: doc.ecusoane,
-            constributions: doc.contributions,
-            googleID: doc.googleID,
-            googleProfile: {
-                name: doc.googleProfile.name,
-                family_name: doc.googleProfile.family_name
-            }
-        };
-
-        // fii foarte atent, testează după alias, nu după indexul pentru care se creează alias-ul.
-        await esClient.indices.exists(
-            {index: process.env.USR_IDX_ALS}, 
-            {errorTrace: true}
-        ).then(async function clbkAfterExist (rezultat) {
-            //console.log(rezultat);
-            try {                    
-                if (rezultat.statusCode === 404) {
-                    console.log("Indexul și alias-ul nu există. Le creez acum!");
-                    
-                    // creează indexul
-                    await esClient.indices.create({
-                        index: process.env.USR_IDX_ES7,
-                        body: userES7
-                    },{errorTrace: true}).then(r => {
-                        console.log('Am creat indexul users cu detaliile: ', r.statusCode);
-                    }).catch(e => console.error);
-
-                    // creează alias la index
-                    await esClient.indices.putAlias({
-                        index: process.env.USR_IDX_ES7,
-                        name: process.env.USR_IDX_ALS
-                    },{errorTrace: true}).then(r => {
-                        console.log('Am creat alias-ul users0 cu detaliile: ', r.statusCode);
-                    }).catch(e => console.error);
-                    
-                    // INDEXEAZĂ DOCUMENT!!!
-                    await esClient.create({
-                        id: data.id,
-                        index: process.env.USR_IDX_ALS,
-                        refresh: "true",
-                        body: data
-                    }); 
-                } else {
-                    // Verifică dacă nu cumva documentul deja există în index
-                    const {body} = await esClient.exists({
-                        index: process.env.USR_IDX_ALS,
-                        id: data.id
-                    });
-                    
-                    if (body == false) {            
-                        // INDEXEAZĂ DOCUMENT!!!
-                        await esClient.create({
-                            id: data.id,
-                            index: process.env.USR_IDX_ALS,
-                            refresh: "true",
-                            body: data
-                        }); 
-                        console.log("Am reindexat un singur user!");
-                    }
-                }
-            } catch (error) {
-                if (error) console.error;
-            }
-        });
-    } catch (error) {
-        console.log(error);  
-    }
-};
-
 // Adăugarea middleware pe `post` pentru a constitui primul index și alias-ul.
 User.post('save', function clbkUsrSave (doc, next) {
-    searchCreateIdx(doc);
+    // constituirea unui subset de câmpuri pentru înregistrarea Elasticsearch
+    const data = {
+        id:              doc._id,
+        created:         doc.created,
+        email:           doc.email,
+        roles: {
+            admin:       doc.roles.admin,
+            public:      doc.roles.public,
+            rolInCRED:   doc.roles.rolInCRED,
+            unit:        doc.roles.unit
+        },
+        ecusoane:        doc.ecusoane,
+        constributions:  doc.contributions,
+        googleID:        doc.googleID,
+        googleProfile: {
+            name:        doc.googleProfile.name,
+            family_name: doc.googleProfile.family_name
+        }
+    };
+    ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.USR_IDX_ES7, process.env.USR_IDX_ALS);
     next(); 
 });
 
 // Adăugare middleware pe `post` pentru toate operațiunile `find`
 User.post(/^find/, async function clbkUsrFind (doc, next) {
-    // Când se face căutarea unui utilizator folosindu-se metodele`find`, `findOne`, `findOneAndUpdate`, vezi dacă a fost indexat. Dacă nu, indexează-l.
-
-    // cazul `find`
-    if (Array.isArray(doc)){
-        doc.map(async (user) => {
-            const {body} = await esClient.exists({
-                index: process.env.USR_IDX_ALS,
-                id: user._id
+    // Când se face căutarea unui utilizator folosindu-se metodele`find`, `findOne`, `findOneAndUpdate`, vezi dacă a fost indexat. Dacă nu, indexează-l!
+    try {
+        // cazul `find` când rezultatele sunt multiple.
+        if (Array.isArray(doc)){
+            doc.map(async (user) => {
+                const {body} = await esClient.exists({
+                    index: process.env.USR_IDX_ALS,
+                    id: user._id
+                });
+                // console.log("Userul este indexat în ES? ", body);            
+                if (body == false) {
+                    // indexează documentul
+                    const data = {
+                        id:              user._id,
+                        created:         user.created,
+                        email:           user.email,
+                        roles: {
+                            admin:       user.roles.admin,
+                            public:      user.roles.public,
+                            rolInCRED:   user.roles.rolInCRED,
+                            unit:        user.roles.unit
+                        },
+                        ecusoane:        user.ecusoane,
+                        constributions:  user.contributions,
+                        googleID:        user.googleID,
+                        googleProfile: {
+                            name:        user.googleProfile.name,
+                            family_name: user.googleProfile.family_name
+                        }
+                    };
+                    ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.USR_IDX_ES7, process.env.USR_IDX_ALS);
+                }
             });
-            // console.log("Userul este indexat în ES? ", body);            
-            if (body == false) {
-                // indexează documentul
-                searchCreateIdx(user);
-            }
-        });
-    } else {
-        searchCreateIdx(doc);
+        } else {
+            const data = {
+                id:              doc._id,
+                created:         doc.created,
+                email:           doc.email,
+                roles: {
+                    admin:       doc.roles.admin,
+                    public:      doc.roles.public,
+                    rolInCRED:   doc.roles.rolInCRED,
+                    unit:        doc.roles.unit
+                },
+                ecusoane:        doc.ecusoane,
+                constributions:  doc.contributions,
+                googleID:        doc.googleID,
+                googleProfile: {
+                    name:        doc.googleProfile.name,
+                    family_name: doc.googleProfile.family_name
+                }
+            };
+            ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.USR_IDX_ES7, process.env.USR_IDX_ALS);
+        }
+    } catch (error) {
+        console.error(JSON.stringify(error, null, 2));
     }
     next();
 });

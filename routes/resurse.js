@@ -18,7 +18,4 @@ router.get('/adauga', cleanCache, resurseCtrl.describeResource);
 /* GET::/resurse/:id */
 router.get('/:id', resurseCtrl.loadOneResource);
 
-/* POST RUTĂ DE ÎNCĂRCARE FIȘIERE */
-// router.post('/upload', resurseCtrl.uploadResource);
-
 module.exports = router;

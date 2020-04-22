@@ -82,9 +82,9 @@
                   {{!-- INPUT Persoana responsabilă --}}
                   <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.googleProfile.name}}" required>
                   {{!-- Câmpuri ascunse --}}
-                  <input id="idUser"    name="idUser" type="hidden" value="{{user._id}}">
-                  <input id="emailUser" name="emailUser" type="hidden" value="{{user.email}}">
-                  <input id="nameUser"  name="nameUser"  type="hidden" value="{{user.googleProfile.name}}">
+                  <input id="idUser"       name="idUser"       type="hidden" value="{{user._id}}">
+                  <input id="emailContrib" name="emailContrib" type="hidden" value="{{user.email}}">
+                  <input id="nameUser"     name="nameUser"     type="hidden" value="{{user.googleProfile.name}}">
                   <br>
               </div>
               <small>Autorii vor fi trecuți în continuarea numelui contribuitorului menționând Nume Prenume. Aceștia vor fi delimitați prin virgule</small>
@@ -1083,9 +1083,19 @@
           <legend>Introdu mai jos în editor părțile componente ale RED-ului și o descriere, dacă este nevoie:</legend>
           {{!-- Integrarea editorului de text --}}
           <div id="codex-editor"></div>
-          <button id="continutRes" class="btn btn-warning">Salvează conținutul introdus</button>
         </fieldset>
         {{!-- EDITOR pentru introducerea letrică END --}}
+
+        {{!-- UPLOADER --}}
+        {{!-- <div>
+          <label>Încarcă resurse</label>
+          <input type="file" name="multiple_images" multiple />
+        </div>
+        <div>
+            <input type="submit" name="btn_upload_multiple_images" value="Upload" />
+        </div> --}}
+        {{!-- UPLOADER END --}}
+
       </div>
       {{!-- Verificarea fișei și constituirea înregistrării [form-group] END--}}
       {{!-- Selector de imagine pentru coperta resursei --}}
@@ -1120,7 +1130,8 @@
       {{!-- ETICHETE END --}}
 
       <div id="submitWrap" class="form-group" data-parent="#accordionFrm">
-        <button id="submit" type="submit" class="btn btn-danger">Adaugă resursa</button>
+        <button id="submit" type="button" class="btn btn-success">Adaugă resursa</button>
+        <button id="delete" type="button" class="btn btn-danger">Renunță</button>
       </div>
     </div>
     {{!-- SECȚIUNEA - #4 Verifică fișa și trimite resursa END --}}

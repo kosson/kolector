@@ -60,7 +60,9 @@ router.get('/', function clbkAdmRoot (req, res) {
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
             csfrToken: req.csrfToken(),
-            scripts
+            scripts,
+            styles,
+            activeAdmLnk: true
         });
     } else {
         res.redirect('/401');
@@ -96,11 +98,11 @@ router.get('/reds', function clbkAdmReds (req, res) {
             {style: '/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css'}
         ];
         res.render('reds-data-visuals', {
-            title:   "REDs data visuals",
-            user:    req.user,
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "/img/red-logo-small30.png",
-            credlogo: "../img/CREDlogo.jpg",
+            title:     "REDs data visuals",
+            user:      req.user,
+            style:     "/lib/fontawesome/css/fontawesome.min.css",
+            logoimg:   "/img/red-logo-small30.png",
+            credlogo:  "../img/CREDlogo.jpg",
             csfrToken: req.csrfToken(),
             scripts,
             styles,
