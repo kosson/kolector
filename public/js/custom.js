@@ -166,11 +166,6 @@ $(document).ready(function () {
 
     //Mergi la pasul patru al formularului
     $('#next-5').click(function () {
-      
-    // reset things for the editors
-    $("#editor-livresq").hide();
-    $("#editor-default").show();
-      
       pas3(); // colectează datele de la pasul 3 al formularului.
       // console.log(RED);
       // ascunde divul cu id-ul `trei și arată-l pe cel cu id-ul `patru`
@@ -191,19 +186,6 @@ $(document).ready(function () {
       $('#progressBar').css("width", "75%");
       $('#progressText').text('Pasul 3');
     });
-
-
-    // begin of ~custom livresq
-    $("#editor-option1").on("click", function(){
-      $("#editor-livresq").hide();
-      $("#editor-default").show();
-    });
-    
-    $("#editor-option2").on("click", function(){      
-      $("#editor-default").hide();
-      $("#editor-livresq").show();
-    });
-    // end of ~custom livresq
 
 });
 
