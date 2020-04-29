@@ -5,11 +5,10 @@ const mongoose = require('mongoose');
 const Resursa  = require('../models/resursa-red'); // Adu modelul resursei
 
 // console.log(result.length);
-router.get('/', function clbkTootRoute (req, res, next) {
+router.get('/', function clbkRootRoute (req, res, next) {
     // let localizat = moment(result.date).locale('ro').format('LLL');
     // result.dataRo = `${localizat}`; // formatarea datei pentru limba română.
 
-    //TODO: Adu-mi ultimele 10 resurse care sunt marcate a fi publice
     Resursa.where({'generalPublic': true}).countDocuments(function cbCountResPub (err, count) {
         if (err) throw err;
         // console.log('Numărul resurselor este: ', count);
@@ -32,11 +31,11 @@ router.get('/', function clbkTootRoute (req, res, next) {
         ];
         
         res.render('index', {
-            title:   "RED colector",
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "img/rED-logo192.png",
-            user:    req.user,
-            resurse: newResultArr,
+            title:     "RED colector",
+            style:     "/lib/fontawesome/css/fontawesome.min.css",
+            logoimg:   "img/rED-logo192.png",
+            user:      req.user,
+            resurse:   newResultArr,
             csfrToken: req.csrfToken(),
             scripts
         });

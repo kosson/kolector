@@ -3,7 +3,7 @@ const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
 const CompetentaS   = require('./competenta-specifica');
 const esClient      = require('../elasticsearch.config');
-const schema = require('./resursa-red-es7');
+const schema        = require('./resursa-red-es7');
 const editorJs2TXT  = require('../routes/controllers/editorJs2TXT'); 
 const ES7Helper     = require('./model-helpers/es7-helper');
 
@@ -72,6 +72,10 @@ var ResursaSchema = new mongoose.Schema({
     invatarea:     [], // [valoare din vocabular] De ex: „la clasă”, „individual”, „grupat”
 
     // #5 DESCRIERE
+    rol:           String, // Activități de învățare susținute sustine/complementar
+    abilitati:     String, // RED-ul necesită competențe digitale de nivelul: avansat/mediu/minim
+    componente:    String, // Sunt linkuri către părți componente care au fost luate din alte părți sau care au for incorporate prin reinterpretare, devzoltare, etc
+    materiale:     [],     // Sunt materialele necesare creări mediului de vizualizare, reproducere, interpretare, etc
     description:   {type: String},
     identifier:    [], // Sunt diferiții identificatori ai unei resurse. Poate fi orice string, fie text, nume fișier, fie url sau ISBN... Se generează automat la încărcare. Va apărea doar la momentul accesării! Nu este disponibil la momentul încărcării.
 
@@ -139,6 +143,9 @@ ResursaSchema.post('save', function clbkPostSave1 (doc, next) {
         discipline:       obi.discipline,
         disciplinePropuse:obi.disciplinePropuse,
         competenteGen:    obi.competenteGen,
+        rol:              obi.rol,
+        abilitati:        obi.abilitati,
+        materiale:        obi.materiale,
         grupuri:          obi.grupuri,
         domeniu:          obi.demersuri,
         spatii:           obi.spatii,
@@ -197,6 +204,9 @@ ResursaSchema.post(/^find/, async function clbkResFind (doc, next) {
                             discipline:       obi.discipline,
                             disciplinePropuse:obi.disciplinePropuse,
                             competenteGen:    obi.competenteGen,
+                            rol:              obi.rol,
+                            abilitati:        obi.abilitati,
+                            materiale:        obi.materiale,
                             grupuri:          obi.grupuri,
                             domeniu:          obi.demersuri,
                             spatii:           obi.spatii,
@@ -259,6 +269,9 @@ ResursaSchema.post(/^find/, async function clbkResFind (doc, next) {
                         discipline:       obi.discipline,
                         disciplinePropuse:obi.disciplinePropuse,
                         competenteGen:    obi.competenteGen,
+                        rol:              obi.rol,
+                        abilitati:        obi.abilitati,
+                        materiale:        obi.materiale,
                         grupuri:          obi.grupuri,
                         domeniu:          obi.demersuri,
                         spatii:           obi.spatii,

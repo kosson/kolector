@@ -16,7 +16,7 @@ let topg = page * RESULTS_PER_PAGE;
 exports.findInIdx = async function findInIdx (idxname, queryString, TrFaFields) {
     try {
         let parts = queryString.split(' '); // array părți sintagmă
-        console.log(parts);        
+        // console.log(parts);        
         // constituirea array-ului 
         const must_match_all = {
             query: {
@@ -41,6 +41,8 @@ exports.findInIdx = async function findInIdx (idxname, queryString, TrFaFields) 
             must_match_all.query.bool.must.push(obi_must);
         }
         // INTRODU CÂMPURILE DUPĂ CARE TREBUIE FĂCUTĂ FILTRAREA
+        // console.log(TrFaFields);
+        
         if (TrFaFields.length >= 1) {
             for (let tfts of TrFaFields) {
                 let filter_must = {

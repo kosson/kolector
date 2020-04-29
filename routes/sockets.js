@@ -145,12 +145,16 @@ module.exports = function sockets (pubComm) {
                 competenteGen:   RED.competenteGen,
                 competenteS:     RED.competenteS,
                 activitati:      RED.activitati,
+                relatedTo:       RED.relatedTo,
                 grupuri:         RED.grupuri,
                 domeniu:         RED.domeniu,
                 functii:         RED.functii,
                 demersuri:       RED.demersuri,
                 spatii:          RED.spatii,
                 invatarea:       RED.invatarea,
+                rol:             RED.rol,
+                abilitati:       RED.abilitati,
+                componente:      RED.componente,
                 description:     RED.description,
                 dependinte:      RED.dependinte,
                 coperta:         RED.coperta,
@@ -442,7 +446,7 @@ module.exports = function sockets (pubComm) {
                         },
                         refresh: true
                     }).then(result => {
-                        console.log(result.body.result);
+                        // console.log(result.body.result);
                     }).catch(err => console.error);
                 }).catch(err => {
                     if (err) throw err;
@@ -489,21 +493,27 @@ module.exports = function sockets (pubComm) {
         });
         
         // === SEARCHRES === ::Căutarea resurselor în Elasticsearch
-        socket.on('searchres', (query) => {
-            // scoate spații pe capete și trunchiază textul.
-            let trimmedQ = query.fragSearch.trim();
-            let queryString = '';
-            if (trimmedQ.length > 250) {
-                queryString = trimmedQ.slice(0, 250);
+        socket.on('searchres', (query) => {            
+            if(query) {
+                // scoate spații pe capete și trunchiază textul.
+                let trimmedQ = query.fragSearch.trim();
+                let queryString = '';
+                if (trimmedQ.length > 250) {
+                    queryString = trimmedQ.slice(0, 250);
+                } else {
+                    queryString = trimmedQ;
+                }
+                // TODO: Integrează gestionarea cuvintelor evidențiate returnate de Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
+                // resurse căutate după termenii cheie
+                // console.log(query);
+                
+                const rezProm = findInIdx(query.index, trimmedQ, query.fields);
+                rezProm.then(r => {              
+                    socket.emit('searchres', r.body.hits.hits);
+                }).catch(e => console.log(e));
             } else {
-                queryString = trimmedQ;
+                rre('mesaje', "Nu am primit niciun termen de căutare...");
             }
-            // TODO: Integrează gestionarea cuvintelor evidențiate returnate de Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
-            // resurse căutate după termenii cheie
-            const rezProm = findInIdx(query.index, trimmedQ, [["expertCheck", true]]);
-            rezProm.then(r => {              
-                socket.emit('searchres', r.body.hits.hits);
-            }).catch(e => console.log(e));
 
             // agregare făcută după termenii cheie
             // const aggProm = aggFromIdx(query.index, trimmedQ);

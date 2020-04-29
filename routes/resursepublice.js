@@ -6,30 +6,41 @@ const moment  = require('moment');
 const Resursa = require('../models/resursa-red'); // Adu modelul resursei
 var content2html = require('./controllers/editorJs2HTML');
 
+// Indexul de căutare
+let idxRes = process.env.RES_IDX_ALS;
+
 // ========== RESURSE PUBLICE ========
 router.get('/', (req, res) => {
+    Resursa.where({'generalPublic': true}).countDocuments(function cbCountResPub (err, count) {
+        if (err) throw err;
+        // console.log('Numărul resurselor este: ', count);
+    });
+
     let resursePublice = Resursa.find({'generalPublic': 'true'}).sort({"date": -1}).limit(8);
     let promiseResPub = resursePublice.exec();
     promiseResPub.then((result) => {
+        let newResultArr = [];
+
+        result.map(function clbkMapResult (obi) {
+            const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+            // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
+            newObi.dataRo = moment(newObi.date).locale('ro').format('LLL');
+            newResultArr.push(Object.assign(newObi));
+        });
 
         let scripts = [     
             {script: '/lib/moment/min/moment.min.js'}        
         ];
 
-        // LOCALIZARE DATĂ ÎN ROMÂNĂ
-        let newResultArr = []; // noul array al obiectelor resursă
-        result.map(function clbkMapResult (obi) {
-            obi.dataRo = moment(obi.date).locale('ro').format('LLL');
-            newResultArr.push(obi);
-        });
-        
         res.render('resursepublice', {
-            title:   "Resurse publice",
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "img/rED-logo192.png",
-            csfrToken: req.csrfToken(),
-            user:    req.user,
-            resurse: newResultArr,
+            title:        "Resurse publice",
+            style:        "/lib/fontawesome/css/fontawesome.min.css",
+            logoimg:      "img/rED-logo192.png",
+            csfrToken:    req.csrfToken(),
+            user:         req.user,
+            resurse:      newResultArr,
+            activeResLnk: true,
+            resIdx:       idxRes,
             scripts
         });
     }).catch((err) => {
@@ -38,9 +49,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-    let query = Resursa.findById(req.params.id).populate({
-        path: 'competenteS'
-    });
+    let query = Resursa.findById(req.params.id).populate({path: 'competenteS'});
     query.then(resursa => {
         let scripts = [      
             {script: '/js/redincredadmin.js'},       
@@ -64,13 +73,13 @@ router.get('/:id', (req, res) => {
             
             // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
             res.render('resursa-publica', {
-                user:    req.user,
-                title:   "RED public",
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                logoimg: "/img/red-logo-small30.png",
-                credlogo: "../img/CREDlogo.jpg",
+                user:      req.user,
+                title:     "RED public",
+                style:     "/lib/fontawesome/css/fontawesome.min.css",
+                logoimg:   "/img/red-logo-small30.png",
+                credlogo:  "../img/CREDlogo.jpg",
                 csfrToken: req.csrfToken(),
-                resursa: newObi,
+                resursa:   newObi,
                 scripts
             });
         } else {

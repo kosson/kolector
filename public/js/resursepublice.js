@@ -69,19 +69,24 @@ $('#selectordisc').on('change', function () {
     pubComm.on('searchresdisc', populeazaCuRes);
 });
 
-// LISTENER pentru căutarea generală
-$('#generalsearch').on('click', function (event) {
-    event.preventDefault();
-    // selectează valoarea din input și trimite-o în backend
-    var searchterms = $('#searchterms').val();
-    if (searchterms) {
-        pubComm.emit('searchres', searchterms);
+// === BUTONUL DE SEARCH ===
+const searchGenBtn = document.getElementById('generalsearch'); // butonul de search
+let index = searchGenBtn.dataset.idx; // extrage indexul din atributul data.
+searchGenBtn.addEventListener('click', function clbkSearchGenBtn (evt) {
+    evt.preventDefault();
+    const fragSearch = document.getElementById('searchterms').value;
+    if (fragSearch.length > 250) {
+        fragSearch = fragSearch.slice(0, 250);
     }
+    pubComm.emit('searchres', {
+        index, 
+        fragSearch, 
+        fields: [
+            ["generalPublic", true]
+        ]
+    }); // emite eveniment în backend
 });
-
-// LISTENER pentru ENTER pe căutare
-$('#searchterms').on('keyup', function(event) {
-    event.preventDefault();
+searchGenBtn.addEventListener('keyup', function clbkKupGenBtn () {
     if (event.keyCode === 13) {
         $('#generalsearch').click();
     }

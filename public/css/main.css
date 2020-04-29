@@ -360,10 +360,90 @@ tr.shown td.details-control {
     background: url('../img/details_close.png') no-repeat center center;
 }
 
-/* GESTIONAREA FORMULARULUI DE DEPUNERE RESURSĂ */
+/* --- GESTIONAREA FORMULARULUI DE DEPUNERE RESURSĂ --- */
 
 #doi, #trei, #patru {
     display: none;
+}
+
+/* FORMAREA BUTOANELOR DISCIPLINELOR */
+
+#discipline {
+    /* display: flex;
+    flex-wrap: wrap; */
+}
+
+.discbtn {
+    background-color: rgb(229, 127, 255);
+}
+
+.btn-success { background-color: red; }
+
+.disciplina {
+    margin: .2rem;
+}
+
+/* FORMAREA OPȚIUNILOR LA MOMENTUL ALEGERII DISCIPLINELOR */
+#multilevdisc {
+    display: flex;
+    border-top: #999 solid .1rem;
+    padding: .3rem;
+    background-color: rgba(255, 255, 255, .15);
+    backdrop-filter: blur(5px);
+}
+
+#v-pills-tabContent {
+    /* display: flex; */
+    /* flex-wrap: wrap; */
+    /* flex-direction: row; */
+    position: relative;
+}
+
+/* ELEMENTELE DE SECȚIE PENTRU DISCIPLINE */
+
+a[class$="0"] {
+    background-color: rgba(76, 243, 34, 0.623);
+    margin: 0.1rem;
+}
+
+a[class$="1"] {
+    background-color: #FC0;
+    margin: 0.1rem;
+}
+
+a[class$="2"] {
+    background-color: #FC0;
+    margin: 0.1rem;
+}
+
+a[class$="3"] {
+    background-color: #FC0;
+    margin: 0.1rem;
+}
+
+a[class$="4"] {
+    background-color: #FC0;
+    margin: 0.1rem;
+}
+
+a[class$="5"] {
+    background-color: #FC0;
+    margin: 0.1rem;
+}
+
+a[class$="6"] {
+    background-color: coral;
+    margin: 0.1rem;
+}
+
+a[class$="7"] {
+    background-color: #FC0;
+    margin: 0.1rem;
+}
+
+a[class$="8"] {
+    background-color: #FC0;
+    margin: 0.1rem;
 }
 
 /* GESTIONAREA SELECTORULUI DE IMAGINE COPERTĂ - FORM 01 */
@@ -857,6 +937,7 @@ input[type='range']:focus {
     padding: 1rem;
 }
 
+
 /* === STAREA RESURSELOR LA ADMINISTRARE === */
 
 .resvalid, .resinvalid, .redpublic {
@@ -885,37 +966,6 @@ input[type='range']:focus {
 
 .formtbls thead th {
     padding: 2rem;
-}
-
-/* FORMAREA BUTOANELOR DISCIPLINELOR */
-
-#discipline {
-    /* display: flex;
-    flex-wrap: wrap; */
-}
-
-.discbtn {
-    background-color: rgb(229, 127, 255);
-}
-
-.btn-success { background-color: red; }
-
-.disciplina {
-    margin: .2rem;
-}
-
-/* FORMAREA OPȚIUNILOR LA MOMENTUL ALEGERII DISCIPLINELOR */
-#multilevdisc {
-    display: flex;
-    border-top: #999 solid .1rem;
-    padding: .3rem;
-}
-
-#v-pills-tabContent {
-    /* display: flex; */
-    /* flex-wrap: wrap; */
-    /* flex-direction: row; */
-    position: relative;
 }
 
 /* FORMATAREA AFIȘĂRII UNEI RESURSE PUBLICULUI */

@@ -3,16 +3,20 @@
 {{!-- {{> nav-resurse-publice}} --}}
 {{> messages}}
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+{{#each scripts}}
+    <script src="{{script}}" charset="utf-8"></script>
+{{/each}}
+
     <div id="resursepublice">
         <div class="resurse">
 
-            <div id="searchpublic" class="container pb-3">
+            <div id="searchpublic" class="container pb-3 searchFrm">
                 {{!-- Câmpul de căutare --}}
                 <div class="col-12">
                     <div class="input-group">
                         <input id="searchterms" class="form-control border-secondary py-2" type="search" value="">
                         <div class="input-group-append">
-                            <button id="generalsearch" class="btn btn-outline-secondary" type="button">
+                            <button id="generalsearch" class="btn btn-outline-secondary" data-idx="{{this.resIdx}}" type="button">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
@@ -20,11 +24,9 @@
                 </div>
                 
                 {{!-- Mecanismele de selecție a rezultatelor afișate --}}
-                <div id="selectors" class="container-fluid">
+                {{!-- <div id="selectors" class="container-fluid">
                     <form>
-                        {{!-- Clasa --}}
                         <div id="selectlevel" class="form-group d-flex flex-row">
-                            {{!-- <p class="selectortxt">Clasa: </p> --}}
                             <label for="selectclasa" class="selectortxt col-form-label mt-1 pr-1">Clasa:</label>
                             <div class="col-sm-10 row align-items-center">
                                 <input type="range" min="0" max="8" value="0" step="1" list="tickmarks" id="selectclasa" oninput="valoareclasa.value = selectclasa.value">
@@ -42,12 +44,11 @@
                                 <output class="pl-1" id="valoareclasa" for="selectclasa"> 0</output>
                             </div>            
                         </div>
-                        {{!-- Este diviziunea unde se generează selectul pentru discipline --}}
                         <div id="selectordisc" class="form-group">
                         </div>
                         <div class="invalid-feedback">Example invalid custom select feedback</div>
                     </form>
-                </div>
+                </div> --}}
             </div>
             <div id="respubselected" class="resurse">
                 {{!-- Background video --}}
@@ -63,7 +64,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h5 class="card-title">
-                                <a class="btn btn-dark" href="/resursepublice/{{this.id}}" class="">{{this.title}}</a>
+                                <a class="btn btn-dark" href="/resursepublice/{{this._id}}" class="">{{this.title}}</a>
                             </h5>
                             <h6 class="card-subtitle mb-2">{{this.autori}}</h6>
                             <span class="text-muted">{{this.dataRo}}</span>                                   

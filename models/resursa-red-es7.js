@@ -39,6 +39,9 @@ const resursaRedES7 = {
             discipline:       {type: "text", fields: {keyword: {type: "keyword"}}},
             disciplinePropuse:{type: "text", fields: {keyword: {type: "keyword"}}},
             competenteGen:    {type: "text", fields: {keyword: {type: "keyword"}}},
+            rol:              {type: "keyword"},
+            abilitati:        {type: "keyword"},
+            materiale:        {type: "keyword"},
             grupuri:          {type: "text", fields: {keyword: {type: "keyword"}}},
             domeniu:          {type: "text", fields: {keyword: {type: "keyword"}}},
             functii:          {type: "text", fields: {keyword: {type: "keyword"}}},
@@ -60,7 +63,7 @@ const resursaRedES7 = {
         }
     },
     aliases: {
-        reds0: {}
+        resedus: {}
     }
 };
 

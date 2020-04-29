@@ -25,9 +25,6 @@ function content2text (blocuri) {
                         articleTXT += `${lss}\n`;
                     }
                     break;
-                case 'attaches':
-                    articleTXT += `${obj.data.file.name}\n`;
-                    break;
                 case 'embed':
                     let ytbLnk = `${obj.data.source}`;
                     let ytbID = ytbLnk.match(/([A-Z])\w+/)[0];

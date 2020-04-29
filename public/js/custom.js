@@ -88,14 +88,14 @@ $(function(){ // a self calling function
   onScrollInit( $('.staggered-animation'), $('.staggered-animation-container') ); //function call with items and trigger
 });
 
-/* ===== GESTIONAREA FORMULARULUI DE INTRODUCERE A RESURSELOR ====== */
+/* === GESTIONAREA FORMULARULUI DE INTRODUCERE A RESURSELOR === */
 $(document).ready(function () {
 
   // Avans către pasul doi al formularului
   $('#next-1').click(function (e) {
     e.preventDefault();
 
-    /*===== PAS 1 Formular ====== */
+    /* === PAS 1 Formular === */
     // Validare pe titlul resursei
     if ($('#titlu-res').val() == '') {
       // $('#titluErr').text('Trebuie neapărat să denumești resursa!!!'); // Folosește dacă revii la texte afișate
@@ -185,4 +185,17 @@ $(document).ready(function () {
       $('#progressBar').css("width", "75%");
       $('#progressText').text('Pasul 3');
     });
+
+    // begin of ~custom livresq
+    $("#editor-option1").on("click", function(){
+      $("#editor-default").show();
+      $("#editor-livresq").hide();
+  });
+  $("#editor-option2").on("click", function(){
+    
+      $("#editor-default").hide();
+      $("#editor-livresq").show();
+  });
+  // end of ~custom livresq
+
 });

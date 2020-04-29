@@ -33,7 +33,7 @@
                 </div>
 
                 {{!-- INPUT - TITLU --}}
-                <input id="titlu-res" class="form-control" type="text" name="titlu" aria-label="Titlul resursei" aria-describedby="titlu-label" placeholder="ex: Bătălia de la Călugăreni" required>
+                <input id="titlu-res" class="form-control" type="text" name="titlu" aria-label="Titlul resursei" aria-describedby="titlu-label" placeholder="ex: Drepturile și obligațiile copilului" required>
                 {{!-- Validare -Helper afisare text direct / Am ales să folosesc toastmessage [plugin]--}}
                 <strong id="titluErr" class="form-text text-danger"></strong>
 
@@ -87,7 +87,7 @@
                   <input id="nameUser"     name="nameUser"     type="hidden" value="{{user.googleProfile.name}}">
                   <br>
               </div>
-              <small>Autorii vor fi trecuți în continuarea numelui contribuitorului menționând Nume Prenume. Aceștia vor fi delimitați prin virgule</small>
+              <small class="form-text text-muted">Autorii vor fi trecuți în continuarea numelui contribuitorului menționând Nume Prenume. Aceștia vor fi delimitați prin virgule</small>
               {{!-- Adăugarea userului care propune resursa END --}}
             </fieldset>
             {{!-- MENȚIUNEA DE RESPONSABILITATE END --}}
@@ -99,16 +99,28 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">Maxim 1000 de caractere</span>
                 </div>
-                <textarea id="descriereRed" class="form-control" aria-label="Descrierea resursei" rows="3"></textarea>
+                <textarea id="descriereRed" class="form-control" aria-label="Descrierea resursei" rows="3" 
+                placeholder="ex: Această resursă este un material video animat care facilitează înțelegerea drepturilor copilului și a obligațiilor asociate. Copiii se regăsesc în personajele din film și răspund la întrebările formulate de acestea. Materialul este interactiv și sprijină profesorul atât în activitatea de predare, cât și în cea de evaluare formativă."></textarea>
               </div>
             </fieldset>
             {{!-- Descrierea resursei educaționale END--}}
 
             {{!-- HELP Titlul --}}
             <small class="form-text text-muted">
-              În maxim 1000 caractere autorul descrie conceptele/ activitățile/ conținuturile importante ale resursei, astfel încât să existe o corelație între titlu, descriere și conținut.
+              În maxim 1000 caractere autorul face o descriere sintetică a conținutului resursei și a contextelor concrete de învățare pentru care acesta este relevantă.<br/>
+              Recomandăm să fie evidențiate pe scurt elementele de noutate și avantajele din perspectiva învățării/elevului.
             </small>
             {{!-- HELP Titlul End--}}
+            
+            {{!-- GRUPURILE ȚINTĂ --}}
+              <div class="form-group">
+                <h3>Activități de învățare susținute</h3>
+                <select class="form-control" id="roluri">
+                  <option value="resursa susține o activitate de învățare indicată în programa școlară" selected>Resursa susține o activitate de învățare indicată în programa școlară</option>
+                  <option value="promovează o nouă activitate de învățare complementară celor din programa școlară">Promovează o nouă activitate de învățare complementară celor din programa școlară</option>
+                </select>
+              </div>
+            {{!-- GRUPURILE ȚINTĂ END--}}
             {{!-- Descrierea resursei educaționale END --}}
 
             {{!-- LICENȚIEREA RESURSEI --}}
@@ -160,31 +172,19 @@
           <div id="sec02" class="form-group" aria-labelledby="heading02" data-parent="#accordionFrm">
             {{!-- Selectări de arie --}}
             <fieldset>
-              <legend>Aria curriculară din care face parte disciplina</legend>
+              <legend>Aria/arii curriculară(e) relevante pentru resursa propusă</legend>
               {{!-- ARIE - Selector În caz de selecție multiplă, avem un caz de transdisciplinaritate--}}
               <div class="form-group">
                 <p>Selectarea corectă a ariei este primul criteriu de încadrare a resursei. Se poate opta pentru mai multe arii curriculare atunci când resursa are un caracter transversal.</p>
-                <select id="arii-curr" class="form-control custom-select" multiple>
-                  <optgroup label="Limbă și comunicare">
-                    <option data-arie="LbCom"         value="Limbă și comunicare">Limbă și comunicare [general]</option>
-                    <option data-arie="LbComLbRomMin" value="Limba și literatura romana (pt. elevi care învață în limba maternă)">Limba și literatura romana (pt. elevi care învață în limba maternă)</option>
-                    <option data-arie="LbComLbMat"    value="Limbi materne">Limbi materne</option>
-                    <option data-arie="LbComLbMod"    value="Limbi moderne">Limbi moderne</option>
-                  </optgroup>
-                  <option data-arie="MatStNat"        value="Matematică și științe ale naturii">Matematică și științe ale naturii</option>
-                  <optgroup label="Om și societate">
-                    <option data-arie="OmSiSoc"       value="Om și societate">Om și societate [general]</option>
-                    <option data-arie="OmSiSocIstMin" value="Istorie minorități">Istorie minorități</option>
-                    <option data-arie="OmSiSocRel"    value="Religii">Religii</option>
-                  </optgroup>
-                  <option data-arie="Arte" value="Arte">Arte</option>
-                  <optgroup label="Educație fizică și sport">
-                    <option data-arie="EdFizSiSp"        value="Educație fizică și sport">Educație fizică și sport [general]</option>
-                    <option data-arie="EdFizSiSpPrSpPra" value="Pregătire sportivă practică">Pregătire sportivă practică</option>              
-                  </optgroup>
-                  <option data-arie="Teh"        value="Tehnologii">Tehnologii</option>
-                  <option data-arie="ConsOri"    value="Consiliere și orientare">Consiliere și orientare</option>
-                  <option data-arie="CurrDecSco" value="Curriculum la decizia școlii">Curriculum la decizia școlii</option>
+                <select id="arii-curr" class="form-control custom-select" size="8" multiple>
+                  <option data-lbcom   ="lbcom"    value="Limbă și comunicare">Limbă și comunicare</option>
+                  <option data-matstnat="matstnat" value="Matematică și științe ale naturii">Matematică și științe ale naturii</option>
+                  <option data-omsoc   ="omsoc"    value="Om și societate">Om și societate</option>
+                  <option data-edfizsp ="edfizsp"  value="Educație fizică și sport">Educație fizică și sport</option>
+                  <option data-arte    ="arte"     value="Arte">Arte</option>
+                  <option data-teh     ="teh"      value="Tehnologii">Tehnologii</option>
+                  <option data-consor  ="consor"   value="Consiliere și orientare">Consiliere și orientare</option>
+                  <option data-currsc  ="currsc"   value="Curriculum la decizia școlii">Curriculum la decizia școlii</option>
                 </select>
               </div>
               {{!-- Validare arie curriculară --}}
@@ -197,66 +197,372 @@
               <legend>Clasa</legend>
               {{!-- Orice modificare aduci, ține sincronizat și resursepublice.js -> vezi Map-ul; Acesta este nomenclatorul codurilor pe discipline. Mai este necesară și actualizarea Map-ului `pamCodDisc2Arie` --}}
               <div id="nivel">
+
                 {{!-- PRIMAR --}}
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox0" value="cl0"  
-                    data-art-viz0     ="Arte vizuale și abilități practice" 
-                    data-mate-med0    ="Matematică și explorarea mediului" 
-                    data-rel-ort0     ="Religie cultul ortodox" 
-                    data-rel-romcatro0="Religie Cultul Romano-Catolic de limba română"
-                    data-lbcom-rom0   ="Comunicare în limba română">
+                    data-lbcom-rom0      ="Comunicare în limba română" 
+                    data-lbcom-germana0  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba germană" 
+                    data-lbcom-maghiara0 ="Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară" 
+                    data-lbcom-rroma0    ="Comunicare în limba română pentru școlile și secțiile cu predare în limba rromani" 
+                    data-lbcom-sarba0    ="Comunicare în limba română pentru școlile și secțiile cu predare în limba sârbă" 
+                    data-lbcom-slovaca0  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba slovacă" 
+                    data-lbmat-bulgara0  ="Comunicare în limba maternă bulgară" 
+                    data-lbmat-ceha0     ="Comunicare în limba maternă cehă" 
+                    data-lbmat-croata0   ="Comunicare în limba maternă croată" 
+                    data-lbmat-germana0  ="Comunicare în limba maternă germană" 
+                    data-lbmat-gerinrom0 ="Comunicare în limba maternă germană în limba română" 
+                    data-lbmat-italiana0 ="Comunicare în limba maternă italiană" 
+                    data-lbmat-maghiara0 ="Comunicare în limba maternă maghiară" 
+                    data-lbmat-maginrom0 ="Comunicare în limba maternă maghiară în limba română"
+                    data-lbmat-minlbmag0 ="Comunicare în limba maternă maghiară pentru școlile sau clasele cu elevi aparținând minorității naționale maghiare care studiază în limba română (mag)"  
+                    data-lbmat-minlbrom0 ="Comunicare în limba maternă maghiară pentru școlile sau clasele cu elevi aparținând minorității naționale maghiare care studiază în limba română (rom)"  
+                    data-lbmat-neogreaca0="Comunicare în limba maternă neogreacă" 
+                    data-lbmat-polona0   ="Comunicare în limba maternă polonă"
+                    data-lbmat-rroma0    ="Comunicare în limba maternă rromani" 
+                    data-lbmat-rusa0     ="Comunicare în limba maternă rusă"
+                    data-lbmat-sarba0    ="Comunicare în limba maternă sârbă"
+                    data-lbmat-slovaca0  ="Comunicare în limba maternă slovacă" 
+                    data-lbmat-slolbcl0  ="Comunicare în limba maternă slovacă în limba slovacă" 
+                    data-lbmat-turca0    ="Comunicare în limba maternă turcă" 
+                    data-lbmat-ucraina0  ="Comunicare în limba maternă ucraineană" 
+                    data-lbmat-ucrarom0  ="Comunicare în limba maternă ucraineană în limba română" 
+                    data-lbmod0          ="Comunicarea în limba modernă" 
+                    data-mate-med0       ="Matematică și explorarea mediului" 
+                    data-rel-adv0        ="Religie Cultul Adventist" 
+                    data-rel-bapt0       ="Religie Cultul Baptist" 
+                    data-rel-evca0       ="Religie Cultul Evanghelic" 
+                    data-rel-crdev0      ="Cultul Creştin după Evanghelie" 
+                    data-rel-grcat0      ="Religie Cultul Greco-Catolic" 
+                    data-rel-ort0        ="Religie cultul ortodox" 
+                    data-rel-ortucr0     ="Religie Cultul Ortodox Ucrainean" 
+                    data-rel-pen0        ="Religie Cultul Penticostal" 
+                    data-rel-ref0        ="Religie Cultul Reformat" 
+                    data-rel-romcatmg0   ="Religie Cultul Romano-Catolic de limbă maghiară" 
+                    data-rel-romcatro0   ="Religie Cultul Romano-Catolic de limba română" 
+                    data-rel-unit0       ="Religie Cultul Unitarian" 
+                    data-rel-ortritv0    ="Cultul Ortodox de Rit Vechi" 
+                    data-rel-mus0        ="Cultul Musulman" 
+                    data-fizic0          ="Educație fizică" 
+                    data-muzmi0          ="Muzică și mișcare" 
+                    data-muzmi-bg0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă bulgară" 
+                    data-muzmi-ch0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă cehă" 
+                    data-muzmi-hr0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă croată" 
+                    data-muzmi-de0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană" 
+                    data-muzmi-dero0     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană (rom)" 
+                    data-muzmi-it0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă italiană" 
+                    data-muzmi-mg0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară" 
+                    data-muzmi-mgro0     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară (rom)" 
+                    data-muzmi-gr0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă neogreacă" 
+                    data-muzmi-rr0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă rromani" 
+                    data-muzmi-sr0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă sârbă"  
+                    data-muzmi-sl0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă slovacă" 
+                    data-muzmi-tr0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă turcă" 
+                    data-muzmi-ua0       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă ucraineană" 
+                    data-muzmi-uaro0     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă ucraineană (rom)" 
+                    data-art-viz0        ="Arte vizuale și abilități practice" 
+                    data-dezv-pers0      ="Dezvoltare personală" 
+                    data-opt-eds0        ="Educație pentru sănătate" 
+                    data-opt-tra0        ="Activități transdisciplinare" 
+                    >
                   <label class="form-check-label" for="inlineCheckbox0">Clasa pregătitoare</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1"  
-                    data-art-viz1     ="Arte vizuale și abilități practice" 
-                    data-mate-med1    ="Matematică și explorarea mediului" 
-                    data-rel-ort1     ="Religie cultul ortodox" 
-                    data-rel-romcatro1="Religie Cultul Romano-Catolic de limba română" 
-                    data-lbcom-rom1   ="Comunicare în limba română">
+                    data-lbcom-rom1      ="Comunicare în limba română" 
+                    data-lbcom-germana1  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba germană" 
+                    data-lbcom-maghiara1 ="Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară" 
+                    data-lbcom-rroma1    ="Comunicare în limba română pentru școlile și secțiile cu predare în limba rromani" 
+                    data-lbcom-sarba1    ="Comunicare în limba română pentru școlile și secțiile cu predare în limba sârbă" 
+                    data-lbcom-slovaca1  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba slovacă"
+                    data-lbmat-bulgara1  ="Comunicare în limba maternă bulgară" 
+                    data-lbmat-ceha1     ="Comunicare în limba maternă cehă" 
+                    data-lbmat-croata1   ="Comunicare în limba maternă croată" 
+                    data-lbmat-germana1  ="Comunicare în limba maternă germană" 
+                    data-lbmat-gerinrom1 ="Comunicare în limba maternă germană în limba română" 
+                    data-lbmat-italiana1 ="Comunicare în limba maternă italiană" 
+                    data-lbmat-maghiara1 ="Comunicare în limba maternă maghiară" 
+                    data-lbmat-maginrom1 ="Comunicare în limba maternă maghiară în limba română" 
+                    data-lbmat-minlbmag1 ="Comunicare în limba maternă maghiară pentru școlile sau clasele cu elevi aparținând minorității naționale maghiare care studiază în limba română (mag)"  
+                    data-lbmat-minlbrom1 ="Comunicare în limba maternă maghiară pentru școlile sau clasele cu elevi aparținând minorității naționale maghiare care studiază în limba română (rom)"  
+                    data-lbmat-neogreaca1="Comunicare în limba maternă neogreacă" 
+                    data-lbmat-polona1   ="Comunicare în limba maternă polonă"
+                    data-lbmat-rroma1    ="Comunicare în limba maternă rromani" 
+                    data-lbmat-rusa1     ="Comunicare în limba maternă rusă" 
+                    data-lbmat-sarba1    ="Comunicare în limba maternă sârbă" 
+                    data-lbmat-sarbinrom1="Comunicare în limba maternă sârbă pentru școlile sau clasele cu elevi aparținând minorității naționale sârbe care studiază în limba română"  
+                    data-lbmat-slovaca1  ="Comunicare în limba maternă slovacă" 
+                    data-lbmat-slolbcl1  ="Comunicare în limba maternă slovacă în limba slovacă" 
+                    data-lbmat-turca1    ="Comunicare în limba maternă turcă" 
+                    data-lbmat-ucraina1  ="Comunicare în limba maternă ucraineană" 
+                    data-lbmat-ucrarom1  ="Comunicare în limba maternă ucraineană în limba română" 
+                    data-lbmod1          ="Comunicare în limba modernă" 
+                    data-mate-med1       ="Matematică și explorarea mediului" 
+                    data-rel-adv1        ="Religie Cultul Adventist" 
+                    data-rel-bapt1       ="Religie Cultul Baptist" 
+                    data-rel-evca1       ="Religie Cultul Evanghelic" 
+                    data-rel-crdev1      ="Cultul Creştin după Evanghelie" 
+                    data-rel-grcat1      ="Religie Cultul Greco-Catolic" 
+                    data-rel-ort1        ="Religie cultul ortodox" 
+                    data-rel-ortucr1     ="Religie Cultul Ortodox Ucrainean" 
+                    data-rel-pen1        ="Religie Cultul Penticostal" 
+                    data-rel-ref1        ="Religie Cultul Reformat" 
+                    data-rel-romcatmg1   ="Religie Cultul Romano-Catolic de limbă maghiară" 
+                    data-rel-romcatro1   ="Religie Cultul Romano-Catolic de limba română" 
+                    data-rel-unit1       ="Religie Cultul Unitarian" 
+                    data-rel-mus1        ="Cultul Musulman" 
+                    data-rel-ortritv1    ="Cultul Ortodox de Rit Vechi" 
+                    data-mate-med1       ="Matematică și explorarea mediului" 
+                    data-fizic1          ="Educație fizică" 
+                    data-fizicp1         ="Pregătire sportivă practică" 
+                    data-muzmi1          ="Muzică și mișcare" 
+                    data-muzmi-bg1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă bulgară" 
+                    data-muzmi-ch1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă cehă" 
+                    data-muzmi-hr1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă croată" 
+                    data-muzmi-de1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană" 
+                    data-muzmi-dero1     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană (rom)" 
+                    data-muzmi-it1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă italiană" 
+                    data-muzmi-mg1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară" 
+                    data-muzmi-mgro1     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară (rom)" 
+                    data-muzmi-gr1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă neogreacă" 
+                    data-muzmi-rr1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă rromani" 
+                    data-muzmi-sr1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă sârbă"  
+                    data-muzmi-sl1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă slovacă" 
+                    data-muzmi-tr1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă turcă" 
+                    data-muzmi-ua1       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă ucraineană" 
+                    data-muzmi-uaro1     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă ucraineană (rom)" 
+                    data-edmz-instr1     ="Instrument" 
+                    data-edmz-teoafdi1   ="Teorie - solfegiu - dicteu" 
+                    data-art-viz1        ="Arte vizuale și abilități practice" 
+                    data-edart1          ="Educație artistică și abilități practice" 
+                    data-dezv-pers1      ="Dezvoltare personală" 
+                    data-opt-eds1        ="Educație pentru sănătate" 
+                    data-opt-tra1        ="Activități transdisciplinare" 
+                    >
                   <label class="form-check-label" for="inlineCheckbox1">Clasa I</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox2" value="cl2"  
-                    data-art-viz2     ="Arte vizuale și abilități practice" 
-                    data-mate-med2    ="Matematică și explorarea mediului" 
-                    data-rel-romcatro2="Religie Cultul Romano-Catolic de limba română" 
-                    data-rel-ort2     ="Religie cultul ortodox" 
-                    data-lbcom-rom2   ="Comunicare în limba română">
+                    data-lbcom-rom2      ="Comunicare în limba română"  
+                    data-lbcom-germana2  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba germană" 
+                    data-lbcom-maghiara2 ="Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară" 
+                    data-lbcom-rroma2    ="Comunicare în limba română pentru școlile și secțiile cu predare în limba rromani" 
+                    data-lbcom-sarba2    ="Comunicare în limba română pentru școlile și secțiile cu predare în limba sârbă" 
+                    data-lbcom-slovaca2  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba slovacă"
+                    data-lbmat-bulgara2  ="Comunicare în limba maternă bulgară" 
+                    data-lbmat-ceha2     ="Comunicare în limba maternă cehă" 
+                    data-lbmat-croata2   ="Comunicare în limba maternă croată" 
+                    data-lbmat-germana2  ="Comunicare în limba maternă germană" 
+                    data-lbmat-gerinrom2 ="Comunicare în limba maternă germană în limba română" 
+                    data-lbmat-italiana2 ="Comunicare în limba maternă italiană" 
+                    data-lbmat-maghiara2 ="Comunicare în limba maternă maghiară" 
+                    data-lbmat-maginrom2 ="Comunicare în limba maternă maghiară în limba română" 
+                    data-lbmat-minlbmag2 ="Comunicare în limba maternă maghiară pentru școlile sau clasele cu elevi aparținând minorității naționale maghiare care studiază în limba română (mag)"  
+                    data-lbmat-minlbrom2 ="Comunicare în limba maternă maghiară pentru școlile sau clasele cu elevi aparținând minorității naționale maghiare care studiază în limba română (rom)"  
+                    data-lbmat-neogreaca2="Comunicare în limba maternă neogreacă" 
+                    data-lbmat-polona2   ="Comunicare în limba maternă polonă"
+                    data-lbmat-rroma2    ="Comunicare în limba maternă rromani" 
+                    data-lbmat-rusa2     ="Comunicare în limba maternă rusă" 
+                    data-lbmat-sarba2    ="Comunicare în limba maternă sârbă" 
+                    data-lbmat-sarbinrom2="Comunicare în limba maternă sârbă pentru școlile sau clasele cu elevi aparținând minorității naționale sârbe care studiază în limba română"  
+                    data-lbmat-slovaca2  ="Comunicare în limba maternă slovacă" 
+                    data-lbmat-slolbcl2  ="Comunicare în limba maternă slovacă în limba slovacă" 
+                    data-lbmat-turca2    ="Comunicare în limba maternă turcă" 
+                    data-lbmat-ucraina2  ="Comunicare în limba maternă ucraineană" 
+                    data-lbmat-ucrarom2  ="Comunicare în limba maternă ucraineană în limba română" 
+                    data-lbmod2          ="Comunicare în limba modernă" 
+                    data-mate-med2       ="Matematică și explorarea mediului" 
+                    data-rel-adv2        ="Religie Cultul Adventist" 
+                    data-rel-bapt2       ="Religie Cultul Baptist" 
+                    data-rel-evca2       ="Religie Cultul Evanghelic" 
+                    data-rel-crdev2      ="Cultul Creştin după Evanghelie" 
+                    data-rel-grcat2      ="Religie Cultul Greco-Catolic" 
+                    data-rel-ort2        ="Religie cultul ortodox" 
+                    data-rel-ortucr2     ="Religie Cultul Ortodox Ucrainean" 
+                    data-rel-pen2        ="Religie Cultul Penticostal" 
+                    data-rel-ref2        ="Religie Cultul Reformat" 
+                    data-rel-romcatmg2   ="Religie Cultul Romano-Catolic de limbă maghiară" 
+                    data-rel-romcatro2   ="Religie Cultul Romano-Catolic de limba română" 
+                    data-rel-unit2       ="Religie Cultul Unitarian" 
+                    data-rel-mus2        ="Cultul Musulman" 
+                    data-rel-ortritv2    ="Cultul Ortodox de Rit Vechi" 
+                    data-mate-med2       ="Matematică" 
+                    data-st-nat2         ="Științe ale naturii" 
+                    data-fizic2          ="Educație fizică" 
+                    data-fizicp2         ="Pregătire sportivă practică" 
+                    data-muzmi2          ="Muzică și mișcare" 
+                    data-muzmi-bg2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă bulgară" 
+                    data-muzmi-ch2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă cehă" 
+                    data-muzmi-hr2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă croată" 
+                    data-muzmi-de2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană" 
+                    data-muzmi-dero2     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană (rom)" 
+                    data-muzmi-it2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă italiană" 
+                    data-muzmi-mg2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară" 
+                    data-muzmi-mgro2     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară (rom)" 
+                    data-muzmi-gr2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă neogreacă" 
+                    data-muzmi-rr2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă rromani" 
+                    data-muzmi-sr2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă sârbă"  
+                    data-muzmi-sl2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă slovacă" 
+                    data-muzmi-tr2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă turcă" 
+                    data-muzmi-ua2       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă ucraineană" 
+                    data-muzmi-uaro2     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă ucraineană (rom)" 
+                    data-edmz-instr2     ="Instrument" 
+                    data-edmz-teoafdi2   ="Teorie - solfegiu - dicteu" 
+                    data-art-viz2        ="Arte vizuale și abilități practice" 
+                    data-dezv-pers2      ="Dezvoltare personală" 
+                    data-opt-eds2        ="Educație pentru sănătate" 
+                    >
                   <label class="form-check-label" for="inlineCheckbox2">Clasa a II-a</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox3" value="cl3"  
-                    data-art-viz3     ="Arte vizuale și abilități practice" 
-                    data-mat3         ="Matematică" 
-                    data-stanat3      ="Științele naturii" 
-                    data-rel-ort3     ="Religie cultul ortodox" 
-                    data-rel-romcatro3="Religie Cultul Romano-Catolic de limba română" 
-                    data-lbcom-rom3   ="Limba și literatura română" 
-                    data-edciv3       ="Educaţie civică" 
-                    data-jocmi3       ="Joc și mișcare">
+                    data-lbcom-rom3      ="Limba și literatura română" 
+                    data-lbcom-germana3  ="Limba și literatura română pentru școlile și secțiile cu predare în limba germană" 
+                    data-lbcom-maghiara3 ="Limba și literatura română pentru școlile și secțiile cu predare în limba maghiară" 
+                    data-lbcom-rroma3    ="Limba și literatura română pentru școlile și secțiile cu predare în limba rromani" 
+                    data-lbcom-sarba3    ="Limba și literatura română pentru școlile și secțiile cu predare în limba sârbă" 
+                    data-lbcom-slovaca3  ="Limba și literatura română pentru școlile și secțiile cu predare în limba slovacă" 
+                    data-lbcom-ceha3     ="Limba și literatura română pentru școlile și secțiile cu predare în limba cehă" 
+                    data-lbmat-bulgara3  ="Limba și literatura maternă bulgară" 
+                    data-lbmat-ceha3     ="Limba și literatura maternă cehă" 
+                    data-lbmat-croata3   ="Limba și literatura maternă croată" 
+                    data-lbmat-germana3  ="Limba și literatura maternă germană" 
+                    data-lbmat-gerinrom3 ="Limba și literatura maternă germană în limba română" 
+                    data-lbmat-italiana3 ="Limba și literatura maternă italiană" 
+                    data-lbmat-maghiara3 ="Limba și literatura maternă maghiară" 
+                    data-lbmat-maginrom3 ="Limba și literatura maternă maghiară în limba română"
+                    data-lbmat-neogreaca3="Limba și literatura maternă neogreacă" 
+                    data-lbmat-polona3   ="Limba și literatura maternă polonă"
+                    data-lbmat-rroma3    ="Limba și literatura maternă rromani" 
+                    data-lbmat-rusa3     ="Limba și literatura maternă rusă"
+                    data-lbmat-sarba3    ="Limba și literatura maternă sârbă"
+                    data-lbmat-slovaca3  ="Limba și literatura maternă slovacă"
+                    data-lbmat-turca3    ="Limba și literatura maternă turcă" 
+                    data-lbmat-ucraina3  ="Limba și literatura maternă ucraineană" 
+                    data-lb-mod3         ="Limbă modernă" 
+                    data-mate-med3       ="Matematică" 
+                    data-st-nat3         ="Științe ale naturii" 
+                    data-edciv3          ="Educaţie civică"
+                    data-rel-adv3        ="Religie Cultul Adventist" 
+                    data-rel-bapt3       ="Religie Cultul Baptist" 
+                    data-rel-evca3       ="Religie Cultul Evanghelic" 
+                    data-rel-crdev3      ="Cultul Creştin după Evanghelie" 
+                    data-rel-grcat3      ="Religie Cultul Greco-Catolic" 
+                    data-rel-ort3        ="Religie cultul ortodox" 
+                    data-rel-ortucr3     ="Religie Cultul Ortodox Ucrainean" 
+                    data-rel-pen3        ="Religie Cultul Penticostal" 
+                    data-rel-ref3        ="Religie Cultul Reformat" 
+                    data-rel-romcatmg3   ="Religie Cultul Romano-Catolic de limbă maghiară" 
+                    data-rel-romcatro3   ="Religie Cultul Romano-Catolic de limba română" 
+                    data-rel-unit3       ="Religie Cultul Unitarian" 
+                    data-rel-mus3        ="Cultul Musulman" 
+                    data-rel-ortritv3    ="Cultul Ortodox de Rit Vechi" 
+                    data-fizic3          ="Educație fizică" 
+                    data-jocmi3          ="Joc și mișcare" 
+                    data-fizicp3         ="Pregătire sportivă practică" 
+                    data-muzmi3          ="Muzică și mișcare" 
+                    data-muzmi-bg3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă bulgară" 
+                    data-muzmi-ch3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă cehă" 
+                    data-muzmi-hr3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă croată" 
+                    data-muzmi-de3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană" 
+                    data-muzmi-dero3     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană (rom)" 
+                    data-muzmi-it3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă italiană" 
+                    data-muzmi-mg3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară" 
+                    data-muzmi-mgro3     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară (rom)" 
+                    data-muzmi-gr3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă neogreacă" 
+                    data-muzmi-rr3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă rromani" 
+                    data-muzmi-sr3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă sârbă"  
+                    data-muzmi-sl3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă slovacă" 
+                    data-muzmi-tr3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă turcă" 
+                    data-muzmi-ua3       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă ucraineană" 
+                    data-edmz-instr3     ="Instrument" 
+                    data-edmz-teoafdi3   ="Teorie - solfegiu - dicteu" 
+                    data-art-viz3        ="Arte vizuale și abilități practice" 
+                    data-opt-med3        ="Creează-ți mediul" 
+                    data-opt-eds3        ="Educație pentru sănătate" 
+                    >
                   <label class="form-check-label" for="inlineCheckbox3">Clasa a III-a</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox4" value="cl4"  
-                    data-art-viz4     ="Arte vizuale și abilități practice" 
-                    data-mat4         ="Matematică" 
-                    data-stanat4      ="Științele naturii" 
-                    data-rel-ort4     ="Religie cultul ortodox" 
-                    data-rel-romcatro4="Religie Cultul Romano-Catolic de limba română" 
-                    data-lbcom-rom4   ="Limba și literatura română" 
-                    data-edciv4       ="Educaţie civică" 
-                    data-geo4         ="Geografie" 
-                    data-ist4         ="Istorie" 
-                    data-jocmi4       ="Joc și mișcare">
+                    data-lbcom-rom4      ="Limba și literatura română" 
+                    data-lbcom-germana4  ="Limba și literatura română pentru școlile și secțiile cu predare în limba germană" 
+                    data-lbcom-maghiara4 ="Limba și literatura română pentru școlile și secțiile cu predare în limba maghiară" 
+                    data-lbcom-rroma4    ="Limba și literatura română pentru școlile și secțiile cu predare în limba rromani" 
+                    data-lbcom-sarba4    ="Limba și literatura română pentru școlile și secțiile cu predare în limba sârbă" 
+                    data-lbcom-slovaca4  ="Limba și literatura română pentru școlile și secțiile cu predare în limba slovacă" 
+                    data-lbcom-ceha4     ="Limba și literatura română pentru școlile și secțiile cu predare în limba cehă" 
+                    data-lbmat-bulgara4  ="Limba și literatura maternă bulgară" 
+                    data-lbmat-ceha4     ="Limba și literatura maternă cehă" 
+                    data-lbmat-croata4   ="Limba și literatura maternă croată" 
+                    data-lbmat-germana4  ="Limba și literatura maternă germană" 
+                    data-lbmat-gerinrom4 ="Limba și literatura maternă germană în limba română" 
+                    data-lbmat-italiana4 ="Limba și literatura maternă italiană" 
+                    data-lbmat-maghiara4 ="Limba și literatura maternă maghiară" 
+                    data-lbmat-maginrom4 ="Limba și literatura maternă maghiară în limba română"
+                    data-lbmat-neogreaca4="Limba și literatura maternă neogreacă" 
+                    data-lbmat-polona4   ="Limba și literatura maternă polonă"
+                    data-lbmat-rroma4    ="Limba și literatura maternă rromani" 
+                    data-lbmat-rusa4     ="Limba și literatura maternă rusă"
+                    data-lbmat-sarba4    ="Limba și literatura maternă sârbă"
+                    data-lbmat-slovaca4  ="Limba și literatura maternă slovacă"
+                    data-lbmat-turca4    ="Limba și literatura maternă turcă" 
+                    data-lbmat-ucraina4  ="Limba și literatura maternă ucraineană" 
+                    data-lb-mod4         ="Limbă modernă" 
+                    data-mate-med4       ="Matematică" 
+                    data-st-nat4         ="Științe ale naturii" 
+                    data-edciv4          ="Educaţie civică" 
+                    data-geo4            ="Geografie" 
+                    data-ist4            ="Istorie" 
+                    data-rel-adv4        ="Religie Cultul Adventist" 
+                    data-rel-bapt4       ="Religie Cultul Baptist" 
+                    data-rel-evca4       ="Religie Cultul Evanghelic" 
+                    data-rel-crdev4      ="Cultul Creştin după Evanghelie" 
+                    data-rel-grcat4      ="Religie Cultul Greco-Catolic" 
+                    data-rel-ort4        ="Religie cultul ortodox" 
+                    data-rel-ortucr4     ="Religie Cultul Ortodox Ucrainean" 
+                    data-rel-pen4        ="Religie Cultul Penticostal" 
+                    data-rel-ref4        ="Religie Cultul Reformat" 
+                    data-rel-romcatmg4   ="Religie Cultul Romano-Catolic de limbă maghiară" 
+                    data-rel-romcatro4   ="Religie Cultul Romano-Catolic de limba română" 
+                    data-rel-unit4       ="Religie Cultul Unitarian" 
+                    data-rel-mus4        ="Cultul Musulman" 
+                    data-rel-ortritv4    ="Cultul Ortodox de Rit Vechi" 
+                    data-fizic4          ="Educație fizică" 
+                    data-jocmi4          ="Joc și mișcare" 
+                    data-fizicp4         ="Pregătire sportivă practică" 
+                    data-muzmi4          ="Muzică și mișcare" 
+                    data-muzmi-bg4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă bulgară" 
+                    data-muzmi-ch4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă cehă" 
+                    data-muzmi-hr4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă croată" 
+                    data-muzmi-de4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană" 
+                    data-muzmi-dero4     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă germană (rom)" 
+                    data-muzmi-it4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă italiană" 
+                    data-muzmi-mg4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară" 
+                    data-muzmi-mgro4     ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă maghiară (rom)" 
+                    data-muzmi-gr4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă neogreacă" 
+                    data-muzmi-rr4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă rromani" 
+                    data-muzmi-sr4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă sârbă"  
+                    data-muzmi-sl4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă slovacă" 
+                    data-muzmi-tr4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă turcă" 
+                    data-muzmi-ua4       ="Muzică și mișcare – pentru școlile și secțiile cu predare în limba maternă ucraineană" 
+                    data-edmz-instr4     ="Instrument" 
+                    data-edmz-teoafdi4   ="Teorie - solfegiu - dicteu" 
+                    data-edar-dans4      ="Dans" 
+                    data-edar-ritm4      ="Ritmică" 
+                    data-art-viz4        ="Arte vizuale și abilități practice" 
+                    data-opt-med4        ="Creează-ți mediul" 
+                    data-opt-eds4        ="Educație pentru sănătate" 
+                    >
                   <label class="form-check-label" for="inlineCheckbox4">Clasa a IV-a</label>
                 </div>
                 {{!-- PRIMAR END --}}
+
                 {{!-- GIMANZIU --}}
                 <div class="form-check form-check-inline">
                   <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox5" value="cl5"
                     data-lbcom-rom5      ="Limba și literatura română" 
-                    data-lbcom-rom-mag5  ="Limba și literatura română secții maghiare" 
+                    data-lbcom-rom-mag5  ="Limba și literatura română secții maghiare"                     
                     data-lbmat-bulgara5  ="Limba şi literatura maternă bulgară" 
                     data-lbmat-ceha5     ="Limba şi literatura maternă cehă" 
                     data-lbmat-croata5   ="Limba şi literatura maternă croată" 
@@ -298,9 +604,9 @@
                     data-lbmod2-japoneza5="Limbă modernă - japoneză" 
                     data-lbmod2-rusa5    ="Limbă modernă - rusă" 
                     data-lbmod2-portugheza5="Limbă modernă - portugheză" 
-                    data-mat5            ="Matematică"
+                    data-mat5            ="Matematică" 
                     data-bio5            ="Biologie" 
-                    data-edusoc5         ="Educație socială" 
+                    data-edusoc5         ="Gândire critică și drepturile copilului" 
                     data-ist5            ="Istorie" 
                     data-geo5            ="Geografie" 
                     data-rel-advz5       ="Cultul Adventist de Ziua a Şaptea" 
@@ -319,19 +625,26 @@
                     data-rel-romcatmg5   ="Cultul Romano-Catolic de limbă maghiară" 
                     data-rel-romcatlbmg5 ="Cultul Romano-Catolic de limbă maghiară în lb. maghiară" 
                     data-rel-unit5       ="Cultul Unitarian" 
-                    data-art-edpl5       ="Educaţie plastică" 
-                    data-art-edmz5       ="Educaţie muzicală" 
-                    data-art-tsd5        ="Teorie - Solfegiu - Dicteu" 
-                    data-art-edmuz-ger5  ="Educaţie muzicală pentru minoritatea germană" 
-                    data-art-edmuz-ita5  ="Educaţie muzicală pentru minoritatea italiană" 
-                    data-art-edmuz-mag5  ="Educaţie muzicală pentru minoritatea maghiară" 
-                    data-art-edmuz-magr5 ="Educaţie muzicală pentru minoritatea maghiară în lb. română" 
-                    data-art-edmuz-pol5  ="Educaţie muzicală pentru minoritatea poloneză" 
-                    data-art-edmuz-rrm5  ="Educaţie muzicală pentru minoritatea rromă" 
-                    data-art-edmuz-srb5  ="Educaţie muzicală pentru minoritatea sârbă" 
-                    data-art-edmuz-slv5  ="Educaţie muzicală pentru minoritatea slovacă" 
-                    data-art-edmuz-tur5  ="Educaţie muzicală pentru minoritatea turcă" 
-                    data-art-edmuz-ucr5  ="Educaţie muzicală pentru minoritatea ucraineană" 
+                    data-edpl5           ="Educaţie plastică" 
+                    data-edmuz5          ="Educaţie muzicală" 
+                    data-edmuz-ger5      ="Educaţie muzicală pentru minoritatea germană" 
+                    data-edmuz-ita5      ="Educaţie muzicală pentru minoritatea italiană" 
+                    data-edmuz-mag5      ="Educaţie muzicală pentru minoritatea maghiară" 
+                    data-edmuz-magr5     ="Educaţie muzicală pentru minoritatea maghiară în lb. română" 
+                    data-edmuz-pol5      ="Educaţie muzicală pentru minoritatea poloneză" 
+                    data-edmuz-rrm5      ="Educaţie muzicală pentru minoritatea rromă" 
+                    data-edmuz-srb5      ="Educaţie muzicală pentru minoritatea sârbă" 
+                    data-edmuz-slv5      ="Educaţie muzicală pentru minoritatea slovacă" 
+                    data-edmuz-tur5      ="Educaţie muzicală pentru minoritatea turcă" 
+                    data-edmuz-ucr5      ="Educaţie muzicală pentru minoritatea ucraineană" 
+                    data-instr5          ="Instrument principal" 
+                    data-tsd5            ="Teorie - Solfegiu - Dicteu" 
+                    data-piaux5          ="Pian complementar/instrument auxiliar" 
+                    data-dansc5          ="Dans clasic" 
+                    data-ritm5           ="Ritmică" 
+                    data-desen5          ="Desen" 
+                    data-pictr5          ="Pictură" 
+                    data-model5          ="Modelaj" 
                     data-fizic5          ="Educaţie fizică şi sport" 
                     data-pfiz-atl5       ="Atletism" 
                     data-pfiz-bad5       ="Badminton" 
@@ -377,13 +690,23 @@
                     data-tec-info5       ="Informatică şi TIC" 
                     data-tec-ed5         ="Educație tehnologica" 
                     data-cons-ed5        ="Consiliere şi dezvoltare personală" 
-                    data-crr-ist5        ="Istorie orală: Istorie trăită-Istorie povestită" 
-                    data-crr-lect5       ="Lectura și abilitățile de viață" 
-                    data-crr-grne5       ="Limba neoelenă şi civilizația Greciei antice" 
-                    data-crr-micr5       ="Mai întâi caracterul" 
-                    data-crr-matsc5      ="Matematică și științe în societatea cunoașterii" 
-                    data-crr-edvit5      ="Pregătiţi pentru viaţă. Educaţie pentru viaţă şi comunitate" 
-                    data-crr-radlt5      ="Rădăcini latine în cultura şi civilizaţia românească" 
+                    data-cds-ist5        ="Istorie orală: Istorie trăită-Istorie povestită" 
+                    data-cds-lect5       ="Lectura și abilitățile de viață" 
+                    data-cds-grne5       ="Limba neoelenă şi civilizația Greciei antice" 
+                    data-cds-micr5       ="Mai întâi caracterul" 
+                    data-cds-matsc5      ="Matematică și științe în societatea cunoașterii" 
+                    data-cds-edvit5      ="Pregătiţi pentru viaţă. Educaţie pentru viaţă şi comunitate" 
+                    data-cds-radlt5      ="Rădăcini latine în cultura şi civilizaţia românească" 
+                    data-cds-med5        ="Creează-ți mediul" 
+                    data-cds-civ5        ="Cultură civică" 
+                    data-cds-arm5        ="Cultură și tradiții aromâne" 
+                    data-cds-eco5        ="Educație ecologică și de protecție a mediului" 
+                    data-cds-fin5        ="Educație financiară" 
+                    data-cds-icu5        ="Educație interculturală" 
+                    data-cds-eds5        ="Educație pentru sănătate" 
+                    data-cds-mag5        ="Limba și literatura maghiară" 
+                    data-cds-grm5        ="Mituri și legende greco-romane" 
+                    data-cds-sah5        ="Educație prin șah" 
                     > 
                   <label class="form-check-label" for="inlineCheckbox5">Clasa a V-a</label>
                 </div>
@@ -432,41 +755,12 @@
                     data-lbmod2-japoneza6="Limbă modernă - japoneză" 
                     data-lbmod2-rusa6    ="Limbă modernă - rusă" 
                     data-lbmod2-portugheza6="Limbă modernă - portugheză" 
-                    data-mat6            ="Matematică"                    
+                    data-mat6            ="Matematică" 
                     data-fiz6            ="Fizică" 
                     data-bio6            ="Biologie" 
-                    data-edusoc6         ="Educație socială" 
+                    data-edusoc6         ="Educație interculturală" 
                     data-ist6            ="Istorie" 
                     data-geo6            ="Geografie" 
-                    data-min-bulgara6    ="Istoria şi tradiţiile minorităţii bulgare" 
-                    data-min-bul-rom6    ="Istoria şi tradiţiile minorităţii bulgare din România" 
-                    data-min-ceha6       ="Istoria şi tradiţiile minorităţii cehe"
-                    data-min-ceh-rom6    ="Istoria şi tradiţiile minorităţii cehe din România" 
-                    data-min-croata6     ="Istoria şi tradiţiile minorităţii croate" 
-                    data-min-cro-rom6    ="Istoria şi tradiţiile minorităţii croate din România" 
-                    data-min-germana6    ="Istoria şi tradiţiile minorităţii germane" 
-                    data-min-ger-rom6    ="Istoria şi tradiţiile minorităţii germane din România" 
-                    data-min-italiena6   ="Istoria şi tradiţiile minorităţii italiene"
-                    data-min-ita-rom6    ="Istoria şi tradiţiile minorităţii italiene din România" 
-                    data-min-maghiara6   ="Istoria şi tradiţiile minorităţii maghiare"
-                    data-min-mag-rom6    ="Istoria şi tradiţiile minorităţii maghiare din România" 
-                    data-min-maghiararom6="Istoria şi tradiţiile minorităţii maghiare în lb. română" 
-                    data-min-elene6      ="Istoria şi tradiţiile minorităţii elene" 
-                    data-min-ele-rom6    ="Istoria şi tradiţiile minorităţii elene din România" 
-                    data-min-poloneza6   ="Istoria şi tradiţiile minorităţii poloneze" 
-                    data-min-pol-rom6    ="Istoria şi tradiţiile minorităţii poloneze din România" 
-                    data-min-rrome6      ="Istoria şi tradiţiile minorităţii rrome" 
-                    data-min-rrm-rom6    ="Istoria şi tradiţiile minorităţii rrome din România" 
-                    data-min-rusilip6    ="Istoria si traditiile minoritatii rușilor lipoveni" 
-                    data-min-rus-rom6    ="Istoria şi tradiţiile minorităţii rușilor staroveri din România"                     
-                    data-min-sarba6      ="Istoria si traditiile minoritatii sârbe" 
-                    data-min-srb-rom6    ="Istoria şi tradiţiile minorităţii sârbe din România" 
-                    data-min-slovace6    ="Istoria si traditiile minoritatii slovace" 
-                    data-min-slv-rom6    ="Istoria şi tradiţiile minorităţii slovace din România" 
-                    data-min-turce6      ="Istoria si traditiile minoritatii turce" 
-                    data-min-trt-rom6    ="Istoria si traditiile minoritatii turcilor și tătarilor din Romania" 
-                    data-min-ucraina6    ="Istoria si traditiile minoritatii ucrainene" 
-                    data-min-ucr-rom6    ="Istoria si traditiile minoritatii ucrainene din Romania" 
                     data-rel-advz6       ="Cultul Adventist de Ziua a Şaptea" 
                     data-rel-bapt6       ="Cultul Baptist" 
                     data-rel-crdev6      ="Cultul Creştin după Evanghelie" 
@@ -483,19 +777,26 @@
                     data-rel-romcatmg6   ="Cultul Romano-Catolic de limbă maghiară" 
                     data-rel-romcatlbmg6 ="Cultul Romano-Catolic de limbă maghiară în lb. maghiară" 
                     data-rel-unit6       ="Cultul Unitarian" 
-                    data-art-edpl6       ="Educaţie plastică" 
-                    data-art-edmz6       ="Educaţie muzicală" 
-                    data-art-tsd6        ="Teorie - Solfegiu - Dicteu"                     
-                    data-art-edmuz-ger6  ="Educaţie muzicală pentru minoritatea germană" 
-                    data-art-edmuz-ita6  ="Educaţie muzicală pentru minoritatea italiană" 
-                    data-art-edmuz-mag6  ="Educaţie muzicală pentru minoritatea maghiară" 
-                    data-art-edmuz-magr6 ="Educaţie muzicală pentru minoritatea maghiară în lb. română" 
-                    data-art-edmuz-pol6  ="Educaţie muzicală pentru minoritatea poloneză" 
-                    data-art-edmuz-rrm6  ="Educaţie muzicală pentru minoritatea rromă" 
-                    data-art-edmuz-srb6  ="Educaţie muzicală pentru minoritatea sârbă" 
-                    data-art-edmuz-slv6  ="Educaţie muzicală pentru minoritatea slovacă" 
-                    data-art-edmuz-tur6  ="Educaţie muzicală pentru minoritatea turcă" 
-                    data-art-edmuz-ucr6  ="Educaţie muzicală pentru minoritatea ucraineană" 
+                    data-edpl6           ="Educaţie plastică" 
+                    data-edmuz6          ="Educaţie muzicală" 
+                    data-edmuz-ger6      ="Educaţie muzicală pentru minoritatea germană" 
+                    data-edmuz-ita6      ="Educaţie muzicală pentru minoritatea italiană" 
+                    data-edmuz-mag6      ="Educaţie muzicală pentru minoritatea maghiară" 
+                    data-edmuz-magr6     ="Educaţie muzicală pentru minoritatea maghiară în lb. română" 
+                    data-edmuz-pol6      ="Educaţie muzicală pentru minoritatea poloneză" 
+                    data-edmuz-rrm6      ="Educaţie muzicală pentru minoritatea rromă" 
+                    data-edmuz-srb6      ="Educaţie muzicală pentru minoritatea sârbă" 
+                    data-edmuz-slv6      ="Educaţie muzicală pentru minoritatea slovacă" 
+                    data-edmuz-tur6      ="Educaţie muzicală pentru minoritatea turcă" 
+                    data-edmuz-ucr6      ="Educaţie muzicală pentru minoritatea ucraineană" 
+                    data-instr6          ="Instrument principal" 
+                    data-tsd6            ="Teorie - Solfegiu - Dicteu" 
+                    data-piaux6          ="Pian complementar/instrument auxiliar" 
+                    data-dansc6          ="Dans clasic" 
+                    data-ritm6           ="Ritmică" 
+                    data-desen6          ="Desen" 
+                    data-pictr6          ="Pictură" 
+                    data-model6          ="Modelaj" 
                     data-fizic6          ="Educaţie fizică şi sport" 
                     data-pfiz-atl6       ="Atletism" 
                     data-pfiz-bad6       ="Badminton" 
@@ -540,22 +841,33 @@
                     data-tec-edtap6      ="Educaţie tehnologică şi aplicaţii practice" 
                     data-tec-info6       ="Informatică şi TIC" 
                     data-tec-ed6         ="Educație tehnologica" 
-                    data-cons-abad6      ="Abilități pentru adolescență" 
                     data-cons-ed6        ="Consiliere şi dezvoltare personală" 
-                    data-crr-ist6        ="Istorie orală: Istorie trăită-Istorie povestită" 
-                    data-crr-lect6       ="Lectura și abilitățile de viață" 
-                    data-crr-grne6       ="Limba neoelenă şi civilizația Greciei antice" 
-                    data-crr-micr6       ="Mai întâi caracterul" 
-                    data-crr-matsc6      ="Matematică și științe în societatea cunoașterii" 
-                    data-crr-edvit6      ="Pregătiţi pentru viaţă. Educaţie pentru viaţă şi comunitate" 
-                    data-crr-radlt6      ="Rădăcini latine în cultura şi civilizaţia românească" 
+                    data-cds-aba6        ="Abilități pentru adolescență" 
+                    data-cds-med6        ="Creează-ți mediul"  
+                    data-cds-ist6        ="Istorie orală: Istorie trăită-Istorie povestită" 
+                    data-cds-lect6       ="Lectura și abilitățile de viață" 
+                    data-cds-grne6       ="Limba neoelenă şi civilizația Greciei antice" 
+                    data-cds-micr6       ="Mai întâi caracterul" 
+                    data-cds-matsc6      ="Matematică și științe în societatea cunoașterii" 
+                    data-cds-edvit6      ="Pregătiţi pentru viaţă. Educaţie pentru viaţă şi comunitate" 
+                    data-cds-radlt6      ="Rădăcini latine în cultura şi civilizaţia românească" 
+                    data-cds-med6        ="Creează-ți mediul" 
+                    data-cds-civ6        ="Cultură civică" 
+                    data-cds-arm6        ="Cultură și tradiții aromâne" 
+                    data-cds-eco6        ="Educație ecologică și de protecție a mediului" 
+                    data-cds-gec6        ="Educație economică" 
+                    data-cds-fin6        ="Educație financiară" 
+                    data-cds-icu6        ="Educație interculturală" 
+                    data-cds-eds6        ="Educație pentru sănătate" 
+                    data-cds-mag6        ="Limba și literatura maghiară" 
+                    data-cds-grm6        ="Mituri și legende greco-romane" 
+                    data-cds-sah6        ="Educație prin șah" 
                     >                    
                   <label class="form-check-label" for="inlineCheckbox6">Clasa a VI-a</label>
                 </div>
                 <div class="form-check form-check-inline nivel">
                   <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="cl7" 
                     data-lbcom-rom7      ="Limba și literatura română" 
-                    data-lbcom-lat7      ="Elemente de limbă latină și de cultură romanică" 
                     data-lbcom-rom-mag7  ="Limba și literatura română secții maghiare"                     
                     data-lbmat-bulgara7  ="Limba şi literatura maternă bulgară" 
                     data-lbmat-ceha7     ="Limba şi literatura maternă cehă" 
@@ -597,44 +909,15 @@
                     data-lbmod2-germana7 ="Limbă modernă - germană" 
                     data-lbmod2-japoneza7="Limbă modernă - japoneză" 
                     data-lbmod2-rusa7    ="Limbă modernă - rusă" 
-                    data-lbmod2-portugheza7="Limbă modernă - portugheză"  
-                    data-mat7            ="Matematică"                                   
-                    data-fiz7            ="Fizică"  
+                    data-lbmod2-portugheza7="Limbă modernă - portugheză" 
+                    data-ellat-rom7="Elemente de limbă latină și de cultură romanică" 
+                    data-mat7            ="Matematică" 
+                    data-fiz7            ="Fizică" 
                     data-chim7           ="Chimie" 
                     data-bio7            ="Biologie" 
-                    data-edusoc7         ="Educație socială" 
+                    data-edusoc7         ="Educație pentru cetățenie democratică" 
                     data-ist7            ="Istorie" 
                     data-geo7            ="Geografie" 
-                    data-cultciv7        ="Cultură civică" 
-                    data-min-bulgara7    ="Istoria şi tradiţiile minorităţii bulgare" 
-                    data-min-bul-rom7    ="Istoria şi tradiţiile minorităţii bulgare din România" 
-                    data-min-ceha7       ="Istoria şi tradiţiile minorităţii cehe"
-                    data-min-ceh-rom7    ="Istoria şi tradiţiile minorităţii cehe din România" 
-                    data-min-croata7     ="Istoria şi tradiţiile minorităţii croate" 
-                    data-min-cro-rom7    ="Istoria şi tradiţiile minorităţii croate din România" 
-                    data-min-germana7    ="Istoria şi tradiţiile minorităţii germane" 
-                    data-min-ger-rom7    ="Istoria şi tradiţiile minorităţii germane din România" 
-                    data-min-italiena7   ="Istoria şi tradiţiile minorităţii italiene"
-                    data-min-ita-rom7    ="Istoria şi tradiţiile minorităţii italiene din România" 
-                    data-min-maghiara7   ="Istoria şi tradiţiile minorităţii maghiare"
-                    data-min-mag-rom7    ="Istoria şi tradiţiile minorităţii maghiare din România" 
-                    data-min-maghiararom7="Istoria şi tradiţiile minorităţii maghiare în lb. română" 
-                    data-min-elene7      ="Istoria şi tradiţiile minorităţii elene" 
-                    data-min-ele-rom7    ="Istoria şi tradiţiile minorităţii elene din România" 
-                    data-min-poloneza7   ="Istoria şi tradiţiile minorităţii poloneze" 
-                    data-min-pol-rom7    ="Istoria şi tradiţiile minorităţii poloneze din România" 
-                    data-min-rrome7      ="Istoria şi tradiţiile minorităţii rrome" 
-                    data-min-rrm-rom7    ="Istoria şi tradiţiile minorităţii rrome din România" 
-                    data-min-rusilip7    ="Istoria si traditiile minoritatii rușilor lipoveni" 
-                    data-min-rus-rom7    ="Istoria şi tradiţiile minorităţii rușilor staroveri din România"                     
-                    data-min-sarba7      ="Istoria si traditiile minoritatii sârbe" 
-                    data-min-srb-rom7    ="Istoria şi tradiţiile minorităţii sârbe din România" 
-                    data-min-slovace7    ="Istoria si traditiile minoritatii slovace" 
-                    data-min-slv-rom7    ="Istoria şi tradiţiile minorităţii slovace din România" 
-                    data-min-turce7      ="Istoria si traditiile minoritatii turce" 
-                    data-min-trt-rom7    ="Istoria si traditiile minoritatii turcilor și tătarilor din Romania" 
-                    data-min-ucraina7    ="Istoria si traditiile minoritatii ucrainene" 
-                    data-min-ucr-rom7    ="Istoria si traditiile minoritatii ucrainene din Romania" 
                     data-rel-advz7       ="Cultul Adventist de Ziua a Şaptea" 
                     data-rel-bapt7       ="Cultul Baptist" 
                     data-rel-crdev7      ="Cultul Creştin după Evanghelie" 
@@ -651,20 +934,27 @@
                     data-rel-romcatmg7   ="Cultul Romano-Catolic de limbă maghiară" 
                     data-rel-romcatlbmg7 ="Cultul Romano-Catolic de limbă maghiară în lb. maghiară" 
                     data-rel-unit7       ="Cultul Unitarian" 
-                    data-art-edpl7       ="Educaţie plastică" 
-                    data-art-edmz7       ="Educaţie muzicală" 
-                    data-art-tsd7        ="Teorie - Solfegiu - Dicteu"                     
-                    data-art-edmuz-ger7  ="Educaţie muzicală pentru minoritatea germană" 
-                    data-art-edmuz-ita7  ="Educaţie muzicală pentru minoritatea italiană" 
-                    data-art-edmuz-mag7  ="Educaţie muzicală pentru minoritatea maghiară" 
-                    data-art-edmuz-magr7 ="Educaţie muzicală pentru minoritatea maghiară în lb. română" 
-                    data-art-edmuz-pol7  ="Educaţie muzicală pentru minoritatea poloneză" 
-                    data-art-edmuz-rrm7  ="Educaţie muzicală pentru minoritatea rromă" 
-                    data-art-edmuz-srb7  ="Educaţie muzicală pentru minoritatea sârbă" 
-                    data-art-edmuz-slv7  ="Educaţie muzicală pentru minoritatea slovacă" 
-                    data-art-edmuz-tur7  ="Educaţie muzicală pentru minoritatea turcă" 
-                    data-art-edmuz-ucr7  ="Educaţie muzicală pentru minoritatea ucraineană" 
-                    data-fizic7            ="Educaţie fizică şi sport" 
+                    data-edpl7           ="Educaţie plastică" 
+                    data-edmuz7          ="Educaţie muzicală" 
+                    data-edmuz-ger7      ="Educaţie muzicală pentru minoritatea germană" 
+                    data-edmuz-ita7      ="Educaţie muzicală pentru minoritatea italiană" 
+                    data-edmuz-mag7      ="Educaţie muzicală pentru minoritatea maghiară" 
+                    data-edmuz-magr7     ="Educaţie muzicală pentru minoritatea maghiară în lb. română" 
+                    data-edmuz-pol7      ="Educaţie muzicală pentru minoritatea poloneză" 
+                    data-edmuz-rrm7      ="Educaţie muzicală pentru minoritatea rromă" 
+                    data-edmuz-srb7      ="Educaţie muzicală pentru minoritatea sârbă" 
+                    data-edmuz-slv7      ="Educaţie muzicală pentru minoritatea slovacă" 
+                    data-edmuz-tur7      ="Educaţie muzicală pentru minoritatea turcă" 
+                    data-edmuz-ucr7      ="Educaţie muzicală pentru minoritatea ucraineană" 
+                    data-instr7          ="Instrument principal" 
+                    data-tsd7            ="Teorie - Solfegiu - Dicteu" 
+                    data-piaux7          ="Pian complementar/instrument auxiliar" 
+                    data-dansc7          ="Dans clasic" 
+                    data-ritm7           ="Ritmică" 
+                    data-desen7          ="Desen" 
+                    data-pictr7          ="Pictură" 
+                    data-model7          ="Modelaj" 
+                    data-fizic7          ="Educaţie fizică şi sport" 
                     data-pfiz-atl7       ="Atletism" 
                     data-pfiz-bad7       ="Badminton" 
                     data-pfiz-bas7       ="Basket" 
@@ -708,23 +998,30 @@
                     data-tec-edtap7      ="Educaţie tehnologică şi aplicaţii practice" 
                     data-tec-info7       ="Informatică şi TIC" 
                     data-tec-ed7         ="Educație tehnologica" 
-                    data-cons-abad7      ="Abilități pentru adolescență" 
                     data-cons-ed7        ="Consiliere şi dezvoltare personală" 
-                    data-crr-ist7        ="Istorie orală: Istorie trăită-Istorie povestită" 
-                    data-crr-lect7       ="Lectura și abilitățile de viață" 
-                    data-crr-grne7       ="Limba neoelenă şi civilizația Greciei antice" 
-                    data-crr-micr7       ="Mai întâi caracterul" 
-                    data-crr-matsc7      ="Matematică și științe în societatea cunoașterii" 
-                    data-crr-edvit7      ="Pregătiţi pentru viaţă. Educaţie pentru viaţă şi comunitate" 
-                    data-crr-radlt7      ="Rădăcini latine în cultura şi civilizaţia românească"                
+                    data-cds-ist7        ="Istorie orală: Istorie trăită-Istorie povestită" 
+                    data-cds-lect7       ="Lectura și abilitățile de viață" 
+                    data-cds-grne7       ="Limba neoelenă şi civilizația Greciei antice" 
+                    data-cds-micr7       ="Mai întâi caracterul" 
+                    data-cds-matsc7      ="Matematică și științe în societatea cunoașterii" 
+                    data-cds-edvit7      ="Pregătiţi pentru viaţă. Educaţie pentru viaţă şi comunitate" 
+                    data-cds-radlt7      ="Rădăcini latine în cultura şi civilizaţia românească" 
+                    data-cds-med7        ="Creează-ți mediul" 
+                    data-cds-arm7        ="Cultură și tradiții aromâne" 
+                    data-cds-eco7        ="Educație ecologică și de protecție a mediului" 
+                    data-cds-gec7        ="Educație economică" 
+                    data-cds-fin7        ="Educație financiară" 
+                    data-cds-icu7        ="Educație interculturală" 
+                    data-cds-eds7        ="Educație pentru sănătate" 
+                    data-cds-lat7        ="Expresii și proverbe latine" 
+                    data-cds-mag7        ="Limba și literatura maghiară" 
                     >                   
                   <label class="form-check-label" for="inlineCheckbox7">Clasa a VII-a</label>
                 </div>
                 <div class="form-check form-check-inline nivel">
                   <input class="form-check-input" type="checkbox" id="inlineCheckbox8" value="cl8" 
                     data-lbcom-rom8      ="Limba și literatura română" 
-                    data-lbcom-lat8      ="Limbă latină"                     
-                    data-lbcom-rom-mag8  ="Limba și literatura română secții maghiare"                      
+                    data-lbcom-rom-mag8  ="Limba și literatura română secții maghiare"                     
                     data-lbmat-bulgara8  ="Limba şi literatura maternă bulgară" 
                     data-lbmat-ceha8     ="Limba şi literatura maternă cehă" 
                     data-lbmat-croata8   ="Limba şi literatura maternă croată" 
@@ -766,11 +1063,11 @@
                     data-lbmod2-japoneza8="Limbă modernă - japoneză" 
                     data-lbmod2-rusa8    ="Limbă modernă - rusă" 
                     data-lbmod2-portugheza8="Limbă modernă - portugheză" 
-                    data-mat8            ="Matematică"                                  
-                    data-fiz8            ="Fizică"
+                    data-mat8            ="Matematică" 
+                    data-fiz8            ="Fizică" 
                     data-chim8           ="Chimie" 
                     data-bio8            ="Biologie" 
-                    data-edusoc8         ="Educație socială"
+                    data-edusoc8         ="Educație economico-financiară" 
                     data-ist8            ="Istorie" 
                     data-geo8            ="Geografie" 
                     data-rel-advz8       ="Cultul Adventist de Ziua a Şaptea" 
@@ -789,20 +1086,27 @@
                     data-rel-romcatmg8   ="Cultul Romano-Catolic de limbă maghiară" 
                     data-rel-romcatlbmg8 ="Cultul Romano-Catolic de limbă maghiară în lb. maghiară" 
                     data-rel-unit8       ="Cultul Unitarian" 
-                    data-art-edpl8       ="Educaţie plastică" 
-                    data-art-edmz8       ="Educaţie muzicală" 
-                    data-art-tsd8        ="Teorie - Solfegiu - Dicteu"                     
-                    data-art-edmuz-ger8  ="Educaţie muzicală pentru minoritatea germană" 
-                    data-art-edmuz-ita8  ="Educaţie muzicală pentru minoritatea italiană" 
-                    data-art-edmuz-mag8  ="Educaţie muzicală pentru minoritatea maghiară" 
-                    data-art-edmuz-magr8 ="Educaţie muzicală pentru minoritatea maghiară în lb. română" 
-                    data-art-edmuz-pol8  ="Educaţie muzicală pentru minoritatea poloneză" 
-                    data-art-edmuz-rrm8  ="Educaţie muzicală pentru minoritatea rromă" 
-                    data-art-edmuz-srb8  ="Educaţie muzicală pentru minoritatea sârbă" 
-                    data-art-edmuz-slv8  ="Educaţie muzicală pentru minoritatea slovacă" 
-                    data-art-edmuz-tur8  ="Educaţie muzicală pentru minoritatea turcă" 
-                    data-art-edmuz-ucr8  ="Educaţie muzicală pentru minoritatea ucraineană" 
-                    data-fizic8            ="Educaţie fizică şi sport" 
+                    data-edpl8           ="Educaţie plastică" 
+                    data-edmuz8          ="Educaţie muzicală" 
+                    data-edmuz-ger8      ="Educaţie muzicală pentru minoritatea germană" 
+                    data-edmuz-ita8      ="Educaţie muzicală pentru minoritatea italiană" 
+                    data-edmuz-mag8      ="Educaţie muzicală pentru minoritatea maghiară" 
+                    data-edmuz-magr8     ="Educaţie muzicală pentru minoritatea maghiară în lb. română" 
+                    data-edmuz-pol8      ="Educaţie muzicală pentru minoritatea poloneză" 
+                    data-edmuz-rrm8      ="Educaţie muzicală pentru minoritatea rromă" 
+                    data-edmuz-srb8      ="Educaţie muzicală pentru minoritatea sârbă" 
+                    data-edmuz-slv8      ="Educaţie muzicală pentru minoritatea slovacă" 
+                    data-edmuz-tur8      ="Educaţie muzicală pentru minoritatea turcă" 
+                    data-edmuz-ucr8      ="Educaţie muzicală pentru minoritatea ucraineană" 
+                    data-instr8          ="Instrument principal" 
+                    data-tsd8            ="Teorie - Solfegiu - Dicteu" 
+                    data-piaux8          ="Pian complementar/instrument auxiliar" 
+                    data-dansc8          ="Dans clasic" 
+                    data-ritm8           ="Ritmică" 
+                    data-desen8          ="Desen" 
+                    data-pictr8          ="Pictură" 
+                    data-model8          ="Modelaj" 
+                    data-fizic8          ="Educaţie fizică şi sport" 
                     data-pfiz-atl8       ="Atletism" 
                     data-pfiz-bad8       ="Badminton" 
                     data-pfiz-bas8       ="Basket" 
@@ -846,15 +1150,19 @@
                     data-tec-edtap8      ="Educaţie tehnologică şi aplicaţii practice" 
                     data-tec-info8       ="Informatică şi TIC" 
                     data-tec-ed8         ="Educație tehnologica" 
-                    data-cons-abad8      ="Abilități pentru adolescență" 
                     data-cons-ed8        ="Consiliere şi dezvoltare personală" 
-                    data-crr-ist8        ="Istorie orală: Istorie trăită-Istorie povestită" 
-                    data-crr-lect8       ="Lectura și abilitățile de viață" 
-                    data-crr-grne8       ="Limba neoelenă şi civilizația Greciei antice" 
-                    data-crr-micr8       ="Mai întâi caracterul" 
-                    data-crr-matsc8      ="Matematică și științe în societatea cunoașterii" 
-                    data-crr-edvit8      ="Pregătiţi pentru viaţă. Educaţie pentru viaţă şi comunitate" 
-                    data-crr-radlt8      ="Rădăcini latine în cultura şi civilizaţia românească" 
+                    data-cds-ist8        ="Istorie orală: Istorie trăită-Istorie povestită" 
+                    data-cds-lect8       ="Lectura și abilitățile de viață" 
+                    data-cds-grne8       ="Limba neoelenă şi civilizația Greciei antice" 
+                    data-cds-micr8       ="Mai întâi caracterul" 
+                    data-cds-matsc8      ="Matematică și științe în societatea cunoașterii" 
+                    data-cds-edvit8      ="Pregătiţi pentru viaţă. Educaţie pentru viaţă şi comunitate" 
+                    data-cds-radlt8      ="Rădăcini latine în cultura şi civilizaţia românească" 
+                    data-cds-arm8        ="Cultură și tradiții aromâne" 
+                    data-cds-fin8        ="Educație financiară" 
+                    data-cds-icu8        ="Educație interculturală" 
+                    data-cds-eds8        ="Educație pentru sănătate" 
+                    data-cds-mag8        ="Limba și literatura maghiară" 
                     >
                   <label class="form-check-label" for="inlineCheckbox8">Clasa a VIII-a</label>
                 </div>
@@ -867,19 +1175,19 @@
 
             {{!-- Alegerea dinamică a disciplinelor în funcție de selectarea nivelului școlar --}}
             <fieldset>
-              <legend>Disciplina</legend>
-              <h4>Selectarea disciplinei sau a mai multora încarcă competențele specifice</h4>
-              <p>Pentru a avea acces la competențele specifice și implicit la activitățile proprii, cât și pentru a propune noi activități inexistente, se va alege unul din nivelurile de școlarizare.</p>
-              <p>Odată selectat nivelul, se vor încărca disciplinele aferente acelui nivel, dintre care se vor alege cele pentru care resursa propusă răspunde</p>
+              <legend>Disciplina și competențele vizate</legend>
+              {{!-- <h4>Selectarea disciplinei sau a mai multora încarcă competențele specifice</h4> --}}
+              {{!-- <p>Pentru a avea acces la competențele specifice și implicit la activități, se va alege</p>
+              <p>Odată selectat nivelul, se vor încărca disciplinele aferente acelui nivel, dintre care se vor alege cele pentru care resursa propusă răspunde</p> --}}
               
               {{!-- Încărcarea DISCIPLINELOR --}}
               <div id="discipline">
-                {{!-- disciplinele sunt adaugate programatic in functie de selectia nivelului de școlarizare --}}
+                {{!-- disciplinele sunt adaugate programatic in functie de clasa selectată --}}
               </div>
               {{!-- Încărcarea DISCIPLINELOR END --}}
             </fieldset>
             {{!-- Alegerea dinamică a disciplinelor în funcție de selectarea nivelului școlar END--}}
-
+            <h4>Selectați competența specifică vizată în mod principal la care contribuie această resursă</h4>
             {{!-- Butonul de afișare a competențelor specifice va fi ascuns până când nu este selectată o disciplină. Previne erorile de apăsare fără selecție disc. --}}
             <button id="actTable" class="d-none btn btn-warning" type="button" data-toggle="collapse" data-target="#csuri" aria-expanded="false" aria-controls="csuri">Alege competențele specifice</button>
             
@@ -904,95 +1212,58 @@
         <div id="trei">
           {{!-- Acționarea grupului de controale pentru #2 --}}
           <div id="heading03">
-            <h5 class="text-light rounded text-center bg-danger p-2">Validarea resursei prin specificitate</h5>
+            <h5 class="text-light rounded text-center bg-danger p-2">Detalii despre resursa propusă</h5>
           </div>
           
           {{!-- Încărcarea fișierelor sau a fragmentului [form-group] --}}
           <div id="sec03" class="form-group" aria-labelledby="heading03" data-parent="#accordionFrm">
             {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI --}}
             <fieldset>
-              <legend>Elemente obligatorii pentru validarea resursei</legend>
-              <p>Pentru a selecta mai multe, apasă SHIFT și click pe cel pe care dorești să-l adaugi</p>
+              {{!-- <legend>Elemente obligatorii pentru validarea resursei</legend> --}}
+              <p>Mai jos sunt elemente cu selecție multiplă. Pentru a selecta mai multe opțiuni, apasă CTRL și click pe cel pe care dorești să-l adaugi sau să-l elimini din selecție</p>
+
+              {{!-- NIVELURI --}}
+              <div class="form-group">
+                <h4>Competențe digitale necesare</h4>
+                <label for="valid-level">RED-ul necesită competențe digitale de nivelul:</label>
+                <select class="form-control" id="valid-abil">
+                  <option value="minim">minim</option>
+                  <option value="mediu">mediu</option>
+                  <option value="avansat">avansat</option>
+                </select>
+              </div>
+              {{!-- NIVELURI END--}}
 
               {{!-- GRUPURILE ȚINTĂ --}}
               <div class="form-group">
-                <label for="valid-grup">Selectează un grup țintă sau mai multe</label>
+                <label for="valid-grup">RED-ul se adresează în mod direct:</label>
                 <select multiple class="form-control" id="valid-grup">
                   <option value="elev">elev</option>
                   <option value="profesor">profesor</option>
-                  <option value="părinte">părinte</option>
-                  <option value="tutore">tutore</option>
-                  <option value="aparținător">aparținător</option>
+                  <option value="altii">altă categorie</option>
                 </select>
               </div>
               {{!-- GRUPURILE ȚINTĂ END--}}
 
-              {{!-- DOMENIU --}}
-              {{!-- <div class="form-group">
-                <label for="valid-domeniu">Domeniul căruia i se adresează resursa</label>
-                <select multiple class="form-control" id="valid-domeniu">
-                  <option value="cognitiv">cognitiv</option>
-                  <option value="psihomotor">psihomotor</option>
-                  <option value="afectiv">afectiv</option>
-                </select>
-                <small>Prin care se dovedește că elevul are competențe generale și specifice - ceea ce știe și/sau să facă elevul</small>
-                <small>Se pot selecta una sau mai multe dintre variantele de mai sus sau se pot adăuga, după caz, dacă niciuna dintre variantele enumerate nu întrunește cerințele autorului/ contributorului.</small>
-              </div> --}}
-              {{!-- DOMENIU END --}}
-
-              {{!-- VIZEAZĂ --}}
-              {{!-- <div class="form-group">
-                <label for="valid-functii">Resursa vizează</label>
-                <select multiple class="form-control" id="valid-functii">
-                  <option value="comunicare">comunicare/însușire de noi cunoștințe</option>
-                  <option value="formare">formare de priceperi și deprinderi</option>
-                  <option value="fixare">fixare și sistematizare</option>
-                  <optgroup label="verificare/ evaluare a cunoștințelor acumulate">
-                    <option value="chestionare">chestionare</option>
-                    <option value="test">teste</option>
-                    <option value="quiz">quiz</option>
-                  </optgroup>
-                </select>
-              </div> --}}
-              {{!-- VIZEAZĂ END --}}
-
-              {{!-- DEMERSURI --}}
+              {{!-- NECESARE --}}
               <div class="form-group">
-                <label for="valid-demersuri">Tipul de demers / raționament utilizat în realizarea resursei</label>
-                <select class="form-control" id="valid-demersuri">
-                  <option value="inductiv">inductiv</option>
-                  <option value="deductiv">deductiv</option>
-                  <option value="dialectic">dialectic</option>
-                  <option value="analogic">analogic</option>
+                <label for="valid-grup">Resursele necesare pentru utilizarea RED-ului la clasă:</label>
+                <select multiple size="7" class="form-control" id="materiale">
+                  <option value="computer">computer</option>
+                  <option value="videoproiector">videoproiector</option>
+                  <option value="internet">Internet</option>
+                  <option value="audio">echipamente audio</option>
+                  <option value="consumabile">consumabile</option>
+                  <option value="haptice">haptice</option>
+                  <option value="mediu">mediu</option>
                 </select>
-                <small>Se pot selecta una sau mai multe dintre variantele de mai sus sau se pot adăuga, după caz, dacă niciuna dintre variantele enumerate nu întrunește cerințele autorului/ contributorului.</small>
               </div>
-              {{!-- DEMERSURI END --}}
-
-              {{!-- SPAȚII --}}
-              {{!-- <div class="form-group">
-                <label for="valid-spatii">Activitatea se desfășoară</label>
-                <select multiple class="form-control" id="valid-spatii">
-                  <option value="clasa">la clasă</option>
-                  <option value="acasa">individual</option>
-                  <option value="grupe">în grupe</option>
-                  <option value="laborator">în laborator</option>
-                  <optgroup label="în afara clasei">
-                    <option value="salasport">sala de sport</option>
-                    <option value="curteascolii">în curtea școlii</option>
-                    <option value="spatiideschise">alte spații deschise (pădure, parc)</option>
-                  </optgroup>
-                  <option value="laborator">în perechi (dual)</option>
-                  <option value="laborator">mixte</option>
-                </select>
-                <small>Se pot selecta una sau mai multe dintre variantele de mai sus sau se pot adăuga, după caz, dacă niciuna dintre variantele enumerate nu întrunește cerințele autorului/ contributorului.</small>
-              </div> --}}
-              {{!-- SPAȚII END --}}
+              {{!-- NECESARE END--}}
 
               {{!-- DEPENDINȚELE Resursei --}}
               <div class="form-group">
                 <fieldset>
-                  <legend>Mijloace / materiale didactice necesare</legend>
+                  <legend>Alte resurse necesare:</legend>
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text">Resursa necesită:</span>
@@ -1004,38 +1275,22 @@
                   </small>                  
                 </fieldset>
               </div>
-              {{!-- DEPENDINȚELE Resursei END--}}
-
-              {{!-- CUM SE PRODUCE ÎNVĂȚAREA --}}
-              {{!-- <div class="form-group">
-                <label for="valid-invatarea">Modul în care se produce învățarea se face prin:</label>
-                <select multiple class="form-control" id="valid-invatarea">
-                  <option value="cooperare">cooperare</option>
-                  <option value="competitie">competiție</option>
-                  <option value="colaborare">colaborare</option>
-                  <option value="descoperire">descoperire</option>
-                  <option value="problematizare">problematizare</option>
-                  <option value="experimentare">experimentare</option>
-                  <option value="receptare">receptare activă</option>
-                </select>
-                <small>Se pot selecta una sau mai multe dintre variantele de mai sus sau se pot adăuga, după caz, dacă niciuna dintre variantele enumerate nu întrunește cerințele autorului/ contributorului.</small>           
-              </div> --}}
-              {{!-- CUM SE PRODUCE ÎNVĂȚAREA END --}}                                   
+              {{!-- DEPENDINȚELE Resursei END--}}                               
 
             {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI END --}}
 
-            {{!-- Bibliografie --}}
+            {{!-- RED componente --}}
             <fieldset>
-              <legend>Introducerea bibliografiei</legend>
-              <p>Fiecare referință bibliografică va ocupa un singur rând.</p>
+              <legend>Resurse utilizate</legend>
+              <p>Resurse utilizate în elaborarea RED-ului. Fiecare link va fi trecut pe câte un rând.</p>
               <div class="input-group">
                 <div class="input-group-prepend">
-                  <span class="input-group-text">Bibliografie (APA6)</span>
+                  <span class="input-group-text">Resurse: </span>
                 </div>
-                <textarea id="bibliografie" class="form-control" aria-label="Bibliografia" rows="3"></textarea>
+                <textarea id="componente" class="form-control" aria-label="Componente" rows="3"></textarea>
               </div>
             </fieldset>
-            {{!-- Bibliografie END --}}
+            {{!-- RED componente END --}}
           </div>
           {{!-- Încărcarea fișierelor sau a fragmentului [form-group] END--}}
 
@@ -1063,10 +1318,10 @@
       </div>
       {{!-- Înapoi la pasul 4 [form-group] END --}}
       {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
-      <div id="sec04" class="form-group" aria-labelledby="heading04" data-parent="#accordionFrm">
+      <div id="sec04" class="form- group" aria-labelledby="heading04" data-parent="#accordionFrm">
         {{!-- RESURSELE care au stat la bază --}}
         <fieldset>
-          <legend>Resursele folosite în elaborarea RED-ului</legend>
+          <legend>Instrumente folosite în elaborarea RED-ului</legend>
           {{!-- <div id="relatedRes">
             <span class="badge badge-info">Componente</span>
           </div> --}}
@@ -1074,27 +1329,44 @@
             <div class="input-group-prepend">
               <span class="input-group-text">Completează menționând fiecare link separat prin virgule:</span>
             </div>
-            <textarea id="componenteRed" class="form-control" aria-label="Componentele RED-ului" rows="3"></textarea>
+            <textarea id="tools" class="form-control" aria-label="Componentele RED-ului" placeholder="ex: www.edmodo.com, https://kahoot.com/, http://openboard.ch/, etc." rows="3"></textarea>
           </div>
         </fieldset>
 
         {{!-- EDITOR pentru introducerea letrică --}}
         <fieldset>
-          <legend>Introdu mai jos în editor părțile componente ale RED-ului și o descriere, dacă este nevoie:</legend>
+          {{!-- <legend>Introdu mai jos în editor părțile componente ale RED-ului și o descriere, dacă este nevoie:</legend> --}}
+          <div class="btn-group btn-editor-group" data-toggle="buttons">
+              <label class="btn btn-primary active">
+                  <input type="radio" name="editor-options" id="editor-option1" checked> Editor Standard
+              </label>
+              <label class="btn btn-primary">
+                  <input type="radio" name="editor-options" id="editor-option2"> Editor LIVRESQ
+              </label>
+          </div>
           {{!-- Integrarea editorului de text --}}
-          <div id="codex-editor"></div>
+          
+              <div class="editor-wrapper" id="editor-default">
+                <div id="codex-editor"></div>
+              </div>
+
+          <div class="editor-wrapper " id="editor-livresq" style="display:none;">
+              <legend>Editează un proiect nou cu LIVRESQ:</legend>
+              <a href="{{livresqProjectRequest}}" class="btn btn-warning" target="_blank">Editează cu LIVRESQ</a>
+
+              <div style="margin:20x 0" >
+                <legend>Atașează mai jos un proiect descărcat din LIVRESQ (exportat ca .zip)</legend>
+              </div>
+              <div style="margin:20x 0" >
+                  <img src="/img/livresq_steps.jpg">
+              </div>
+              <div style="margin:20x 0" >
+                  <button onclick="livqUpload()" id="continutLivRes" class="btn btn-warning">Atașează proiectul descărcat</button>
+              </div>
+          </div>
         </fieldset>
         {{!-- EDITOR pentru introducerea letrică END --}}
 
-        {{!-- UPLOADER --}}
-        {{!-- <div>
-          <label>Încarcă resurse</label>
-          <input type="file" name="multiple_images" multiple />
-        </div>
-        <div>
-            <input type="submit" name="btn_upload_multiple_images" value="Upload" />
-        </div> --}}
-        {{!-- UPLOADER END --}}
 
       </div>
       {{!-- Verificarea fișei și constituirea înregistrării [form-group] END--}}
@@ -1129,6 +1401,20 @@
       </div>
       {{!-- ETICHETE END --}}
 
+
+      {{!-- Bibliografie --}}
+      <fieldset>
+        <legend>Bibliografia utilizată</legend>
+        <p>Dacă referință bibliografică va ocupa un singur rând.</p>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Bibliografie (APA6)</span>
+          </div>
+          <textarea id="bibliografie" class="form-control" aria-label="Bibliografia" rows="3"></textarea>
+        </div>
+      </fieldset>
+      {{!-- Bibliografie END --}}
+
       <div id="submitWrap" class="form-group" data-parent="#accordionFrm">
         <button id="submit" type="button" class="btn btn-success">Adaugă resursa</button>
         <button id="delete" type="button" class="btn btn-danger">Renunță</button>
@@ -1158,6 +1444,29 @@
       liElem.classList.add(...cls);
       //TODO: Termină implementarea cândva, dacă mai este nevoie
     });
+  }
+
+  
+  // era si asta cred in pachet. daca nu este, scuze... No problem”
+  /**
+   * Funcția are rolul de a face upload / switch din editor LIVRESQ in editor Standard
+   */
+  function livqUpload(){
+      var livqTab = document.querySelector('#editor-option1');
+      if(!livqTab) return;
+      livqTab.click();
+
+      var livqEditor = document.querySelector('.codex-editor__redactor');
+      if(!livqEditor) return;
+      livqEditor.click();
+
+      var livqPlus = document.querySelector('.ce-toolbar__plus');
+      if(!livqPlus) return;
+      livqPlus.click();
+
+      var livqAttach = document.querySelector('li[data-tool="attaches"]').click();
+      if(!livqAttach) return;
+      livqAttach.click();
   }
 </script>
 

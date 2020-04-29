@@ -1,4 +1,7 @@
 require('dotenv').config();
+
+const LivresqConnect = require('../../models/livresq-connect').LivresqConnect;
+
 /* === DEPENDINȚE === */
 const moment = require('moment');
 /* === MODELE === */
@@ -6,7 +9,7 @@ const Resursa = require('../../models/resursa-red'); // Adu modelul resursei
 /* === HELPERE === */
 // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
 let checkRole     = require('./checkRole.helper');
-let editorJs2html = require('./editorJs2HTML');
+let content2html  = require('./editorJs2HTML');
 // cere helperul pentru cache-ing
 require('./cache.helper');
 const {clearHash} = require('./cache.helper');
@@ -70,9 +73,6 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
                 newResultArr.push(obi);
             });
         
-            console.log("Hmmmm", idxRes, roles);
-            
-            
             res.render('resurse', {
                 title:        "Resurse publice",
                 style:        "/lib/fontawesome/css/fontawesome.min.css",
@@ -99,15 +99,25 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
 exports.loadOneResource = function loadOneResource (req, res, next) {
     // console.log(req.params);
     // var record = require('./resincredid.ctrl')(req.params); // aduce resursa și transformă conținutul din JSON în HTML
-    let query = Resursa.findById(req.params.id).populate({
-            path: 'competenteS'
-        });
-
+    let query = Resursa.findById(req.params.id).populate({path: 'competenteS'});
     query.then( (resursa) => {
+
             if (resursa._doc) {
-                resursa._doc.content = editorJs2html(resursa.content);
-                let localizat = moment(resursa.date).locale('ro').format('LLL');
-                resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+                // transformă obiectul document de Mongoose într-un obiect normal.
+                const newObi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+                newObi.content = content2html(resursa.content);
+                // obiectul competenței specifice cu toate datele sale trebuie curățat.
+                newObi.competenteS = newObi.competenteS.map(obi => {
+                    return Object.assign({}, obi._doc);
+                });
+                // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
+                newObi.editorContent = JSON.stringify(resursa);
+
+                // resursa._doc.content = editorJs2html(resursa.content);
+                let localizat = moment(newObi.date).locale('ro').format('LLL');
+                // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+                newObi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+                return newObi;
             } else {
                 console.log(`Nu a putut fi adusă resursa!`);
             }
@@ -165,6 +175,12 @@ exports.describeResource = function describeResource (req, res, next) {
 
     /* ====== VERIFICAREA CREDENȚIALELOR ====== */
     if(req.session.passport.user.roles.admin){
+
+
+        let user = req.session.passport.user;
+        let url = new LivresqConnect().prepareProjectRequest(user.email, user.googleProfile.given_name, user.googleProfile.family_name);
+        if(!url.startsWith("http")) url = "#";
+
         // Dacă avem un admin, atunci oferă acces neîngrădit
         res.render('adauga-res', {
             user:    req.user,
@@ -174,10 +190,16 @@ exports.describeResource = function describeResource (req, res, next) {
             credlogo:"/img/CREDlogo.jpg",
             // csrfToken: cookieObj._csrf,
             csrfToken: req.csrfToken(),
-            scripts
+            scripts,
+            livresqProjectRequest: url
         });
         // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere al resursei.
+        
+        let user = req.session.passport.user;
+        let url = new LivresqConnect().prepareProjectRequest(user.email, user.googleProfile.given_name, user.googleProfile.family_name);
+        if(!url.startsWith("http")) url = "#";
+
         res.render('adauga-res', {
             user:    req.user,
             title:   "Adauga",
@@ -186,7 +208,8 @@ exports.describeResource = function describeResource (req, res, next) {
             credlogo:"/img/CREDlogo.jpg",
             // csrfToken: cookieObj._csrf,
             csrfToken: req.csrfToken(),
-            scripts
+            scripts,
+            livresqProjectRequest: url
         });
     } else {
         res.redirect('/401');
