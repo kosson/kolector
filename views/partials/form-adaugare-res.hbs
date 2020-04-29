@@ -1337,10 +1337,10 @@
         <fieldset>
           {{!-- <legend>Introdu mai jos în editor părțile componente ale RED-ului și o descriere, dacă este nevoie:</legend> --}}
           <div class="btn-group btn-editor-group" data-toggle="buttons">
-              <label class="btn btn-primary active">
+              <label class="btn btn-primary active" onclick="toDefaultEditor()">
                   <input type="radio" name="editor-options" id="editor-option1" checked onclick="toDefaultEditor()"> Editor Standard
               </label>
-              <label class="btn btn-primary">
+              <label class="btn btn-primary" onclick="toLivresqEditor()">
                   <input type="radio" name="editor-options" id="editor-option2" onclick="toLivresqEditor()"> Editor LIVRESQ
               </label>
           </div>
@@ -1479,14 +1479,18 @@
     });
 
     function toDefaultEditor(){
-        document.getElementById("editor-default").style.display = "block";
-        document.getElementById("editor-livresq").style.display = "none";
+        if(document.getElementById("editor-default").style.display === 'none'){
+          document.getElementById("editor-default").style.display = "block";
+          document.getElementById("editor-livresq").style.display = "none";
+        }
     }
 
 
     function toLivresqEditor(){
-        document.getElementById("editor-default").style.display = "none";
-        document.getElementById("editor-livresq").style.display = "block";
+        if(document.getElementById("editor-livresq").style.display === 'none'){
+          document.getElementById("editor-default").style.display = "none";
+          document.getElementById("editor-livresq").style.display = "block";
+        }
     }
     // livresq and standard editors ~~END
 
