@@ -1338,10 +1338,10 @@
           {{!-- <legend>Introdu mai jos în editor părțile componente ale RED-ului și o descriere, dacă este nevoie:</legend> --}}
           <div class="btn-group btn-editor-group" data-toggle="buttons">
               <label class="btn btn-primary active">
-                  <input type="radio" name="editor-options" id="editor-option1" checked> Editor Standard
+                  <input type="radio" name="editor-options" id="editor-option1" checked onclick="toDefaultEditor()"> Editor Standard
               </label>
               <label class="btn btn-primary">
-                  <input type="radio" name="editor-options" id="editor-option2"> Editor LIVRESQ
+                  <input type="radio" name="editor-options" id="editor-option2" onclick="toLivresqEditor()"> Editor LIVRESQ
               </label>
           </div>
           {{!-- Integrarea editorului de text --}}
@@ -1349,31 +1349,6 @@
               <div class="editor-wrapper" id="editor-default">
                 <div id="codex-editor"></div>
               </div>
-
-<script>
-  // strictly for local testing
-  
-  $(function(){    // begin of ~custom livresq
-
-    // reset things for the editors
-    $("#editor-livresq").hide();
-    $("#editor-default").show();
-
-  
-    // capture clicks on the editors from step4 [default, livresq]
-    $("#editor-option1").on("click", function(){
-      $("#editor-livresq").hide();
-      $("#editor-default").show();
-    });
-
-    $("#editor-option2").on("click", function(){      
-      $("#editor-default").hide();
-      $("#editor-livresq").show();
-    });
-    // end of ~custom livresq
-  });
-
-</script>
 
           <div class="editor-wrapper " id="editor-livresq" style="display:none;">
               <legend>Editează un proiect nou cu LIVRESQ:</legend>
@@ -1493,5 +1468,27 @@
       if(!livqAttach) return;
       livqAttach.click();
   }
+
+    // livresq and standard editors ~BEGIN
+    // just to make sure it works; kept as js
+    $(function(){
+        // begin the editors ~ toggle editors
+        toDefaultEditor();
+        // end of editors ~ toggle editors
+
+    });
+
+    function toDefaultEditor(){
+        document.getElementById("editor-default").style.display = "block";
+        document.getElementById("editor-livresq").style.display = "none";
+    }
+
+
+    function toLivresqEditor(){
+        document.getElementById("editor-default").style.display = "none";
+        document.getElementById("editor-livresq").style.display = "block";
+    }
+    // livresq and standard editors ~~END
+
 </script>
 
