@@ -21,10 +21,13 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
     let idxRes = process.env.RES_IDX_ALS;
 
     // ACL
-    let roles = ["user", "validator"];
+    let roles = ["user", "validator", "cred"];
     
+    console.log(req.session.passport.user.roles.rolInCRED);
+    
+
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
-    let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
+    let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);    
 
     // Adu-mi ultimele 8 resursele validate în ordinea ultimei intrări, te rog! Hey, hey, Mr. Serverman!        
     // let resursePublice = Resursa.find({'expertCheck': 'true'}).sort({"date": -1}).limit(8).cache({key: req.user.id});
@@ -67,10 +70,12 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
         // promiseResPub.then((result) => {
         resursePublice.then(function (result) {
-            let newResultArr = []; // noul array al obiectelor resursă
-            result.map(function clbkMapResult (obi) {
-                obi.dataRo = moment(obi.date).locale('ro').format('LLL');
-                newResultArr.push(obi);
+            let newResultArr = result.map(function clbkMapResult (obi) {
+                const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+                // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
+                newObi.dataRo = moment(obi.date).locale('ro').format('LLL');
+                // newResultArr.push(newObi);
+                return newObi;
             });
         
             res.render('resurse', {
