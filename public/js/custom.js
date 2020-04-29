@@ -186,16 +186,4 @@ $(document).ready(function () {
       $('#progressText').text('Pasul 3');
     });
 
-    // begin of ~custom livresq
-    $("#editor-option1").on("click", function(){
-      $("#editor-default").show();
-      $("#editor-livresq").hide();
-  });
-  $("#editor-option2").on("click", function(){
-    
-      $("#editor-default").hide();
-      $("#editor-livresq").show();
-  });
-  // end of ~custom livresq
-
 });

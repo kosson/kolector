@@ -3416,6 +3416,11 @@ function pickCover () {
  * Funcția are rolul de a colecta care dintre imagini va fi coperta și de a colecta etichetele completate de contribuitor.
  */
 function pas4 () {
+
+    // reset things for the editors
+    $("#editor-livresq").hide();
+    $("#editor-default").show();
+
     // vezi id-ul `tools` și introdu-le în array-ul `RED.relatedTo`
     var newRelReds = document.getElementById('tools');
     var arrNewRelReds = newRelReds.value.split(',');
@@ -3485,3 +3490,14 @@ submitBtn.addEventListener('click', (evt) => {
         }
     });
 });
+
+// begin of ~custom livresq
+$("#editor-option1").on("click", function(){
+    $("#editor-livresq").hide();
+    $("#editor-default").show();
+});
+$("#editor-option2").on("click", function(){      
+    $("#editor-default").hide();
+    $("#editor-livresq").show();
+});
+// end of ~custom livresq
