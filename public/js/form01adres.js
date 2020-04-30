@@ -36,7 +36,7 @@ let fisiere = new Set(); // un `Set` cu toate fișierele care au fost introduse 
 
 // este necesar pentru a primi uuid-ul generat la încărcarea unui fișier mai întâi de orice în Editor.js. Uuid-ul este trimis din multer
 pubComm.on('uuid', (id) => {
-    console.log('Pentru că a fost încărcat un fișier mai întâi de toate, a fost generat următorul uuid în server: ', id);
+    // console.log('Pentru că a fost încărcat un fișier mai întâi de toate, a fost generat următorul uuid în server: ', id);
     RED.uuid = id;
 });
 
@@ -215,7 +215,7 @@ const editorX = new EditorJS({
                                 pubComm.emit('mesaje', `Am încercat să „trag” imaginea de la URL-ul dat, dar: ${response.statusText}`);
                                 console.log('Am detectat o eroare: ', response.statusText);
                             }
-                            console.log(response); // response.body este deja un ReadableStream
+                            // console.log(response); // response.body este deja un ReadableStream
                             return response;
                         }
 
@@ -283,7 +283,7 @@ const editorX = new EditorJS({
                                         // obj4EditorJS.file.url = respObj.file;
 
                                         // constituie calea către imagine
-                                        console.log(respObj.file);
+                                        // console.log(respObj.file);
                                         var urlAll = new URL(`${respObj.file}`);
                                         var path = urlAll.pathname;
                                         imagini.add(path); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora                                      
@@ -370,7 +370,7 @@ const editorX = new EditorJS({
                                 fileName: fileName
                             });
                             pubComm.on('delfile', (mesagge) => {
-                                console.log(message);
+                                console.log("Am șters cu următoarele detalii: ", message);
                             });
                         }
                     });
@@ -410,7 +410,7 @@ const editorX = new EditorJS({
                                     fileName: fileName
                                 });
                                 pubComm.on('delfile', (messagge) => {
-                                    console.log(messagge);
+                                    console.log("Am șters cu următoarele detalii ", messagge);
                                 });
                             }
                         });
@@ -3321,7 +3321,7 @@ function closeBag (evt) {
     // Închide Bag-ul
     pubComm.emit('closeBag', true); // vezi routes.js ->  socket.on('closeBag'...)
     pubComm.on('closeBag', (mesaj) => {
-        console.log(mesaj);
+        console.log("Am închis bag-ul cu următoarele detalii: ", mesaj);
     });
 }
 
@@ -3481,8 +3481,6 @@ submitBtn.addEventListener('click', (evt) => {
             setTimeout(() => {
                 window.location = '/profile/resurse';
             }, 1000);
-        } else {
-            console.log(red);            
         }
     });
 });

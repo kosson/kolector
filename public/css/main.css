@@ -407,42 +407,42 @@ a[class$="0"] {
 }
 
 a[class$="1"] {
-    background-color: #FC0;
+    background-color: rgba(91, 189, 202, 0.65);
     margin: 0.1rem;
 }
 
 a[class$="2"] {
-    background-color: #FC0;
+    background-color: rgba(155, 64, 167, 0.562);
     margin: 0.1rem;
 }
 
 a[class$="3"] {
-    background-color: #FC0;
+    background-color: rgba(216, 96, 59, 0.548);
     margin: 0.1rem;
 }
 
 a[class$="4"] {
-    background-color: #FC0;
+    background-color: rgba(69, 224, 165, 0.7);
     margin: 0.1rem;
 }
 
 a[class$="5"] {
-    background-color: #FC0;
+    background-color: rgba(222, 224, 71, 0.7);
     margin: 0.1rem;
 }
 
 a[class$="6"] {
-    background-color: coral;
+    background-color: rgba(85, 156, 18, 0.527);
     margin: 0.1rem;
 }
 
 a[class$="7"] {
-    background-color: #FC0;
+    background-color: rgba(129, 12, 12, 0.397);
     margin: 0.1rem;
 }
 
 a[class$="8"] {
-    background-color: #FC0;
+    background-color: rgba(207, 43, 133, 0.486);
     margin: 0.1rem;
 }
 

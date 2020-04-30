@@ -22,9 +22,6 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
 
     // ACL
     let roles = ["user", "validator", "cred"];
-    
-    console.log(req.session.passport.user.roles.rolInCRED);
-    
 
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);    
