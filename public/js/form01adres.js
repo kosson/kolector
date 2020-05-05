@@ -326,7 +326,6 @@ const editorX = new EditorJS({
             }
         }
     },
-
     // de fiecare dată când se modifică conținutul, actualizează `RED.content`.
     onChange: () => {
         editorX.save().then((content) => {    
@@ -418,7 +417,6 @@ const editorX = new EditorJS({
                 }
             }
             pickCover(); // formează galeria pentru ca utilizatorul să poată selecta o imagine
-
         }).catch((e) => {
             console.log(e);
         });
@@ -429,46 +427,6 @@ const editorX = new EditorJS({
     // data: {}
 });
 
-
-/**
- * Clasa `createElement` va creea elemente HTML
- * @param {String} tag este un și de caractere care indică ce tip de element va fi creat
- * @param {String} [id] este un șir de caractere care indică un id pentru element
- * @param {Array}  [cls] este un array ce cuprinde clasele elementului
- * @param {Object} [attrs] este un obiect de configurare a elementului care permite definirea de atribute
- */
-class createElement {
-    constructor(tag, id, cls, attrs){
-        this.id = id;
-        this.tag = tag;
-        this.classes = [...cls];
-        this.attributes = attrs;    // va fi un un obiect de configurare, fiecare membru fiind un posibil atribut.
-    }
-    /**
-     * Metoda `creeazaElem()` generează obiectul DOM
-     * @param {String} textContent Este conținutul de text al elementului, dacă acest lucru este necesar
-     * @param {Boolean} requiredElem Specifică dacă un element are atributul `required`
-     */
-    creeazaElem (textContent, requiredElem) {
-        const element = document.createElement(this.tag);
-        if (this.id) element.id = this.id;
-        if (this.classes) element.classList.add(...this.classes);
-        if (this.attributes) {
-            for (let [key, val] of Object.entries(this.attributes)) {
-                element.setAttribute(key, val);
-            }
-        }
-        // if (textContent) element.textContent = textContent;
-        if (textContent) {
-            var text = '' + textContent;
-            let encodedStr = decodeCharEntities(text); // decodifică entitățile 
-            let txtN = document.createTextNode(encodedStr);
-            element.appendChild(txtN);
-        }
-        if (requiredElem) element.required = true;
-        return element;
-    }
-} 
 // este setul opțiunilor pentru selecție de limbă în cazul minorităților
 let langsMin = new Map([
     ['rum', 'română'],
@@ -638,7 +596,7 @@ function creeazaTitluAlternativHelper (id, insertie) {
     insertie.appendChild(divInputGroup);
 }
 
-//FIXME: Generează automat datele din data=* dacă se poate!!!
+//TODO: Generează automat datele din data=* dacă se poate!!!
 const mapCodDisc = new Map();
 
 // La `parent` va fi codul care este precizat în `data-*` de la `Aria/arii curriculare` din HTML - client
@@ -3392,12 +3350,11 @@ var insertGal = document.getElementById('imgSelector');
 function pickCover () {
     insertGal.innerHTML = '';
     for (let img of imagini) {
-        console.log('imaginea selectată pentru copertă este: ', img);
+        // console.log('imaginea selectată pentru copertă este: ', img);
         
         let container = new createElement('div', '', [`col-xs-4`, `col-sm-3`, `col-md-2`, `nopad`, `text-center`], null).creeazaElem();
         container.addEventListener('click', clickImgGal);
         let imgCheck = new createElement('div', '', [`image-checkbox`], null).creeazaElem();
-        //FIXME: trebuie doar căi relative!!!! Repară stringurile care sunt culese în `imagini`.
         
         let imgElem = new createElement('img', '', [`img-responsive`], {src: `${img}`}).creeazaElem();
         let inputElem = new createElement('input', '', [`inputCheckGal`], {type: 'checkbox', value: `${img}`}).creeazaElem();

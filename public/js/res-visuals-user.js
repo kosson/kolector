@@ -12,7 +12,7 @@ var user_id = visuals.dataset.usrid;
 
 pubComm.emit('usrRes', user_id); // emite cerere de date
 pubComm.on('usrRes', (resurse) => {
-    console.log(resurse);
+    // console.log(resurse);
     
     let newResultArr = []; // noul array al obiectelor resursă
     resurse.map(function clbkMapResult (obi) {

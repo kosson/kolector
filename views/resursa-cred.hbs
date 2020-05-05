@@ -88,7 +88,9 @@
                 <div class="comprespub discsrespub">
                     <h5>Discipline</h5>
                     {{#each resursa.discipline}}
-                        <i class="fas fa-book-open"></i>{{this}}
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fas fa-book-open"></i> {{this}}
+                        </button>
                     {{/each}}
                 </div>
             {{/if}}
@@ -122,7 +124,7 @@
                     <ul>
                         {{#each resursa.activitati}}
                             <li>
-                                {{this}}
+                                {{{this}}}
                             </li>
                         {{/each}}
                     </ul>

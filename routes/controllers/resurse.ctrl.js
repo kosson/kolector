@@ -115,6 +115,16 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
                 // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
                 newObi.editorContent = JSON.stringify(resursa);
 
+                // Array-ul activităților modificat
+                let activitatiRehashed = newObi.activitati.map((elem) => {
+                    let sablon = /^([a-z])+\d/g;
+                    let cssClass = elem[0].match(sablon);
+                    let composed = `<span class="${cssClass[0]}" data-code="${elem[0]}">${elem[1]}</span>`;
+                    return composed;
+                });
+                
+                newObi.activitati = activitatiRehashed;
+
                 // resursa._doc.content = editorJs2html(resursa.content);
                 let localizat = moment(newObi.date).locale('ro').format('LLL');
                 // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.

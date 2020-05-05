@@ -21,12 +21,12 @@ let content2html  = require('./controllers/editorJs2HTML');
 /* === PROFILUL PROPRIU === */
 router.get('/', makeSureLoggedIn.ensureLoggedIn(), function clbkProfile (req, res) {
     res.render('profile', {
-        user:    req.user,
-        title:   "Profil",
-        style:   "/lib/fontawesome/css/fontawesome.min.css",
-        logoimg: "/img/red-logo-small30.png",
-        credlogo: "../img/CREDlogo.jpg",
-        csfrToken: req.csrfToken(),
+        user:         req.user,
+        title:        "Profil",
+        style:        "/lib/fontawesome/css/fontawesome.min.css",
+        logoimg:      "/img/red-logo-small30.png",
+        credlogo:     "../img/CREDlogo.jpg",
+        csfrToken:    req.csrfToken(),
         activePrfLnk: true
     });
 });
@@ -102,8 +102,7 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
         {script: '/lib/editorjs/code.js'},
         {script: '/lib/editorjs/quote.js'},
         {script: '/lib/editorjs/inlinecode.js'},
-        // {script: '/js/res-shown.js'},
-        {script: '/js/redincredadmin.js'} 
+        {script: '/js/personal-res.js'}
     ];
     let roles = ["user", "cred", "validator"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
@@ -113,25 +112,34 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
     // reformatare obiect resursă și căutarea corespondentului în Elasticsearch cu reindexare, dacă nu există în bază, șterge ghost-ul din ES
     query.then(resursa => {
         // console.log(resursa); // asta e moartă: http://localhost:8080/profile/resurse/5e2714c84449b236ce450091
-
-        /* === Resursa încă există în MongoDB === */
-        if (resursa._id) {
-            // const obi = resursa;
         
+        /* === Resursa încă există în MongoDB === */
+        if (resursa.id) {
             // transformă obiectul document de Mongoose într-un obiect normal.
             const obi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
-            // obi.content = content2html(resursa.content);
+
             // obiectul competenței specifice cu toate datele sale trebuie curățat.
             obi.competenteS = obi.competenteS.map(obi => {
                 return Object.assign({}, obi._doc);
             });
-            // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
+
+            // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
             obi.editorContent = JSON.stringify(resursa);
 
             // resursa._doc.content = editorJs2html(resursa.content);
             let localizat = moment(obi.date).locale('ro').format('LLL');
             // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
             obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+
+            // Array-ul activităților modificat
+            let activitatiRehashed = obi.activitati.map((elem) => {
+                let sablon = /^([a-z])+\d/g;
+                let cssClass = elem[0].match(sablon);
+                let composed = `<span class="${cssClass[0]}" data-code="${elem[0]}">${elem[1]}</span>`;
+                return composed;
+            });
+            
+            obi.activitati = activitatiRehashed;
 
             // Dacă nu este indexată în Elasticsearch deja, indexează aici!
             esClient.exists({

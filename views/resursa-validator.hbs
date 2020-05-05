@@ -1,9 +1,9 @@
 {{!< layout}}
 {{> nav-resurse}}
-{{> messages}}
+
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
 <div id="resursaincredadm" class="resurse">
-    <div data-id="{{resursa._id}}" data-contribuitor="{{resursa.idContributor}}" id="{{resursa._id}}" class="resursa">
+    <div data-id="{{resursa._id}}" data-contribuitor="{{resursa.idContributor}}" data-content="{{json resursa}}" id="{{resursa._id}}" class="resursa"></div>
         <div class="container redcontent">
 
             {{!-- Dacă există copertă, afișeaz-o --}}
@@ -78,7 +78,9 @@
                 <div class="comprespub discsrespub">
                     <h5>Discipline</h5>
                     {{#each resursa.discipline}}
-                        <i class="fas fa-book-open"></i>{{this}}
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fas fa-book-open"></i> {{this}}
+                        </button>
                     {{/each}}
                 </div>
             {{/if}}
@@ -112,7 +114,7 @@
                     <ul>
                         {{#each resursa.activitati}}
                             <li>
-                                {{this}}
+                                {{{this}}}
                             </li>
                         {{/each}}
                     </ul>
@@ -276,34 +278,21 @@
                     <a itemprop="keywords" href="/tag/{{this}}" class="badge badge-success">{{this}}</a>
                 {{/each}}
             </div>
-            <h5>Conținut</h5>
-            <div id="codex-editor" data-content="{{json resursa}}">
 
-            </div>
+            <h5>Conținut</h5>
+            {{!-- EDITOR --}}
+            <div id="edi"></div>
+
+            {{!-- Selector de imagine pentru coperta resursei --}}
+            <fieldset>
+                <legend>Selectează imaginea care va fi coperta resursei</legend>
+                <div id="imgSelector"></div>
+            </fieldset>
+
             {{!-- Integrarea editorului de text --}}
             {{!-- <div id="codex-editor"></div> --}}
             {{!-- Încarcă aici scripturile pentru a evita oul înaintea găinii! :D --}}
-            {{#each scripts}}
-                <script src="{{script}}"></script>
-            {{/each}}                
-
-            <button id="resdeladm" type="button" class="btn btn-danger" data-toggle="modal" data-target="#delModal">Șterge resursa</button>
         </div>
-    </div>
-    <!-- Modal -->
-    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="delModalLabel">ȘTERGE</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
-        </div>
-        <div class="modal-body"> Atenție, chiar vrei să ștergi resursa? </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">NU</button>
-            <a href="#delete" id="delete" class="btn btn-primary" onclick="deleteRes()">DA</a> </div>
-        </div>
-    </div>
     </div>
 </div>
 {{#each scripts}}

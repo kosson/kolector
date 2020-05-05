@@ -121,6 +121,101 @@ module.exports = function sockets (pubComm) {
             }
         });
 
+        socket.on('createtempver', function clbkUpdateRes (resourceFile) {
+            /* 
+                Obiectul primit `resourceFile` este `objRes` din `personal-res` și are următoarea semnătură:
+                {
+                    user: RED.idContributor, // este de forma "5e31bbd8f482274f3ef29103" [înainte era email-ul]
+                    name: RED.nameUser,      // este de forma "Nicu Constantinescu"
+                    uuid: RED.uuid,          // dacă deja a fost trimisă o primă resursă, înseamnă că în `RED.uuid` avem valoare deja. Dacă nu, la prima încărcare, serverul va emite unul înapoi în client
+                    resF: file,              // este chiar fișierul: lastModified: 1583135975000  name: "Sandro_Botticelli_083.jpg" size: 2245432 type: "image/jpeg"
+                    numR: file.name,         // name: "Sandro_Botticelli_083.jpg"
+                    type: file.type,         // type: "image/jpeg"
+                    size: file.size
+                };
+            */
+            
+            // setează calea către directorul deja existent al resursei
+            var caleS = `${process.env.REPO_REL_PATH}${resourceFile.user}/${resourceFile.uuid}`; // calea sursă
+            var caleD = `${process.env.REPO_REL_PATH}${resourceFile.user}/${resourceFile.uuid}/versions`; // calea destinație
+            var marcaT= Date.now();
+
+            /* === ARHIVEAZĂ DIRECTORUL ȘI MUTĂ-L ÎN `/versions` === */
+            // Verifică mai întâi dacă există subdirectorul resursei
+            fs.ensureDir(caleaS, 0o2775).then(function clbkSubdirExists () {
+                    
+                /* === ARHIVEAZĂ === */
+                // verifică dacă directorul `/versions` în care se face salvarea există
+                fs.ensureDir(caleD, 0o2775).then(function clbkCreateArchive () {
+                    // Vezi dacă există un subdirector al resursei, iar dacă există șterge tot conținutul său [https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/emptyDir.md#emptydirdir-callback]
+                    var path2ver = `${caleD}/${marcaT}`;
+                    // console.log('Copiez directorul pe calea: ', path2deres);
+
+                    // Copiază întregul conținut în `/versions` => #1 Constituie un array de promisiuni
+                    const bagFiles = [
+                        fs.move(`${caleS}/manifest-sha256.txt`, `${path2ver}/manifest-sha256.txt`),
+                        fs.move(`${caleS}/bagit.txt`, `${path2ver}/bagit.txt`),
+                        fs.move(`${caleS}/bag-info.txt`, `${path2ver}/bag-info.txt`)
+                    ];
+                    //#2 Rezolvă-le pe toate
+                    Promise.all(bagFiles).then(
+                        function clbkCreateDataDir () {
+                            fs.ensureDir(`${path2ver}/data`, 0o2775).then(function clbkDataInVers () {
+                                fs.copy(`${caleS}/data`, `${path2ver}/data`).then(function clbkCopiereOK () {
+                                    // Șterge fișierul JSON din /data!!!
+                                    fs.readdir(`${caleS}/data`, function clbkDelJSON (err, files) {
+                                        const JSONFiles = files.filter(el => /\.json$/.test(el));
+                                        fs.remove(`${JSONFiles[0]}`).then(function clbkWriteNewRes () {
+                                            /* === TRIMITE ÎN CLIENT CALEA PE CARE S-A FĂCUT VERSIUNEA === */
+                                            rre('createtempver', {path2ver, marcaT});
+                                        }).catch(error => {
+                                            if (error) throw error;
+                                        });
+                                    })
+                                }).catch(error => {
+                                    if (error) throw error;
+                                });
+                            }).catch(error => {
+                                if (error) throw error;
+                            });
+                        }
+                    ).catch((error) => {
+                        if (error) throw error;
+                    });
+                }).catch(error => {
+                    console.log(error);
+                });
+            }).catch(error => {
+                console.log(error);
+            });
+
+
+
+
+
+
+
+
+
+            // Transformarea Buffer-ului primit într-un stream `Readable`
+            var strm = new Readable();
+            strm.push(resourceFile.resF);  
+            strm.push(null);
+
+            lastBag = BagIt(caleS, 'sha256');
+            // introdu un nou fișier în Bag
+            strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));
+            // construiește obiectul de răspuns.
+            var responseObj4AddedFile = {
+                success: 1,
+                uuid: resourceFile.uuid,
+                file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${resourceFile.uuid}/data/${resourceFile.numR}`,
+                size: resourceFile.size
+            };
+            // trimite înapoi obiectul necesar confirmării operațiunii lui Editor.js
+            socket.emit('resursa', responseObj4AddedFile);           
+        });
+
         // === RED === ::Introducerea resursei în baza de date MongoDB la finalizarea completării FORM01
         socket.on('red', (RED) => {
             // gestionează cazul în care nu ai un uuid generat pentru că resursa educațională, adică nu are niciun fișier încărcat
@@ -282,15 +377,16 @@ module.exports = function sockets (pubComm) {
 
                 /* === CAZURI === */
                 // #1 Resursa nu are subdirector creat pentru că nu s-a încărcat nimic.
-                // #2 Resursa are subdirector și acesta trebuie șters sau... marcat pentru ștergere întârziată în caz că implementăm recuperare.
+                // #2 Resursa are subdirector și acesta trebuie trimis în subdirectorul deleted.
 
                 // Șterge din MongoDB, din Elasticsearch, precum și de pe hard
                 // caută dacă există subdirector.
-                fs.ensureDir(dirPath, 0o2775).then(function clbkFsExists () {
+                fs.ensureDir(dirPath, 0o2775).then(function clbkSubdirExists () {
                     
                     /* === ARHIVEAZĂ === */
                     // Verifică dacă în rădăcina userului există subdirectorul `deleted`. Dacă nu, creează-l!!!
                     var path2deleted = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, 'deleted');
+                    // Procedura de ștergere cu arhivare
                     fs.ensureDir(path2deleted, 0o2775).then(function clbkDeletedExist () {
                         // Vezi dacă există un subdirector al resursei, iar dacă există șterge tot conținutul său [https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/emptyDir.md#emptydirdir-callback]
                         var path2deres = `${path2deleted}/${resource.content.identifier}`;
@@ -301,7 +397,7 @@ module.exports = function sockets (pubComm) {
                         var archive = archiver('zip', {
                             zlib: { level: 9 } // Sets the compression level.
                         });
-                        // generează arhiva din directorul țintă
+                        // generează arhiva din subdirectorul resursei în subdirectorul țintă din deleted
                         archive.directory(dirPath, path2deres);
                         // constituie arhiva!                   
                         archive.pipe(output);
@@ -320,18 +416,16 @@ module.exports = function sockets (pubComm) {
                             throw err;
                         });
 
-                        // Când se încheie procesul de arhivare
-                        output.on('close', function() {
-                            // console.log('Arhivarea s-a încheiat și descriptorul fișierului s-a închis: ', archive.pointer() + ' total bytes');
+                        /* === Când se încheie procesul de arhivare === */
+                        output.on('close', function clbkFinalArhivare () {
                             rre('mesaje', 'Resursa a intrat în conservare!');
                             // rre('delresid', {bytes: archive.pointer()});
 
                             /* === ȘTERGE SUBDIRECTOR === */
-                            fs.remove(dirPath, function clbkDirFolder (error) {
+                            fs.remove(dirPath, function clbkRemoveFolder (error) {
                                 if (error) {
                                     console.error(error);
                                 }
-                                rre('mesaje', 'Am șters subdirectorul resursei.');
                             });
 
                             /* === Șterge din MONGODB și din Elasticsearch === */
@@ -340,19 +434,24 @@ module.exports = function sockets (pubComm) {
                                 if (err) {
                                     console.log(err);
                                 };                
-                                // Șterge înregistrarea din Elasticsearch
-                                esClient.delete({
-                                    id: doc._id,
-                                    index: process.env.RES_IDX_ALS,
-                                    refresh: true
-                                });
+                                if (doc) {
+                                    // Șterge înregistrarea din Elasticsearch dacă ștergerea din bază a reușit
+                                    esClient.delete({
+                                        id: doc._id,
+                                        index: process.env.RES_IDX_ALS,
+                                        refresh: true
+                                    });
+                                }
                             });
                         });
-                        // FINALIZEAZĂ ARHIVAREA
+
+                        /* === FINALIZEAZĂ ARHIVAREA === */
                         archive.finalize();
+                    }).catch(error => {
+                        console.log(error);
                     });
-                }).catch(err => {
-                    console.log(err);
+                }).catch(error => {
+                    console.log(error);
                 });
         });
 

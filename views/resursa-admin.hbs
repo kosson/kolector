@@ -7,6 +7,7 @@
     <div data-id="{{resursa._id}}" data-contribuitor="{{resursa.idContributor}}" data-content="{{json resursa}}" id="{{resursa._id}}" class="resursa">
         {{!-- Datele sunt injectate prin helperul Handlebars --}}
         <div class="container redcontent">
+
             {{!-- Dacă există copertă, afișeaz-o --}}
             {{#if resursa.coperta}}
                 <img src="{{resursa.coperta}}" class="coperta card-img-top" alt="{{resursa.title}}">
@@ -14,8 +15,8 @@
             
             {{!-- Afișează titlul și descrierea --}}
             <div class="card-title jumbotron">
-                <h1 class="display-4" itemprop="name">{{resursa.title}}</h1>
-                <p itemprop="description" class="lead">{{resursa.description}}</p>
+                <h1 class="display-4" itemprop="name" contenteditable="true">{{resursa.title}}</h1>
+                <p itemprop="description" class="lead" contenteditable="true">{{resursa.description}}</p>
                 <aside>
                     <strong>Verificată: {{{resursa.validate}}}</strong>
                     <strong>Publică: {{{resursa.genPub}}}</strong>
@@ -28,7 +29,7 @@
                     <h5>Titluri alternative</h5>
                     {{#each resursa.titleI18n}}
                         {{#each this}}
-                            <strong itemprop="alternativeHeadline">{{@key}}: {{.}}</strong>
+                            <strong itemprop="alternativeHeadline" contenteditable="true">{{@key}}: {{.}}</strong>
                         {{/each}}
                     {{/each}}
                 </div>
@@ -43,7 +44,7 @@
                 <p itemprop="creator">
                     <a href="/user/{{resursa.idContributor}}" itemprop="accountablePerson" data-toggle="tooltip" data-placement="top" title="Este cel care a introdus resursa.">
                         <i class="fas fa-user-circle"></i>
-                    </a> {{resursa.autori}}
+                    </a> <span id="autorii" contenteditable="true">{{resursa.autori}}</span>
                 </p>
             </div>
             
@@ -51,20 +52,51 @@
             {{#if resursa.abilitati}}
                 <div class="abildigrespub">
                     <h5>RED-ul necesită competențe digitale de nivelul</h5>
+                    <button id="titluLangAdd" class="btn btn-outline-secondary m-2" type="button" onclick="showCompDig()">
+                        <i class="fas fa-plus-circle"></i>
+                    </button>
                     <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Competențe digitale">
                         {{resursa.abilitati}}
                     </button>
                 </div>
             {{/if}}
+            {{!-- NIVELURI --}}
+            <div id="compdig" class="form-group" hidden>
+            <h4>Competențe digitale necesare</h4>
+            <label for="valid-level">RED-ul necesită competențe digitale de nivelul:</label>
+            <select class="form-control" id="valid-abil">
+                <option value="minim">minim</option>
+                <option value="mediu">mediu</option>
+                <option value="avansat">avansat</option>
+            </select>
+            </div>
+            {{!-- NIVELURI END--}}
 
             {{!-- Afișarea ariei curriculare --}}
             <div class="comprespub">
                 <h5>Arie curriculară</h5>
+                {{!-- Buton de adăugare a unei arii curriculare suplimentare --}}
+                <button id="titluLangAdd" class="btn btn-outline-secondary m-2" type="button" onclick="showArii()">
+                    <i class="fas fa-plus-circle"></i>
+                </button>
                 {{#each resursa.arieCurriculara}}
-                    <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Arie curriculară">
+                    <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="{{this}}">
                         {{this}}
                     </button>
                 {{/each}}
+                <div id="ariiNoi">
+                    {{!-- AICI APARE SELECTORUL DE ARII --}}
+                    <select id="arii-curr" class="form-control custom-select" size="8" multiple hidden>
+                        <option data-lbcom   ="lbcom"    value="Limbă și comunicare" onclick="adaugArie()">Limbă și comunicare</option>
+                        <option data-matstnat="matstnat" value="Matematică și științe ale naturii">Matematică și științe ale naturii</option>
+                        <option data-omsoc   ="omsoc"    value="Om și societate">Om și societate</option>
+                        <option data-edfizsp ="edfizsp"  value="Educație fizică și sport">Educație fizică și sport</option>
+                        <option data-arte    ="arte"     value="Arte">Arte</option>
+                        <option data-teh     ="teh"      value="Tehnologii">Tehnologii</option>
+                        <option data-consor  ="consor"   value="Consiliere și orientare">Consiliere și orientare</option>
+                        <option data-currsc  ="currsc"   value="Curriculum la decizia școlii">Curriculum la decizia școlii</option>
+                    </select>
+                </div>
             </div>
 
             {{!-- Afișarea clasei(lor) pentru care a fost elaborată resursa --}}
@@ -80,7 +112,9 @@
                 <div class="comprespub discsrespub">
                     <h5>Discipline</h5>
                     {{#each resursa.discipline}}
-                        <i class="fas fa-book-open"></i>{{this}}
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fas fa-book-open"></i> {{this}}
+                        </button>
                     {{/each}}
                 </div>
             {{/if}}
@@ -114,7 +148,7 @@
                     <ul>
                         {{#each resursa.activitati}}
                             <li>
-                                {{this}}
+                                {{{this}}}
                             </li>
                         {{/each}}
                     </ul>
@@ -282,6 +316,12 @@
             <h5>Conținut</h5>
             {{!-- EDITOR --}}
             <div id="edi"></div>        
+
+            {{!-- Selector de imagine pentru coperta resursei --}}
+            <fieldset>
+                <legend>Selectează imaginea care va fi coperta resursei</legend>
+                <div id="imgSelector"></div>
+            </fieldset>
 
             {{!-- BUTON ȘTERGE RESURSA --}}
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delModal">Șterge resursa</button>

@@ -95,7 +95,7 @@ let sessionMiddleware = session({
     saveUninitialized: true,
     logErrors: true,
     cookie: {
-        maxAge: 3600000
+        maxAge: (1 * 24 * 3600 * 1000)
     }
 });
 

@@ -21,7 +21,7 @@ router.get('/', function clbkLog (req, res, next) {
             let newResultArr = []; // noul array al obiectelor resursă
 
             entries.map(function clbkLogAdd (obi) {
-                const newObi = Object.assign({}, obi); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+                const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
                 // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
                 newObi.dataRo = moment(newObi.date).locale('ro').format('LLL');
                 newObi.content = content2html(obi.content);
@@ -31,16 +31,16 @@ router.get('/', function clbkLog (req, res, next) {
             let scripts = [     
                 {script: '/lib/moment/min/moment.min.js'}        
             ];
+            
             res.render('logentry', {
-                user:    req.user,
-                scripts,
-                title:   "Noutăți",
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                logoimg: "/img/red-logo-small30.png",
-                credlogo: "../img/CREDlogo.jpg",
-                csfrToken: req.csrfToken(),
-                user:    req.user,
-                logentries: newResultArr
+                user:       req.user,
+                title:      "Noutăți",
+                style:      "/lib/fontawesome/css/fontawesome.min.css",
+                logoimg:    "/img/red-logo-small30.png",
+                credlogo:   "../img/CREDlogo.jpg",
+                csfrToken:  req.csrfToken(),
+                logentries: newResultArr,
+                scripts
             });
         }).catch((err) => {
             if (err) throw err;
@@ -69,11 +69,11 @@ router.get('/new', function (req, res) {
     if(req.session.passport.user.roles.admin){
         // Dacă avem un admin, atunci oferă acces neîngrădit
         res.render('logentry-form', {
-            user:    req.user,
-            title:   "Adaugă în log",
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "/img/red-logo-small30.png",
-            credlogo: "../img/CREDlogo.jpg",
+            user:      req.user,
+            title:     "Adaugă în log",
+            style:     "/lib/fontawesome/css/fontawesome.min.css",
+            logoimg:   "/img/red-logo-small30.png",
+            credlogo:  "../img/CREDlogo.jpg",
             csfrToken: req.csrfToken(),
             scripts
         });

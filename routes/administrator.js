@@ -4,6 +4,10 @@ const router  = require('express').Router();
 const Resursa = require('../models/resursa-red');
 const pubComm = require('./sockets');
 
+// HELPERI
+const ES7Helper= require('../models/model-helpers/es7-helper');
+let content2html  = require('./controllers/editorJs2HTML');
+
 // === VERIFICAREA ROLURILOR ===
 let checkRole = require('./controllers/checkRole.helper');
 
@@ -139,61 +143,90 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
         Resursa.findById(req.params.id).populate({
             path: 'competenteS'
         }).exec().then(resursa => {
-            //console.log(resursa); // asta e moartă: http://localhost:8080/profile/resurse/5e2714c84449b236ce450091
             /* === Resursa încă există în MongoDB === */
-            if (resursa._id) {
-                const obi = resursa;
-            
-                let localizat = moment(resursa.date).locale('ro').format('LLL');
-                obi.dataRo = `${localizat}`; // formatarea datei pentru limba română.    
-        
-                // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
+            if (resursa.id) {
+                // transformă obiectul document de Mongoose într-un obiect normal.
+                const obi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+
+                // obiectul competenței specifice cu toate datele sale trebuie curățat.
+                obi.competenteS = obi.competenteS.map(obi => {
+                    return Object.assign({}, obi._doc);
+                });
+
+                // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
                 obi.editorContent = JSON.stringify(resursa);
+
+                // resursa._doc.content = editorJs2html(resursa.content);
+                let localizat = moment(obi.date).locale('ro').format('LLL');
+                // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+                obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+
+                // Array-ul activităților modificat
+                let activitatiRehashed = obi.activitati.map((elem) => {
+                    let sablon = /^([a-z])+\d/g;
+                    let cssClass = elem[0].match(sablon);
+                    let composed = `<span class="${cssClass[0]}" data-code="${elem[0]}">${elem[1]}</span>`;
+                    return composed;
+                });
+                
+                obi.activitati = activitatiRehashed;
 
                 // Dacă nu este indexată în Elasticsearch deja, indexează aici!
                 esClient.exists({
-                    index: 'resursedus',
+                    index: process.env.RES_IDX_ALS,
                     id: req.params.id
                 }).then(resFromIdx => {
-                    /* DACĂ RESURSA NU ESTE INDEXATĂ, CORECTEAZĂ! */
+                    /* DACĂ RESURSA NU ESTE INDEXATĂ, introdu-o în indexul Elasticsearch */
                     if(resFromIdx.body == false && resFromIdx.statusCode === 404){
-                        resursa.esIndex(function clbkIdxOnDemand (err, res) {
-                            console.log('Am indexat: ', res);
-                            pubComm.rre('mesaje', 'Pentru că nu am găsit înregistrarea în index, am reindexat-o');
-                        }); //https://www.npmjs.com/package/mongoose-elasticsearch-xp#indexing-on-demand
+                        // verifică dacă există conținut
+                        var content2txt = '';
+                        if ('content' in newObi) {
+                            content2txt = editorJs2TXT(newObi.content.blocks); // transformă obiectul în text
+                        }
+                        // indexează documentul
+                        const data = {
+                            id:               obi._id,
+                            date:             obi.date,
+                            idContributor:    obi.idContributor,
+                            emailContrib:     obi.emailContrib,
+                            uuid:             obi.uuid,
+                            autori:           obi.autori,
+                            langRED:          obi.langRED,
+                            title:            obi.title,
+                            titleI18n:        obi.titleI18n,
+                            arieCurriculara:  obi.arieCurriculara,
+                            level:            obi.level,
+                            discipline:       obi.discipline,
+                            disciplinePropuse:obi.disciplinePropuse,
+                            competenteGen:    obi.competenteGen,
+                            rol:              obi.rol,
+                            abilitati:        obi.abilitati,
+                            materiale:        obi.materiale,
+                            grupuri:          obi.grupuri,
+                            domeniu:          obi.demersuri,
+                            spatii:           obi.spatii,
+                            invatarea:        obi.invatarea,
+                            description:      obi.description,
+                            dependinte:       obi.dependinte,
+                            coperta:          obi.coperta,
+                            content:          content2txt,
+                            bibliografie:     obi.bibliografie,
+                            contorAcces:      obi.contorAcces,
+                            generalPublic:    obi.generalPublic,
+                            contorDescarcare: obi.contorDescarcare,
+                            etichete:         obi.etichete,
+                            utilMie:          obi.utilMie,
+                            expertCheck:      obi.expertCheck
+                        };
+
+                        ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
                     }
                     return resFromIdx;
                 }).catch(err => {
-                    console.log(err);
+                    console.error(err);
                 });
                 return obi;
-            } else {
-                // Caută resursa și în Elasticsearch. Dacă există indexată, dar a fost ștearsă din MongoDB, șterge-o din indexare / va apărea la căutare
-                esClient.exists({
-                    index: 'resursedus',
-                    id: req.params.idres
-                }).then(resFromIdx => {
-                    // console.log(resFromIdx);
-                    if(resFromIdx.statusCode !== 404){
-                        esClient.delete({
-                            id: req.params.idres,
-                            index: 'resursedus'
-                        }).then(dead => {
-                            // console.log(dead);
-                            pubComm.rre('mesaje', `Resursa era încă indexată și am șters-o acum: (${dead.statusCode})`);
-                        }).catch(err => {
-                            pubComm.rre('mesaje', `Am încercat să șterg din index, dar: ${err}`);
-                        });                        
-                    }
-                    return resFromIdx;
-                }).catch(err => {
-                    console.log(err);
-                }).finally(function clbkFinalSearchIdx () {
-                    pubComm.rre('mesaje', `Resursa nu mai există. Am căutat peste tot!`); // Trimite mesaj în client
-                }); // http://localhost:8080/profile/resurse/5dc9602836fc7d626f4a5832
-                
-                return Promise.reject('Resursa nu mai există!'); // Rejectează promisiunea!
-            };
+            }
         }).then(resursa => {
             /* === ADMIN === */
             if(req.session.passport.user.roles.admin){
