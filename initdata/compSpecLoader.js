@@ -74,6 +74,49 @@ const read = (dir) =>
 //     console.log(res); // fa ceva cu lista de fișiere
 // });
 
+class CsvFile {
+    static write(filestream, rows, options) {
+        return new Promise((res, rej) => {
+            csv.writeToStream(filestream, rows, options)
+                .on('error', err => rej(err))
+                .on('finish', () => res());
+        });
+    }
+
+    constructor(opts) {
+        this.headers = opts.headers;
+        this.path = opts.path;
+        this.writeOpts = { headers: this.headers, includeEndRowDelimiter: true };
+    }
+
+    create(rows) {
+        return CsvFile.write(fs.createWriteStream(this.path), rows, { ...this.writeOpts });
+    }
+
+    append(rows) {
+        return CsvFile.write(fs.createWriteStream(this.path, { flags: 'a' }), rows, {
+            ...this.writeOpts,
+            // dont write the headers when appending
+            writeHeaders: false,
+            rtrim: true,
+            ltrim: true
+        });
+    }
+
+    read() {
+        return new Promise((res, rej) => {
+            fs.readFile(this.path, (err, contents) => {
+                if (err) {
+                    return rej(err);
+                }
+                return res(contents);
+            });
+        });
+    }
+}
+
+
+
 /* ======== CONCATENAREA TUTUROR CSV-urilor în unul singur ================ */
 /**
  * Funcția `concatCSVAndOutput` construiește un array de promisiuni pentru fiecare fișier csv
@@ -85,14 +128,14 @@ const read = (dir) =>
  * @returns {Promise}
  */
 function concatCSVAndOutput(csvFilePaths, outputFilePath) {
-    console.log(csvFilePaths);
+    // console.log(csvFilePaths);
     
     // construiești un array de promisiuni
     const promises = csvFilePaths.map((path) => {
         // pentru fiecare fișier CSV, generează o promisiune.
         return new Promise((resolve) => {
             const dataArray = [];
-            return csv.parseFile(path, { headers: true })
+            csv.parseFile(path, { headers: true })
                 .on('data', function clbkOnData (data) { dataArray.push(data); })
                 .on('end', function clbkOnEnd () { resolve(dataArray); });
         });
@@ -100,33 +143,33 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
 
     return Promise.all(promises)
                 .then((results) => {
-                    // constituirea stream-ului Readable care va fi chiar fișierului CSV de output
-                    const csvStream = csv.format({headers: true});
+                    // console.log(Array.isArray(results));
+                    const allRecordsArr = [];                 
 
-                    // constituirea stream-ului Writeable
-                    const writableStream = fs.createWriteStream(outputFilePath);
-
-                    // la finalizarea scrierii pe disc
-                    writableStream.on('finish', function clbkOnFinish () {
-                        console.log('Am terminat de scris rezultatul!');
-                    });
-
-                    csvStream.pipe(writableStream);
-
-                    // scrie fișierul trimițând fiecare linie csv în operațiunea de scriere a stream-ul
-                    results.forEach((result) => {
-                        result.forEach((data) => {
-                            csvStream.write(data);
+                    results.forEach((result) => {      
+                        // console.log(Array.isArray(result));              
+                        result.forEach((record) => {
+                            // console.log("O singură înregistrare arată astfel: ", record);
+                            allRecordsArr.push(record);  
                         });
                     });
+                    
+                    const csvFile = new CsvFile({
+                        path: outputFilePath,
+                        headers: ["nume","ids","cod","activitate","disciplină","coddisc","nivel","act normativ","competență generală"]
+                    });
 
-                    csvStream.end();
-                    process.exit();
-                }).catch(error => console.error);
+                    csvFile.create(allRecordsArr).catch(err => {
+                        console.error(err.stack);                        
+                    });
+                }).catch(error => {
+                    console.log(error);
+                    process.exit(1);
+                });
                 
 }
 // generează fișierul consolidat cu toate câmpurile din toate csv-urile sau atunci când mai introduci un calup nou de date.
-//concatCSVAndOutput(read(dir), `csvuri/all.csv`); // linie activată doar în cazul în care baza este goală și nu există generat deja fișierul all.csv
+// concatCSVAndOutput(read(dir), `csvuri/all.csv`); // linie activată doar în cazul în care baza este goală și nu există generat deja fișierul all.csv
 
 const readF = fs.createReadStream(`csvuri/all.csv`, 'utf8'); // Creează stream Read din fișierul CSV sursă.
 

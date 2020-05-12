@@ -622,7 +622,9 @@ module.exports = function sockets (pubComm) {
         });
 
         // === PERSON === ::căutarea unui utilizator și reglarea înregistrărilor dintre ES și MONGODB
-        socket.on('person', queryString => {
+        socket.on('person', async function searchUserInES (queryString) {
+            // console.log("Stringul de interogare este următorul: ", queryString);
+            
             // FIXME: Sanetizează inputul care vine prin `queryString`!!! E posibil să fie flood. Taie dimensiunea la un singur cuvânt!!!
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html
             const searchqry = {
@@ -630,98 +632,95 @@ module.exports = function sockets (pubComm) {
                     "multi_match": {
                         "query": validator.trim(queryString),
                         "type": "best_fields",
-                        "fields": ["email", "googleProfile", "name", "*_name"]        
+                        "fields": ["email", "googleProfile.name", "name", "*_name"]      
                     }
                 }
-                // anterior am folosit https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
-                // de explorat: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html
             };
 
             // Se face căutarea în Elasticsearch!!!
             // Atenție, folosesc driverul nou conform: https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/introduction.html E suuuuperfast! :D
-            async function searchES7 () {
-                try {
-                    const {body} = await esClient.search({
-                        index: 'users0', 
-                        body: searchqry
-                    });
-                    // DACĂ AM ÎNREGISTRĂRI ÎN INDEX-ul Elasticsearch
-                    if (body.hits.hits.length > 0) {               
-                        // pentru fiecare id din elasticsearch, cauta daca există o înregistrare în MongoDB. Dacă nu există în MongoDB, șterge din Elastic.
-                        body.hits.hits.map((user) => {
-                            // dacă documentul nu există în MongoDB, șterge înregistrarea din Elastic
-                            const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
-                            UserModel.exists({_id: user._id}).then((result) => {
-                                if (!result) {
-                                    esClient.delete({
+            try {
+                const {body} = await esClient.search({
+                    index: process.env.USR_IDX_ALS, 
+                    body: searchqry
+                });
+                // console.log("Pe evenimentul person am următorul corp", body);
+                
+                // DACĂ AM ÎNREGISTRĂRI ÎN INDEX-ul Elasticsearch
+                if (body.hits.hits.length > 0) {               
+                    // pentru fiecare id din elasticsearch, cauta daca există o înregistrare în MongoDB. Dacă nu există în MongoDB, șterge din Elastic.
+                    body.hits.hits.map((user) => {
+                        // dacă documentul nu există în MongoDB, șterge înregistrarea din Elastic
+                        const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
+                        UserModel.exists({_id: user._id}).then((result) => {
+                            if (!result) {
+                                esClient.delete({
+                                    index: 'users0',
+                                    type: 'user',
+                                    id: user._id
+                                }).then((res) => {
+                                    console.log(res);
+                                    socket.emit('mesaje', `Pentru că documentul nu mai există în baza de date, l-am șters și de la indexare cu detaliile: ${res}`);
+                                }).catch((error)=>{
+                                    console.log(error);
+                                    socket.emit('mesaje', `Pentru că documentul nu mai există în baza de date, am încercat să-l șterg și din index, dar: ${error}`);
+                                });
+                            } else {
+                                // dacă utilizatorul există și în MongoDB, dar și în ES7, trimite datele în client
+                                socket.emit('person', body.hits.hits);
+                            }
+                        }).catch((error) => {
+                            if (error) {
+                                // console.log(error);
+                                socket.emit('mesaje', `Am interogat baza de date, dar a apărut eroarea: ${error}`);
+                            }
+                        });
+                    });                    
+                    // TODO: Aici ai putea testa daca ai date; daca nu ai date, tot aici ai putea face căutarea în baza Mongoose să vezi dacă există.     
+                } else {
+                    // NU EXISTĂ ÎNREGISTRĂRI ÎN INDEX-ul ELASTICSEARCH
+                    // TODO: Caută dacă adresa de email există în MongoDB. Dacă există și nu apare în index, indexeaz-o!
+                    let trimStr = validator.trim(queryString);
+                    // PAS 1 -> Analizează dacă `queryString` este un email
+                    if (validator.isEmail(trimStr)) {
+                        // caută în MongoDB dacă există emailul. În cazul în care există, indexează-l în Elasticsearch!
+                        const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
+                        UserModel.exists({email: queryString}).then(async (result) => {
+                            try {
+                                if (result) {
+                                    await esClient.index({
                                         index: 'users0',
-                                        type: 'user',
-                                        id: user._id
-                                    }).then((res) => {
-                                        console.log(res);
-                                        socket.emit('mesaje', `Pentru că documentul nu mai există în baza de date, l-am șters și de la indexare cu detaliile: ${res}`);
-                                    }).catch((error)=>{
-                                        console.log(error);
-                                        socket.emit('mesaje', `Pentru că documentul nu mai există în baza de date, am încercat să-l șterg și din index, dar: ${error}`);
+                                        body: result
                                     });
-                                } else {
-                                    // dacă utilizatorul există și în MongoDB, dar și în ES7, trimite datele în client
-                                    socket.emit('person', body.hits.hits);
-                                }
-                            }).catch((error) => {
-                                if (error) {
-                                    // console.log(error);
-                                    socket.emit('mesaje', `Am interogat baza de date, dar a apărut eroarea: ${error}`);
-                                }
-                            });
-                        });                    
-                        // TODO: Aici ai putea testa daca ai date; daca nu ai date, tot aici ai putea face căutarea în baza Mongoose să vezi dacă există.     
+                                    // forțează reindexarea pentru a putea afișa rezultatul la următoarea căutare!!!
+                                    await client.indices.refresh({ index: 'users' });
+                                    socket.emit('mesaje', `Am interogat baza de date și am găsit un email neindexat pe care l-am reindexat. Caută acum din nou!`);
+                                }                                    
+                            } catch (error) {
+                                console.error(error);
+                            }
+                        }).catch((error) => {
+                            if (error) {
+                                // console.log(error);
+                                socket.emit('mesaje', `Am interogat baza de date și am găsit un email neindexat, dar când am vrut să-l indexez, stupoare: ${error}`);
+                            }
+                        });
                     } else {
-                        // NU EXISTĂ ÎNREGISTRĂRI ÎN INDEX-ul ELASTICSEARCH
-                        // TODO: Caută dacă adresa de email există în MongoDB. Dacă există și nu apare în index, indexeaz-o!
-                        let trimStr = validator.trim(queryString);
-                        // PAS 1 -> Analizează dacă `queryString` este un email
-                        if (validator.isEmail(trimStr)) {
-                            // caută în MongoDB dacă există emailul. În cazul în care există, indexează-l în Elasticsearch!
-                            const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
-                            UserModel.exists({email: queryString}).then(async (result) => {
-                                try {
-                                    if (result) {
-                                        await esClient.index({
-                                            index: 'users0',
-                                            body: result
-                                        });
-                                        // forțează reindexarea pentru a putea afișa rezultatul la următoarea căutare!!!
-                                        await client.indices.refresh({ index: 'users' });
-                                        socket.emit('mesaje', `Am interogat baza de date și am găsit un email neindexat pe care l-am reindexat. Caută acum din nou!`);
-                                    }                                    
-                                } catch (error) {
-                                    console.error(error);
-                                }
-                            }).catch((error) => {
-                                if (error) {
-                                    // console.log(error);
-                                    socket.emit('mesaje', `Am interogat baza de date și am găsit un email neindexat, dar când am vrut să-l indexez, stupoare: ${error}`);
-                                }
-                            });
-                        } else {
-                            // TODO: Sanetizează ceea ce este primit prin trimming și limitare la dimensiune de caractere
-                        }
-                        socket.emit('mesaje', `Am căutat în index fără succes. Pur și simplu nu există înregistrări sau trebuie să schimbi cheia de căutare nițel`);
+                        // TODO: Sanetizează ceea ce este primit prin trimming și limitare la dimensiune de caractere
                     }
-                } catch (error) {
-                    console.log(error);
-                    socket.emit('mesaje', `Din nefericire, căutarea utilizatorului a eșuat cu următoarele detalii: ${error}`);
+                    socket.emit('mesaje', `Am căutat în index fără succes. Pur și simplu nu există înregistrări sau trebuie să schimbi cheia de căutare nițel`);
+                }
+            } catch (error) {
+                console.log(error);
+                socket.emit('mesaje', `Din nefericire, căutarea utilizatorului a eșuat cu următoarele detalii: ${error}`);
 
-                    // CAZUL index_not_found_exception
-                    if (error.body.error.type == "index_not_found_exception") {
-                        console.error("Nu am gîsit indexul utilizatorilor!!! Vezi dacă serverul de Elasticsearch este pornit.");
-                    } else if(error.body.error.type != "index_not_found_exception") {
-                        console.error("Este o eroare pe care nu pot să o apreciez. Detalii: ", error);
-                    }
+                // CAZUL index_not_found_exception
+                if (error.body.error.type == "index_not_found_exception") {
+                    console.error("Nu am gîsit indexul utilizatorilor!!! Vezi dacă serverul de Elasticsearch este pornit.");
+                } else if(error.body.error.type != "index_not_found_exception") {
+                    console.error("Este o eroare pe care nu pot să o apreciez. Detalii: ", error);
                 }
             }
-            searchES7(); // declanșează execuția funcției de căutare!
         });
 
         // === PERSONRECORD === ::FIȘA completă de utilizator
