@@ -1,6 +1,6 @@
 {
   "name": "redcolector",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "Aplicația pentru colectare de RED-uri",
   "main": "app.js",
   "scripts": {
@@ -58,7 +58,6 @@
     "mocha": "^7.1.1",
     "moment": "^2.24.0",
     "mongoose": "^5.9.7",
-    "mongoose-elasticsearch-xp": "^5.8.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "papaparse": "^5.2.0",
@@ -66,6 +65,7 @@
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^6.0.1",
     "passport-oauth": "^1.0.0",
     "passport-twitter": "^1.0.4",
     "querystring": "^0.2.0",

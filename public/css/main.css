@@ -373,10 +373,6 @@ tr.shown td.details-control {
     flex-wrap: wrap; */
 }
 
-.discbtn {
-    background-color: rgb(229, 127, 255);
-}
-
 .btn-success { background-color: red; }
 
 .disciplina {
@@ -401,47 +397,47 @@ tr.shown td.details-control {
 
 /* ELEMENTELE DE SECȚIE PENTRU DISCIPLINE */
 
-a[class$="0"] {
-    background-color: rgba(76, 243, 34, 0.623);
+a[class$="0"], label[class$="0"] {
+    background-color: rgba(76, 243, 34, 0.623) !important;
     margin: 0.1rem;
 }
 
-a[class$="1"] {
+a[class$="1"], label[class$="1"] {
     background-color: rgba(91, 189, 202, 0.65);
     margin: 0.1rem;
 }
 
-a[class$="2"] {
+a[class$="2"], label[class$="2"] {
     background-color: rgba(155, 64, 167, 0.562);
     margin: 0.1rem;
 }
 
-a[class$="3"] {
+a[class$="3"], label[class$="3"] {
     background-color: rgba(216, 96, 59, 0.548);
     margin: 0.1rem;
 }
 
-a[class$="4"] {
-    background-color: rgba(69, 224, 165, 0.7);
+a[class$="4"], label[class$="4"] {
+    background-color: rgba(69, 224, 165, 0.7) !important;
     margin: 0.1rem;
 }
 
-a[class$="5"] {
+a[class$="5"], label[class$="5"] {
     background-color: rgba(222, 224, 71, 0.7);
     margin: 0.1rem;
 }
 
-a[class$="6"] {
+a[class$="6"], label[class$="6"] {
     background-color: rgba(85, 156, 18, 0.527);
     margin: 0.1rem;
 }
 
-a[class$="7"] {
+a[class$="7"], label[class$="7"] {
     background-color: rgba(129, 12, 12, 0.397);
     margin: 0.1rem;
 }
 
-a[class$="8"] {
+a[class$="8"], label[class$="8"] {
     background-color: rgba(207, 43, 133, 0.486);
     margin: 0.1rem;
 }
@@ -639,6 +635,9 @@ input[type='range']:focus {
 }
 
 #submitWrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
     padding-top: 1rem;
 }
 

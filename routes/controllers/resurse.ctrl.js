@@ -24,7 +24,8 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
     let roles = ["user", "validator", "cred"];
 
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
-    let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);    
+    let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles); 
+    // console.log("Am următoarele roluri (resurse.ctrl) din req.session.passport: ", req.session.passport.user.roles.rolInCRED);
 
     // Adu-mi ultimele 8 resursele validate în ordinea ultimei intrări, te rog! Hey, hey, Mr. Serverman!        
     // let resursePublice = Resursa.find({'expertCheck': 'true'}).sort({"date": -1}).limit(8).cache({key: req.user.id});
@@ -187,10 +188,11 @@ exports.describeResource = function describeResource (req, res, next) {
 
     /* ====== VERIFICAREA CREDENȚIALELOR ====== */
     if(req.session.passport.user.roles.admin){
-
-
         let user = req.session.passport.user;
-        let url = new LivresqConnect().prepareProjectRequest(user.email, user.googleProfile.given_name, user.googleProfile.family_name);
+        // FIXME: Renunță la acest artificiu pentru conturile locale de îndată ce unifici localele cu profilurile Google.
+        let given_name = "Jane" || user.googleProfile.given_name;
+        let family_name = "Doe" || user.googleProfile.family_name;
+        let url = new LivresqConnect().prepareProjectRequest(user.email, given_name, family_name);
         if(!url.startsWith("http")) url = "#";
 
         // Dacă avem un admin, atunci oferă acces neîngrădit
@@ -209,7 +211,10 @@ exports.describeResource = function describeResource (req, res, next) {
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere al resursei.
         
         let user = req.session.passport.user;
-        let url = new LivresqConnect().prepareProjectRequest(user.email, user.googleProfile.given_name, user.googleProfile.family_name);
+        // FIXME: Introdu în formularul de creare cont câmpurile name și surname pentru a elimina artificul făcut pentru integrarea cu Livresq
+        let given_name = 'Jane' || user.googleProfile.given_name;
+        let family_name = 'Doe' || user.googleProfile.family_name;
+        let url = new LivresqConnect().prepareProjectRequest(user.email, given_name, family_name);
         if(!url.startsWith("http")) url = "#";
 
         res.render('adauga-res', {

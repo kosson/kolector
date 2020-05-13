@@ -596,6 +596,29 @@ function creeazaTitluAlternativHelper (id, insertie) {
     insertie.appendChild(divInputGroup);
 }
 
+/* === LIMITAREA NUMĂRULUI DE CARACTERE === */
+var descriere = document.querySelector('#descriereRed');
+// descriere.addEventListener("input", (event) => {
+//     const target = event.currentTarget;
+//     const maxLength = target.getAttribute("maxlength");
+//     const currentLength = target.value.length;
+
+//     if (currentLength >= maxLength) {
+//         console.log(`${maxLength - currentLength} chars left`);
+//         // Afișează eroare în cazul în care nu s-a făcut încadrarea curriculară.
+//         if ((currentLength - maxLength) >= 1) {
+//             $.toast({
+//                 heading: 'Probleme la descriere',
+//                 text: `Ai depășit numărul de caractere cu ${currentLength - maxLength}`,
+//                 position: 'top-center',
+//                 showHideTransition: 'fade',
+//                 icon: 'error'
+//             });
+//         }
+//         // return console.log("Ai trecut de limita de 1000 de caractere!"
+//     }
+// });
+
 //TODO: Generează automat datele din data=* dacă se poate!!!
 const mapCodDisc = new Map();
 
@@ -1707,7 +1730,7 @@ mapCodDisc.set("6",
         /* === Om și societate === */
         {
             parent: ["omsoc"], 
-            nume:   "Educație socială", // Gândire critică și drepturile copilului
+            nume:   "Educație socială", // Educație interculturală
             coduriDiscipline: ['edusoc6']            
         },
         {
@@ -1997,11 +2020,6 @@ mapCodDisc.set("7",
                 'ellatRom7'
             ]           
         },
-        {
-            parent: ["lbcom"],
-            nume:   "Elemente de limbă latină și de cultură romanică",
-            coduriDiscipline: ['lbcomEllatRom7']
-        },
         /* === Matematică și științe ale naturii === */
         {
             parent: ["matstnat"], 
@@ -2026,7 +2044,7 @@ mapCodDisc.set("7",
         /* === Om și societate === */
         {
             parent: ["omsoc"], 
-            nume:   "Educație socială", // Gândire critică și drepturile copilului
+            nume:   "Educație socială", // Educație pentru cetățenie democratică
             coduriDiscipline: ['edusoc7']            
         },
         {
@@ -2305,11 +2323,6 @@ mapCodDisc.set("8",
                 'lbmod2Portugheza8'
             ]           
         },
-        {
-            parent: ["lbcom"],
-            nume:   "Elemente de limbă latină și de cultură romanică",
-            coduriDiscipline: ['lbcomEllatRom8']
-        },
         /* === Matematică și științe ale naturii === */
         {
             parent: ["matstnat"], 
@@ -2334,7 +2347,7 @@ mapCodDisc.set("8",
         /* === Om și societate === */
         {
             parent: ["omsoc"], 
-            nume:   "Educație socială", // Gândire critică și drepturile copilului
+            nume:   "Educație socială", // Educație economico-financiară
             coduriDiscipline: ['edusoc8']            
         },
         {
@@ -2579,13 +2592,17 @@ const DISCMAP = new Map(); // colector de structuri {nivel: "5", 5: {art5: [], b
 /**
  * Pentru fiecare clasă bifată, adaugă un listener la `click`, 
  * care va genera input checkbox-uri în baza datelor din dataset-ul `data=*` al checkboxului de clasă
- * Parcurge un array al claselor existente (var niveluri) și pentru fiecare selectată, 
+ * Parcurge un array al claselor existente (var niveluri) și pentru fiecare selectată (checked), 
  * generează discipline așezate vertical și inputbox-uri care arată ca butoane [Bootstrap 4 Vertical pills].
  */
 niveluri.forEach(function cbNiveluri (nivel) {
-    // pentru fiecare element checkbox al unei clase, adaugă un listener
+    /* === CLICK PE CLASĂ (bifează clasa) === */
     nivel.addEventListener('click', (event) => {
-        // constituie un obiect `data` cu toate datele din `data=*` a checkbox-ului de clasă.
+        // event.preventDefault();
+        // Verifică dacă a fost selectată aria curriculară. Dacă nu, afișează eroare
+        existaAria();
+
+        // constituie un obiect `data` din `data=*` pentru fiecare clasă::<input class="form-check-input nivel" type="checkbox" id="inlineCheckbox0...8" value="cl0...8"
         const data = JSON.parse(JSON.stringify(event.target.dataset));
         // remodelează disciplinele după seturi aparținând unei discipline generate din primele trei caractele ale data=*
         const STRUCTURE = structDiscipline({cl:event.target.value, data}); // event.target.value este value="cl5"
@@ -2601,66 +2618,74 @@ niveluri.forEach(function cbNiveluri (nivel) {
         let objSeturi = STRUCTURE.rezultat[n]; //16 seturi -> {art5: [], bio5: []}
         // console.dir("S-au generat următoarele seturi pentru fiecare disciplină ", objSeturi);
         
-        // Dacă elementul target este debifat, șterge-i disciplinele asociate!
+        /* === CLASA ESTE DEBIFATĂ!!! => șterge-i disciplinele asociate (posibilă selecție anterioară) === */
         if(event.target.checked === false) {
-            let cheiclase = Object.keys(objSeturi);
-            for (let dicscls of cheiclase) {;
+            let cheiclase = Object.keys(objSeturi); // ['art5', 'bio5']
+            let dicscls;
+            // găsește elementul <input checkbox> pentru fiecare disciplină, iar dacă există șterge-l din DOM
+            for (dicscls of cheiclase) {;
                 // console.log("Am șters din elemente pe cel cu clasa: ", dicscls);
-                
                 let elemExistent = document.querySelector(`.${dicscls}`); // k este codul disciplinei care a fost pus drept clasă în vederea modelării cu CSS (culoare, etc)
                 if (elemExistent) {
                     tablist.removeChild(elemExistent); // șterge disciplina din array-ul elementelor DOM
                 }
             }
-            // șterge conținutul din DOM
+            // CURĂȚĂ ELEMENTELE VERTICALE DE MENIU prin ștergerea din DOM
             tabcontent.innerHTML='';
             // Șterge datele din info primare
-            n = '';
-            objSeturi = null;
+            n = ''; // nivelul gol
+            objSeturi = null; // obiectele disciplinelor la `null`
+        /* === CLASA ESTE BIFATĂ!!! === */
         } else {
             
             // FIXME: gestionează cazul în care formularul a fost reîncărcat și au rămas bifate clasele, 
             // dar disciplinele nu s-au încărcat pentru că nu s-a dat niciun click 
 
-            // pentru fiecare proprietate din `objSeturi`
-            for (let prop in objSeturi) {
+            /* === AFIȘEAZĂ DISCIPLINELE ARONDATE UNEI CLASE DE DISCIPLINĂ === */
+            // pentru fiecare clasă de disciplină din `objSeturi`, generează disciplinele arondate
+            let prop;
+            for (prop in objSeturi) {
                 // asigură-te că nu sunt introduse și proprietăți moștenite
                 if (objSeturi.hasOwnProperty(prop)) {
                     const setArr = objSeturi[prop]; // constituie un array de array-uri cu discipline
 
                     let menuSet = new Set(); // set pentru a evita cazul dublării elementelor de meniu
-                    let elemSet = new Set();
-                    
-                    for (let obi of setArr) {
-                        // console.log(prop); // 16 bucăți
-                        /* === PENTRU TOATE SUB-DISCIPLINELE CARE AU ACEEAȘI DISCIPLINĂ, SE CREEAZĂ UN SINGUR ELEMENT DE MENIU === */
+                    let elemSet = new Set(); // set cu disciplinele selectabile după ce s-a selectat clasa de discipline
+
+                    let obi;
+                    for (obi of setArr) {
+                        /* === PENTRU TOATE DISCIPLINELE ARONDATE LA ACEEAȘI CLASĂ DE DISCIPLINĂ, SE CREEAZĂ UN SINGUR ELEMENT DE MENIU === */
                         // caută numele disciplinei și afișează în locul codului `prop`. Valorile sunt extrase din `mapCodDisc` -> funcția `extragNumeArie`
                         let numeDisciplina = extragNumeDisciplina({nivel: n, cod: obi.codsdisc}); //{ codsdisc: "artViz0", nume: "Arte vizuale și abilități practice"}
-
                         // obi -> { codsdisc: "lbcomRom5", nume: "Limba și literatura română" }
-                        // Creează un element de meniu vertical acum că ai numele ariei/disciplinei
+
+                        // === Creează un element de meniu vertical pentru fiecare disciplină sau clasă de discipline ===
                         if (!menuSet.has(numeDisciplina)) {
                             menuSet.add(numeDisciplina);                            
                             // generează linkurile care stau vertical(`prop` are primele trei sau patru caractere ale unui set de discipline)
                             var serdiscbtn = new createElement('a', `v-pills-${prop}-tab`, ['nav-link', `${prop}`], {"data-toggle":"pill", href: `#v-pills-${prop}`, role: "tab", "aria-controls": `v-pills-${prop}`}).creeazaElem(numeDisciplina);
                             // creează div-ul care ține disciplinele afișate ca butoane
                             var dicpanes = new createElement('div', `v-pills-${prop}`, ['tab-pane', 'fade', 'show'], {role: "tabpanel", "aria-labelledby": `v-pills-${prop}-tab`}).creeazaElem();
+                            // afișarea disciplinelor arondate este gestionată de Boostrap pentru că se folosește un element de navigare vertical pillbox
                         }
-                        // console.log(menuSet);
+
+                        // înjectează-le în DOM
                         tablist.appendChild(serdiscbtn);
-                        // generează checkbox-urile
-                        for (let obidisc of objSeturi[prop]) {
+
+                        /* === CHECKBOX-UL FIECĂREI DISCIPLINE === */
+                        let obidisc;
+                        for (obidisc of objSeturi[prop]) {
                             if (!elemSet.has(obidisc.codsdisc)) {
-                                elemSet.add(obidisc.codsdisc);
+                                elemSet.add(obidisc.codsdisc); // introdu în `Set`-ul `elemSet` fiecare disciplină
                                 //console.log(obidisc); // Object { codsdisc: "lbcomRom5", nume: "Limba și literatura română" }
-                                let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': obidisc.codsdisc, autocomplete: "off", value: obidisc.nume}).creeazaElem();
+                                let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': obidisc.codsdisc, autocomplete: "off", value: obidisc.nume, onclick: "clickPeDisciplina(this)"}).creeazaElem();
                                 let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-info', 'btn-sm'], {}).creeazaElem(obidisc.nume);
                                 labelBtn.textContent += ` `; //adaugă un spațiu între numar și textul butonului.
                                 let clasaInfo         = new createElement('span', '', ['badge','badge-light'], {}).creeazaElem(n);
-                                labelBtn.appendChild(clasaInfo);
+                                labelBtn.appendChild(clasaInfo); // adaugă numărul care indică clasa pentru care a apărut disciplina (vezi bootstrap badges)
                                 let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', obidisc.codsdisc], {"data-toggle": "buttons", onclick: "actSwitcher()"}).creeazaElem();           
-                                labelBtn.appendChild(inputCheckBx);
-                                divBtnGroupToggle.appendChild(labelBtn);
+                                labelBtn.appendChild(inputCheckBx); // injectează checkbox-ul
+                                divBtnGroupToggle.appendChild(labelBtn); // injectează label-ul
                                 dicpanes.appendChild(divBtnGroupToggle);
                             }
                         }
@@ -2676,6 +2701,7 @@ niveluri.forEach(function cbNiveluri (nivel) {
  * Funcția are rolul să structureze sub-disciplinele în raport cu Disciplina mare la care sunt arondate
  * Disciplina va fi codificată extrăgând un fragment din numele care este precizat în valorile setului extras din data=*
  * @param {Object} discs Este un obiect cu toate disciplinele din setul data=* aferent unei clase
+ * @returns {Object} Returnează {nivel: <nivel>, rezultat: <Object> }
  */
 function structDiscipline (discs = {}) {
     // discs are semnătura `cl: "cl5", data: {artDansc5: "Dans clasic",  artDesen5: "Desen"} }`
@@ -2683,11 +2709,16 @@ function structDiscipline (discs = {}) {
     // arrOfarr va avea semnătura `[ "lbcomRom5", "Limba și literatura română" ], [ "lbcomOpt5", "Opțional" ]`
     
     // redu înregistrarea `arrOfarr` la un obiect consolidat de forma lui `obj`:
+    let nivelNo;
+    // doar dacă obiectul discs este populat, extrage numărul corespondent clasei!
+    if (discs.cl) {
+        nivelNo = discs.cl.split('').pop(); // scoate numărul aferent clasei!!!
+    }
     const obj = {
-        nivel: discs.cl.split('').pop(),
+        nivel: nivelNo,
         rezultat: {}
     };
-    let claseDisc = new Set(); // constituie un Set cu discipline
+    let claseDisc = new Set(); // constituie un Set cu discipline (are comportament de reducer)
 
     obj.rezultat = arrOfarr.reduce((ac, elem, idx, arr) => {
         let classNameRegExp = /[a-z]+((\d)?|[A-Z])/gm; // orice caracter mic urmat, fie de un număr, fie de o literă mare
@@ -2725,7 +2756,7 @@ function structDiscipline (discs = {}) {
     return obj;
 }
 
-/* ==== Prezentarea competențelor specifice ==== */
+/* === Prezentarea competențelor specifice === */
 // Locul de inserție al tabelului
 var compSpecPaginator = document.querySelector('#actTable');
 
@@ -2738,6 +2769,33 @@ function actSwitcher () {
         compSpecPaginator.classList.remove('d-none');
     } else {
         compSpecPaginator.classList.add('d-block');
+    }
+}
+
+// SETUL DISCIPLINELOR CARE AU FOST BIFATE
+var disciplineSelectate = new Set(); // selecția disciplinelor
+var discSelected = document.querySelector('#disciplineselectate'); // zona de afișare a disciplinelor care au fost selectate
+/**
+ * Funcția e listener pentru fiecare checkbox disciplină. Odată selectată disciplina, aceasta va fi afișată într-o zonă de selecție
+ * @param {NodeElement} `evt` fiind chiar elementul obiect
+ */
+function clickPeDisciplina (evt) {
+    let e = evt || window.event;
+    // console.log(e.dataset.nume);
+    // DACĂ EXISTĂ CODUL ÎN disciplineSelectate, șterge-l
+    if (!disciplineSelectate.has(e.dataset.nume)) {
+        disciplineSelectate.add(e.dataset.nume); // adaugă disciplina în `Set`-ul `disciplineSelectate`
+        let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': e.dataset.nume, autocomplete: "off", value: e.dataset.nume, onclick: ""}).creeazaElem();
+        let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-sm', e.dataset.nume], {}).creeazaElem(e.value);
+        labelBtn.textContent += ` `; //adaugă un spațiu între numar și textul butonului.
+        let clasaInfo         = new createElement('span', '', ['badge','badge-light'], {}).creeazaElem(e.dataset.nume.split('').pop());
+        labelBtn.appendChild(clasaInfo); // adaugă numărul care indică clasa pentru care a apărut disciplina (vezi bootstrap badges)
+        let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', e.dataset.nume], {"data-toggle": "buttons", onclick: ""}).creeazaElem();           
+        labelBtn.appendChild(inputCheckBx); // injectează checkbox-ul
+        divBtnGroupToggle.appendChildescriere
+        disciplineSelectate.delete(e.dataset.nume);
+        let elemExistent = document.querySelector(`.${e.dataset.nume}`);
+        discSelected.removeChild(elemExistent);
     }
 }
 
@@ -2874,7 +2932,7 @@ function activitatiRepopulareChecks () {
  *  Funcția este event handler pentru click-urile de pe input checkbox-urile create dinamic pentru fiecare activitate.
  *  Gestionează ce se întâmplă cu datele din `activitatiFinal`
  *  Are acces la obiectul `XY`, care oferă datele rândului.
- *  Aici se verifică bifele și se crează un `Map` cu datele care trebuie introduse în obiectul `RED`
+ *  Aici se verifică bifele și se creează un `Map` cu datele care trebuie introduse în obiectul `RED`
  */
 function manageInputClick () {
     let rowData = XY.getData(); // referință către datele rândului de tabel pentru o anumită competență specifică
@@ -2907,16 +2965,8 @@ function manageInputClick () {
         competenteS.add(rowData._id);       // introdu în set Compențele Specifice pentru care au fost bifate sau introduse activități
     } else {
         document.getElementById('competenteS').querySelector(`input[value="${rowData.cod}"]`).checked = false;
-        // elimină din array-ul competențelorGen codul celi care nu mai are nicio selecție în activități
-        // for( let i = 0; i < RED.competenteGen; i++){ 
-        //     if ( RED.competenteGen[i] === 5) {
-        //         RED.competenteGen.splice(i, 1); 
-        //         i--;
-        //     }
-        // }
     }
-    // console.log(activitatiSelectate.size);
-}
+};
 
 function addMeDeleteMe () {
     let rowData = XY.getData();
@@ -2937,9 +2987,8 @@ function disciplineBifate () {
         // console.log("dataset este ", dataset, "iar value este ", value);
         values.push(dataset.nume);
 
-        // ==== RED.discipline ====
+        // === RED.discipline ===
         RED.discipline.push(value);
-        RED.etichete.push(value);
     });
     // console.log(values);
 
@@ -3039,27 +3088,67 @@ function disciplineBifate () {
 
 /**
  * Populează cu date reprezentând competențele specifice pentru disciplinele selectate
+ * Listenerul pur și simplu are rolul de a apela funcția disciplineBifate();
  */
 compSpecPaginator.addEventListener('click', (ev) => {
     disciplineBifate();
 });
 
-/* ========== COLECTAREA DATELOR DIN FORM ============= */
+/**
+ * Funcția `existaAria` are rolul de a completa RED.arieCurriculară cu selecția făcută
+ * În cazul în care nu există niciun element selectat, va afișa o eroare.
+ */
+function existaAria () {
+        /* === RED.arieCurriculara === */
+    // introducerea arie curiculare selectare din options
+    var arie = document.getElementById('arii-curr');
+    // RED.arieCurriculara = arie.options[arie.selectedIndex].value; // aduce doar ultima care a fost selectată
+
+    // introdu un nivel de verificare compatibilitate. Dacă browserul nu are suport pentru .selectedOptions, optează pentru un nivel suplimentar de asigurare a compatibilității
+    var optSelectate = arie.selectedOptions || [].filter.call(arie.options, option => option.selected);
+    var valAriiSelectate = [].map.call(optSelectate, option => option.value);
+
+    // Verifică dacă valorile din array-ul `RED.arieCurriculara`. Dacă valoarea există deja, nu o mai adăuga de fiecare dată când `pas2()` este executat.
+    valAriiSelectate.forEach((valoare) => {
+        // Verifica cu indexOf existența valorii. Dacă nu e, adaug-o!
+        if (RED.arieCurriculara.indexOf(valoare) === -1) {
+            RED.arieCurriculara.push(valoare);
+        }
+    });
+
+    // Afișează eroare în cazul în care nu s-a făcut încadrarea curriculară.
+    if (RED.arieCurriculara.length === 0) {
+        $.toast({
+            heading: 'Curricula',
+            text: "Alege aria curriculară. Este un element absolut necesar!!!",
+            position: 'top-center',
+            showHideTransition: 'fade',
+            icon: 'error'
+        });
+    }
+}
+
+/* === COLECTAREA DATELOR DIN FORM === */
 
 /* === Pasul 1 === */
 /**
  * Funcția are rolul de a popula obiectul `RED` cu datele din formular de la `Pas 1`.
  */
 function pas1 () {
+    /* === RED.title === */
     // Gestionarea titlului și ale celor în alte limbi
     var title = document.querySelector('#titlu-res').value; // titlul în limba română
     RED.title = title; // adaugă valoarea titlului în obiect
+    
+    /* === RED.langRED === */
     // Stabilirea limbii RED-ului
     var limbaRed = document.querySelector('#langRED');
     var langRED = limbaRed.options[limbaRed.selectedIndex].value;
     RED.langRED = langRED;
     // verifică dacă nu cumva au fost adăugate titluri alternative. Dacă da, constituie datele necesare
     var titluriAltele = document.querySelector('#langAlternative');
+
+    /* === RED.titleI18n === */
     if (titluriAltele) {
         // Creează un NodeList cu toate elementele input
         var inputs = titluriAltele.querySelectorAll('input');
@@ -3082,61 +3171,50 @@ function pas1 () {
             RED.titleI18n.push(obi); // adaugă obiectul care conține titlul alternativ.
         }
     }
+
+    /* === RED.emailContrib === */
     // Adaugă emailul 
     var emailContrib  = document.querySelector('#emailContrib').value;
     RED.emailContrib  = emailContrib;
+
+    /* === RED.idContributor === */
     // Adaugă id-ul utilizatorului care face propunerea
     var idUser        = document.querySelector('#idUser').value;    
     RED.idContributor = idUser;
+
+    /* === RED.nameUser === */
     // Adaugă numele și prenumele utilizatorului
     let autor         = document.querySelector('#autor').value;
     RED.nameUser      = autor;
+
+    /* === RED.description === */
     // Adaugă descrierea
-    var descriere     = document.querySelector('#descriereRed').value;
-    RED.description   = descriere;
+    RED.description   = descriere.value;
+    // FIXME: Trunchiază aici textul la 1000 de caractere. Fă sanetizare și în server!!!
+
+    /* === RED.rol === */
     // Adaugă rolul pe care îl îndeplinește
     var rol           = document.querySelector('#roluri');
     var rolOpt        = rol.options[rol.selectedIndex].value;
     RED.rol           = rolOpt;
+
+    /* === RED.licenta === */
     // Adaugă licența pentru care s-a optat
     var licenta       = document.querySelector('#licente');
     var licOpt        = licenta.options[licenta.selectedIndex].value;
     RED.licenta       = licOpt;
 }
 
-/* ====== Pasul 2 ====== */
+/* === Pasul 2 === */
 /**
  * Funcția are rolul de a completa cu date obiectul `RED` cu datele de la `Pas2`.
  */
 function pas2 () {
-    // introducerea arie curiculare selectare din options
-    var arie = document.getElementById('arii-curr');
-    // RED.arieCurriculara = arie.options[arie.selectedIndex].value; // aduce doar ultima care a fost selectată
 
-    // introdu un nivel de verificare compatibilitate. Dacă browserul nu are suport pentru .selectedOptions, optează pentru un nivel suplimentar de asigurare a compatibilității
-    var optSelectate = arie.selectedOptions || [].filter.call(arie.options, option => option.selected);
-    var valAriiSelectate = [].map.call(optSelectate, option => option.value);
+    // VERIFICĂ SELECTAREA ARIEI CURRICULARE
+    existaAria();
 
-    // ==== RED.arieCurriculara ====
-    // Verifică dacă valorile din array-ul `RED.arieCurriculara`. Dacă valoarea există deja, nu o mai adăuga de fiecare dată când `pas2()` este executat.
-    valAriiSelectate.forEach((valoare) => {
-        // Verifica cu indexOf existența valorii. Dacă nu e, adaug-o!
-        if (RED.arieCurriculara.indexOf(valoare) === -1) {
-            RED.arieCurriculara.push(valoare);
-        }
-    });
-    // Afișează eroare în cazul în care nu s-a făcut încadrarea curriculară.
-    if (RED.arieCurriculara.length === 0) {
-        $.toast({
-            heading: 'Curricula',
-            text: "Mergi înapoi și fă alegerea corectă în ariile curriculare. Este un element absolut necesar!!!",
-            position: 'top-center',
-            showHideTransition: 'fade',
-            icon: 'error'
-        });
-    }
-
-    // ==== RED.level ==== 
+    // === RED.level ===
     // Obținerea valorilor pentru clasele selectate
     var niveluriScolare = document.querySelector('#nivel');
     var noduriInputNiveluri = niveluriScolare.querySelectorAll('input');
@@ -3174,42 +3252,43 @@ function pas2 () {
                 default:
                     break;
             }
-            // RED.level.push(input.value);
         }
     });
 
     // === RED.etichete ===
     // document.querySelectorAll("#discipline input[type='checkbox']:checked").forEach(({value, dataset}) => {
     document.querySelectorAll("#v-pills-tabContent input[type='checkbox']:checked").forEach(({value, dataset}) => {
-
         if (RED.discipline.indexOf(dataset.nume) === -1) {
-            // RED.discipline.push(element.value);
-            RED.etichete.push(value);
-            RED.etichete.push(dataset.nume);
+            // Verifică să nu se dubleze etichetele pentru cazul în care se întoarce userul și apasă din nou pe pas2()
+            if (disciplineSelectate.has(dataset.nume)) {
+                if (RED.etichete.indexOf(dataset.nume) === -1) {
+                    RED.etichete.push(dataset.nume); // introdu codul disciplinei ca tag
+                }
+                if (RED.etichete.indexOf(value) === -1) {
+                    RED.etichete.push(value); // introdu numele întreg al disciplinei doar dacă nu există
+                }
+            }
         }
     });
 
-    // ==== RED.activitati ====
-    /**
-     * Funcția are rolul de a alimenta array-ul activităților din obiectul colector RED
-     */
-    function pushActivitate (value, key, map) {
-        var arr = [value, key];
-        RED.activitati.push(arr);
-    }
+    // === RED.activitati ===
     // Dacă există date în Map-ul `activitatiFinal`,
     if (activitatiFinal) {
-        activitatiFinal.forEach(pushActivitate);
+        activitatiFinal.forEach((value, key, map) => {
+            var arr = [value, key];
+            RED.activitati.push(arr);
+        });
     }
 
-    // ==== RED.competenteGen ====
-    // introducerea valorilor din Set-ul competenteGen
+    // === RED.competenteGen ===
+    // introducerea valorilor din `Set`-ul `competenteGen`
     if (competenteGen) {
         competenteGen.forEach((v) => {
             RED.competenteGen.push(v);
         });
     }
-    // introducerea valorilor din Set-ul competenteS
+    // === RED.competenteS ===
+    // introducerea valorilor din `Set`-ul `competenteS`
     if (competenteS) {
         competenteS.forEach((v) => {
             RED.competenteS.push(v);
@@ -3246,11 +3325,19 @@ function pas3 () {
     var materiale = document.getElementById('materiale');
     RED.materiale = getMeSelected(materiale, false);
 
+    /* === Afișarea ETICHETELOR === */
     var tagsElems = document.getElementById('tags');
     RED.etichete.forEach((tag) => {
-        var elemBadge = new createElement('span', '', ['badge', 'badge-info', 'm-1'], null).creeazaElem(`${tag}`);
-        tagsElems.appendChild(elemBadge);
+        var btnCloseWrapper = new createElement('button', '', ['tag', 'btn', 'btn-sm', 'badge', 'badge-pill', 'badge-info', 'm-1'], null).creeazaElem(`${tag}`);
+        var elemBadge       = new createElement('span', '', ['closebtn', 'm-1'], null).creeazaElem(); // `×`
+        btnCloseWrapper.appendChild(elemBadge);
+        tagsElems.appendChild(btnCloseWrapper);
     });
+}
+
+/* Rolul funcției este să permită ștergerea de etichete care nu sunt considerate utile sau care au for introduse greșit*/
+function removeTags () {
+
 }
 
 /**
@@ -3354,11 +3441,11 @@ function pickCover () {
         
         let container = new createElement('div', '', [`col-xs-4`, `col-sm-3`, `col-md-2`, `nopad`, `text-center`], null).creeazaElem();
         container.addEventListener('click', clickImgGal);
-        let imgCheck = new createElement('div', '', [`image-checkbox`], null).creeazaElem();
+        let imgCheck  = new createElement('div', '', [`image-checkbox`], null).creeazaElem();
         
-        let imgElem = new createElement('img', '', [`img-responsive`], {src: `${img}`}).creeazaElem();
+        let imgElem   = new createElement('img', '', [`img-responsive`], {src: `${img}`}).creeazaElem();
         let inputElem = new createElement('input', '', [`inputCheckGal`], {type: 'checkbox', value: `${img}`}).creeazaElem();
-        let inputI = new createElement('i', '', [`fa`, 'fa-check', 'd-none'], null).creeazaElem();
+        let inputI    = new createElement('i', '', [`fa`, 'fa-check', 'd-none'], null).creeazaElem();
 
         imgCheck.appendChild(imgElem);
         imgCheck.appendChild(inputElem);
@@ -3374,6 +3461,7 @@ function pickCover () {
  */
 function pas4 () {
 
+    /* === RED.relatedTo === */
     // vezi id-ul `tools` și introdu-le în array-ul `RED.relatedTo`
     var newRelReds = document.getElementById('tools');
     var arrNewRelReds = newRelReds.value.split(',');
@@ -3384,14 +3472,18 @@ function pas4 () {
 
     // colectarea etichetelor
     // TODO: Diferențiază-le pe cele care sunt redactate cu `[]` de celelalte. Cele cu `[]` trebuie să genereze în backend colecții!!! IMPLEMENTEAZĂ!
-    var newTags = document.getElementById('eticheteRed');
-    var arrNewTags = newTags.value.split(',');
-
-    // AICI fă diferența între taguri și colecții.
-    arrNewTags.forEach((tag) => {
-        tag = tag.trim(); // curăță de posibilele spații.
-        RED.etichete.push(tag);
+    var newTags = document.getElementById('eticheteRed'); // ref la textarea de introducere
+    // detectează când s-a introdus o etichetă în momentul în care apare o virgulă
+    newTags.addEventListener('input', (evt) => {
+        // evt.preventDefault();
+        console.log(newTags.value);
+        
+        if (newTags.value.indexOf(',') > -1) {
+            console.log('A apărut o virgulă');
+            
+        }
     });
+    var arrNewTags = newTags.value.split(',');
 
     // Completează RED.coperta cu linkul către imaginea bifată din galerie
     var inputCheckGal = document.querySelectorAll('.inputCheckGal');

@@ -82,5 +82,5 @@ repo
 # nu salva configurările debugger-ului de VS Code
 .vscode
 
-# nu salva configurările de workspace ale VSCODE
+# nu salva configurarea de workspace
 redcolector.code-workspace

@@ -35,13 +35,13 @@
                 {{!-- INPUT - TITLU --}}
                 <input id="titlu-res" class="form-control" type="text" name="titlu" aria-label="Titlul resursei" aria-describedby="titlu-label" placeholder="ex: Drepturile și obligațiile copilului" required>
                 {{!-- Validare -Helper afisare text direct / Am ales să folosesc toastmessage [plugin]--}}
-                <strong id="titluErr" class="form-text text-danger"></strong>
+                {{!-- <strong id="titluErr" class="form-text text-danger"></strong> --}}
 
                 {{!-- Specifică limba titlului --}}
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="langselect-label">Indică limba</span>
                 </div>
-                {{!-- Opțiunile de selecție pentru limbă --}}
+                {{!-- Opțiunile de selecție pentru limbă. Indică limba conținutului resursei --}}
                 <select id="langRED" class="custom-select col-6 col-lg-4" aria-describedby="langselect-label">
                   <option value="rum" selected>română</option>
                   <option value="ger">germană</option>
@@ -56,12 +56,13 @@
                   <option value="ita">italiană</option> 
                   <option value="gre">greacă</option>
                   <option value="rus">rusă</option>
-                  <option value="tur">turcă</option>
+                  <option value="tur">engleză</option>
+                  <option value="fra">franceză</option>
                 </select>
               </div>
               {{!-- HELP Titlul --}}
               <small class="form-text text-muted">
-                Titlul trebuie să cuprindă un maxim de 150 de caractere, să fie clar și să evidențieze conținutul resursei.
+                <p>Titlul trebuie să cuprindă un maxim de 150 de caractere, să fie clar și să evidențieze conținutul resursei. Indică limba conținutului resursei.</p>
               </small>
               {{!-- HELP Titlul End--}}
 
@@ -70,7 +71,7 @@
                 <i class="fas fa-plus-circle"></i> în altă limbă
               </button>
               <div id="langAlternative">
-                {{!-- AICI SUNT INRODUSE TITLURILE ALTERNATIVE (dynamic) --}}
+                {{!-- AICI SUNT INTRODUSE TITLURILE ALTERNATIVE (dynamic) --}}
               </div>
             </fieldset>
             {{!-- MENȚIUNEA DE RESPONSABILITATE --}}
@@ -79,7 +80,8 @@
               {{!-- Adăugarea userului care propune resursa --}}
               <div class="input-group">
                   <div class="input-group-prepend">
-                    <span class="input-group-text">Autori</span>                  </div>
+                    <span class="input-group-text">Autori</span>                  
+                  </div>
                   
                   {{!-- INPUT Persoana responsabilă --}}
                   <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.googleProfile.name}}" required>
@@ -101,7 +103,8 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">Maxim 1000 de caractere</span>
                 </div>
-                <textarea id="descriereRed" class="form-control" aria-label="Descrierea resursei" rows="3" 
+                {{!-- maxlength="1000"  --}}
+                <textarea id="descriereRed" maxlength="1000" class="form-control" aria-label="Descrierea resursei" rows="3" 
                 placeholder="ex: Această resursă este un material video animat care facilitează înțelegerea drepturilor copilului și a obligațiilor asociate. Copiii se regăsesc în personajele din film și răspund la întrebările formulate de acestea. Materialul este interactiv și sprijină profesorul atât în activitatea de predare, cât și în cea de evaluare formativă."></textarea>
               </div>
             </fieldset>
@@ -123,7 +126,6 @@
                 </select>
               </div>
             {{!-- GRUPURILE ȚINTĂ END--}}
-            {{!-- Descrierea resursei educaționale END --}}
 
             {{!-- LICENȚIEREA RESURSEI --}}
             <fieldset>
@@ -202,7 +204,7 @@
 
                 {{!-- PRIMAR --}}
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox0" value="cl0"  
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox0" value="cl0" autocomplete="off" 
                     data-lbcom-rom0      ="Comunicare în limba română" 
                     data-lbcom-germana0  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba germană" 
                     data-lbcom-maghiara0 ="Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară" 
@@ -270,7 +272,7 @@
                   <label class="form-check-label" for="inlineCheckbox0">Clasa pregătitoare</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1"  
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1" autocomplete="off" 
                     data-lbcom-rom1      ="Comunicare în limba română" 
                     data-lbcom-germana1  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba germană" 
                     data-lbcom-maghiara1 ="Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară" 
@@ -344,7 +346,7 @@
                   <label class="form-check-label" for="inlineCheckbox1">Clasa I</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox2" value="cl2"  
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox2" value="cl2" autocomplete="off" 
                     data-lbcom-rom2      ="Comunicare în limba română"  
                     data-lbcom-germana2  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba germană" 
                     data-lbcom-maghiara2 ="Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară" 
@@ -417,7 +419,7 @@
                   <label class="form-check-label" for="inlineCheckbox2">Clasa a II-a</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox3" value="cl3"  
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox3" value="cl3" autocomplete="off" 
                     data-lbcom-rom3      ="Limba și literatura română" 
                     data-lbcom-germana3  ="Limba și literatura română pentru școlile și secțiile cu predare în limba germană" 
                     data-lbcom-maghiara3 ="Limba și literatura română pentru școlile și secțiile cu predare în limba maghiară" 
@@ -486,7 +488,7 @@
                   <label class="form-check-label" for="inlineCheckbox3">Clasa a III-a</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox4" value="cl4"  
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox4" value="cl4" autocomplete="off" 
                     data-lbcom-rom4      ="Limba și literatura română" 
                     data-lbcom-germana4  ="Limba și literatura română pentru școlile și secțiile cu predare în limba germană" 
                     data-lbcom-maghiara4 ="Limba și literatura română pentru școlile și secțiile cu predare în limba maghiară" 
@@ -562,7 +564,7 @@
 
                 {{!-- GIMANZIU --}}
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox5" value="cl5"
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox5" value="cl5" autocomplete="off" 
                     data-lbcom-rom5      ="Limba și literatura română" 
                     data-lbcom-rom-mag5  ="Limba și literatura română secții maghiare"                     
                     data-lbmat-bulgara5  ="Limba şi literatura maternă bulgară" 
@@ -713,7 +715,7 @@
                   <label class="form-check-label" for="inlineCheckbox5">Clasa a V-a</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox6" value="cl6" 
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox6" value="cl6" autocomplete="off"  
                     data-lbcom-rom6      ="Limba și literatura română" 
                     data-lbcom-rom-mag6  ="Limba și literatura română secții maghiare"                     
                     data-lbmat-bulgara6  ="Limba şi literatura maternă bulgară" 
@@ -867,8 +869,8 @@
                     >                    
                   <label class="form-check-label" for="inlineCheckbox6">Clasa a VI-a</label>
                 </div>
-                <div class="form-check form-check-inline nivel">
-                  <input class="form-check-input" type="checkbox" id="inlineCheckbox7" value="cl7" 
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox7" value="cl7" autocomplete="off" 
                     data-lbcom-rom7      ="Limba și literatura română" 
                     data-lbcom-rom-mag7  ="Limba și literatura română secții maghiare"                     
                     data-lbmat-bulgara7  ="Limba şi literatura maternă bulgară" 
@@ -1020,8 +1022,8 @@
                     >                   
                   <label class="form-check-label" for="inlineCheckbox7">Clasa a VII-a</label>
                 </div>
-                <div class="form-check form-check-inline nivel">
-                  <input class="form-check-input" type="checkbox" id="inlineCheckbox8" value="cl8" 
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox8" value="cl8" autocomplete="off" 
                     data-lbcom-rom8      ="Limba și literatura română" 
                     data-lbcom-rom-mag8  ="Limba și literatura română secții maghiare"                     
                     data-lbmat-bulgara8  ="Limba şi literatura maternă bulgară" 
@@ -1170,18 +1172,17 @@
                 </div>
                 {{!-- GIMANZIU END--}}
               </div>
-              {{!-- Selectarea nivelului de școlarizare END --}}
-
             </fieldset>
             {{!-- Selectarea nivelului de școlarizare - END --}}
 
             {{!-- Alegerea dinamică a disciplinelor în funcție de selectarea nivelului școlar --}}
             <fieldset>
               <legend>Disciplina și competențele vizate</legend>
-              {{!-- <h4>Selectarea disciplinei sau a mai multora încarcă competențele specifice</h4> --}}
-              {{!-- <p>Pentru a avea acces la competențele specifice și implicit la activități, se va alege</p>
-              <p>Odată selectat nivelul, se vor încărca disciplinele aferente acelui nivel, dintre care se vor alege cele pentru care resursa propusă răspunde</p> --}}
-              
+
+              {{!-- Afișarea disciplinelor selectate --}}
+              <div id="disciplineselectate"></div>
+              {{!-- Afișarea disciplinelor selectate END --}}
+
               {{!-- Încărcarea DISCIPLINELOR --}}
               <div id="discipline">
                 {{!-- disciplinele sunt adaugate programatic in functie de clasa selectată --}}
