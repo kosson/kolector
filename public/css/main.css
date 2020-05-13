@@ -635,6 +635,9 @@ input[type='range']:focus {
 }
 
 #submitWrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
     padding-top: 1rem;
 }
 

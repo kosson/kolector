@@ -10,6 +10,7 @@ const csrf           = require('csurf');
 const redisClient    = require('./redis.config');
 const helmet         = require('helmet');
 const passport       = require('passport');
+const LocalStrategy  = require('passport-local').Strategy;
 const responseTime   = require('response-time');
 // const multer         = require('multer');
 const RedisStore     = require('connect-redis')(session);
@@ -23,7 +24,7 @@ const favicon        = require('serve-favicon');
 const { v1: uuidv1 } = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 const i18n           = require('i18n');
 
-// === ÎNCĂRCAREA RUTELOR ===
+/* === ÎNCĂRCAREA RUTELOR === */
 const UserPassport = require('./routes/controllers/user.ctrl')(passport);
 let index          = require('./routes/index');
 let authG          = require('./routes/authGoogle/authG');
@@ -39,6 +40,7 @@ let profile        = require('./routes/profile');
 let tags           = require('./routes/tags');
 let tools          = require('./routes/tools');
 let help           = require('./routes/help');
+let signupLoco     = require('./routes/signup');
 
 var pubComm = io.of('/redcol');
 const sockets = require('./routes/sockets')(pubComm);
@@ -53,6 +55,7 @@ i18n.configure({
     directory: __dirname + "/locales"
 });
 
+// conectare la Mongoose
 const mongoose = require('./mongoose.config');
 
 // === MIDDLEWARE-UL aplicației===
@@ -125,9 +128,23 @@ app.use(function (req, res, next) {
 app.use(passport.initialize());
 app.use(passport.session());
 
+/* === RUTE ÎN AFARA CSRF-ului === */
 // UPLOAD
 let upload = require('./routes/upload')(pubComm);
 app.use('/upload', upload);
+// SIGNUP
+app.use('/signup',   signupLoco); // SIGNUP!!!
+// LOGIN
+const UserSchema = require('./models/user');
+const UserDetails = mongoose.model('users', UserSchema);
+
+passport.use(UserDetails.createStrategy()); // echivalentul lui passport.use(new LocalStrategy(Account.authenticate()));
+passport.serializeUser(UserDetails.serializeUser());
+passport.deserializeUser(UserDetails.deserializeUser());
+// passport.use(new LocalStrategy(UserDetails.authenticate()));
+// passport.serializeUser(UserDetails.serializeUser());
+// passport.deserializeUser(UserDetails.deserializeUser());
+app.use('/login', login);
 
 // activarea protecției csurf
 const csrfProtection = csrf({cookie: true});
@@ -182,7 +199,6 @@ app.use(compression({ filter: shouldCompress }));
 app.use('/',               csrfProtection, index);
 app.use('/auth',           authG);
 app.use('/callback',       callbackG);
-app.use('/login',          login);
 app.use('/logout',         logout);
 app.use('/resursepublice', csrfProtection, resursepublice);
 app.use('/tertium',        csrfProtection, tertium);
@@ -193,7 +209,6 @@ app.use('/log',            csrfProtection, UserPassport.ensureAuthenticated, log
 app.use('/profile',        csrfProtection, profile);
 app.use('/tags',           csrfProtection, tags);
 app.use('/tools',          csrfProtection, tools);
-
 
 // === 401 - NEPERMIS ===
 app.get('/401', function(req, res){

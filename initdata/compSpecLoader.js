@@ -115,9 +115,7 @@ class CsvFile {
     }
 }
 
-
-
-/* ======== CONCATENAREA TUTUROR CSV-urilor în unul singur ================ */
+/* === CONCATENAREA TUTUROR CSV-urilor în unul singur === */
 /**
  * Funcția `concatCSVAndOutput` construiește un array de promisiuni pentru fiecare fișier csv
  * pe care îl și rezolvă cu Promise.all
@@ -173,7 +171,8 @@ function concatCSVAndOutput(csvFilePaths, outputFilePath) {
 
 const readF = fs.createReadStream(`csvuri/all.csv`, 'utf8'); // Creează stream Read din fișierul CSV sursă.
 
-/* ======= PRELUCRAREA CSV-ului ============  */
+/* === PRELUCRAREA CSV-ului ===  */
+// FIXME: Actualizează scriptul... dă erori (deprecated?!)
 Papa.parse(readF, {
     header: true,
     encoding: 'utf8',
@@ -238,9 +237,9 @@ Papa.parse(readF, {
         CSModel.insertMany(folded, function cbInsMany (err, result) {
             if (err) {
                 console.log(err);
-                process.exit();
+                process.exit(1);
             } else {
-                console.log('Înregistrări inserate în colecție: ', result.length);
+                console.log('Numărul de competențe specifice inserate în colecție (nu înregistrări): ', result.length);
                 process.exit();
             }
         });

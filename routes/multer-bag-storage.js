@@ -14,8 +14,10 @@ function Multer2Bag (opts) {
 Multer2Bag.prototype._handleFile = function _handleFile (req, file, cb) {
     this.getDestination(req, file, function (err, path) {
         if (err) return cb(err);
-
-        var bag = BagIt(path, 'sha256', {'Contact-Name': `${req.user.googleProfile.name}`});
+        // FIXME: googleProfile.name !!!
+        let contactName;
+        req.user.googleProfile.name ? contactName = req.user.googleProfile.name : req.user.username;
+        var bag = BagIt(path, 'sha256', {'Contact-Name': `${contactName}`});
         var fileName = file.originalname;
 
         // asigură originalitatea fișierelor.

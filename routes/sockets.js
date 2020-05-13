@@ -45,7 +45,7 @@ module.exports = function sockets (pubComm) {
 
         // === COMPETENȚELE SPECIFICE ===
         socket.on('csuri', function cbCsuri (data) {
-            console.log(data);// De ex: [ 'arteviz3', 'stanat3' ] `data` sunt codurile disciplinelor selectate
+            // console.log("[sokets.js::<'csuri'>] Array-ul disciplinelor selectate este ", data);// De ex: [ 'arteviz3', 'stanat3' ] `data` sunt codurile disciplinelor selectate
             
             const CSModel = require('../models/competenta-specifica');
             // Proiecția se constituie pe același câmp, dar pe valorile primite prin socket.

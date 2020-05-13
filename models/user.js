@@ -1,5 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
+const passportLocalMongoose = require('passport-local-mongoose');
 const esClient = require('../elasticsearch.config');
 const schema  = require('./user-es7');
 const ES7Helper= require('./model-helpers/es7-helper');
@@ -131,5 +132,7 @@ User.virtual('resurse', {
     foreignField: 'idContributor' // este câmpul cu id-uri de useri. Odată „ajunse” în câmpul virtual `resurse` se vor expanda la întreaga înregistrare pentru acel id
 });
 //https://mongoosejs.com/docs/populate.html#populate-virtuals
+
+User.plugin(passportLocalMongoose);
 
 module.exports = User;

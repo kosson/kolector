@@ -1,0 +1,11 @@
+{{!< landing}}
+{{> nav-landing}}
+
+<div class="container">
+    {{> messages}}
+    {{> loSignup}}
+</div>
+
+{{#each scripts}}
+    <script src="{{script}}" charset="utf-8"></script>
+{{/each}}

@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"redcolector.competentaspecificas"}],"uuid":"a6077c51d6d24e49a7d1fd2a4ca22ebd"}

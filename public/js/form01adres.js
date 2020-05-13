@@ -2020,11 +2020,6 @@ mapCodDisc.set("7",
                 'ellatRom7'
             ]           
         },
-        {
-            parent: ["lbcom"],
-            nume:   "Elemente de limbă latină și de cultură romanică",
-            coduriDiscipline: ['lbcomEllatRom7']
-        },
         /* === Matematică și științe ale naturii === */
         {
             parent: ["matstnat"], 
@@ -2328,11 +2323,6 @@ mapCodDisc.set("8",
                 'lbmod2Portugheza8'
             ]           
         },
-        {
-            parent: ["lbcom"],
-            nume:   "Elemente de limbă latină și de cultură romanică",
-            coduriDiscipline: ['lbcomEllatRom8']
-        },
         /* === Matematică și științe ale naturii === */
         {
             parent: ["matstnat"], 
@@ -2608,6 +2598,7 @@ const DISCMAP = new Map(); // colector de structuri {nivel: "5", 5: {art5: [], b
 niveluri.forEach(function cbNiveluri (nivel) {
     /* === CLICK PE CLASĂ (bifează clasa) === */
     nivel.addEventListener('click', (event) => {
+        // event.preventDefault();
         // Verifică dacă a fost selectată aria curriculară. Dacă nu, afișează eroare
         existaAria();
 
@@ -2718,8 +2709,13 @@ function structDiscipline (discs = {}) {
     // arrOfarr va avea semnătura `[ "lbcomRom5", "Limba și literatura română" ], [ "lbcomOpt5", "Opțional" ]`
     
     // redu înregistrarea `arrOfarr` la un obiect consolidat de forma lui `obj`:
+    let nivelNo;
+    // doar dacă obiectul discs este populat, extrage numărul corespondent clasei!
+    if (discs.cl) {
+        nivelNo = discs.cl.split('').pop(); // scoate numărul aferent clasei!!!
+    }
     const obj = {
-        nivel: discs.cl.split('').pop(),
+        nivel: nivelNo,
         rezultat: {}
     };
     let claseDisc = new Set(); // constituie un Set cu discipline (are comportament de reducer)
