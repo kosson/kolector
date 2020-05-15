@@ -22,12 +22,22 @@ module.exports = function sockets (pubComm) {
     // EMIT
     function rre (nameEvt, payload) {
         pubComm.on('connect', socket => {
+            // console.log(`socket.io connected: ${socket.id}`);
+            // save socket.io socket in the session
+            // console.log("session at socket.io connection:\n", socket.request.session);
+            socket.request.session.socketio = socket.id;
+            socket.request.session.save();
             return socket.emit(nameEvt, payload);
         });
     }
     // ON
     function rro (nameEvt, cb) {
         pubComm.on('connect', socket => {
+            // console.log(`socket.io connected: ${socket.id}`);
+            // save socket.io socket in the session
+            // console.log("session at socket.io connection:\n", socket.request.session);
+            socket.request.session.socketio = socket.id;
+            socket.request.session.save();
             return socket.on(nameEvt, cb);
         });
     }
@@ -35,6 +45,8 @@ module.exports = function sockets (pubComm) {
     /* === CONSTRUCȚIA BAG-ULUI, INTRODUCEREA ÎNREGISTRĂRII, INTRODUCEREA ÎN ELASTICSEARCH === */
     let lastBag;   // este o referință către un bag deja deschis
     let lastUuid;  // referință către UUID-ul în efect
+    let desiredMode = 0o2775
+    let options = { mode: 0o2775 }
 
     /* === SOCKETURI!!! === */
     pubComm.on('connect', (socket) => {
@@ -72,49 +84,116 @@ module.exports = function sockets (pubComm) {
             */
             
             // creez calea către subdirectorul corespunzător userului
-            var calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
+            let calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
 
             // Transformarea Buffer-ului primit într-un stream `Readable`
             var strm = new Readable();
             strm.push(resourceFile.resF);  
             strm.push(null);
 
-            // dacă resursa primită nu are UUID, înseamnă că este prima. Tratează cazul primei resurse
-            if (!resourceFile.uuid) {
-                // setează lastUuid
+            // asigură-te că poți scrie în directorul userului
+            fs.access(calea, function clbkfsAccess (error) {
+                if (error) {
+                    console.log("[sockets.js] La verificarea posibilității de a scrie în directorul userului am dat de eroare: ", error);
+                } else {
+                    console.log("[sockets.js] Directorul există și poți scrie liniștit în el!!!");
+                }
+            });
+            /*
+            * === PRIMUL FIȘIER ÎNCĂRCAT ===
+            * dacă resursa primită nu are UUID, înseamnă că este prima. Tratează cazul primei resurse
+            */
+            if (resourceFile.uuid === '') {
+                // console.log('[sockets::resursa] Prima imagine incarcata uuid-ul va fi: ', typeof(resourceFile.uuid));
+                // setează lastUuid [este chiar numele subdirectorului resursei]
                 lastUuid = uuidv4();
-                // ajustează calea adăugând fragmentul uuid
-                calea += `${lastUuid}`;
-                // generează bag-ul pentru user particularizând cu email-ul
-                lastBag = BagIt(calea, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează BAG-ul
-                // adăugarea fișierului primit în Bag
-                strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`)); // SCRIE PE HARD               
-                // construiește obiectul de răspuns necesar lui Editor.js
-                var responseObj = {
-                    success: 1,
-                    uuid: lastUuid,
-                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`,
-                    size: resourceFile.size
-                };
-                // trimite înapoi în client obiectul de care are nevoie Editor.js pentru confirmare
-                socket.emit('resursa', responseObj);
+
+                // ajustează calea adăugând fragmentul uuid [subdirectorului resursei]]
+                let newPath = calea + `${lastUuid}`;
+
+                // console.log("[sockets.js::'resource'] Aceasta este calea în care voi crea Bag-ul: ", newPath);
+
+                /* === ASIGURĂ-TE CĂ DIRECTORUL EXISTĂ === */
+                fs.ensureDir(newPath, desiredMode, err => {
+                    // console.log(err) // => null
+                    if(err === null){
+                        // console.log("Încă nu am directorul în care să scriu fișierul. Urmează!!!");                        
+                    }
+                    // Generează bag-ul. La Contact-Name vei avea numele autorului/rilor introduți în formular
+                    lastBag = BagIt(newPath, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează BAG-ul
+                    // console.log("Am creat Bag-ul și `lastBag` are aceste detalii: ", lastBag);
+                    
+                    // adăugarea fișierului primit în Bag
+                    strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`)); // SCRIE PE HARD
+
+                    // Calea către fișier [ce pleacă în client] și calea locală către aceasta
+                    let file = `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
+                    let localF = `${process.env.REPO_REL_PATH}${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
+
+                    /* === VERIFICĂ DACĂ FIȘIERUL CHIAR A FOST SCRIS === */
+                    fs.access(localF, fs.F_OK, (err) => {
+                        if (err) {
+                            console.log("[sockets.js::'resource'] Nu am găsit fișierul tocmai scris: ",err);
+                            socket.emit('mesaje', 'Deci, e grav rău! Nu am putut găsi fișierul subdirectorul resursei din depozit!');
+                        }
+                        // construiește obiectul de răspuns necesar lui Editor.js
+                        var responseObj = {
+                            success: 1,
+                            uuid: lastUuid,
+                            file,
+                            size: resourceFile.size
+                        };
+                        // trimite înapoi în client obiectul de care are nevoie Editor.js pentru confirmare
+                        socket.emit('resursa', responseObj);
+                        // socket.emit('uuid', lastUuid); // actualizează uuid-ul în client
+                    });
+                })
             // } else if (resourceFile.uuid && lastUuid === resourceFile.uuid) {
+            
+            /*
+            * === SCRIEREA CELORLALTE FIȘIERE CARE VIN ===
+            * dacă este primit un uuid din client, scrie fișierul în acel uuid!!
+            */
             } else if (resourceFile.uuid) {
-                // dacă este primit un uuid din client, scrie fișierul în acel uuid!!
                 // setează calea către directorul deja existent al resursei
-                calea += `${resourceFile.uuid}`;
-                lastBag = BagIt(calea, 'sha256');
-                // introdu un nou fișier în Bag
-                strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));
-                // construiește obiectul de răspuns.
-                var responseObj4AddedFile = {
-                    success: 1,
-                    uuid: resourceFile.uuid,
-                    file: `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${resourceFile.uuid}/data/${resourceFile.numR}`,
-                    size: resourceFile.size
-                };
-                // trimite înapoi obiectul necesar confirmării operațiunii lui Editor.js
-                socket.emit('resursa', responseObj4AddedFile);
+                let existPath = calea + `${resourceFile.uuid}`;
+                // calea += `${resourceFile.uuid}`;
+
+                // Calea către fișier [ce pleacă în client]
+                let file = `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
+                let localF = `${process.env.REPO_REL_PATH}${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`; // calea către fișierul local din server
+
+                /* === ASIGURĂ-TE CĂ DIRECTORUL EXISTĂ === */
+                fs.ensureDir(existPath, desiredMode, err => {
+                    // console.log(err) // => null
+                    if(err === null){
+                        console.log("Încă nu am directorul în care să scriu fișierul. Urmează!!!");                        
+                    }
+                    // reactualizează referința către Bag. Verifică dacă cu cumva funcționează fără.
+                    lastBag = BagIt(existPath, 'sha256');
+                    // scrie fișierul în Bag
+                    strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));
+
+                    // Calea către fișier [ce pleacă în client] și calea locală către aceasta
+                    let file = `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
+                    let localF = `${process.env.REPO_REL_PATH}${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
+
+                    /* === VERIFICĂ DACĂ FIȘIERUL CHIAR A FOST SCRIS === */
+                    fs.access(localF, fs.F_OK, (err) => {
+                        if (err) {
+                            console.log("[sockets.js::'resource'] Nu am găsit fișierul tocmai scris: ",err);
+                            socket.emit('mesaje', 'Deci, e grav rău! Nu am putut găsi fișierul subdirectorul resursei din depozit!');
+                        }
+                        // construiește obiectul de răspuns.
+                        var responseObj4AddedFile = {
+                            success: 1,
+                            file,
+                            size: resourceFile.size
+                        };
+                        // trimite înapoi obiectul necesar confirmării operațiunii lui Editor.js
+                        socket.emit('resursa', responseObj4AddedFile);
+                    });                    
+                });
             } else {
                 const err = new Error('message', 'nu pot încărca... se încearcă crearea unui bag nou');
                 console.error(err.message);                

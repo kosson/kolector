@@ -18,11 +18,6 @@ pubComm.on('mesaje', (mess) => {
     //https://kamranahmed.info/toast
 });
 
-pubComm.on('uuid', (id) => {
-    uuid = id;
-    RED.uuid = id;
-});
-
 /**
  * Clasa `createElement` va creea elemente HTML
  * @param {String} tag este un și de caractere care indică ce tip de element va fi creat

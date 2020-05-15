@@ -42,8 +42,7 @@ let tools          = require('./routes/tools');
 let help           = require('./routes/help');
 let signupLoco     = require('./routes/signup');
 
-var pubComm = io.of('/redcol');
-const sockets = require('./routes/sockets')(pubComm);
+
 
 // stabilirea locației de upload
 // let upload = multer({dest: path.join(__dirname, '/uploads')});
@@ -123,6 +122,13 @@ app.use(function (req, res, next) {
     };
     lookupSession();
 });
+// when a socket.io connect connects, get the session and store the id in it (https://stackoverflow.com/questions/42379952/combine-sockets-and-express-when-using-express-middleware)
+io.use(function clbkIOuseSessions(socket, next) {
+    sessionMiddleware(socket.request, socket.request.res, next);
+});
+var pubComm = io.of('/redcol');
+require('./routes/sockets')(pubComm); // injectează socket.io
+require('./routes/upload')(pubComm);
 
 // Instanțiază Passport și restaurează starea sesiunii dacă aceasta există
 app.use(passport.initialize());
@@ -242,4 +248,8 @@ http.listen(port, '127.0.0.1', function cbConnection () {
     console.log('Server pornit pe 8080 -> binded pe 127.0.0.1');
 });
 
-module.exports = app;
+process.on('uncaughtException', (un) => {
+    console.log('[app.js] A apărul un uncaughtException cu detaliile ', un);
+});
+// exports.pubComm = pubComm;
+module.exports.io = io;
