@@ -422,8 +422,8 @@ module.exports = function sockets (pubComm) {
                 if (error) {
                     console.error(error);
                 }
-                rre('mesaje', `Am șters fișierul ${cleanFileName}`);
-                socket.emit('delfile', `Am șters fișierul ${cleanFileName}`);
+                // rre('mesaje', `Am șters fișierul ${cleanFileName}`);
+                // socket.emit('delfile', `Am șters fișierul ${cleanFileName}`);
             });
         });
 
