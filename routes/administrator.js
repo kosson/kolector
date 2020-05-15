@@ -161,11 +161,15 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
                 // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
                 obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
 
+                console.log("Acestea sunt activitățile", obi.activitati);
+                
                 // Array-ul activităților modificat
                 let activitatiRehashed = obi.activitati.map((elem) => {
-                    let sablon = /^([a-z])+\d/g;
-                    let cssClass = elem[0].match(sablon);
-                    let composed = `<span class="${cssClass[0]}" data-code="${elem[0]}">${elem[1]}</span>`;
+                    console.log("Acestea sunt elementele", elem, "si acesta este elem[0]", elem[0]);
+                    let sablon = /^([aA-zZ])+\d/g;
+                    let frag = elem[0];
+                    let cssClass = frag.match(sablon);
+                    let composed = '<span class="' + cssClass[0] + 'data-code="' + elem[0] + '">' + elem[1] + '</span>';
                     return composed;
                 });
                 

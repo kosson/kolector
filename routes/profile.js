@@ -111,7 +111,7 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
     const query = Resursa.findById(req.params.idres).populate({path: 'competenteS'});    
     // reformatare obiect resursă și căutarea corespondentului în Elasticsearch cu reindexare, dacă nu există în bază, șterge ghost-ul din ES
     query.then(resursa => {
-        // console.log(resursa); // asta e moartă: http://localhost:8080/profile/resurse/5e2714c84449b236ce450091
+        console.log(resursa); // asta e moartă: http://localhost:8080/profile/resurse/5e2714c84449b236ce450091
         
         /* === Resursa încă există în MongoDB === */
         if (resursa.id) {
@@ -131,11 +131,17 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
             // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
             obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
 
+            console.log(obi.activitati);
+            
+
             // Array-ul activităților modificat
             let activitatiRehashed = obi.activitati.map((elem) => {
-                let sablon = /^([a-z])+\d/g;
-                let cssClass = elem[0].match(sablon);
-                let composed = `<span class="${cssClass[0]}" data-code="${elem[0]}">${elem[1]}</span>`;
+                // console.log(elem);
+                
+                let sablon = /^([aA-zZ])+\d/g;
+                let frag = elem[0];
+                let cssClass = frag.match(sablon);
+                let composed = '<span class="' + cssClass[0] + 'data-code="' + elem[0] + '">' + elem[1] + '</span>';
                 return composed;
             });
             
