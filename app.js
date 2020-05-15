@@ -40,7 +40,7 @@ let profile        = require('./routes/profile');
 let tags           = require('./routes/tags');
 let tools          = require('./routes/tools');
 let help           = require('./routes/help');
-// let signupLoco     = require('./routes/signup');
+let signupLoco     = require('./routes/signup');
 
 // stabilirea locației de upload
 // let upload = multer({dest: path.join(__dirname, '/uploads')});
