@@ -19,120 +19,32 @@
 
 {{!-- secțiune întâmpinare --}}
 <div class="caption text-center">
+
     <div class="os-animation" data-animation="bounceInUp" data-delay=".3s">
-        <h1>Colectorul de Resurse Educaționale Deschise</h1>
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link active" href="#"><img src="img/intrumentestructurale-1.png" alt="Instrumente Structurale logo."></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><img src="img/ue-1.png" alt="Uniunea Europeană logo."></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><img src="img/guvern-1.png" alt="Uniunea Europeană logo."></a>
+            </li>
+        </ul>
     </div>
     <div class="os-animation" data-animation="bounceInUp" data-delay=".4s">
-        {{#if user}}
-            <p>Folosiți formularul de mai jos pentru a contribui cu o resursă educațională proprie. </br>Intenția este de a culege cât mai rapid aceste contribuții pentru a veni în întâmpinarea nevoilor.</p>
-        {{else}}
-            <p>Folosiți formularele de mai jos pentru a contribui cu propriile experiențe, instrumente sau metode. </br>Intenția este de a culege cât mai rapid, dat fiind contextul actual, cele mai bune experiențe la baza cărora stă, de obicei, un larg instrumentar.</p>
-        {{/if}}
+        <h1>Bine ai venit!</h1>
     </div>
-    <div class="os-animation" data-animation="bounceInUp" data-delay=".5s">
-        <section id="cataloage">
-            <div class="gforms">
-                {{#if user}}
-                    <table class="formtbls">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <a class="c-link btn btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfM0DKYimsu_gU7GZYp7PeIq939IGRzYaWQ6-sr-KzoBLnC2A/viewform" target="_black" role="button" aria-disabled="true">Accesează</a>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    {{!-- Primul formular --}}
-                                    <div class="c-card">
-                                        <div class="c-header">
-                                            <div class="c-header-img" style="background-image: url('img/CatalogulDeResurseEducationale.png');"></div>
-                                            <div class="c-title">
-                                                <h5>Propunere de resurse digitale cu utilizare educațională - Comunitatea CRED</h5>
-                                            </div>
-                                        </div>                    
-                                        <div class="c-body">
-                                            <h6 class="c-subtitle">Eu știu o resursa, tu știi o resursa, dacă le împărtășim între noi, fiecare vom ști două resurse.</h6>
-                                            <p class="c-descr">Vă invităm să împărtășiți resursele educaționale (colecții de resurse și instrumente digitale sau resurse în diverse formate digitale) pe care le considerați utile în învățare.
-                Puteți încarca mai multe resurse utilizând formularul de mai multe ori. Prin completarea acestui formular vă exprimați acordul pentru a împărtăși cu ceilalți colegi materialele propuse, alături de numele dvs. în calitate de propunător al materialului.</p>
-                                            {{!-- <a class="c-link" href="https://docs.google.com/forms/d/e/1FAIpQLSfM0DKYimsu_gU7GZYp7PeIq939IGRzYaWQ6-sr-KzoBLnC2A/viewform" target="_black" role="button">Accesează</a> --}}
-                                            {{!-- <a href="#" class="card-link">Another link</a> --}}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                {{else}}
-                    <table class="formtbls">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <a class="c-link btn btn-primary" role="button" href="https://docs.google.com/forms/d/e/1FAIpQLSeAT2eS5wruubEm9DrLmsdV4Y1hG8X8_tZYXiICF4dliFWENg/viewform?usp=sf_link" target="_black" role="button">Accesează</a>
-                                </th>
-                                <th>
-                                    <a class="c-link btn btn-primary" role="button" href="https://digital.educred.ro/" target="_black" role="button">Accesează</a>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    {{!-- Primul formular --}}
-                                    <div class="c-card" style="border-right: .1rem solid olive;">
-                                        <div class="c-header">
-                                            <div class="c-header-img" style="background-image: url('img/CatalogulDeResurseEducationale.png');"></div>
-                                            <div class="c-title">
-                                                <h5>Propuneri de resurse și instrumente digitale cu utilizare educațională</h5>
-                                            </div>
-                                        </div>                    
-                                        <div class="c-body">
-                                            <h6 class="c-subtitle">Eu știu o resursa, tu știi o resursa, dacă le împărtășim între noi, fiecare vom ști două resurse.</h6>
-                                            <p class="c-descr">Vă invităm să împărtășiți resursele educaționale (colecții de resurse și instrumente digitale) pe care le considerați utile în învățare.
-                        Prin completarea acestui formular vă exprimați acordul pentru a împărtăși cu ceilalți colegi materialele propuse, alături de numele dvs. în calitate de propunător al materialului.</p>
-                                            {{!-- <a class="c-link btn btn-primary" role="button" href="https://docs.google.com/forms/d/e/1FAIpQLSeAT2eS5wruubEm9DrLmsdV4Y1hG8X8_tZYXiICF4dliFWENg/viewform?usp=sf_link" target="_black" role="button">Accesează</a> --}}
-                                            {{!-- <a href="#" class="card-link">Another link</a> --}}
-                                        </div>
-                                    </div>
-                                </td>
 
-                                <td>
-                                    {{!-- Al doilea formular --}}
-                                    <div class="c-card">
-                                        <div class="c-header">
-                                            <div class="c-header-img" style="background-image: url('img/CatalogDeInstrumenteEducationaleheader.png');"></div>
-                                            <div class="c-title">
-                                                <h5>Digital pe educred.ro</h5>
-                                            </div>
-                                        </div>                    
-                                        <div class="c-body">
-                                            <h6 class="c-subtitle">Venim în ajutorul celor care au nevoie de resurse și instrumente</h6>
-                                            <p class="c-descr">
-                                                Această pagină beneficiază de sugestiile trimise de cadre didactice și încearcă să răspundă cât mai sintetic nevoilor identificate la nivelul procesului și sistemului de învățământ pe perioada suspendării cursurilor față-în-față. 
-                                                Pentru sugestii și suport (colegial), utilizați grupul de Facebook <a href="https://www.google.com/url?q=https%3A%2F%2Fwww.facebook.com%2Fgroups%2Fresurseeducationaledeschise%2F&sa=D&sntz=1&usg=AFQjCNGZfyVGO9kqy8a8xlvamwPmmlWIig" target="_blank">Resurse Educaționale Deschise</a> sau <a href="https://www.facebook.com/groups/574392349703069/" target="_blank">grupul proiectului CRED</a> 
-                                            </p>
-                                            {{!-- <a class="c-link btn btn-primary" role="button" href="https://digital.educred.ro/" target="_black" role="button">Accesează</a> --}}
-                                            {{!-- <a href="#" class="card-link">Another link</a> --}}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                {{/if}}               
-            </div>            
-        </section>
-        <section>
-            {{!-- <button type="button" class="btn btn-success">Propune RED propriu</button>
-            <button type="button" class="btn btn-success">Introdu un instrument</button> --}}
-            {{!-- <a class="btn btn-success" href="https://sites.google.com/educred.ro/digitalpeeduro/home" target="_blank" role="button">Instrumente ale comunității</a> --}}
-        </section>
+    <div class="os-animation" data-animation="bounceInUp" data-delay=".5s">
+        <p>Colectorul de Resurse Educaționale Deschise este o aplicație creată în cadrul proiectului <em>CRED-Curriculum relevant, educație deschisă pentru toți</em>– cod SMIS 2014+:118327
+Proiect cofinanțat din Fondul Social European prin Programul Operațional Capital Uman 2014-2020</p>
     </div>
             
-    {{!-- <div class="os-animation" data-animation="bounceInUp" data-delay=".6s">
+    <div class="os-animation" data-animation="bounceInUp" data-delay=".6s">
         <a class="btn btn-outline-light btn-lg" href="/resursepublice">Zona resurselor deschise public</a>
-    </div> --}}
+    </div>
 
 </div>
 
