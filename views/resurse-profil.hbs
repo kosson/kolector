@@ -1,9 +1,11 @@
 {{!< layout}}
 {{> nav-resurse}}
 {{> messages}}
+
+
     <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
     {{#each styles}}
-    <link rel="stylesheet" type="text/css" href="{{style}}">
+        <link rel="stylesheet" type="text/css" href="{{style}}">
     {{/each}}
 
     <h3>Resursele cu care ai contribuit</h3>
@@ -52,5 +54,5 @@
     </template>
 
     {{#each scripts}}
-        <script src="{{script}}" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf8" src="{{script}}" charset="utf-8"></script>
     {{/each}}

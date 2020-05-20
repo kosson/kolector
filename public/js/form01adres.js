@@ -31,7 +31,7 @@ var RED = {
     etichete: []
 };
 
-let sync = false;
+let sync = false; // variabila ține evidența tranzacționării uuid-ului cu serverul. În cazul în care uuid-ul este setat, nu se va mai emite mai jos la prima modificare a editorului (onchange editor.js)
 let imagini = new Set(); // un `Set` cu toate imaginile care au fost introduse în document.
 let fisiere = new Set(); // un `Set` cu toate fișierele care au fost introduse în document la un moment dat (înainte de `onchange`).
 
@@ -3596,8 +3596,13 @@ submitBtn.addEventListener('click', (evt) => {
     closeBag(evt); // ÎNCHIDE BAG-ul
     pubComm.emit('red', RED); // vezi în routes.js -> socket.on('red', (RED) => {...
     // aștept răspunsul de la server și redirecționez utilizatorul către resursa tocmai creată.
-    pubComm.on('red', (red) => {
-        if (red) {
+    pubComm.on('confirm', (redID) => {
+        console.log("[form01adres::3599::pubcom.on('ingest')] Răspunsul de la server este: ", redID);
+        if (redID) {
+            setTimeout(() => {
+                window.location = '/profile/' + redID;
+            }, 1000);
+        } else {
             setTimeout(() => {
                 window.location = '/profile/resurse';
             }, 1000);

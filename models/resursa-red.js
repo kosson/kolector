@@ -6,6 +6,7 @@ const esClient      = require('../elasticsearch.config');
 const schema        = require('./resursa-red-es7');
 const editorJs2TXT  = require('../routes/controllers/editorJs2TXT'); 
 const ES7Helper     = require('./model-helpers/es7-helper');
+const globby        = require('globby');
 
 var softwareSchema = new mongoose.Schema({
     nume:     {
@@ -121,6 +122,8 @@ ResursaSchema.pre('remove', function hRemoveCb() {
 
 // POST -> Indexare în Elasticsearch!
 ResursaSchema.post('save', function clbkPostSave1 (doc, next) {
+    // console.log("[sursa-red.js] a primit în post save următorul obiect pentru doc._doc: ", doc._doc._id);
+    
     let obi = Object.assign({}, doc._doc);
     // verifică dacă există conținut
     var content2txt = '';
@@ -165,10 +168,6 @@ ResursaSchema.post('save', function clbkPostSave1 (doc, next) {
 
     ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
     next();
-    /* 
-        TODO: === Constituie primul git commit având drept mesaj `${idConstributor} fecit!`
-        TODO: === Constituie in fișier HTML index.html în subdirectorul `data`. Va fi primul pas către realizarea de EPUB-uri și alte formate tip pachet.
-    */
 });
 
 // Adăugare middleware pe `post` pentru toate operațiunile `find`

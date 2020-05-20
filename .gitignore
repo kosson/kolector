@@ -84,3 +84,9 @@ repo
 
 # nu salva configurarea de workspace
 redcolector.code-workspace
+
+# nu salva ceea ce se generează în testele de stres
+.clinic
+
+# nu salva setările de pm2 locale
+ecosystem.config.js

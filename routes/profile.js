@@ -110,9 +110,7 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
     // caută resursa în bază
     const query = Resursa.findById(req.params.idres).populate({path: 'competenteS'});    
     // reformatare obiect resursă și căutarea corespondentului în Elasticsearch cu reindexare, dacă nu există în bază, șterge ghost-ul din ES
-    query.then(resursa => {
-        console.log(resursa); // asta e moartă: http://localhost:8080/profile/resurse/5e2714c84449b236ce450091
-        
+    query.then(resursa => {        
         /* === Resursa încă există în MongoDB === */
         if (resursa.id) {
             // transformă obiectul document de Mongoose într-un obiect normal.
@@ -136,11 +134,8 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
 
             // Array-ul activităților modificat
             let activitatiRehashed = obi.activitati.map((elem) => {
-                // console.log(elem);
-                
                 let sablon = /^([aA-zZ])+\d/g;
-                let frag = elem[0];
-                let cssClass = frag.match(sablon);
+                let cssClass = elem[0].match(sablon);
                 let composed = '<span class="' + cssClass[0] + 'data-code="' + elem[0] + '">' + elem[1] + '</span>';
                 return composed;
             });
@@ -218,18 +213,15 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
                         index: process.env.RES_IDX_ALS
                     }).then(dead => {
                         // console.log(dead);
-                        rre('mesaje', `Resursa era încă indexată și am șters-o acum: (${dead.statusCode})`);
+                        // rre('mesaje', `Resursa era încă indexată și am șters-o acum.`);
                     }).catch(err => {
-                        rre('mesaje', `Am încercat să șterg din index, dar: ${err}`);
+                        // rre('mesaje', `Am încercat să șterg din index, dar: ${err}`);
                     });                        
                 }
                 return resFromIdx;
             }).catch(err => {
                 console.error(err);
-            }).finally(function clbkFinalSearchIdx () {
-                rre('mesaje', `Resursa nu mai există. Am căutat peste tot!`); // Trimite mesaj în client
-            }); // http://localhost:8080/profile/resurse/5dc9602836fc7d626f4a5832
-            
+            });
             return Promise.reject('Resursa nu mai există!'); // Rejectează promisiunea!
         };
     }).then(resursa => {
@@ -247,7 +239,6 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
             } else {
                 resursa.genPub = `<input type="checkbox" id="public" class="generalPublic">`;
             }
-
             res.render('resursa-admin', {
                 user:      req.user,
                 title:     "Administrare RED",

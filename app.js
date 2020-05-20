@@ -40,7 +40,7 @@ let profile        = require('./routes/profile');
 let tags           = require('./routes/tags');
 let tools          = require('./routes/tools');
 let help           = require('./routes/help');
-let signupLoco     = require('./routes/signup');
+// let signupLoco     = require('./routes/signup');
 
 // stabilirea locației de upload
 // let upload = multer({dest: path.join(__dirname, '/uploads')});
@@ -69,7 +69,8 @@ app.use('/repo', express.static(path.join(__dirname, 'repo')));
 app.use(favicon(path.join(__dirname,  'public', 'favicon.ico')));
 
 // PROTECȚIE
-app.use(helmet());
+app.use(helmet()); // .js” was blocked due to MIME type (“text/html”) mismatch (X-Content-Type-Options: nosniff)
+// https://helmetjs.github.io/docs/dont-sniff-mimetype/
 
 // CORS
 app.use(cors());
@@ -249,5 +250,33 @@ http.listen(port, '127.0.0.1', function cbConnection () {
 process.on('uncaughtException', (un) => {
     console.log('[app.js] A apărul un uncaughtException cu detaliile ', un);
 });
+
+/**
+ * Funcția are rolul de a transforma numărul de bytes într-o valoare human readable
+ * @param {Number} bytes 
+ */
+function formatBytes (bytes) {
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+
+    if (bytes == 0) {
+        return "n/a"
+    }
+
+    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+
+    if (i == 0) {
+        return bytes + " " + sizes[i]
+    }
+
+    return (bytes / Math.pow(1024, i)).toFixed(1) + " " + sizes[i];
+} 
+// citește detaliile de alocare a procesului
+let alocareProces = process.memoryUsage();
+const detalii = {
+    RAM: formatBytes(alocareProces.rss)
+}
+
+console.log("Memoria RAM alocată la pornire este de: ", detalii.RAM);
+
 // exports.pubComm = pubComm;
 module.exports.io = io;
