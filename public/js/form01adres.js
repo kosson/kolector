@@ -108,10 +108,7 @@ const editorX = new EditorJS({
             config: {
                 endpoint: `${location.origin}/upload`,
                 buttonText: 'Încarcă un fișier',
-                errorMessage: 'Nu am putut încărca fișierul.',
-                data: {
-                    uuid: RED.uuid
-                }
+                errorMessage: 'Nu am putut încărca fișierul.'
             }
         },
         inlineCode: {
@@ -225,7 +222,7 @@ const editorX = new EditorJS({
                      */
                     uploadByUrl(url){
                         //TODO: Detectează dimensiunea fișierului și dă un mesaj în cazul în care depășește anumită valoare (vezi API-ul File)
-                        console.log("În uploadByUrl am primit următorul url: ", url);
+                        // console.log("În uploadByUrl am primit următorul url: ", url);
                         
                         // Unele URL-uri este posibil să fie HTML encoded
                         url = decodeURIComponent(url); // Dacă nu decode, mușcă pentru fișierele afișate în browser encoded deja... Flying Flamingos!!!

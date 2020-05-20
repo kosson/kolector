@@ -33,7 +33,11 @@ router.get('/', makeSureLoggedIn.ensureLoggedIn(), function clbkProfile (req, re
 
 /* === ACCESAREA PROPRIILOR RESURSE === */
 router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (req, res) {
-        var count = require('./controllers/resincred.ctrl')(req.user);
+        // var count = require('./controllers/resincred.ctrl')(req.user);
+        var count = Resursa.find({idContributor: req.user._id}).sort({"date": -1}).limit(8).then((resurse) => {
+            // console.log("[profile::/resurse] Numărul resurselor aduse cu `resincred.ctrl.js` este ", resurse.length);
+            return resurse;
+        });
         
         // Promisiunea returnată (`find`). 
         count.then((result) => {
@@ -102,6 +106,8 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
         {script: '/lib/editorjs/code.js'},
         {script: '/lib/editorjs/quote.js'},
         {script: '/lib/editorjs/inlinecode.js'},
+        // UPLOADER
+        {script: '/js/uploader.js'},
         {script: '/js/personal-res.js'}
     ];
     let roles = ["user", "cred", "validator"];
@@ -193,9 +199,6 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
             }).catch(err => {
                 console.error(err);
             });
-            
-            // trimite obi pe următorul then
-            // return Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
             return obi;
         } else {
             // Caută resursa și în Elasticsearch. Dacă există indexată, dar a fost ștearsă din MongoDB, șterge-o din indexare, altfel va apărea la căutare

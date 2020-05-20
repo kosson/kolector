@@ -148,7 +148,7 @@ module.exports = function sockets (pubComm) {
                     type: file.type,         // type: "image/jpeg"
                     size: file.size
                 };
-            */
+            */    
             
             // creez calea către subdirectorul corespunzător userului
             let calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
@@ -209,7 +209,7 @@ module.exports = function sockets (pubComm) {
                     /* === VERIFICĂ DACĂ FIȘIERUL CHIAR A FOST SCRIS === */
                     fs.access(localF, fs.F_OK, (err) => {
                         if (err) {
-                            console.log("[sockets.js::'resource'] Nu am găsit fișierul tocmai scris: ",err);
+                            console.log("[sockets.js::'resursa'::fără uuid] Nu am găsit fișierul tocmai scris: ",err);
                         }
                         // construiește obiectul de răspuns necesar lui Editor.js
                         var responseObj = {
@@ -230,17 +230,16 @@ module.exports = function sockets (pubComm) {
             } else if (resourceFile.uuid) {
                 // setează calea către directorul deja existent al resursei
                 let existPath = calea + `${resourceFile.uuid}`;
-                // calea += `${resourceFile.uuid}`;
 
                 // Calea către fișier [ce pleacă în client]
-                let file = `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
-                let localF = `${process.env.REPO_REL_PATH}${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`; // calea către fișierul local din server
+                let file = `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${resourceFile.uuid}/data/${resourceFile.numR}`;
+                let localF = `${process.env.REPO_REL_PATH}${resourceFile.user}/${resourceFile.uuid}/data/${resourceFile.numR}`; // calea către fișierul local din server
 
                 /* === ASIGURĂ-TE CĂ DIRECTORUL EXISTĂ === */
                 fs.ensureDir(existPath, desiredMode, err => {
                     // console.log(err) // => null
                     if(err === null){
-                        console.log("Încă nu am directorul în care să scriu fișierul. Urmează!!!");                        
+                        console.log("[sockets.js::'resursa'::cu uuid] Încă nu am directorul în care să scriu fișierul. Urmează!!!");                        
                     }
                     // reactualizează referința către Bag. Verifică dacă cu cumva funcționează fără.
                     lastBag = BagIt(existPath, 'sha256');
@@ -252,19 +251,15 @@ module.exports = function sockets (pubComm) {
                     // sourceStream.pipe(destinationStream); // SCRIE PE HARD [OLD]
                     pipeline(sourceStream, destinationStream, (error, val) => {
                         if (error) {
-                            console.error("Nu s-a reușit scrierea fișierului în Bag", error);
+                            console.error("[sockets.js::'resursa'::cu uuid] Nu s-a reușit scrierea fișierului în Bag", error);
                         }
-                        console.log('[sockets.js::resursa] Am primit următoarea valoare de pe streamul destination ', val);
+                        // console.log('[sockets.js::resursa] Am primit următoarea valoare de pe streamul destination ', val);
                     });
-
-                    // Calea către fișier [ce pleacă în client] și calea locală către aceasta
-                    let file = `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
-                    let localF = `${process.env.REPO_REL_PATH}${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
 
                     /* === VERIFICĂ DACĂ FIȘIERUL CHIAR A FOST SCRIS === */
                     fs.access(localF, fs.F_OK, (err) => {
                         if (err) {
-                            console.log("[sockets.js::'resource'] Nu am găsit fișierul tocmai scris: ",err);
+                            console.log("[sockets.js::'resursa'::cu uuid] Nu am găsit fișierul tocmai scris: ",err);
                             // socket.emit('mesaje', 'Deci, e grav rău! Nu am putut găsi fișierul subdirectorul resursei din depozit!');
                         }
                         // construiește obiectul de răspuns.
