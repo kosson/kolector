@@ -163,9 +163,9 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
 
                 // Array-ul activităților modificat
                 let activitatiRehashed = obi.activitati.map((elem) => {
-                    let sablon = /^([a-z])+\d/g;
+                    let sablon = /^([aA-zZ])+\d/g;
                     let cssClass = elem[0].match(sablon);
-                    let composed = `<span class="${cssClass[0]}" data-code="${elem[0]}">${elem[1]}</span>`;
+                    let composed = '<span class="' + cssClass[0] + 'data-code="' + elem[0] + '">' + elem[1] + '</span>';
                     return composed;
                 });
                 

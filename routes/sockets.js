@@ -5,7 +5,9 @@ const path        = require('path');
 // const querystring = require('querystring');
 const BagIt       = require('bagit-fs');
 const {v4: uuidv4}= require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
-const Readable    = require('stream').Readable;
+// const Readable    = require('stream').Readable;
+// const {pipeline}  = require('stream');
+const {Readable, pipeline} = require('stream');
 const mongoose    = require('mongoose');
 const validator   = require('validator');
 const esClient    = require('../elasticsearch.config');
@@ -13,9 +15,74 @@ const Resursa     = require('../models/resursa-red'); // Adu modelul resursei
 const UserSchema  = require('../models/user'); // Adu schema unui user
 const Log         = require('../models/logentry');
 const editorJs2HTML= require('../routes/controllers/editorJs2HTML');
+// necesare pentru constituirea și gestionarea repo-ului de git
+const globby      = require('globby');
+const git         = require('isomorphic-git');
 
 // funcțiile de căutare
 const {findInIdx, aggFromIdx} = require('./controllers/elasticsearch.ctrl');
+
+/**
+ * Funcția are rolul de a face staging la tot ce există în parametrul `calea` urmat de commit
+ * Funcția este echivalentul lui `git add .` (cu respectarea unui `.gitignore`, dacă există) combinat cu `git commit -a -m "mesajul"`
+ * @param {String} calea Este calea relativă a subdirectorului resursei. Începe cu punct
+ * @param {String} autori Este stringul autorilor din care va fi extras primul ca fiind cel care face repo-ul
+ * @param {String} email Adresa de email a celui care dace repo-ul
+ * @param {String} message 
+ */
+async function commitAll (calea, autori, email, message) {    
+    try {
+        // adaugă toate fișierele existente în cale în stagging și 
+        const paths = await globby(calea, ['./**', './**/.*'], { gitignore: true }); // https://github.com/isomorphic-git/isomorphic-git/issues/187
+        // console.log("[commitAll] Array-ul paths are următorul conținut: ", paths);
+        
+        const dir = process.cwd();              // `/media/nicolaie/DATA/DEVELOPMENT/redcolector/` Este directorul de lucru al aplicației
+        let relComponent = calea.slice(1);      // Este calea relativă pornind de la `repo`. E nevoie să debitezi punctul
+        let compoundPath = dir + relComponent;  // `/media/nicolaie/DATA/DEVELOPMENT/redcolector/repo/5ebaf1ae32061d3fa4b7f0ae/08bb2b97-04d4-4ea7-9281-3fe9e67f7598/`
+
+        /*
+            === GIT ALL -A ===
+            Fii foarte atent!!! 
+            Calea pe care `dir` o acceptă este una absolută (`/media/nicolaie/DATA/DEVELOPMENT/redcolector/repo/5ebaf1ae32061d3fa4b7f0ae/08bb2b97-04d4-4ea7-9281-3fe9e67f7598/`)
+            Calea pe care `filepath` o acceptă este relativă lui `dir` (Nu trebuie să înceapă cu `./`).
+        */
+
+        let filepath = '';
+        for (filepath of paths) {
+            let relPath = './' + filepath; // normalizează-l pentru debitarea cu `relPath`
+            let xP = relPath.substr(calea.length); // constituie un subșir debitând de la 0 la lungimea lui `calea`. Ajungi astfel la calea relativă a fișierului fără `./`.
+            // console.log("[commitAll] Calea relativă nouă este:", xP, " iar destinatia este: ", compoundPath);           
+            await git.add({fs, dir: compoundPath, filepath: xP});
+        }
+        
+        /* === GIT COMMIT -m "message" === */
+        let autoriArr = autori.split(',');   // tratez cazul în care ai mai mulți autori delimitați de virgule
+        let author = '';
+        if (autoriArr.length >= 1) {
+            author = autoriArr[0].trim();
+        } else {
+            author = autori;
+        }
+        
+        let reqPath = compoundPath.substr(0, compoundPath.length - 1); // generează calea absolută pânâ în subdirectorul resursei, fără slash final (adăugat la join în spate)
+        // console.log('[sockets::commitAll] valoarea lui `reqPath` este: ', reqPath, " iar join-ul este ", path.join(reqPath, '.git'));
+
+        let sha = await git.commit({
+            fs, 
+            dir: reqPath, 
+            message: `${autori} fecit ${message}.`, 
+            author: {
+                name: `${author}`, 
+                email: `${email}`
+            }
+        });
+        console.log(sha); // E neapărat!!! Altfel nu se face commit-ul!
+    } catch (error) {
+        if (error) {
+            console.error(error);
+        }
+    }
+}
 
 module.exports = function sockets (pubComm) {
     /* === FUNCȚII HELPER PENTRU LUCRUL CU SOCKET-URI */
@@ -68,7 +135,7 @@ module.exports = function sockets (pubComm) {
             });
         }); // apel al funcția `cbCsuri` de mai jos
 
-        // === RESURSA === ::Primește fișiere, fapt care conduce la crearea Bag-ului, dacă userul alege încărcarea prima dată a unui fișier.
+        // === RESURSA === ::Primește fișiere, fapt care conduce la crearea Bag-ului. Servește instanței de Editor.js (uploadByFile și uploadByUrl)
         socket.on('resursa', function clbkResursa (resourceFile) {
             /* 
                 Obiectul primit `resourceFile` este `objRes` din `form01adres` și are următoarea semnătură
@@ -87,18 +154,19 @@ module.exports = function sockets (pubComm) {
             let calea = `${process.env.REPO_REL_PATH}${resourceFile.user}/`;
 
             // Transformarea Buffer-ului primit într-un stream `Readable`
-            var strm = new Readable();
-            strm.push(resourceFile.resF);  
-            strm.push(null);
+            var sourceStream = new Readable();      // Creează stream-ul Readable
+            sourceStream.push(resourceFile.resF);   // Injectează Buffer-ul care este fișierul, de fapt
+            sourceStream.push(null);                // Trimite null în stream pentru a semnala faptul că injectarea fișierului s-a încheiat.
 
             // asigură-te că poți scrie în directorul userului
             fs.access(calea, function clbkfsAccess (error) {
                 if (error) {
-                    console.log("[sockets.js] La verificarea posibilității de a scrie în directorul userului am dat de eroare: ", error);
+                    console.log("[sockets.js::resursa] La verificarea posibilității de a scrie în directorul userului am dat de eroare: ", error);
                 } else {
-                    console.log("[sockets.js] Directorul există și poți scrie liniștit în el!!!");
+                    // console.log("[sockets.js::resursa] Directorul există și poți scrie liniștit în el!!!");
                 }
             });
+
             /*
             * === PRIMUL FIȘIER ÎNCĂRCAT ===
             * dacă resursa primită nu are UUID, înseamnă că este prima. Tratează cazul primei resurse
@@ -108,23 +176,31 @@ module.exports = function sockets (pubComm) {
                 // setează lastUuid [este chiar numele subdirectorului resursei]
                 lastUuid = uuidv4();
 
-                // ajustează calea adăugând fragmentul uuid [subdirectorului resursei]]
+                // ajustează calea adăugând fragmentul uuid [subdirectorului resursei]
                 let newPath = calea + `${lastUuid}`;
-
                 // console.log("[sockets.js::'resource'] Aceasta este calea în care voi crea Bag-ul: ", newPath);
 
                 /* === ASIGURĂ-TE CĂ DIRECTORUL EXISTĂ === */
                 fs.ensureDir(newPath, desiredMode, err => {
-                    // console.log(err) // => null
+                    // dacă directorul nu există, va fi emisă eroarea, dar va fi creat
                     if(err === null){
-                        // console.log("Încă nu am directorul în care să scriu fișierul. Urmează!!!");                        
+                        // console.log("[sockets.js::'resource'] Încă nu am directorul în care să scriu fișierul. Urmează!!!");                        
                     }
-                    // Generează bag-ul. La Contact-Name vei avea numele autorului/rilor introduți în formular
+                    // Generează bag-ul. La Contact-Name vei avea numele autorului/rilor introduși în formular
                     lastBag = BagIt(newPath, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează BAG-ul
-                    // console.log("Am creat Bag-ul și `lastBag` are aceste detalii: ", lastBag);
+                    // console.log("[sockets.js::'resource'] Am creat Bag-ul și `lastBag` are aceste detalii: ", lastBag);
                     
+                    // creează stream-ul destinație
+                    var destinationStream = lastBag.createWriteStream(`${resourceFile.numR}`);
+
                     // adăugarea fișierului primit în Bag
-                    strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`)); // SCRIE PE HARD
+                    // sourceStream.pipe(destinationStream); // SCRIE PE HARD [OLD]
+                    pipeline(sourceStream, destinationStream, (error, val) => {
+                        if (error) {
+                            console.error("Nu s-a reușit scrierea primului fișier în Bag", error);
+                        }
+                        // console.log('[sockets.js::resursa] Am primit următoarea valoare de pe streamul destination ', val);
+                    });
 
                     // Calea către fișier [ce pleacă în client] și calea locală către aceasta
                     let file = `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
@@ -134,7 +210,6 @@ module.exports = function sockets (pubComm) {
                     fs.access(localF, fs.F_OK, (err) => {
                         if (err) {
                             console.log("[sockets.js::'resource'] Nu am găsit fișierul tocmai scris: ",err);
-                            socket.emit('mesaje', 'Deci, e grav rău! Nu am putut găsi fișierul subdirectorul resursei din depozit!');
                         }
                         // construiește obiectul de răspuns necesar lui Editor.js
                         var responseObj = {
@@ -147,9 +222,7 @@ module.exports = function sockets (pubComm) {
                         socket.emit('resursa', responseObj);
                         // socket.emit('uuid', lastUuid); // actualizează uuid-ul în client
                     });
-                })
-            // } else if (resourceFile.uuid && lastUuid === resourceFile.uuid) {
-            
+                })            
             /*
             * === SCRIEREA CELORLALTE FIȘIERE CARE VIN ===
             * dacă este primit un uuid din client, scrie fișierul în acel uuid!!
@@ -171,8 +244,18 @@ module.exports = function sockets (pubComm) {
                     }
                     // reactualizează referința către Bag. Verifică dacă cu cumva funcționează fără.
                     lastBag = BagIt(existPath, 'sha256');
-                    // scrie fișierul în Bag
-                    strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));
+
+                    // creează stream-ul destinație
+                    var destinationStream = lastBag.createWriteStream(`${resourceFile.numR}`);
+
+                    // adăugarea fișierului primit în Bag
+                    // sourceStream.pipe(destinationStream); // SCRIE PE HARD [OLD]
+                    pipeline(sourceStream, destinationStream, (error, val) => {
+                        if (error) {
+                            console.error("Nu s-a reușit scrierea fișierului în Bag", error);
+                        }
+                        console.log('[sockets.js::resursa] Am primit următoarea valoare de pe streamul destination ', val);
+                    });
 
                     // Calea către fișier [ce pleacă în client] și calea locală către aceasta
                     let file = `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
@@ -182,7 +265,7 @@ module.exports = function sockets (pubComm) {
                     fs.access(localF, fs.F_OK, (err) => {
                         if (err) {
                             console.log("[sockets.js::'resource'] Nu am găsit fișierul tocmai scris: ",err);
-                            socket.emit('mesaje', 'Deci, e grav rău! Nu am putut găsi fișierul subdirectorul resursei din depozit!');
+                            // socket.emit('mesaje', 'Deci, e grav rău! Nu am putut găsi fișierul subdirectorul resursei din depozit!');
                         }
                         // construiește obiectul de răspuns.
                         var responseObj4AddedFile = {
@@ -296,7 +379,7 @@ module.exports = function sockets (pubComm) {
         });
 
         // === RED === ::Introducerea resursei în baza de date MongoDB la finalizarea completării FORM01
-        socket.on('red', (RED) => {
+        socket.on('red', function clbkCreateRED (RED) {
             // gestionează cazul în care nu ai un uuid generat pentru că resursa educațională, adică nu are niciun fișier încărcat
             if (!RED.uuid) {
                 RED.uuid = uuidv4();
@@ -344,29 +427,46 @@ module.exports = function sockets (pubComm) {
             });
             // SAVE!!! INDEXARE ÎN ACELAȘI MOMENT!
             var pResEd = resursaEducationala.populate('competenteS').execPopulate(); // returnează o promisiune
-            pResEd.then(res => {
+            pResEd.then(async function clbkThenSave (res) {
                 // Trimite înregistrarea și în Elasticsearch și creează și un fișier json pe hard în subdirectorul red-ului [FIXED::`post`hook pe schemă la `save`]
                 // TODO: Mai creează un git pentru director, fă primul commit și abia după aceea salvează în baza de date.
 
                 /* === Scrie JSON-ul înregistrării în `data` === */
                 const newRes = Object.assign({}, RED);
                 newRes._id = res._id; // introdu în obiectul JSON id-ul înregistrării din MongoDB -> Recovery latter!
-                // creează calea pe care se va depozita.
-                let calea = `${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`;
-                // ref pe Bag-ul existent
-                let existBag = BagIt(calea, 'sha256');
-                // transformă în Buffer obiecul newRes
+                
+                let calea = `${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`;    // creează calea pe care se va depozita.                
+                let existBag = BagIt(calea, 'sha256');  // ref pe Bag-ul existent
+                
+                /* === CREAREA REPO-ului .git === */
+                await git.init({ fs, dir: calea }); // Atenție, urmează să se facă și primul commit.
+
+                // transformă în Buffer obiecul `newRes`
                 const data = Buffer.from(JSON.stringify(newRes));
                 let strm = new Readable();
                 strm._read = () => {} // _read este necesar!!!
                 strm.push(data);
-                strm.push(null);                
-                // introdu un nou fișier în Bag-ul existent al resursei
-                strm.pipe(existBag.createWriteStream(`${uuidv4()}.json`)); // scrie un JSON pe HDD în Bag-ul resursei
+                strm.push(null);
 
+                // creează stream-ul destinație
+                var destinationStream = existBag.createWriteStream(`${uuidv4()}.json`);
+
+                // scrierea stream-ului pe hard (distruge streamul sursă și curăță) -> introdu un nou fișier în Bag-ul existent al resursei
+                pipeline(strm, destinationStream, function clbkAfterREDWrittenStrm (error, val) {
+                    if (error) {
+                        console.error("[sockets.js::'red'] Nu s-a reușit scrierea fișei JSON în Bag", error);
+                    }
+                    // console.log("[sockets.js::'red'] Înainte de a încerca să fac commit-ul", res);
+                    commitAll(calea, res.autori, res.emailContrib, res.title);
+                    // console.error("[sockets.js::'red'] obiectul care ar trebui să ajungă în client are id: ", res._id);
+                });
+
+                //socket.emit('ingest', res); // se emite înregistrarea către frontend. Dacă frontendul primește înregistrare, va redirecta către resursă.
                 /* === SAVARE RESURSĂ ÎN MONGO === */
                 res.save(); // Se aplică un hook `post` pentru a indexa în ES!
-                socket.emit('red', res); // se emite înregistrarea către frontend. Dacă frontendul primește înregistrare, va redirecta către resursă.
+                return res;
+            }).then(res => {
+                socket.emit('confirm', res._id);
             }).catch(err => {
                 if (err) console.error;
                 // Dacă e vreo eroare, distruge directorul de pe hard!
@@ -433,15 +533,13 @@ module.exports = function sockets (pubComm) {
             let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, `${resource.content.identifier}`);
             // console.log('Calea constituită este: ', dirPath);
 
-                // Șterge din MongoDB, din Elasticsearch, precum și de pe hard
-                // caută dacă există subdirector.
+                /* === ȘTERGE SUBDIRECTOR === */
                 fs.ensureDir(dirPath, 0o2775).then(function clbkFsExists () {
-                    /* === ȘTERGE SUBDIRECTOR === */
                     fs.remove(dirPath, function clbkDirFolder (error) {
                         if (error) {
                             console.error(error);
                         }
-                        pubComm.emit('deldir', `Am șters subdirectorul ${resource.content.identifier}`);
+                        pubComm.emit('deldir', `Am șters resursa identificată prin ${resource.content.identifier}`);
                     });
                 }).catch(err => {
                     console.log(err);
@@ -461,7 +559,6 @@ module.exports = function sockets (pubComm) {
                 // Șterge din MongoDB, din Elasticsearch, precum și de pe hard
                 // caută dacă există subdirector.
                 fs.ensureDir(dirPath, 0o2775).then(function clbkSubdirExists () {
-                    
                     /* === ARHIVEAZĂ === */
                     // Verifică dacă în rădăcina userului există subdirectorul `deleted`. Dacă nu, creează-l!!!
                     var path2deleted = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, 'deleted');
@@ -497,15 +594,15 @@ module.exports = function sockets (pubComm) {
 
                         /* === Când se încheie procesul de arhivare === */
                         output.on('close', function clbkFinalArhivare () {
-                            rre('mesaje', 'Resursa a intrat în conservare!');
+                            // rre('mesaje', 'Resursa a intrat în conservare!');
                             // rre('delresid', {bytes: archive.pointer()});
 
                             /* === ȘTERGE SUBDIRECTOR === */
-                            fs.remove(dirPath, function clbkRemoveFolder (error) {
-                                if (error) {
-                                    console.error(error);
-                                }
-                            });
+                            // fs.remove(dirPath, function clbkRemoveFolder (error) {
+                            //     if (error) {
+                            //         console.error(error);
+                            //     }
+                            // });
 
                             /* === Șterge din MONGODB și din Elasticsearch === */
                             Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
@@ -519,6 +616,13 @@ module.exports = function sockets (pubComm) {
                                         id: doc._id,
                                         index: process.env.RES_IDX_ALS,
                                         refresh: true
+                                    });
+                                    // Abia acum șterge fizic de pe hard disk directorul resursei
+                                    socket.emit('deldir', {
+                                        content: {
+                                            idContributor: resource.content.idContributor, 
+                                            identifier: resource.content.identifier
+                                        }
                                     });
                                 }
                             });

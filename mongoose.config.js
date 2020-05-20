@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== "test") {
 }
 mongoose.connection.on('error', function () {
     console.warn('Conectarea la MongoDB a eșuat!');
-    process.exit();
+    process.exit(1);
 });
 mongoose.connection.once('open', function () {
     console.log("Conectare la baza de date făcută cu succes");

@@ -2,7 +2,7 @@
 {{> nav-landing}}
 
 {{#each scripts}}
-    <script src="{{script}}" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf8" src="{{script}}" charset="utf-8"></script>
 {{/each}}
 
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
@@ -60,7 +60,7 @@ Proiect cofinanțat din Fondul Social European prin Programul Operațional Capit
     {{!-- {{> mainInfo}} --}}
 <div class="offset">
     <div class="os-animation narrow text-center" data-animation="fadeInUp">
-        {{!-- <h3 class="heading">
+        <h3 class="heading">
             Resurse la îndemâna dumneavoastră
         </h3>
         <div id="tools">
@@ -142,7 +142,7 @@ Proiect cofinanțat din Fondul Social European prin Programul Operațional Capit
                     <span class="badge badge-pill badge-secondary">colecție</span>
                 </div>
             </article>
-        </div> --}}
+        </div>
     </div>
 
     <div id="resurse" class="resurse os-animation" data-animation="fadeInUp">
