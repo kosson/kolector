@@ -53,7 +53,6 @@ module.exports = function uploader (pubComm) {
     
     Multer2Bag.prototype._handleFile = function _handleFile (req, file, cb) {
         this.getDestination(req, file, function clbkGetDest (err, path) {
-
             // console.log('[upload.js] Am să scriu fișierul în calea: ', path);
             
             // Afișează posibile erori
