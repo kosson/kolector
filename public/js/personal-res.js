@@ -1,7 +1,7 @@
 let dataRes = document.querySelector('.resursa').dataset;
 let RED = JSON.parse(dataRes.content);
 
-let autoriArr = RED.autori.split(',');   // tratez cazul în care ai mai mulți autori delimitați de virgule
+let autoriArr = RED.autori.split(','); // tratez cazul în care ai mai mulți autori delimitați de virgule
 let author = '';
 if (autoriArr.length >= 1) {
     author = autoriArr[0].trim();

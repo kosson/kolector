@@ -267,7 +267,7 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
                 logoimg:   "/img/red-logo-small30.png",
                 credlogo:  "../img/CREDlogo.jpg",
                 csfrToken: req.csrfToken(),
-                resursa:   resursa,
+                resursa,
                 scripts
             });
         /* === ROLURI ÎN CRED === */
@@ -280,7 +280,7 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
                 logoimg:   "/img/red-logo-small30.png",
                 credlogo:  "../img/CREDlogo.jpg",
                 csfrToken: req.csrfToken(),
-                resursa:   resursa,
+                resursa,
                 scripts
             });
         /* === NU FACI PARTE DIN CRED === */
