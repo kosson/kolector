@@ -2653,6 +2653,44 @@ discipline.appendChild(multilevdisc);
 
 const DISCMAP = new Map(); // colector de structuri {nivel: "5", 5: {art5: [], bio5: []}} generate de `structDiscipline({cl:event.target.value, data});`
 
+// SETUL DISCIPLINELOR CARE AU FOST BIFATE
+var disciplineSelectate = new Set(); // selecția disciplinelor
+var discSelected = document.querySelector('#disciplineselectate'); // zona de afișare a disciplinelor care au fost selectate
+/**
+ * Funcția e listener pentru fiecare checkbox disciplină. Odată selectată disciplina, aceasta va fi afișată într-o zonă de selecție
+ * @param {NodeElement} `evt` fiind chiar elementul obiect
+ */
+function clickPeDisciplina (evt) {
+    // face ca butonul de selecție să fie evidențiat doar dacă a fost apăsată vreo disciplină
+    if (compSpecPaginator.classList.contains('d-none')) {
+        compSpecPaginator.classList.remove('d-none');
+    } else {
+        compSpecPaginator.classList.add('d-block');
+    }
+
+    let e = evt || window.event;
+    console.log(e.dataset.nume);
+    // DACĂ EXISTĂ CODUL ÎN disciplineSelectate, șterge-l
+    if (disciplineSelectate.has(e.dataset.nume) == false) {
+        disciplineSelectate.add(e.dataset.nume); // adaugă disciplina în `Set`-ul `disciplineSelectate`
+        
+        let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': e.dataset.nume, autocomplete: "off", value: e.dataset.nume, onclick: ""}).creeazaElem();
+        let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-sm', e.dataset.nume], {}).creeazaElem(e.value);
+        labelBtn.textContent += ` `; //adaugă un spațiu între numar și textul butonului.
+        let clasaInfo         = new createElement('span', '', ['badge','badge-light'], {}).creeazaElem(e.dataset.nume.split('').pop());
+        labelBtn.appendChild(clasaInfo); // adaugă numărul care indică clasa pentru care a apărut disciplina (vezi bootstrap badges)
+        let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', e.dataset.nume], {"data-toggle": "buttons", onclick: ""}).creeazaElem();           
+        
+        labelBtn.appendChild(inputCheckBx); // injectează checkbox-ul în label
+        divBtnGroupToggle.appendChild(labelBtn); // injectează label-ul în div
+        discSelected.appendChild(divBtnGroupToggle); // adaugă div-ul în discselected
+    } else {
+        disciplineSelectate.delete(e.dataset.nume);
+        let elemExistent = document.querySelector(`.${e.dataset.nume}`);
+        discSelected.removeChild(elemExistent);
+    }
+}
+
 /**
  * Pentru fiecare clasă bifată, adaugă un listener la `click`, 
  * care va genera input checkbox-uri în baza datelor din dataset-ul `data=*` al checkboxului de clasă
@@ -2825,43 +2863,6 @@ function structDiscipline (discs = {}) {
 var compSpecPaginator = document.querySelector('#actTable');
 
 // Pentru a preveni orice erori izvorâte din apăsarea prematură a butonului „Alege competetențe specifice”, am ales să-l ascund până când nu este selectată o disciplină
-// SETUL DISCIPLINELOR CARE AU FOST BIFATE
-var disciplineSelectate = new Set(); // selecția disciplinelor
-var discSelected = document.querySelector('#disciplineselectate'); // zona de afișare a disciplinelor care au fost selectate
-/**
- * Funcția e listener pentru fiecare checkbox disciplină. Odată selectată disciplina, aceasta va fi afișată într-o zonă de selecție
- * @param {NodeElement} `evt` fiind chiar elementul obiect
- */
-function clickPeDisciplina (evt) {
-    // face ca butonul de selecție să fie evidențiat doar dacă a fost apăsată vreo disciplină
-    if (compSpecPaginator.classList.contains('d-none')) {
-        compSpecPaginator.classList.remove('d-none');
-    } else {
-        compSpecPaginator.classList.add('d-block');
-    }
-
-    let e = evt || window.event;
-    console.log(e.dataset.nume);
-    // DACĂ EXISTĂ CODUL ÎN disciplineSelectate, șterge-l
-    if (disciplineSelectate.has(e.dataset.nume) == false) {
-        disciplineSelectate.add(e.dataset.nume); // adaugă disciplina în `Set`-ul `disciplineSelectate`
-        
-        let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': e.dataset.nume, autocomplete: "off", value: e.dataset.nume, onclick: ""}).creeazaElem();
-        let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-sm', e.dataset.nume], {}).creeazaElem(e.value);
-        labelBtn.textContent += ` `; //adaugă un spațiu între numar și textul butonului.
-        let clasaInfo         = new createElement('span', '', ['badge','badge-light'], {}).creeazaElem(e.dataset.nume.split('').pop());
-        labelBtn.appendChild(clasaInfo); // adaugă numărul care indică clasa pentru care a apărut disciplina (vezi bootstrap badges)
-        let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', e.dataset.nume], {"data-toggle": "buttons", onclick: ""}).creeazaElem();           
-        
-        labelBtn.appendChild(inputCheckBx); // injectează checkbox-ul în label
-        divBtnGroupToggle.appendChild(labelBtn); // injectează label-ul în div
-        discSelected.appendChild(divBtnGroupToggle); // adaugă div-ul în discselected
-    } else {
-        disciplineSelectate.delete(e.dataset.nume);
-        let elemExistent = document.querySelector(`.${e.dataset.nume}`);
-        discSelected.removeChild(elemExistent);
-    }
-}
 
 var activitatiFinal = new Map(); // mecanism de colectare al activităților bifate sau nu
 var competenteGen   = new Set(); // este un set necesar colectării competențelor generale pentru care s-au făcut selecții de activități în cele specifice
