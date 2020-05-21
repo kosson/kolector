@@ -138,7 +138,7 @@ app.use(passport.session());
 let upload = require('./routes/upload')(pubComm);
 app.use('/upload', upload);
 // SIGNUP
-app.use('/signup',   signupLoco); // SIGNUP!!!
+// app.use('/signup',   signupLoco); // SIGNUP!!!
 // LOGIN
 const UserSchema = require('./models/user');
 const UserDetails = mongoose.model('users', UserSchema);

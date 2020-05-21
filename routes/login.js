@@ -11,7 +11,7 @@ const UserPassport = require('./controllers/user.ctrl')(passport);
 
 /* === LOGIN [GET] === */
 router.get('/', (req, res, next) => {
-    console.log("Din user.ctrl avem din req.body pe /login: ", req.body);
+    // console.log("Din user.ctrl avem din req.body pe /login: ", req.body);
     res.render('login', {
         title:    "login",
         style:   "/lib/fontawesome/css/fontawesome.min.css",
