@@ -90,3 +90,6 @@ redcolector.code-workspace
 
 # nu salva setările de pm2 locale
 ecosystem.config.js
+
+# ignoră logul
+log.md

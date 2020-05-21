@@ -2784,9 +2784,10 @@ niveluri.forEach(function cbNiveluri (nivel) {
                                 let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-info', 'btn-sm'], {}).creeazaElem(obidisc.nume);
                                 labelBtn.textContent += ` `; //adaugă un spațiu între numar și textul butonului.
                                 let clasaInfo         = new createElement('span', '', ['badge','badge-light'], {}).creeazaElem(n);
-                                labelBtn.appendChild(clasaInfo); // adaugă numărul care indică clasa pentru care a apărut disciplina (vezi bootstrap badges)
                                 let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', obidisc.codsdisc], {"data-toggle": "buttons"}).creeazaElem(); // , onclick: "actSwitcher()"
+                                
                                 labelBtn.appendChild(inputCheckBx); // injectează checkbox-ul
+                                labelBtn.appendChild(clasaInfo);    // injectează span-ul -> adaugă numărul care indică clasa pentru care a apărut disciplina (vezi bootstrap badges)
                                 divBtnGroupToggle.appendChild(labelBtn); // injectează label-ul
                                 dicpanes.appendChild(divBtnGroupToggle);
                             }
