@@ -2780,15 +2780,17 @@ niveluri.forEach(function cbNiveluri (nivel) {
                             if (!elemSet.has(obidisc.codsdisc)) {
                                 elemSet.add(obidisc.codsdisc); // introdu în `Set`-ul `elemSet` fiecare disciplină
                                 //console.log(obidisc); // Object { codsdisc: "lbcomRom5", nume: "Limba și literatura română" }
-                                let inputCheckBx      = new createElement('input', '', ['form-check-input', 'discinput'], {type: "checkbox", autocomplete: "off", "data-nume": obidisc.codsdisc, value: obidisc.nume, onclick:"clickPeDisciplina(this)"}).creeazaElem();
-                                let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-info', 'btn-sm'], {}).creeazaElem(obidisc.nume);
+                                let inputCheckBx      = new createElement('input', obidisc.codsdisc, ['form-check-input', 'discinput'], {type: "checkbox", autocomplete: "off", "data-nume": obidisc.codsdisc, name: obidisc.codsdisc, value: obidisc.nume, onclick:"clickPeDisciplina(this)"}).creeazaElem();
+                                let labelBtn          = new createElement('label', '', ['disclabel'], {for: obidisc.codsdisc}).creeazaElem(obidisc.nume);
                                 labelBtn.textContent += ` `; //adaugă un spațiu între numar și textul butonului.
-                                let clasaInfo         = new createElement('span', '', ['badge','badge-light'], {}).creeazaElem(n);
-                                let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', obidisc.codsdisc], {"data-toggle": "buttons"}).creeazaElem(); // , onclick: "actSwitcher()"
+                                let clasaInfo         = new createElement('span', '', ['badge','badge-secondary'], {}).creeazaElem(n);
+                                let divBtnGroupToggle = new createElement('div', '', ['disciplina', obidisc.codsdisc], {}).creeazaElem(); // , 'btn-group-toggle'
                                 
-                                labelBtn.appendChild(inputCheckBx); // injectează checkbox-ul
+                                
                                 labelBtn.appendChild(clasaInfo);    // injectează span-ul -> adaugă numărul care indică clasa pentru care a apărut disciplina (vezi bootstrap badges)
+                                divBtnGroupToggle.appendChild(inputCheckBx); // injectează checkbox-ul
                                 divBtnGroupToggle.appendChild(labelBtn); // injectează label-ul
+
                                 dicpanes.appendChild(divBtnGroupToggle);
                             }
                         }
