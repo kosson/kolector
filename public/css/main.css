@@ -988,4 +988,5 @@ input[type='range']:focus {
 /* Butoanele disciplinelor */
 .discinput {
     width: 100%;
+    left: 0;
 }
