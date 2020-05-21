@@ -2780,7 +2780,7 @@ niveluri.forEach(function cbNiveluri (nivel) {
                             if (!elemSet.has(obidisc.codsdisc)) {
                                 elemSet.add(obidisc.codsdisc); // introdu în `Set`-ul `elemSet` fiecare disciplină
                                 //console.log(obidisc); // Object { codsdisc: "lbcomRom5", nume: "Limba și literatura română" }
-                                let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", autocomplete: "off", "data-nume": obidisc.codsdisc, value: obidisc.nume, onclick:"clickPeDisciplina(this)"}).creeazaElem();
+                                let inputCheckBx      = new createElement('input', '', ['form-check-input', 'discinput'], {type: "checkbox", autocomplete: "off", "data-nume": obidisc.codsdisc, value: obidisc.nume, onclick:"clickPeDisciplina(this)"}).creeazaElem();
                                 let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-info', 'btn-sm'], {}).creeazaElem(obidisc.nume);
                                 labelBtn.textContent += ` `; //adaugă un spațiu între numar și textul butonului.
                                 let clasaInfo         = new createElement('span', '', ['badge','badge-light'], {}).creeazaElem(n);

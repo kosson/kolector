@@ -984,3 +984,8 @@ input[type='range']:focus {
 .discsrespub i {
     color: black;
 }
+
+/* Butoanele disciplinelor */
+.discinput {
+    width: 100%;
+}
