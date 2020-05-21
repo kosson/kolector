@@ -2742,12 +2742,12 @@ niveluri.forEach(function cbNiveluri (nivel) {
                             if (!elemSet.has(obidisc.codsdisc)) {
                                 elemSet.add(obidisc.codsdisc); // introdu în `Set`-ul `elemSet` fiecare disciplină
                                 //console.log(obidisc); // Object { codsdisc: "lbcomRom5", nume: "Limba și literatura română" }
-                                let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': obidisc.codsdisc, autocomplete: "off", value: obidisc.nume, onclick: "clickPeDisciplina(this)"}).creeazaElem();
+                                let inputCheckBx      = new createElement('input', '', ['form-check-input'], {type: "checkbox", 'data-nume': obidisc.codsdisc, autocomplete: "off", value: obidisc.nume, onclick:"clickPeDisciplina(this)"}).creeazaElem();
                                 let labelBtn          = new createElement('label', '', ['discbtn','btn', 'btn-info', 'btn-sm'], {}).creeazaElem(obidisc.nume);
                                 labelBtn.textContent += ` `; //adaugă un spațiu între numar și textul butonului.
                                 let clasaInfo         = new createElement('span', '', ['badge','badge-light'], {}).creeazaElem(n);
                                 labelBtn.appendChild(clasaInfo); // adaugă numărul care indică clasa pentru care a apărut disciplina (vezi bootstrap badges)
-                                let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', obidisc.codsdisc], {"data-toggle": "buttons", onclick: "actSwitcher()"}).creeazaElem();           
+                                let divBtnGroupToggle = new createElement('div',   '', ['disciplina', 'btn-group-toggle', obidisc.codsdisc], {"data-toggle": "buttons"}).creeazaElem(); // , onclick: "actSwitcher()"
                                 labelBtn.appendChild(inputCheckBx); // injectează checkbox-ul
                                 divBtnGroupToggle.appendChild(labelBtn); // injectează label-ul
                                 dicpanes.appendChild(divBtnGroupToggle);
@@ -2825,17 +2825,6 @@ function structDiscipline (discs = {}) {
 var compSpecPaginator = document.querySelector('#actTable');
 
 // Pentru a preveni orice erori izvorâte din apăsarea prematură a butonului „Alege competetențe specifice”, am ales să-l ascund până când nu este selectată o disciplină
-/**
- * Rolul funcției este de a face ca butonul de selecție să apară doar dacă a fost apăsată vreo disciplină
- */
-function actSwitcher () {
-    if (compSpecPaginator.classList.contains('d-none')) {
-        compSpecPaginator.classList.remove('d-none');
-    } else {
-        compSpecPaginator.classList.add('d-block');
-    }
-}
-
 // SETUL DISCIPLINELOR CARE AU FOST BIFATE
 var disciplineSelectate = new Set(); // selecția disciplinelor
 var discSelected = document.querySelector('#disciplineselectate'); // zona de afișare a disciplinelor care au fost selectate
@@ -2844,6 +2833,13 @@ var discSelected = document.querySelector('#disciplineselectate'); // zona de af
  * @param {NodeElement} `evt` fiind chiar elementul obiect
  */
 function clickPeDisciplina (evt) {
+    // face ca butonul de selecție să fie evidențiat doar dacă a fost apăsată vreo disciplină
+    if (compSpecPaginator.classList.contains('d-none')) {
+        compSpecPaginator.classList.remove('d-none');
+    } else {
+        compSpecPaginator.classList.add('d-block');
+    }
+
     let e = evt || window.event;
     console.log(e.dataset.nume);
     // DACĂ EXISTĂ CODUL ÎN disciplineSelectate, șterge-l
