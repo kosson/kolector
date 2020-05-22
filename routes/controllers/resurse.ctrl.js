@@ -104,49 +104,64 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
     // var record = require('./resincredid.ctrl')(req.params); // aduce resursa și transformă conținutul din JSON în HTML
     let query = Resursa.findById(req.params.id).populate({path: 'competenteS'});
     query.then( (resursa) => {
-
-            if (resursa._doc) {
+            if (resursa.id) {
                 // transformă obiectul document de Mongoose într-un obiect normal.
-                const newObi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
-                newObi.content = content2html(resursa.content);
+                const obi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+
                 // obiectul competenței specifice cu toate datele sale trebuie curățat.
-                newObi.competenteS = newObi.competenteS.map(obi => {
+                obi.competenteS = obi.competenteS.map(obi => {
                     return Object.assign({}, obi._doc);
                 });
-                // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client de date serializate]
-                newObi.editorContent = JSON.stringify(resursa);
+
+                // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
+                obi.editorContent = JSON.stringify(resursa);
+
+                // resursa._doc.content = editorJs2html(resursa.content);
+                let localizat = moment(obi.date).locale('ro').format('LLL');
+                // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+                obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.            
 
                 // Array-ul activităților modificat
-                let activitatiRehashed = newObi.activitati.map((elem) => {
-                    let sablon = /^([a-z])+\d/g;
+                let activitatiRehashed = obi.activitati.map((elem) => {
+                    let sablon = /^([aA-zZ])+\d/g;
                     let cssClass = elem[0].match(sablon);
-                    let composed = `<span class="${cssClass[0]}" data-code="${elem[0]}">${elem[1]}</span>`;
+                    let composed = '<span class="' + cssClass[0] + 'data-code="' + elem[0] + '">' + elem[1] + '</span>';
                     return composed;
                 });
                 
-                newObi.activitati = activitatiRehashed;
-
-                // resursa._doc.content = editorJs2html(resursa.content);
-                let localizat = moment(newObi.date).locale('ro').format('LLL');
-                // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
-                newObi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
-                return newObi;
+                obi.activitati = activitatiRehashed;
+                return obi;
             } else {
                 console.log(`Nu a putut fi adusă resursa!`);
             }
             return Object.assign({}, resursa._doc);// Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
         }).then(result => {
             let scripts = [
-                {script: '/lib/moment/min/moment.min.js'}      
+                {script: '/lib/moment/min/moment.min.js'},
+                {script: '/lib/editorjs/editor.js'},
+                {script: '/lib/editorjs/header.js'},
+                {script: '/lib/editorjs/paragraph.js'},
+                {script: '/lib/editorjs/list.js'},
+                {script: '/lib/editorjs/image.js'},
+                {script: '/lib/editorjs/table.js'},
+                {script: '/lib/editorjs/attaches.js'},
+                {script: '/lib/editorjs/embed.js'},
+                {script: '/lib/editorjs/code.js'},
+                {script: '/lib/editorjs/quote.js'},
+                {script: '/lib/editorjs/inlinecode.js'},
+                {script: '/lib/moment/min/moment.min.js'},
+                // UPLOADER
+                {script: '/js/uploader.js'},   
+                {script: '/js/cred-res.js'}      
             ];
             res.render('resursa-cred', {
-                user:    req.user,
-                title:   "RED in CRED",
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                logoimg: "/img/red-logo-small30.png",
-                credlogo: "../img/CREDlogo.jpg",
+                user:      req.user,
+                title:     "RED in CRED",
+                style:     "/lib/fontawesome/css/fontawesome.min.css",
+                logoimg:   "/img/red-logo-small30.png",
+                credlogo:  "../img/CREDlogo.jpg",
                 csfrToken: req.csrfToken(),
-                resursa: result,
+                resursa:   result,
                 scripts
             });
         }).catch(err => {

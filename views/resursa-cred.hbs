@@ -15,13 +15,12 @@
     </div>
 
     {{!-- RESURSA --}}
-    <div data-id="{{resursa.id}}" data-contribuitor="{{resursa.idContributor}}" id="{{resursa.id}}" class="resursa">
-        {{!-- Conținut resursă educațională --}}
+    <div data-id="{{resursa._id}}" data-contribuitor="{{resursa.idContributor}}" data-content="{{json resursa}}" data-uuid="{{resursa.uuid}}" id="{{resursa._id}}" class="resursa">
         <div class="container redcontent">
 
             {{!-- Dacă există copertă, afișeaz-o --}}
             {{#if resursa.coperta}}
-                <img itemprop="image" src="{{resursa.coperta}}" class="coperta card-img-top" alt="{{resursa.title}}">
+                <img src="{{resursa.coperta}}" class="coperta card-img-top" alt="{{resursa.title}}">
             {{/if}}
 
             {{!-- Afișează titlul și descrierea --}}
@@ -289,17 +288,9 @@
                 {{/each}}
             </div>
 
-            {{!-- Afișarea conținutului resursei --}}
-            {{#if resursa.content}}
-                <h5>Conținut</h5>
-                <div class="content">
-                    {{!-- AFIȘAREA CONȚINUTULUI este de fapt o transformare în html a obiectului content. Vezi resincredid.ctrl.js --}}
-                    {{{resursa.content}}}
-                </div>
-            {{/if}}
-            {{!-- Integrarea editorului de text --}}
-            {{!-- <div id="codex-editor"></div> --}}
-            {{!-- Încarcă aici scripturile pentru a evita oul înaintea găinii! :D --}}
+            <h5>Conținut</h5>
+            {{!-- EDITOR --}}
+            <div id="edi"></div>
         </div>
     </div>
 </div>

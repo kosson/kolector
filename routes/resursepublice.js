@@ -9,7 +9,7 @@ var content2html = require('./controllers/editorJs2HTML');
 // Indexul de căutare
 let idxRes = process.env.RES_IDX_ALS;
 
-// ========== RESURSE PUBLICE ========
+// === RESURSE PUBLICE ===
 router.get('/', (req, res) => {
     Resursa.where({'generalPublic': true}).countDocuments(function cbCountResPub (err, count) {
         if (err) throw err;

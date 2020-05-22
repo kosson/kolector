@@ -133,10 +133,7 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
             // resursa._doc.content = editorJs2html(resursa.content);
             let localizat = moment(obi.date).locale('ro').format('LLL');
             // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
-            obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
-
-            console.log(obi.activitati);
-            
+            obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.            
 
             // Array-ul activităților modificat
             let activitatiRehashed = obi.activitati.map((elem) => {
