@@ -193,6 +193,8 @@ exports.describeResource = function describeResource (req, res, next) {
         {script: '/lib/editorjs/inlinecode.js'},
         // UPLOADER
         {script: '/js/uploader.js'},
+        // HELPER DETECT URLS or PATHS
+        {script: '/js/check4url.js'},
         // FORM
         {script: '/js/form01adres.js'}
     ];
@@ -201,7 +203,7 @@ exports.describeResource = function describeResource (req, res, next) {
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
     // console.log(req.session.passport.user.roles.rolInCRED);
 
-    /* ====== VERIFICAREA CREDENȚIALELOR ====== */
+    /* === VERIFICAREA CREDENȚIALELOR === */
     if(req.session.passport.user.roles.admin){
         let user = req.session.passport.user;
         // FIXME: Renunță la acest artificiu pentru conturile locale de îndată ce unifici localele cu profilurile Google.

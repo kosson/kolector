@@ -40,7 +40,7 @@ let profile        = require('./routes/profile');
 let tags           = require('./routes/tags');
 let tools          = require('./routes/tools');
 let help           = require('./routes/help');
-// let signupLoco     = require('./routes/signup');
+let signupLoco     = require('./routes/signup');
 
 // stabilirea locației de upload
 // let upload = multer({dest: path.join(__dirname, '/uploads')});
@@ -138,7 +138,7 @@ app.use(passport.session());
 let upload = require('./routes/upload')(pubComm);
 app.use('/upload', upload);
 // SIGNUP
-// app.use('/signup',   signupLoco); // SIGNUP!!!
+app.use('/signup',   signupLoco); // SIGNUP!!!
 // LOGIN
 const UserSchema = require('./models/user');
 const UserDetails = mongoose.model('users', UserSchema);

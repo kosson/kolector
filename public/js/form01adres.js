@@ -222,74 +222,48 @@ const editorX = new EditorJS({
                      */
                     uploadByUrl(url){
                         //TODO: Detectează dimensiunea fișierului și dă un mesaj în cazul în care depășește anumită valoare (vezi API-ul File)
-                        // console.log("În uploadByUrl am primit următorul url: ", url);
-                        
-                        // Unele URL-uri este posibil să fie HTML encoded
-                        url = decodeURIComponent(url); // Dacă nu decode, mușcă pentru fișierele afișate în browser encoded deja... Flying Flamingos!!!
-                        
+                        console.log("[uploadByUrl] În uploadByUrl am primit următorul url drept parametru: ", url);
+
+                        decodedURL = decodeURIComponent(url); // Dacă nu faci `decode`, mușcă pentru linkurile HTML encoded cu escape squence pentru caracterele speciale și non latine
+                        let urlObj = check4url(decodedURL); // adună toate informațiile despre fișier
                         /**
                          * Funcția validează răspunsul în funcție de headere și stare
                          * @param {Object} response 
                          */
                         function validateResponse(response) {
                             if (!response.ok) {
-                                pubComm.emit('mesaje', `Am încercat să „trag” imaginea de la URL-ul dat, dar: ${response.statusText}`);
-                                console.log('Am detectat o eroare: ', response.statusText);
+                                // pubComm.emit('mesaje', `Am încercat să „trag” imaginea de la URL-ul dat, dar: ${response.statusText}`);
+                                console.log('[uploadByUrl::validateResponse] Am detectat o eroare: ', response.statusText);
                             }
-                            // console.log(response); // response.body este deja un ReadableStream
+                            console.log('[uploadByUrl::validateResponse] fetch a adus: ', response); // response.body este deja un ReadableStream
+                            // FIXME: Caută aici să detectezi dimensiunea iar dacă depășește o valoare, încheie aici orice operațiunea cu throw Error!!!
                             return response;
                         }
 
-                        /**
-                         * Funcția are rolul de a extrage numele fișierului
-                         * @param {String} url Este chiar url-ul în formă string
-                         */
-                        function fileNameFromUrl(url) {
-                            var matches = url.match(/\/([^\/?#]+)[^\/]*$/);
-                            if (matches.length > 1) {
-                                return matches[1];
-                            }
-                            return null;
-                        }
-
                         // ADU RESURSA
-                        return fetch(url)
+                        return fetch(decodedURL)
                             .then(validateResponse)
                             .then(response => response.blob())
                             .then(response => {
-                                // TODO: Detectează dimensiunea și nu permite încărcarea peste o anumită limită.
-                                // console.log("Am primit următorul răspuns la fetch: ", response);
-
-                                // completează proprietățile necesare pentru a-l face `File` like pe răspunsul care este un Blob.
-                                response.lastModifiedDate = new Date();
-                                response.name = fileNameFromUrl(decodeURI(url)); // Trebuie decode, altfel te mușcă!
-                                // console.log('Fetch-ul adaugă proprietatea response.name cu url-ul după prelucrarea cu fileNameFromUrl(url): ', response.name);
-
                                 // obiectul care va fi trimis către server
                                 let objRes = {
                                     user: RED.idContributor,
                                     name: RED.nameUser,
                                     uuid: RED.uuid,
-                                    resF: null,
-                                    numR: '',
-                                    type: '',
-                                    size: 0
-                                };
+                                    resF: response,                 // introdu fișierul ca blob
+                                    numR: urlObj.afterLastSlash,    // completează obiectul care va fi trimis serverului cu numele fișierului
+                                    type: response.type,            // completează cu extensia
+                                    size: response.size             // completează cu dimensiunea 
+                                };                   
+                                
+                                console.log("[uploadByUrl::fetch] În server am trimis obiectul de imagine format după fetch: ", objRes);
 
-                                objRes.resF = response; // introdu fișierul ca blob
-                                objRes.numR = response.name; // completează obiectul care va fi trimis serverului cu numele fișierului
-                                objRes.type = response.type; // completează cu extensia
-                                objRes.size = response.size; // completează cu dimensiunea                            
-                                
-                                // console.log("În server am trimis obiectul de imagine format după fetch: ", objRes);
-                                
-                                // trimite resursa în server (se va emite fără uuid dacă este prima)
-                                pubComm.emit('resursa', objRes);
+                                pubComm.emit('resursa', objRes);    // trimite resursa în server (se va emite fără uuid dacă este prima)
 
                                 // promisiune necesară pentru a confirma resursa primită OK!
                                 const promissed = new Promise((resolve, reject) => {                                   
                                     pubComm.on('resursa', (respObj) => {
-                                        // console.log("Serverul mi-a trimis înapoi următorul obiect răspuns: ", respObj);
+                                        // semnătura lui respObj:
                                         /*
                                             file: "http://localhost:8080/repo/5ebaf1ae32061d3fa4b7f0ae/ceb79940-8755-41e7-95fd-ee88e5e193fa/data/Marcus_Aurelius_Louvre_MR561_n02.jpg"
                                             size: 9026609                                        ​
@@ -299,52 +273,41 @@ const editorX = new EditorJS({
                                         
                                         // obiectul necesar lui Editor.js
                                         const obj4EditorJS = {
-                                            success: respObj.success,
+                                            success:  respObj.success,
                                             file: {
-                                                url: respObj.file,
+                                                url:  respObj.file,
                                                 size: response.size
                                             }
                                         };
 
-                                        console.log('[uploadByUrl] UUID-ul primit prin obiectul răspuns este: ', respObj.uuid);
+                                        console.log('[uploadByUrl::pubComm<resursa>)] UUID-ul primit prin obiectul răspuns este: ', respObj.uuid);
 
                                         // cazul primei trimiteri de resursă: setează UUID-ul proaspăt generat! Este cazul în care prima resursă trimisă este un fișier imagine.
                                         if (RED.uuid === '') {
-                                            RED.uuid = respObj.uuid; // setează și UUID-ul în obiectul RED local
+                                            RED.uuid = respObj.uuid; // setează UUID-ul cu cel creat de upload-ul primei resurse
                                         }
 
-                                        console.log("[uploadByUrl] Calea către fișier care a fost primita de la server arata asa înainte de a intra in imagini: ", respObj.file);
+                                        let fileLink = new URL(`${respObj.file}`);
+                                        let path = fileLink.pathname; // va fi calea către fișier, fără domeniu
 
-                                        // Din server [sockets.js::'resource'] mereu va veni un URL
-                                        var urlAll = new URL(`${respObj.file}`);
-                                        var path = urlAll.pathname;
-                                
-                                        // console.log("Am adăugat imaginea generată din paste-ul URL-ului sau a drag'n drop-ului. Vezi imagini: ", path);
-
-                                        // Adaugă imaginea încărcată în `Set`-ul `imagini`.
-                                        if (!imagini.has(path)) {
-                                            imagini.add(path); // încarcă url-ul imaginii în array-ul destinat ținerii evidenței acestora. Necesar alegerii copertei
-                                        }                                       
+                                        // Adaugă imaginea încărcată în `Set`-ul `imagini`. Este necesar alegerii copertei și comparatorului pentru ștergere
+                                        if (!imagini.has(path)) {imagini.add(path)};                                    
 
                                         resolve(obj4EditorJS); // REZOLVĂ PROMISIUNEA
-                                        reject(mesaj => {
-                                            pubComm.emit('mesaje', mesaj); // CÂND EȘUEAZĂ!
-                                        });
                                     });
                                 });
                                 // returnează promisiunea așteptată de Editor.js
-                                return promissed.then((obi) => {
-                                    // console.log('Înainte de a returna promisiunea care se rezolvă cu obiectul: ', obi);
+                                return promissed.then((obi) => {                                    
                                     return obi;
                                 }).catch(error => {
                                     if (error) {
-                                        pubComm.emit('mesaje', `Am eșuat cu următoarele detalii: ${error}`);
+                                        console.log('Am eșuat cu următoarele detalii: ', error);
                                     }
                                 });
                             })
                             .catch((error) => {
                                 if (error) {
-                                    pubComm.emit('messaje', `Am eșuat cu următoarele detalii: ${error}`);
+                                    console.log('Am eșuat cu următoarele detalii: ', error);
                                 }
                             });
                     }
@@ -364,8 +327,8 @@ const editorX = new EditorJS({
             }
         }
     },
-    // de fiecare dată când se modifică conținutul, actualizează `RED.content`.
     onChange: () => {
+        // de fiecare dată când se modifică conținutul, actualizează `RED.content`.
         editorX.save().then((content) => {
             // În cazul în care operațiunile din backend care privesc prelucrarea fișierelor încărcate, 
             // nu au același uuid cu cel al clientului, se va emite uuid pentru toți cei care ascultă.
@@ -380,74 +343,47 @@ const editorX = new EditorJS({
                 RED.content = content; // și apoi introdu noua valoare.
                 
                 // === Logică de ștergere de pe HDD a imaginilor care au fost șterse din editor ===
-                // Pas 1 Fă un set cu imaginile care au rămas după ultimul `onchange`
+                // Pas 1 Constituie un array cu imaginile care au rămas după ultimul `onchange`
                 const imgsInEditor = RED.content.blocks.map((element) => {
-                    // console.log("La formarea array-ului imgsInEditor s-a generat următorul element: ", element);
-                    
                     if (element.type === 'image') {
-                        // console.log("Din onchange pe editor la `imgsInEditor` am URL-ul în content blocks: ", element.data.file.url, validURL(element.data.file.url));
-                        let path = '';
-                        // dacă stringul din elementele image ale lui content.blocks sunt chiar full url-uri cu tot `base`.
-
-                        const newUrl = new URL(element.data.file.url);
-                        path = newUrl.pathname;
-
-                        // if (validURL(element.data.file.url)) {
-                        //     const newUrl = new URL(element.data.file.url);
-                        //     path = newUrl.pathname;
-                        // } else {
-                        //     path = element.data.file.url;
-                        // }         
-                        
-                        // console.log("Am extras următoarea cale din url: ", path);
-                        return path;
+                        console.log("[onChange::RED.content.blocks.map((element)] url-ul pentru imagine a elementelor `image`: ", element.data.file.url);
+                        let urlImg = check4url (element.data.file.url);
+                        return urlImg.path2file;
                     }
                 });
-                // console.log("Imaginile care au rămas în editor după ultima modificare: ", imgsInEditor);
-                // Pas 2 Compară-le cu cu este în `Set`-ul `images`.
-                const toDelete = Array.from(imagini).map((path) => {
-                    // Caută în imaginile după ultima modificare
+                console.log("[onChange::imgsInEditor] Imaginile care au rămas în editor după ultima modificare în array-ul imgsInEditor: ", imgsInEditor);
+                // Pas 2 Șterge fișierele care nu mai sunt prezente după `onchange`. Transformi `Set`-ul `imagini` al tuturor imaginilor încărcate într-un array
+                // Îl parcurgi căutând dacă linkul din `imagini` este prezent și în `imgsInEditor` al imaginilor rămase după ultima modificare.
+                Array.from(imagini).map((path) => {
                     if (!imgsInEditor.includes(path)){
-                        return path;
+                        // dacă o cale din imagini` nu mai există în `imgsInEditor`, va trimite un eveniment de ștergere
+                        imagini.delete(path); // mai întâi șterge link-ul din `imagini`
+                        // extrage numele fișierului din `fileUrl`
+                        let fileName = path.split('/').pop();
+                        console.log("[onChange::imgsInEditor] Voi șterge din subdirectorul resursei următorul fișier: ", fileName);
+                        // emite un eveniment de ștergere a fișierului din subdirectorul resursei.                            
+                        pubComm.emit('delfile', {
+                            uuid: RED.uuid,
+                            idContributor: RED.idContributor,
+                            fileName: fileName
+                        });
+                        pubComm.on('delfile', (message) => {
+                            console.log("Am șters cu următoarele detalii: ", message);
+                        });
                     }
-                });
-                console.log("Ce este în toDelete ", toDelete);
-                
-                if (toDelete.length > 0) {                    
-                    toDelete.forEach(function clbk4EachPathDeleteFileInServer (path) {
-                        // console.log("Din editor este calea fișierului care urmează să fie șters în server: ", path);
-                        if (path) {
-                            imagini.delete(path);
-                            // extrage numele fișierului din `fileUrl`
-                            let fileName = path.split('/').pop();
-                            // emite un eveniment de ștergere a fișierului din subdirectorul resursei.                            
-                            pubComm.emit('delfile', {
-                                uuid: RED.uuid,
-                                idContributor: RED.idContributor,
-                                fileName: fileName
-                            });
-                            pubComm.on('delfile', (message) => {
-                                console.log("Am șters cu următoarele detalii: ", message);
-                            });
-                        }
-                    });
-                }
+                });                
+
                 // === Logică de ștergere de pe HDD a fișierelor care nu mai există în client
                 // Pas 1 Adaugă la căile existente în `fișiere` ulimele fișierele adăugate după ultimul `onchange`
                 const filesInEditor = RED.content.blocks.map((element) => {
                     if (element.type === 'attaches') {
                         let path = '';
                         // dacă stringul din elementele image ale lui content.blocks sunt chiar full url-uri cu tot `base`.
-                        // const newUrl = new URL(element.data.file.url);
-                        // path = newUrl.pathname;
-                        if (validURL(element.data.file.url)) {
-                            const newUrl = new URL(element.data.file.url);
-                            path = newUrl.pathname;
-                        } else {
-                            path = element.data.file.url;
-                        }
+                        let detailsUrl = check4url (element.data.file.url);
+                        path = detailsUrl.path2file;
+
                         console.log("[atașamente] Am extras următoarea cale a documentului din url: ", path);
-                        fisiere.add(path); // adaugă calea în fisiere. Dacă există deja, nu va fi adăugat.
+                        fisiere.add(path); // adaugă calea în fișiere. Dacă există deja, nu va fi adăugat.
                         return path;
                     }
                 });
@@ -524,14 +460,13 @@ function encodeHTMLentities (str) {
 }
 
 /**
- * Convertește un characterSet html în caracterul originar.
+ * Convertește un characterSet html în caracterul original.
  * @param {String} str htmlSet entities
  **/
 function decodeCharEntities (str) {
     let decomposedStr = str.split(' ');
     // FIXME: Nu acoperă toate posibilele cazuri!!! ar trebui revizuit la un moment dat.
     var entity = /&(?:#x[a-f0-9]+|#[0-9]+|[a-z0-9]+);?/igu;
-    // var codePoint = /\\u(?:\{[0-9A-F]+|[A-F0-9]+)\}?/igu;
     
     let arrNew = decomposedStr.map(function (word, index, arr) {
         let newArr = [];
