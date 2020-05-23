@@ -52,21 +52,9 @@ pubComm.on('uuid', (uuid) => {
     }
 });
 
-// https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
-function validURL(str) {
-    // var pattern = new RegExp('^(http?s?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-aA-zZ\d%_.~+]*)*(\[-a-z\d_]*)?(\?[;&a-z\d%_.~+=-]*)?$', 'i');
-    var pattern = new RegExp('^(http?s?:\\/\\/)?'+ // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ //port
-            '(\\?[;&amp;a-z\\d%_.~+=-]*)?'+ // query string
-            '(\\#[-a-z\\d_]*)?$','i');
-    return !!pattern.test(str);
-}
-
 /* === Integrarea lui EditorJS === https://editorjs.io */
 const editorX = new EditorJS({
-    placeholder: 'Introdu conținut descriptiv nu mai mult de câteva paragrafe. Nu folosi editorul pentru crearea resursei decât în cazul în care aceasta este de foarte mică întindere. Pentru materiale de substanță, creează un fișier și încarcă-l aici. Este recomandabil să pui o imagine care să ilustreze conținutul. Dă click aici când dorești să începi.',
+    placeholder: '',
     logLevel: 'VERBOSE', 
     /* VERBOSE 	Show all messages (default)
         INFO 	Show info and debug messages
@@ -81,12 +69,13 @@ const editorX = new EditorJS({
     /* id element unde se injectează editorul */
     holder: 'codex-editor',
     /* Activează autofocus */ 
-    autofocus: true,
+    //autofocus: true,
     
     /* Obiectul tuturor instrumentelor pe care le oferă editorul */ 
     tools: { 
         header: {
             class: Header,
+            inlineToolbar: ['link'],
             config: {
                 placeholder: 'Introdu titlul sau subtitlul'
             }
@@ -222,7 +211,7 @@ const editorX = new EditorJS({
                      */
                     uploadByUrl(url){
                         //TODO: Detectează dimensiunea fișierului și dă un mesaj în cazul în care depășește anumită valoare (vezi API-ul File)
-                        console.log("[uploadByUrl] În uploadByUrl am primit următorul url drept parametru: ", url);
+                        // console.log("[uploadByUrl] În uploadByUrl am primit următorul url drept parametru: ", url);
 
                         decodedURL = decodeURIComponent(url); // Dacă nu faci `decode`, mușcă pentru linkurile HTML encoded cu escape squence pentru caracterele speciale și non latine
                         let urlObj = check4url(decodedURL); // adună toate informațiile despre fișier
@@ -233,9 +222,9 @@ const editorX = new EditorJS({
                         function validateResponse(response) {
                             if (!response.ok) {
                                 // pubComm.emit('mesaje', `Am încercat să „trag” imaginea de la URL-ul dat, dar: ${response.statusText}`);
-                                console.log('[uploadByUrl::validateResponse] Am detectat o eroare: ', response.statusText);
+                                // console.log('[uploadByUrl::validateResponse] Am detectat o eroare: ', response.statusText);
                             }
-                            console.log('[uploadByUrl::validateResponse] fetch a adus: ', response); // response.body este deja un ReadableStream
+                            // console.log('[uploadByUrl::validateResponse] fetch a adus: ', response); // response.body este deja un ReadableStream
                             // FIXME: Caută aici să detectezi dimensiunea iar dacă depășește o valoare, încheie aici orice operațiunea cu throw Error!!!
                             return response;
                         }
@@ -256,7 +245,7 @@ const editorX = new EditorJS({
                                     size: response.size             // completează cu dimensiunea 
                                 };                   
                                 
-                                console.log("[uploadByUrl::fetch] În server am trimis obiectul de imagine format după fetch: ", objRes);
+                                // console.log("[uploadByUrl::fetch] În server am trimis obiectul de imagine format după fetch: ", objRes);
 
                                 pubComm.emit('resursa', objRes);    // trimite resursa în server (se va emite fără uuid dacă este prima)
 
@@ -280,7 +269,7 @@ const editorX = new EditorJS({
                                             }
                                         };
 
-                                        console.log('[uploadByUrl::pubComm<resursa>)] UUID-ul primit prin obiectul răspuns este: ', respObj.uuid);
+                                        // console.log('[uploadByUrl::pubComm<resursa>)] UUID-ul primit prin obiectul răspuns este: ', respObj.uuid);
 
                                         // cazul primei trimiteri de resursă: setează UUID-ul proaspăt generat! Este cazul în care prima resursă trimisă este un fișier imagine.
                                         if (RED.uuid === '') {
@@ -346,12 +335,12 @@ const editorX = new EditorJS({
                 // Pas 1 Constituie un array cu imaginile care au rămas după ultimul `onchange`
                 const imgsInEditor = RED.content.blocks.map((element) => {
                     if (element.type === 'image') {
-                        console.log("[onChange::RED.content.blocks.map((element)] url-ul pentru imagine a elementelor `image`: ", element.data.file.url);
+                        // console.log("[onChange::RED.content.blocks.map((element)] url-ul pentru imagine a elementelor `image`: ", element.data.file.url);
                         let urlImg = check4url (element.data.file.url);
                         return urlImg.path2file;
                     }
                 });
-                console.log("[onChange::imgsInEditor] Imaginile care au rămas în editor după ultima modificare în array-ul imgsInEditor: ", imgsInEditor);
+                // console.log("[onChange::imgsInEditor] Imaginile care au rămas în editor după ultima modificare în array-ul imgsInEditor: ", imgsInEditor);
                 // Pas 2 Șterge fișierele care nu mai sunt prezente după `onchange`. Transformi `Set`-ul `imagini` al tuturor imaginilor încărcate într-un array
                 // Îl parcurgi căutând dacă linkul din `imagini` este prezent și în `imgsInEditor` al imaginilor rămase după ultima modificare.
                 Array.from(imagini).map((path) => {
@@ -360,7 +349,7 @@ const editorX = new EditorJS({
                         imagini.delete(path); // mai întâi șterge link-ul din `imagini`
                         // extrage numele fișierului din `fileUrl`
                         let fileName = path.split('/').pop();
-                        console.log("[onChange::imgsInEditor] Voi șterge din subdirectorul resursei următorul fișier: ", fileName);
+                        // console.log("[onChange::imgsInEditor] Voi șterge din subdirectorul resursei următorul fișier: ", fileName);
                         // emite un eveniment de ștergere a fișierului din subdirectorul resursei.                            
                         pubComm.emit('delfile', {
                             uuid: RED.uuid,
@@ -368,7 +357,7 @@ const editorX = new EditorJS({
                             fileName: fileName
                         });
                         pubComm.on('delfile', (message) => {
-                            console.log("Am șters cu următoarele detalii: ", message);
+                            // console.log("Am șters cu următoarele detalii: ", message);
                         });
                     }
                 });                
@@ -382,7 +371,7 @@ const editorX = new EditorJS({
                         let detailsUrl = check4url (element.data.file.url);
                         path = detailsUrl.path2file;
 
-                        console.log("[atașamente] Am extras următoarea cale a documentului din url: ", path);
+                        // console.log("[atașamente] Am extras următoarea cale a documentului din url: ", path);
                         fisiere.add(path); // adaugă calea în fișiere. Dacă există deja, nu va fi adăugat.
                         return path;
                     }
@@ -409,7 +398,7 @@ const editorX = new EditorJS({
                                     fileName: fileName
                                 });
                                 pubComm.on('delfile', (messagge) => {
-                                    console.log("Am șters cu următoarele detalii ", messagge);
+                                    // console.log("Am șters cu următoarele detalii ", messagge);
                                 });
                             }
                         });
@@ -3463,7 +3452,6 @@ function pickCover () {
  * Funcția are rolul de a colecta care dintre imagini va fi coperta și de a colecta etichetele completate de contribuitor.
  */
 function pas4 () {
-
     /* === RED.relatedTo === */
     // vezi id-ul `tools` și introdu-le în array-ul `RED.relatedTo`
     var newRelReds = document.getElementById('tools');
@@ -3479,11 +3467,10 @@ function pas4 () {
     // detectează când s-a introdus o etichetă în momentul în care apare o virgulă
     newTags.addEventListener('input', (evt) => {
         // evt.preventDefault();
-        console.log(newTags.value);
+        // console.log(newTags.value);
         
         if (newTags.value.indexOf(',') > -1) {
             console.log('A apărut o virgulă');
-            
         }
     });
     var arrNewTags = newTags.value.split(',');
@@ -3502,9 +3489,9 @@ function pas4 () {
 
 /* === USERUL RENUNȚĂ === */
 // fă o referință către butonul de ștergere
-var saveContinutRes = document.querySelector('#delete');
+var deleteRes = document.querySelector('#delete');
 // la click, emite ordinul de ștergere
-saveContinutRes.addEventListener('click', function (evt) {
+deleteRes.addEventListener('click', function (evt) {
     evt.preventDefault();
     // șterge subdirectorul creat cu tot ce există
     if (RED.uuid) {
@@ -3518,6 +3505,8 @@ saveContinutRes.addEventListener('click', function (evt) {
             alert(detalii);
             window.location.href = '/profile/resurse';
         })
+    } else {
+        window.location.href = '/profile/resurse';
     }
 });
 

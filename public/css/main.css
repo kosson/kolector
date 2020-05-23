@@ -523,11 +523,11 @@ a[class$="8"], label[class$="8"] {
     padding: 0.3rem;
 }
 
-/* SVG-urile */
-svg {
-    width: 100%; 
-    height: auto;
-    padding: 0;
+/* MENIUL deschis al instrumentelor editorului SVG-urile */
+/* .ce-toolbar__content {
+    height: 2rem;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .scaling-svg-container {
@@ -546,7 +546,7 @@ svg {
     top: 0;; 
     padding-bottom: 92%; 
     overflow: visible;
-}
+} */
 
 /* ELEMENTELE DE SELECȚIE de tip RANGE */
 .selectortxt {

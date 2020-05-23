@@ -424,8 +424,6 @@ module.exports = function sockets (pubComm) {
             var pResEd = resursaEducationala.populate('competenteS').execPopulate(); // returnează o promisiune
             pResEd.then(async function clbkThenSave (res) {
                 // Trimite înregistrarea și în Elasticsearch și creează și un fișier json pe hard în subdirectorul red-ului [FIXED::`post`hook pe schemă la `save`]
-                // TODO: Mai creează un git pentru director, fă primul commit și abia după aceea salvează în baza de date.
-
                 /* === Scrie JSON-ul înregistrării în `data` === */
                 const newRes = Object.assign({}, RED);
                 newRes._id = res._id; // introdu în obiectul JSON id-ul înregistrării din MongoDB -> Recovery latter!
@@ -444,7 +442,7 @@ module.exports = function sockets (pubComm) {
                 strm.push(null);
 
                 // creează stream-ul destinație
-                var destinationStream = existBag.createWriteStream(`${uuidv4()}.json`);
+                var destinationStream = existBag.createWriteStream(`${uuidv4()}.json`); // uuid diferit de RED.uuid pentru a avea versiunile diferențiate
 
                 // scrierea stream-ului pe hard (distruge streamul sursă și curăță) -> introdu un nou fișier în Bag-ul existent al resursei
                 pipeline(strm, destinationStream, function clbkAfterREDWrittenStrm (error, val) {

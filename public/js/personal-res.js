@@ -1,6 +1,7 @@
-let dataRes = document.querySelector('.resursa').dataset;
-let RED = JSON.parse(dataRes.content);
+let dataRes = document.querySelector('.resursa').dataset; // extrage câmpurile resursei
+let RED = JSON.parse(dataRes.content); // Obiectul resursei
 
+/* === AUTORI și AUTORUL PRINCIPAL === */
 let autoriArr = RED.autori.split(','); // tratez cazul în care ai mai mulți autori delimitați de virgule
 let author = '';
 if (autoriArr.length >= 1) {
@@ -21,18 +22,6 @@ var resObi = {
 
 let imagini = new Set(); // un `Set` cu toate imaginile care au fost introduse în document.
 let fisiere = new Set(); // un `Set` cu toate fișierele care au fost introduse în document la un moment dat (înainte de `onchange`).
-
-// https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
-function validURL(str) {
-    // var pattern = new RegExp('^(http?s?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-aA-zZ\d%_.~+]*)*(\[-a-z\d_]*)?(\?[;&a-z\d%_.~+=-]*)?$', 'i');
-    var pattern = new RegExp('^(http?s?:\\/\\/)?'+ // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ //port
-            '(\\?[;&amp;a-z\\d%_.~+=-]*)?'+ // query string
-            '(\\#[-a-z\\d_]*)?$','i');
-    return !!pattern.test(str);
-}
 
 /* === Integrarea lui EditorJS === https://editorjs.io */
 const editorX = new EditorJS({
@@ -429,6 +418,27 @@ function deleteRes () {
         window.location = '/profile/resurse/';
     });
 }
+
+/* === USERUL RENUNȚĂ === */
+// fă o referință către butonul de ștergere
+// var deleteRes = document.querySelector('#delete');
+// la click, emite ordinul de ștergere
+// deleteRes.addEventListener('click', function (evt) {
+//     evt.preventDefault();
+//     // șterge subdirectorul creat cu tot ce există
+//     if (RED.uuid) {
+//         pubComm.emit('deldir', {
+//             content: {
+//                 idContributor: RED.idContributor,
+//                 identifier: RED.uuid
+//             }
+//         });
+//         pubComm.on('deldir', (detalii) => {
+//             alert(detalii);
+//             window.location.href = '/profile/resurse';
+//         })
+//     }
+// });
 
 var resursa          = document.getElementById(resObi.id);
 var validateCheckbox = document.getElementById('valid');
