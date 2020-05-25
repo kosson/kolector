@@ -3498,13 +3498,15 @@ deleteRes.addEventListener('click', function (evt) {
         pubComm.emit('deldir', {
             content: {
                 idContributor: RED.idContributor,
-                identifier: RED.uuid
+                uuid: RED.uuid
             }
         });
-        pubComm.on('deldir', (detalii) => {
-            alert(detalii);
-            window.location.href = '/profile/resurse';
-        })
+        pubComm.on('deldir', (res) => {
+            // alert(res);
+            if (res) {
+                window.location = '/profile/resurse/';
+            }
+        });
     } else {
         window.location.href = '/profile/resurse';
     }

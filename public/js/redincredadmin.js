@@ -296,9 +296,11 @@ const editorX = new EditorJS({
 function deleteRes () {
     pubComm.emit('delresid', resObi);
     // console.log('Am trimis obiectul: ', resObi);
-    pubComm.on('delresid', (res) => {
-        console.log(res);
-        window.location = '/profile/resurse/';
+    pubComm.on('deldir', (res) => {
+        // alert(res);
+        if (res) {
+            window.location = '/profile/resurse/';
+        }
     });
 }
 

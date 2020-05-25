@@ -5,7 +5,7 @@ const express  = require('express');
 const router   = express.Router();
 const mongoose = require('mongoose');
 const moment   = require('moment');
-const redisClient= require('../redis.config');
+const redisClient = require('../redis.config');
 // Încarcă mecanismele de verificare ale rolurilor
 let makeSureLoggedIn = require('connect-ensure-login');
 let checkRole = require('./controllers/checkRole.helper');
@@ -14,8 +14,9 @@ const Resursa = require('../models/resursa-red'); // Adu modelul resursei
 // CONFIGURARI ACCES SERVICII
 const esClient= require('../elasticsearch.config');
 // HELPERI
+const schema        = require('../models/resursa-red-es7');
 const ES7Helper= require('../models/model-helpers/es7-helper');
-let content2html  = require('./controllers/editorJs2HTML');
+let editorJs2TXT  = require('./controllers/editorJs2TXT');
 
 
 /* === PROFILUL PROPRIU === */
@@ -89,7 +90,7 @@ router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (
     }
 );
 
-/* === VALIDARE / PUBLICARE /ȘTERGERE /EDITARE @ ->resursa -> resursa-admin [redincredadmin.js / res-shown.js] -> resursa-validator === */
+/* === VALIDARE / PUBLICARE /ȘTERGERE /EDITARE === */
 router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProfResID (req, res, next){
     // Adu înregistrarea resursei cu toate câmpurile referință populate deja
     // const editorJs2html = require('./controllers/editorJs2HTML');
@@ -119,9 +120,9 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
     // caută resursa în bază
     const query = Resursa.findById(req.params.idres).populate({path: 'competenteS'});    
     // reformatare obiect resursă și căutarea corespondentului în Elasticsearch cu reindexare, dacă nu există în bază, șterge ghost-ul din ES
-    query.then(resursa => {        
+    query.then(resursa => {   
         /* === Resursa încă există în MongoDB === */
-        if (resursa.id) {
+        if (resursa.id !== null) {
             // transformă obiectul document de Mongoose într-un obiect normal.
             const obi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
 
@@ -153,11 +154,11 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
                 id: req.params.idres
             }).then(resFromIdx => {
                 /* DACĂ RESURSA NU ESTE INDEXATĂ, introdu-o în indexul Elasticsearch */
-                if(resFromIdx.body == false && resFromIdx.statusCode === 404){
+                if(resFromIdx.statusCode === 404){
                     // verifică dacă există conținut
                     var content2txt = '';
-                    if ('content' in newObi) {
-                        content2txt = editorJs2TXT(newObi.content.blocks); // transformă obiectul în text
+                    if ('content' in obi) {
+                        content2txt = editorJs2TXT(obi.content.blocks); // transformă obiectul în text
                     }
                     // indexează documentul
                     const data = {

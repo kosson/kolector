@@ -522,17 +522,14 @@ module.exports = function sockets (pubComm) {
 
         // === DELDIR === ::Ștergerea subdirectorului unei resurse
         socket.on('deldir', (resource) => {
-            // console.log(resource);
-            let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, `${resource.content.identifier}`);
-            // console.log('Calea constituită este: ', dirPath);
-
+            let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, `${resource.content.uuid}`);                
                 /* === ȘTERGE SUBDIRECTOR === */
                 fs.ensureDir(dirPath, 0o2775).then(function clbkFsExists () {
                     fs.remove(dirPath, function clbkDirFolder (error) {
                         if (error) {
                             console.error(error);
                         }
-                        pubComm.emit('deldir', `Am șters resursa identificată prin ${resource.content.identifier}`);
+                        socket.emit('deldir', true);
                     });
                 }).catch(err => {
                     console.log(err);
@@ -540,95 +537,84 @@ module.exports = function sockets (pubComm) {
         });
 
         // === DELRESID === ::Ștergerea unei resurse
-        socket.on('delresid', (resource) => {
-            // console.log(resource);
-            let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, `${resource.content.identifier}`);
-            // console.log('Calea constituită este: ', dirPath);
+        socket.on('delresid', (resource) => {            
+            let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, `${resource.content.uuid}`);
+            
+            // Șterge din MongoDB, din Elasticsearch, precum și de pe hard
+            fs.ensureDir(dirPath, 0o2775).then(function clbkSubdirExists () {
+                /* === ARHIVEAZĂ === */
+                // Verifică dacă în rădăcina userului există subdirectorul `deleted`. Dacă nu, creează-l!!!
+                var path2deleted = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, 'deleted');
+                // Procedura de ștergere cu arhivare
+                fs.ensureDir(path2deleted, 0o2775).then(function clbkDeletedExist () {
+                    // Vezi dacă există un subdirector al resursei, iar dacă există șterge tot conținutul său [https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/emptyDir.md#emptydirdir-callback]
+                    var path2deres = `${path2deleted}/${resource.content.identifier}`;
+                    // console.log('Fac arhiva pe calea: ', path2deres);
 
-                /* === CAZURI === */
-                // #1 Resursa nu are subdirector creat pentru că nu s-a încărcat nimic.
-                // #2 Resursa are subdirector și acesta trebuie trimis în subdirectorul deleted.
+                    // dacă directorul a fost constituit și este gol, să punem arhiva resursei șterse
+                    var output = fs.createWriteStream(path2deres + `${resource.content.identifier}.zip`);
+                    var archive = archiver('zip', {
+                        zlib: { level: 9 } // Sets the compression level.
+                    });
+                    // generează arhiva din subdirectorul resursei în subdirectorul țintă din deleted
+                    archive.directory(dirPath, path2deres);
+                    // constituie arhiva!                   
+                    archive.pipe(output);
+                    // WARNINGS
+                    archive.on('warning', function(err) {
+                        if (err.code === 'ENOENT') {
+                            // log warning
+                            console.log('Atenție, la arhivare a dat warning Error NO ENTry', err);
+                        } else {
+                            throw err;
+                        }
+                    });
+                    // ERRORS
+                    archive.on('error', function(err) {
+                        throw err;
+                    });
 
-                // Șterge din MongoDB, din Elasticsearch, precum și de pe hard
-                // caută dacă există subdirector.
-                fs.ensureDir(dirPath, 0o2775).then(function clbkSubdirExists () {
-                    /* === ARHIVEAZĂ === */
-                    // Verifică dacă în rădăcina userului există subdirectorul `deleted`. Dacă nu, creează-l!!!
-                    var path2deleted = path.join(`${process.env.REPO_REL_PATH}`, `${resource.content.idContributor}`, 'deleted');
-                    // Procedura de ștergere cu arhivare
-                    fs.ensureDir(path2deleted, 0o2775).then(function clbkDeletedExist () {
-                        // Vezi dacă există un subdirector al resursei, iar dacă există șterge tot conținutul său [https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/emptyDir.md#emptydirdir-callback]
-                        var path2deres = `${path2deleted}/${resource.content.identifier}`;
-                        // console.log('Fac arhiva pe calea: ', path2deres);
+                    /* === Când se încheie procesul de arhivare === */
+                    output.on('close', function clbkFinalArhivare () {
+                        // rre('mesaje', 'Resursa a intrat în conservare!');
+                        // rre('delresid', {bytes: archive.pointer()});
 
-                        // dacă directorul a fost constituit și este gol, să punem arhiva resursei șterse
-                        var output = fs.createWriteStream(path2deres + `${resource.content.identifier}.zip`);
-                        var archive = archiver('zip', {
-                            zlib: { level: 9 } // Sets the compression level.
-                        });
-                        // generează arhiva din subdirectorul resursei în subdirectorul țintă din deleted
-                        archive.directory(dirPath, path2deres);
-                        // constituie arhiva!                   
-                        archive.pipe(output);
-                        // WARNINGS
-                        archive.on('warning', function(err) {
-                            if (err.code === 'ENOENT') {
-                                // log warning
-                                console.log('Atenție, la arhivare a dat warning Error NO ENTry', err);
-                            } else {
-                                // throw error
-                                throw err;
+                        /* === Șterge din MONGODB și din Elasticsearch === */
+                        Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {       
+                            if (err) {
+                                console.log(err);
+                            };
+
+                            if (doc) {
+                                // Șterge înregistrarea din Elasticsearch dacă ștergerea din bază a reușit
+                                esClient.delete({
+                                    id: doc._id,
+                                    index: process.env.RES_IDX_ALS,
+                                    refresh: true
+                                });                                
+                                /* === ȘTERGE SUBDIRECTOR === */
+                                fs.ensureDir(dirPath, 0o2775).then(function clbkFsExists () {
+                                    fs.remove(dirPath, function clbkDirFolder (error) {
+                                        if (error) {
+                                            console.error(error);
+                                        }
+                                        socket.emit('delresid', true);
+                                    });
+                                }).catch(err => {
+                                    console.log(err);
+                                });
                             }
                         });
-                        // ERRORS
-                        archive.on('error', function(err) {
-                            throw err;
-                        });
-
-                        /* === Când se încheie procesul de arhivare === */
-                        output.on('close', function clbkFinalArhivare () {
-                            // rre('mesaje', 'Resursa a intrat în conservare!');
-                            // rre('delresid', {bytes: archive.pointer()});
-
-                            /* === ȘTERGE SUBDIRECTOR === */
-                            // fs.remove(dirPath, function clbkRemoveFolder (error) {
-                            //     if (error) {
-                            //         console.error(error);
-                            //     }
-                            // });
-
-                            /* === Șterge din MONGODB și din Elasticsearch === */
-                            Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {
-                                // console.log('Documentul este: ', doc);                
-                                if (err) {
-                                    console.log(err);
-                                };                
-                                if (doc) {
-                                    // Șterge înregistrarea din Elasticsearch dacă ștergerea din bază a reușit
-                                    esClient.delete({
-                                        id: doc._id,
-                                        index: process.env.RES_IDX_ALS,
-                                        refresh: true
-                                    });
-                                    // Abia acum șterge fizic de pe hard disk directorul resursei
-                                    socket.emit('deldir', {
-                                        content: {
-                                            idContributor: resource.content.idContributor, 
-                                            identifier: resource.content.identifier
-                                        }
-                                    });
-                                }
-                            });
-                        });
-
-                        /* === FINALIZEAZĂ ARHIVAREA === */
-                        archive.finalize();
-                    }).catch(error => {
-                        console.log(error);
                     });
+
+                    /* === FINALIZEAZĂ ARHIVAREA === */
+                    archive.finalize();
                 }).catch(error => {
                     console.log(error);
                 });
+            }).catch(error => {
+                console.log(error);
+            });
         });
 
         // === MKADMIN === ::Aducerea fișei unui singur id (email) și trimiterea în client
