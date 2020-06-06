@@ -1,7 +1,7 @@
 {
-  "name": "redcolector",
+  "name": "kolector",
   "version": "0.8.8",
-  "description": "Aplicația pentru colectare de RED-uri",
+  "description": "Depozit digital",
   "main": "app.js",
   "scripts": {
     "test": "nodemon --exec 'mocha --recursive -R min'",
@@ -17,22 +17,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kosson/redcolector.git"
+    "url": "git+https://github.com/kosson/kolector.git"
   },
   "keywords": [
     "resurse educaționale deschise",
     "resurse educaționale",
     "red",
-    "cred",
-    "colector",
-    "educred"
+    "kolector"
   ],
   "author": "Nicolaie Constantinescu",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/kosson/redcolector/issues"
+    "url": "https://github.com/kosson/kolector/issues"
   },
-  "homepage": "https://github.com/kosson/redcolector#readme",
+  "homepage": "https://github.com/kosson/kolector#readme",
   "dependencies": {
     "@elastic/elasticsearch": "^7.7.1",
     "archiver": "^4.0.1",

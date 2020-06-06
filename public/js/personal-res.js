@@ -12,6 +12,9 @@ if (autoriArr.length >= 1) {
 RED.nameUser = author;
 // console.log("[personal-res::profile/:id] Obiectul resursă arată astfel: ", dataRes);
 
+// Starea resursei
+RED.versioned = false;
+
 // OBIECTUL RESURSEI
 var resObi = {
     id: dataRes.id, 
@@ -29,7 +32,7 @@ const editorX = new EditorJS({
     data: RED.content,
     onReady: () => {
         console.log('Editor.js e gata de treabă!');
-        //TODO: Construiește logica pentru a popula `imagini` și `fisiere` de îndată ce s-au încărcat datele
+        //Construiește logica pentru a popula `imagini` și `fisiere` de îndată ce s-au încărcat datele
         resObi.content.blocks.map(obj => {
             switch (obj.type) {
                 case 'image':
@@ -214,8 +217,7 @@ const editorX = new EditorJS({
                                     numR: urlObj.afterLastSlash,    // completează obiectul care va fi trimis serverului cu numele fișierului
                                     type: response.type,            // completează cu extensia
                                     size: response.size             // completează cu dimensiunea 
-                                };                   
-                                
+                                };
                                 // console.log("[uploadByUrl::fetch] În server am trimis obiectul de imagine format după fetch: ", objRes);
 
                                 pubComm.emit('resursa', objRes);    // trimite resursa în server (se va emite fără uuid dacă este prima)
@@ -264,8 +266,7 @@ const editorX = new EditorJS({
                                         console.log('Am eșuat cu următoarele detalii: ', error);
                                     }
                                 });
-                            })
-                            .catch((error) => {
+                            }).catch((error) => {
                                 if (error) {
                                     console.log('Am eșuat cu următoarele detalii: ', error);
                                 }
@@ -288,6 +289,10 @@ const editorX = new EditorJS({
         }
     },
     onchange: () => {
+        // TODO: Dacă s-a modificat, apare un buton „Salvează resursa”
+        if (RED.versioned === false) {
+            RED.versioned = true;
+        }
         editorX.save().then((content) => {    
            // verifică dacă proprietatea `content` este populată.
             if (!('content' in RED)) {

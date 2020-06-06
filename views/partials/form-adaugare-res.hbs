@@ -1353,21 +1353,6 @@
             <small>Introdu conținut descriptiv nu mai mult de câteva paragrafe. Nu folosi editorul pentru crearea resursei decât în cazul în care aceasta este de foarte mică întindere. Pentru materiale de substanță, creează un fișier și încarcă-l aici. Este recomandabil să pui o imagine care să ilustreze conținutul. Dă click aici când dorești să începi.</small>
             <div id="codex-editor"></div>
           </div>
-
-          <div class="editor-wrapper " id="editor-livresq" style="display:none;">
-              <legend>Editează un proiect nou cu LIVRESQ:</legend>
-              <a href="{{livresqProjectRequest}}" class="btn btn-warning" target="_blank">Editează cu LIVRESQ</a>
-
-              <div style="margin:20x 0" >
-                <legend>Atașează mai jos un proiect descărcat din LIVRESQ (exportat ca .zip)</legend>
-              </div>
-              <div style="margin:20x 0" >
-                  <img src="/img/livresq_steps.jpg">
-              </div>
-              <div style="margin:20x 0" >
-                  <button onclick="livqUpload()" id="continutLivRes" class="btn btn-warning">Atașează proiectul descărcat</button>
-              </div>
-          </div>
         </fieldset>
         {{!-- EDITOR pentru introducerea letrică END --}}
 
@@ -1447,54 +1432,5 @@
       //TODO: Termină implementarea cândva, dacă mai este nevoie
     });
   }
-
-  
-  // era si asta cred in pachet. daca nu este, scuze... No problem”
-  /**
-   * Funcția are rolul de a face upload / switch din editor LIVRESQ in editor Standard
-   */
-  function livqUpload(){
-      var livqTab = document.querySelector('#editor-option1');
-      if(!livqTab) return;
-      livqTab.click();
-
-      var livqEditor = document.querySelector('.codex-editor__redactor');
-      if(!livqEditor) return;
-      livqEditor.click();
-
-      var livqPlus = document.querySelector('.ce-toolbar__plus');
-      if(!livqPlus) return;
-      livqPlus.click();
-
-      var livqAttach = document.querySelector('li[data-tool="attaches"]').click();
-      if(!livqAttach) return;
-      livqAttach.click();
-  }
-
-    // livresq and standard editors ~BEGIN
-    // just to make sure it works; kept as js
-    $(function(){
-        // begin the editors ~ toggle editors
-        toDefaultEditor();
-        // end of editors ~ toggle editors
-
-    });
-
-    function toDefaultEditor(){
-        if(document.getElementById("editor-default").style.display === 'none'){
-          document.getElementById("editor-default").style.display = "block";
-          document.getElementById("editor-livresq").style.display = "none";
-        }
-    }
-
-
-    function toLivresqEditor(){
-        if(document.getElementById("editor-livresq").style.display === 'none'){
-          document.getElementById("editor-default").style.display = "none";
-          document.getElementById("editor-livresq").style.display = "block";
-        }
-    }
-    // livresq and standard editors ~~END
-
 </script>
 
