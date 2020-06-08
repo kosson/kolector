@@ -346,14 +346,6 @@ module.exports = function sockets (pubComm) {
                 console.log(error);
             });
 
-
-
-
-
-
-
-
-
             // Transformarea Buffer-ului primit într-un stream `Readable`
             var strm = new Readable();
             strm.push(resourceFile.resF);  

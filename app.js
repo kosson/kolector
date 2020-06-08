@@ -6,7 +6,7 @@ const express        = require('express');
 const bodyParser     = require('body-parser');
 const cookies        = require('cookie-parser');
 const session        = require('express-session');
-const csrf           = require('csurf');
+const csurf          = require('csurf');
 const redisClient    = require('./redis.config');
 const helmet         = require('helmet');
 const passport       = require('passport');
@@ -18,11 +18,18 @@ const RedisStore     = require('connect-redis')(session);
 const hbs            = require('express-hbs');
 const app            = express();
 const http           = require('http').createServer(app);
-const cors           = require('cors');
 const io             = require('socket.io')(http);
+
+const cors           = require('cors');
 const favicon        = require('serve-favicon');
 const { v1: uuidv1 } = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 const i18n           = require('i18n');
+
+let port = process.env.PORT || 8080;
+http.listen(port, '127.0.0.1', function cbConnection () {
+    console.log('Kolector ', process.env.APP_VER);
+    console.log('Server pornit pe 8080 -> binded pe 127.0.0.1');
+});
 
 /* === ÎNCĂRCAREA RUTELOR === */
 const UserPassport = require('./routes/controllers/user.ctrl')(passport);
@@ -82,10 +89,10 @@ app.use(bodyParser.json());
 // === SESIUNI ===
 app.use(cookies());// Parse Cookie header and populate req.cookies with an object keyed by the cookie names
 
-// creează sesiune
+// creează sesiune - https://expressjs.com/en/advanced/best-practice-security.html
 let sessionMiddleware = session({
-    name:   'redcolector',
-    secret: '19cR3D_aPP_Kosson',
+    name:   'kolector',
+    secret: process.env.COOKIE_ENCODING,
     genid: function(req) {
         return uuidv1(); // use UUIDs for session IDs
     },
@@ -96,6 +103,7 @@ let sessionMiddleware = session({
     saveUninitialized: true,
     logErrors: true,
     cookie: {
+        httpOnly: true,
         maxAge: (1 * 24 * 3600 * 1000)
     }
 });
@@ -138,7 +146,7 @@ app.use(passport.session());
 let upload = require('./routes/upload')(pubComm);
 app.use('/upload', upload);
 // SIGNUP
-// app.use('/signup',   signupLoco); // SIGNUP!!!
+app.use('/signup',   signupLoco); // SIGNUP!!!
 // LOGIN
 const UserSchema = require('./models/user');
 const UserDetails = mongoose.model('users', UserSchema);
@@ -151,14 +159,26 @@ passport.deserializeUser(UserDetails.deserializeUser());
 // passport.deserializeUser(UserDetails.deserializeUser());
 app.use('/login', login);
 
-// activarea protecției csurf
-const csrfProtection = csrf({cookie: true});
+// activarea protecției csurf - expressjs.com/en/resources/middleware/csurf.html
+// const csurfProtection = csurf({cookie: true}); // orig
+const csurfProtection = csurf({
+    cookie: {
+        key: '_csrf',
+        path: '/',
+        httpOnly: false,
+        secure: false, // dacă folosești HTTPS setează la true
+        signed: false, // în caz de signed cookies, setează la true
+        sameSite: 'strict', // https://www.owaspsafar.org/index.php/SameSite
+        maxAge: 24 * 60 * 60 * 1000 // 24 ore
+    }
+    // cookie: true
+});
 //https://github.com/expressjs/csurf/issues/21
 // app.use(function (req, res, next) {
 //     if (req.url === '/repo') return next();
-//     csrfProtection(req, res, next);
+//     csurfProtection(req, res, next);
 // })
-app.use(csrfProtection); // activarea protecției la CSURF 
+app.use(csurfProtection); // activarea protecției la CSURF 
 
 // TIMP RĂSPUNS ÎN HEADER
 app.use(responseTime());
@@ -192,7 +212,7 @@ app.use(i18n.init); // instanțiere modul i18n - este necesar ca înainte de a a
 // === COMPRESIE ===
 function shouldCompress (req, res) {
     if (req.headers['x-no-compression']) {
-      // don't compress responses with this request header
+        // don't compress responses with this request header
         return false;
     }    
     // fallback to standard filter function
@@ -201,19 +221,19 @@ function shouldCompress (req, res) {
 app.use(compression({ filter: shouldCompress }));
 
 // === MIDDLEWARE-ul RUTELOR ===
-app.use('/',               csrfProtection, index);
+app.use('/',               csurfProtection, index);
 app.use('/auth',           authG);
 app.use('/callback',       callbackG);
 app.use('/logout',         logout);
-app.use('/resursepublice', csrfProtection, resursepublice);
-app.use('/tertium',        csrfProtection, tertium);
-app.use('/help',           csrfProtection, help);
-app.use('/administrator',  csrfProtection, UserPassport.ensureAuthenticated, administrator);
-app.use('/resurse',        csrfProtection, UserPassport.ensureAuthenticated, resurse);
-app.use('/log',            csrfProtection, UserPassport.ensureAuthenticated, log);
-app.use('/profile',        csrfProtection, profile);
-app.use('/tags',           csrfProtection, tags);
-app.use('/tools',          csrfProtection, tools);
+app.use('/resursepublice', csurfProtection, resursepublice);
+app.use('/tertium',        csurfProtection, tertium);
+app.use('/help',           csurfProtection, help);
+app.use('/administrator',  csurfProtection, UserPassport.ensureAuthenticated, administrator);
+app.use('/resurse',        csurfProtection, UserPassport.ensureAuthenticated, resurse);
+app.use('/log',            csurfProtection, UserPassport.ensureAuthenticated, log);
+app.use('/profile',        csurfProtection, profile);
+app.use('/tags',           csurfProtection, tags);
+app.use('/tools',          csurfProtection, tools);
 
 // === 401 - NEPERMIS ===
 app.get('/401', function(req, res){
@@ -221,7 +241,7 @@ app.get('/401', function(req, res){
     res.render('nepermis', {
         title:    "401",
         logoimg:  "img/red-logo-small30.png",
-        mesaj:    "Încă nu ești autorizat pentru acestă zonă"
+        mesaj:    "Încă nu ești autorizat pentru această zonă"
     });
 });
 
@@ -241,11 +261,6 @@ app.use(function catchAllMiddleware (err, req, res, next) {
     res.status(500).send('În lanțul de prelucrare a cererii, a apărut o eroare');
 });
 
-let port = process.env.PORT || 8080;
-http.listen(port, '127.0.0.1', function cbConnection () {
-    console.log('RED Colector ', process.env.APP_VER);
-    console.log('Server pornit pe 8080 -> binded pe 127.0.0.1');
-});
 
 process.on('uncaughtException', (un) => {
     console.log('[app.js] A apărul un uncaughtException cu detaliile ', un);

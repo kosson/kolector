@@ -1,7 +1,5 @@
 require('dotenv').config();
 
-const LivresqConnect = require('../../models/livresq-connect').LivresqConnect;
-
 /* === DEPENDINȚE === */
 const moment = require('moment');
 /* === MODELE === */
@@ -207,10 +205,8 @@ exports.describeResource = function describeResource (req, res, next) {
     if(req.session.passport.user.roles.admin){
         let user = req.session.passport.user;
         // FIXME: Renunță la acest artificiu pentru conturile locale de îndată ce unifici localele cu profilurile Google.
-        let given_name = "Jane" || user.googleProfile.given_name;
-        let family_name = "Doe" || user.googleProfile.family_name;
-        let url = new LivresqConnect().prepareProjectRequest(user.email, given_name, family_name);
-        if(!url.startsWith("http")) url = "#";
+        let given_name =  "Jane" || user.googleProfile.given_name;
+        let family_name = "Doe"  || user.googleProfile.family_name;
 
         // Dacă avem un admin, atunci oferă acces neîngrădit
         res.render('adauga-res', {
@@ -221,8 +217,7 @@ exports.describeResource = function describeResource (req, res, next) {
             credlogo:"/img/CREDlogo.jpg",
             // csrfToken: cookieObj._csrf,
             csrfToken: req.csrfToken(),
-            scripts,
-            livresqProjectRequest: url
+            scripts
         });
         // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere al resursei.
@@ -242,8 +237,7 @@ exports.describeResource = function describeResource (req, res, next) {
             credlogo:"/img/CREDlogo.jpg",
             // csrfToken: cookieObj._csrf,
             csrfToken: req.csrfToken(),
-            scripts,
-            livresqProjectRequest: url
+            scripts
         });
     } else {
         res.redirect('/401');

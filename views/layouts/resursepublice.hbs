@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="ro">
     <head prefix="dc: http://purl.org/dc/elements/1.1 dcterms: http://purl.org/dc/terms">
+        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <meta charset="UTF-8">
-        <meta property="dc:title" content="Jurnalierul Colectorului pentru Resurse Educaționale Deschise">
+        
+        <meta property="dc:title"       content="Jurnalierul Colectorului pentru Resurse Educaționale Deschise">
         <meta property="dc:description" content="Acesta este jurnalierul Colectorului RED">
-        <meta itemprop="name" content="Jurnalierul Colectorului pentru Resurse Educaționale Deschise">
+
+        <meta itemprop="name"        content="Jurnalierul Colectorului pentru Resurse Educaționale Deschise">
         <meta itemprop="description" content="Acesta este jurnalierul Colectorului RED">
+        
         {{!-- SOCKET --}}
-        <script type="text/javascript" charset="utf8" src="/socket.io/socket.io.js"></script>
+        <script type="application/javascript" src="/socket.io/socket.io.js"></script>
+        {{!-- În cazul în care sunt probleme cu browserele, activează încărcarea scriptului în mod direct --}}
+        {{!-- <script type="application/javascript" src="/lib/socket.io-client/dist/socket.io.slim.js"></script> --}}
+        
         {{!-- ES6 SHIM --}}
-        <script type="text/javascript" charset="utf8" src="/js/main.js"></script>
+        <script type="application/javascript" src="/js/main.js"></script>
+
         <link rel="stylesheet" type="text/css" href="/css/main.css">
         <link rel="stylesheet" type="text/css" href="/lib/jquery-toast-plugin/dist/jquery.toast.min.css">
         <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="/lib/jquery-toast-plugin/dist/jquery.toast.min.css">
-        <script type="text/javascript" charset="utf8" src="/lib/jquery/dist/jquery.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="/lib/handlebars/handlebars.runtime.min.js"></script> 
-        <script type="text/javascript" charset="utf8" src="/lib/handlebars/handlebars.min.js"></script> 
+
+        <script type="application/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+        <script type="application/javascript" src="/lib/handlebars/handlebars.runtime.min.js"></script> 
+        <script type="application/javascript" src="/lib/handlebars/handlebars.min.js"></script> 
         <title>{{title}}</title>
     </head>
     <body>
@@ -29,10 +37,10 @@
         </footer>
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script type="text/javascript" charset="utf8" src="/lib/popper.js/dist/umd/popper.min.js"></script>        
-        <script type="text/javascript" charset="utf8" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="/lib/fontawesome/js/all.js"></script>
-        <script type="text/javascript" charset="utf8" src="/lib/jquery-toast-plugin/dist/jquery.toast.min.js"></script>    
-        <script type="text/javascript" charset="utf8" src="/js/resursepublice.js"></script>
+        <script type="application/javascript" src="/lib/popper.js/dist/umd/popper.min.js"></script>        
+        <script type="application/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="application/javascript" src="/lib/fontawesome/js/all.js"></script>
+        <script type="application/javascript" src="/lib/jquery-toast-plugin/dist/jquery.toast.min.js"></script>    
+        <script type="application/javascript" src="/js/resursepublice.js"></script>
     </body>
 </html>

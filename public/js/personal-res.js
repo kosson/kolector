@@ -25,6 +25,16 @@ var resObi = {
 let imagini = new Set(); // un `Set` cu toate imaginile care au fost introduse în document.
 let fisiere = new Set(); // un `Set` cu toate fișierele care au fost introduse în document la un moment dat (înainte de `onchange`).
 
+/**
+ * Funcția are rolul de a afișa un buton „Actualizează” în cazul în care datele din RED au suferit modificări
+ */
+function changed () {
+    console.log("E ceva modificat în editor");
+    
+    var saveBtn = new createElement('button', 'saveBtn', ['btn-sm'], {onclick: "createVersion(this)"}).creeazaElem('Actualizează');
+    document.querySelector('.resursa').appendChild(saveBtn);
+}
+
 /* === Integrarea lui EditorJS === https://editorjs.io */
 const editorX = new EditorJS({
     placeholder: '',
@@ -33,7 +43,7 @@ const editorX = new EditorJS({
     onReady: () => {
         console.log('Editor.js e gata de treabă!');
         //Construiește logica pentru a popula `imagini` și `fisiere` de îndată ce s-au încărcat datele
-        resObi.content.blocks.map(obj => {
+        RED.content.blocks.map(obj => {
             switch (obj.type) {
                 case 'image':
                     imagini.add(obj.data.file.url);
@@ -95,6 +105,10 @@ const editorX = new EditorJS({
                     }
                 }
             }
+        },
+        checklist: {
+            class: Checklist,
+            inlineToolbar: true,
         },
         image: {
             class: ImageTool,
@@ -288,104 +302,163 @@ const editorX = new EditorJS({
             }
         }
     },
-    onchange: () => {
-        // TODO: Dacă s-a modificat, apare un buton „Salvează resursa”
-        if (RED.versioned === false) {
-            RED.versioned = true;
-        }
-        editorX.save().then((content) => {    
-           // verifică dacă proprietatea `content` este populată.
-            if (!('content' in RED)) {
-                RED['content'] = content; // Dacă nu există introduc `content` drept valoare.
-            } else if (typeof(RED.content) === 'object') {
-                RED.content = null; // Dacă există deja, mai întâi setează `content` la `null` 
-                RED.content = content; // și apoi introdu noua valoare.
-                
-                // === Logică de ștergere de pe HDD a imaginilor care au fost șterse din editor ===
-                // Pas 1 Constituie un array cu imaginile care au rămas după ultimul `onchange`
-                const imgsInEditor = RED.content.blocks.map((element) => {
-                    if (element.type === 'image') {
-                        // console.log("[onChange::RED.content.blocks.map((element)] url-ul pentru imagine a elementelor `image`: ", element.data.file.url);
-                        let urlImg = check4url (element.data.file.url);
-                        return urlImg.path2file;
-                    }
-                });
-                // console.log("[onChange::imgsInEditor] Imaginile care au rămas în editor după ultima modificare în array-ul imgsInEditor: ", imgsInEditor);
-                // Pas 2 Șterge fișierele care nu mai sunt prezente după `onchange`. Transformi `Set`-ul `imagini` al tuturor imaginilor încărcate într-un array
-                // Îl parcurgi căutând dacă linkul din `imagini` este prezent și în `imgsInEditor` al imaginilor rămase după ultima modificare.
-                Array.from(imagini).map((path) => {
-                    if (!imgsInEditor.includes(path)){
-                        // dacă o cale din imagini` nu mai există în `imgsInEditor`, va trimite un eveniment de ștergere
-                        imagini.delete(path); // mai întâi șterge link-ul din `imagini`
-                        // extrage numele fișierului din `fileUrl`
-                        let fileName = path.split('/').pop();
-                        // console.log("[onChange::imgsInEditor] Voi șterge din subdirectorul resursei următorul fișier: ", fileName);
-                        // emite un eveniment de ștergere a fișierului din subdirectorul resursei.                            
-                        pubComm.emit('delfile', {
-                            uuid: RED.uuid,
-                            idContributor: RED.idContributor,
-                            fileName: fileName
-                        });
-                        pubComm.on('delfile', (message) => {
-                            // console.log("Am șters cu următoarele detalii: ", message);
-                        });
-                    }
-                });                
-
-                // === Logică de ștergere de pe HDD a fișierelor care nu mai există în client
-                // Pas 1 Adaugă la căile existente în `fișiere` ulimele fișierele adăugate după ultimul `onchange`
-                const filesInEditor = RED.content.blocks.map((element) => {
-                    if (element.type === 'attaches') {
-                        let path = '';
-                        // dacă stringul din elementele image ale lui content.blocks sunt chiar full url-uri cu tot `base`.
-                        let detailsUrl = check4url (element.data.file.url);
-                        path = detailsUrl.path2file;
-
-                        // console.log("[atașamente] Am extras următoarea cale a documentului din url: ", path);
-                        fisiere.add(path); // adaugă calea în fișiere. Dacă există deja, nu va fi adăugat.
-                        return path;
-                    }
-                });
-                
-                // Fă verificările dacă cel puțin un document a fost adăugat
-                if(fisiere.size > 0) {
-                    let FtoDelete = Array.from(fisiere).map((path) => {
-                        // Caută în setul fișierelor după ultima modificare
-                        if (!filesInEditor.includes(path)){
-                            return path;
-                        }
-                    });
-                    if (FtoDelete.length > 0) {                    
-                        FtoDelete.forEach(function clbk4Eac2Del (path) {
-                            if (path) {
-                                fisiere.delete(path);
-                                // extrage numele fișierului din `fileUrl`
-                                let fileName = path.split('/').pop();
-                                // emite un eveniment de ștergere a fișierului din subdirectorul resursei                                
-                                pubComm.emit('delfile', {
-                                    uuid: RED.uuid,
-                                    idContributor: RED.idContributor,
-                                    fileName: fileName
-                                });
-                                pubComm.on('delfile', (messagge) => {
-                                    // console.log("Am șters cu următoarele detalii ", messagge);
-                                });
-                            }
-                        });
+    i18n: {
+        messages: {
+            // traducerea diferitelor componente ale UI-ului
+            ui: {
+                "blockTunes": {
+                    "toggler": {
+                        "Click to tune": "Apasă pentru a modifica",
+                        "or drag to move": "sau trage pentru a muta"
+                    },
+                },                
+                "toolbar": {
+                    "toolbox": {
+                        "Add": "Adaugă"
                     }
                 }
-            }
-            // tratează cazul în care userul este validator
-            if (insertGal) pickCover(); // formează galeria pentru ca utilizatorul să poată selecta o imagine
-        }).catch((e) => {
-            console.log(e);
-        });
+            },
+            toolNames: {
+                "Text": "Paragraf",
+                "Attaches": "Încarcă fișiere",
+                "Heading": "Subtitluri",
+                "List": "Listă",
+                "Warning": "Avertizare",
+                "Checklist": "Checklist",
+                "Quote": "Citat",
+                "Code": "Cod",
+                "Delimiter": "Delimitare",
+                "Raw HTML": "HTML pur",
+                "Table": "Tabel",
+                "Link": "Link",
+                "Marker": "Marker",
+                "Bold": "Bold",
+                "Italic": "Italic",
+                "InlineCode": "Cod inclus",
+            },
+            /**
+             * Section allows to translate Block Tunes
+             */
+            blockTunes: {
+                /**
+                 * Each subsection is the i18n dictionary that will be passed to the corresponded Block Tune plugin
+                 * The name of a plugin should be equal the name you specify in the 'tunes' section for that plugin
+                 *
+                 * Also, there are few internal block tunes: "delete", "moveUp" and "moveDown"
+                 */
+                "delete": {
+                    "Delete": "Șterge blocul"
+                },
+                "moveUp": {
+                    "Move up": "Mută mai sus"
+                },
+                "moveDown": {
+                    "Move down": "Mută mai jos"
+                }
+            }      
+        }
+    },    
+    onChange: () => {
+        // TODO: Dacă s-a modificat, apare un buton „Actualizează”
+        if (RED.versioned === false) {
+            RED.versioned = true;
+            console.log('Era false, acum este ', RED.versioned);
+            changed(); // adaugă butonul „Actualizează”
+        }
+
+        // editorX.save().then((content) => {
+        //    // verifică dacă proprietatea `content` este populată.
+        //     if (!('content' in RED)) {
+        //         RED['content'] = content; // Dacă nu există introduc `content` drept valoare.
+        //     } else if (typeof(RED.content) === 'object') {
+        //         RED.content = null; // Dacă există deja, mai întâi setează `content` la `null` 
+        //         RED.content = content; // și apoi introdu noua valoare.
+                
+        //         // === Logică de ștergere de pe HDD a imaginilor care au fost șterse din editor ===
+        //         // Pas 1 Constituie un array cu imaginile care au rămas după ultimul `onchange`
+        //         const imgsInEditor = RED.content.blocks.map((element) => {
+        //             if (element.type === 'image') {
+        //                 // console.log("[onChange::RED.content.blocks.map((element)] url-ul pentru imagine a elementelor `image`: ", element.data.file.url);
+        //                 let urlImg = check4url (element.data.file.url);
+        //                 return urlImg.path2file;
+        //             }
+        //         });
+        //         // console.log("[onChange::imgsInEditor] Imaginile care au rămas în editor după ultima modificare în array-ul imgsInEditor: ", imgsInEditor);
+        //         // Pas 2 Șterge fișierele care nu mai sunt prezente după `onchange`. Transformi `Set`-ul `imagini` al tuturor imaginilor încărcate într-un array
+        //         // Îl parcurgi căutând dacă linkul din `imagini` este prezent și în `imgsInEditor` al imaginilor rămase după ultima modificare.
+        //         Array.from(imagini).map((path) => {
+        //             if (!imgsInEditor.includes(path)){
+        //                 // dacă o cale din imagini` nu mai există în `imgsInEditor`, va trimite un eveniment de ștergere
+        //                 imagini.delete(path); // mai întâi șterge link-ul din `imagini`
+        //                 // extrage numele fișierului din `fileUrl`
+        //                 let fileName = path.split('/').pop();
+        //                 // console.log("[onChange::imgsInEditor] Voi șterge din subdirectorul resursei următorul fișier: ", fileName);
+        //                 // emite un eveniment de ștergere a fișierului din subdirectorul resursei.                            
+        //                 pubComm.emit('delfile', {
+        //                     uuid: RED.uuid,
+        //                     idContributor: RED.idContributor,
+        //                     fileName: fileName
+        //                 });
+        //                 pubComm.on('delfile', (message) => {
+        //                     // console.log("Am șters cu următoarele detalii: ", message);
+        //                 });
+        //             }
+        //         });                
+
+        //         // === Logică de ștergere de pe HDD a fișierelor care nu mai există în client
+        //         // Pas 1 Adaugă la căile existente în `fișiere` ulimele fișierele adăugate după ultimul `onchange`
+        //         const filesInEditor = RED.content.blocks.map((element) => {
+        //             if (element.type === 'attaches') {
+        //                 let path = '';
+        //                 // dacă stringul din elementele image ale lui content.blocks sunt chiar full url-uri cu tot `base`.
+        //                 let detailsUrl = check4url (element.data.file.url);
+        //                 path = detailsUrl.path2file;
+
+        //                 // console.log("[atașamente] Am extras următoarea cale a documentului din url: ", path);
+        //                 fisiere.add(path); // adaugă calea în fișiere. Dacă există deja, nu va fi adăugat.
+        //                 return path;
+        //             }
+        //         });
+                
+        //         // Fă verificările dacă cel puțin un document a fost adăugat
+        //         if(fisiere.size > 0) {
+        //             let FtoDelete = Array.from(fisiere).map((path) => {
+        //                 // Caută în setul fișierelor după ultima modificare
+        //                 if (!filesInEditor.includes(path)){
+        //                     return path;
+        //                 }
+        //             });
+        //             if (FtoDelete.length > 0) {                    
+        //                 FtoDelete.forEach(function clbk4Eac2Del (path) {
+        //                     if (path) {
+        //                         fisiere.delete(path);
+        //                         // extrage numele fișierului din `fileUrl`
+        //                         let fileName = path.split('/').pop();
+        //                         // emite un eveniment de ștergere a fișierului din subdirectorul resursei                                
+        //                         pubComm.emit('delfile', {
+        //                             uuid: RED.uuid,
+        //                             idContributor: RED.idContributor,
+        //                             fileName: fileName
+        //                         });
+        //                         pubComm.on('delfile', (messagge) => {
+        //                             // console.log("Am șters cu următoarele detalii ", messagge);
+        //                         });
+        //                     }
+        //                 });
+        //             }
+        //         }
+        //     }
+        //     // tratează cazul în care userul este validator
+        //     if (insertGal) pickCover(); // formează galeria pentru ca utilizatorul să poată selecta o imagine
+        // }).catch((e) => {
+        //     console.log(e);
+        // });
     }
 });
 
 /**
  * Funcția este apelată doar de `resursa-admin`, adică doar conturile de administratori pot șterge resursa
- * Funcția șterge înregistrările din MongoDB și din Elastiscsearch, precum și de pe discul serverului
+ * Funcția șterge înregistrările din MongoDB și din Elasticsearch, precum și de pe discul serverului
  */
 function deleteRes () {
     pubComm.emit('delresid', resObi);
@@ -393,7 +466,7 @@ function deleteRes () {
     pubComm.on('delresid', (res) => {
         // alert(res);
         if (res) {
-            window.location = '/profile/resurse/';
+            window.location = '/profile/' + dataRes.id;
         }
     });
 }

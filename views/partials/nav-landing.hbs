@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <nav class="navbar navbar-expand-lg fixed-top">
         <a class="navbar-brand" href="/">
-            <img id="logo-small" src="{{{logoimg}}}" alt="rED colector logo"> RED Colector
+            <img id="logo-small" src="{{{logoimg}}}" alt="RED colector logo"> RED Colector
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
@@ -12,9 +12,6 @@
                 <span class="salut">Salut, {{user.googleProfile.name}} <img class="avatar" data-email="{{user.email}}" data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" /></span>
             {{/if}}
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="https://digital.educred.ro/" target="_blank">digital.educred.ro</a>
-                </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="/resursepublice">Resurse publice</a>
                 </li>
@@ -43,9 +40,6 @@
                         <a class="nav-link" href="/logout">Logout</a>
                     </li>
                 {{else}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/log">Noutăți</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/help">Asistență</a>
                     </li>                                      

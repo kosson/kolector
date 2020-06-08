@@ -57,13 +57,11 @@ router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (
                 {script: '/lib/moment/min/moment.min.js'},
                 {script: '/lib/moment/locale/ro.js'},    
                 {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-                {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+                {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
                 {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
                 {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-                {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
-                {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+                {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
                 {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
-                {script: '/lib/datatables.net-responsive-dt/js/dataTables.responsive.min.js'},
                 {script: '/js/res-visuals-user.js'}
             ];
 
@@ -107,6 +105,7 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
         {script: '/lib/editorjs/code.js'},
         {script: '/lib/editorjs/quote.js'},
         {script: '/lib/editorjs/inlinecode.js'},
+        {script: '/lib/editorjs/checklist.js'},
         // UPLOADER
         {script: '/js/uploader.js'},
         // HELPER DETECT URLS or PATHS

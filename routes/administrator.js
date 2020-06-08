@@ -26,13 +26,11 @@ router.get('/', function clbkAdmRoot (req, res) {
             {script: '/lib/moment/min/moment.min.js'},
             {script: '/lib/moment/locale/ro.js'},    
             {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
             {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
-            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
-            {script: '/lib/datatables.net-responsive-dt/js/dataTables.responsive.min.js'},
             {script: '/js/admin.js'}
         ];
         let styles = [
@@ -88,13 +86,11 @@ router.get('/reds', function clbkAdmReds (req, res) {
             {script: '/lib/moment/min/moment.min.js'},
             {script: '/lib/moment/locale/ro.js'},    
             {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
             {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
-            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
-            {script: '/lib/datatables.net-responsive-dt/js/dataTables.responsive.min.js'},
             {script: '/js/res-visuals.js'}
         ];
         let styles = [
@@ -160,8 +156,6 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
                 let localizat = moment(obi.date).locale('ro').format('LLL');
                 // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
                 obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
-
-                console.log("Acestea sunt activitățile", obi.activitati);
                 
                 // Array-ul activităților modificat
                 let activitatiRehashed = obi.activitati.map((elem) => {
@@ -296,13 +290,11 @@ router.get('/users', function clbkAdmUsr (req, res) {
             {script: '/lib/moment/locale/ro.js'},            
             // DATATABLES
             {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
             {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
-            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
-            {script: '/lib/datatables.net-responsive-dt/js/dataTables.responsive.min.js'},
 
             {script: '/js/users-visuals.js'}
         ];
@@ -343,13 +335,11 @@ router.get('/users/:id', function clbkAdmRoot (req, res) {
             {script: '/lib/moment/locale/ro.js'},            
             // DATATABLES
             {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
             {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
-            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
-            {script: '/lib/datatables.net-responsive-dt/js/dataTables.responsive.min.js'},
             {script: '/js/user.js'}
         ];
         let styles = [
@@ -376,13 +366,11 @@ router.get('/users/:id', function clbkAdmRoot (req, res) {
             {script: '/lib/moment/locale/ro.js'},            
             // DATATABLES
             {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net/js/dataTables.bootstrap.min.js'},
+            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
             {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-buttons/js/buttons.bootstrap.min.js'},
-            {script: '/lib/datatables.net-select/js/select.bootstrap.min.js'},
+            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
             {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
-            {script: '/lib/datatables.net-responsive-dt/js/dataTables.responsive.min.js'},
             {script: '/js/validator.js'},
         ];
         let styles = [

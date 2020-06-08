@@ -5,8 +5,7 @@ var uuid = '';
 // === MANAGEMENTUL COMUNICĂRII pe socketuri ===
 pubComm.on('mesaje', (mess) => {
     // TODO: execută funcție care afișează mesajul
-    // broadcastMes(mess);
-    console.log(mess);
+
     $.toast({
         heading: 'Colectorul spune:',
         text: `${mess}`,
@@ -56,4 +55,50 @@ class createElement {
         if (requiredElem) element.required = true;
         return element;
     }
+}
+
+/**
+ * Convertește un characterSet html în caracterul original.
+ * @param {String} str htmlSet entities
+ **/
+function decodeCharEntities (str) {
+    let decomposedStr = str.split(' ');
+    // FIXME: Nu acoperă toate posibilele cazuri!!! ar trebui revizuit la un moment dat.
+    var entity = /&(?:#x[a-f0-9]+|#[0-9]+|[a-z0-9]+);?/igu;
+    
+    let arrNew = decomposedStr.map(function (word, index, arr) {
+        let newArr = [];
+        if (word.match(entity)) {
+            let fragment = [...word.match(entity)];
+
+            for (let ent of fragment) {
+                var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
+                var translate = {
+                    "nbsp" : " ",
+                    "amp"  : "&",
+                    "quot" : "\"",
+                    "apos" : "\'",
+                    "cent" : "¢",
+                    "pound": "£",
+                    "yen"  : "¥",
+                    "euro" : "€",
+                    "copy" : "©",
+                    "reg"  : "®",
+                    "lt"   : "<",
+                    "gt"   : ">"
+                };
+                return ent.replace(translate_re, function (match, entity) {
+                    return translate[entity];
+                }).replace(/&#(\d+);/gi, function (match, numStr) {
+                    var num = parseInt(numStr, 10);
+                    return String.fromCharCode(num);
+                });
+            }
+            return arrNew;
+        } else {
+            newArr.push(word);
+        }
+        return newArr.join('');
+    });
+    return arrNew.join(' ');
 }

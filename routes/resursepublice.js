@@ -1,5 +1,5 @@
 require('dotenv').config();
-/* ==== DEPENDINȚE ==== */
+/* === DEPENDINȚE === */
 const express = require('express');
 const router  = express.Router();
 const moment  = require('moment');

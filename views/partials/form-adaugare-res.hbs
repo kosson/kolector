@@ -1339,16 +1339,7 @@
         {{!-- EDITOR pentru introducerea letrică --}}
         <fieldset>
           {{!-- <legend>Introdu mai jos în editor părțile componente ale RED-ului și o descriere, dacă este nevoie:</legend> --}}
-          <div class="btn-group btn-editor-group" data-toggle="buttons">
-              <label class="btn btn-primary active" onclick="toDefaultEditor()">
-                  <input type="radio" name="editor-options" id="editor-option1" checked onclick="toDefaultEditor()"> Editor Standard
-              </label>
-              <label class="btn btn-primary" onclick="toLivresqEditor()">
-                  <input type="radio" name="editor-options" id="editor-option2" onclick="toLivresqEditor()"> Editor LIVRESQ
-              </label>
-          </div>
-          {{!-- Integrarea editorului de text --}}
-          
+          {{!-- Integrarea editorului de text --}}          
           <div class="editor-wrapper" id="editor-default">
             <small>Introdu conținut descriptiv nu mai mult de câteva paragrafe. Nu folosi editorul pentru crearea resursei decât în cazul în care aceasta este de foarte mică întindere. Pentru materiale de substanță, creează un fișier și încarcă-l aici. Este recomandabil să pui o imagine care să ilustreze conținutul. Dă click aici când dorești să începi.</small>
             <div id="codex-editor"></div>
@@ -1413,7 +1404,7 @@
 
 {{!-- Încărcarea scripturilor --}}
 {{#each scripts}}
-    <script src="{{script}}" charset="utf-8"></script>
+    <script type="application/javascript" src="{{script}}"></script>
 {{/each}}
 
 <script>

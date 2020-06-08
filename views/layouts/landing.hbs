@@ -1,29 +1,40 @@
 <!DOCTYPE html>
 <html lang="ro">
     <head prefix="dc: http://purl.org/dc/elements/1.1 dcterms: http://purl.org/dc/terms">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="keywords" content="educred, red, colector, resurse educaționale, educație">
-        <meta name="description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
-        <meta name="generator" content="Colector RED">
-        <meta name="creator" content="CRED-Curriculum relevant, educație deschisă pentru toți– cod SMIS 2014+:118327">
-        <meta name="autor" content="Constantinescu Nicolaie">
-        <meta name="publisher" content="Institutul pentru Științele Educației">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <meta charset="UTF-8">
-        <meta property="dc:title" content="Colector Resurse Educaționale Deschise">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <meta name="keywords"    content="educred, red, colector, resurse educaționale, educație">
+        <meta name="description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
+        <meta name="generator"   content="Colector RED">
+        <meta name="creator"     content="CRED-Curriculum relevant, educație deschisă pentru toți– cod SMIS 2014+:118327">
+        <meta name="autor"       content="Constantinescu Nicolaie">
+        <meta name="publisher"   content="Institutul pentru Științele Educației">
+        
+        <meta property="dc:title"       content="Colector Resurse Educaționale Deschise">
         <meta property="dc:description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
+        
         <meta itemprop="name" content="Colector Resurse Educaționale Deschise">
         <meta itemprop="description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
-        <script type="text/javascript" charset="utf8" src="/socket.io/socket.io.js"></script>
-        <script type="text/javascript" charset="utf8" src="/lib/es6-shim/es6-shim.min.js"></script>
+        
+        {{!-- SOCKET --}}
+        <script src="/socket.io/socket.io.js"></script>
+        {{!-- În cazul în care sunt probleme cu browserele, activează încărcarea scriptului în mod direct --}}
+        {{!-- <script type="application/javascript" src="/lib/socket.io-client/dist/socket.io.slim.js"></script> --}}
+        
+        {{!-- ES6 SHIM --}}
+        <script type="application/javascript" src="/lib/es6-shim/es6-shim.min.js"></script>
+
         <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
         
-        <link rel="stylesheet" href="{{style}}" media="screen" title="no title" charset="utf-8">
         <link rel="stylesheet" href="/css/main.css">
         <link rel="stylesheet" href="/css/animate.css">
         <link rel="stylesheet" href="/css/arrow.css">
         <link rel="stylesheet" href="/css/fixed.css">
         <link rel="stylesheet" href="/css/waypoints.css">
+
+        <link rel="stylesheet" href="{{style}}" media="screen" title="no title" charset="utf-8">
 
         <title>{{title}}</title>
     </head>
@@ -33,14 +44,14 @@
             {{> footer}}
         </footer>
         <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script type="text/javascript" charset="utf8" src="/lib/jquery/dist/jquery.slim.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="/lib/popper.js/dist/popper.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="/lib/fontawesome/js/all.js" charset="utf-8"></script>
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->        
+        <script type="application/javascript" src="/lib/jquery/dist/jquery.slim.min.js"></script>
+        <script type="application/javascript" src="/lib/popper.js/dist/popper.min.js"></script>
+        <script type="application/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="application/javascript" src="/lib/fontawesome/js/all.js"></script>
         
-        <script src="/lib/waypoints/lib/jquery.waypoints.min.js"></script>
-        <script src="/js/main.js" charset="utf-8"></script>
-        <script src="/js/custom.js" charset="utf-8"></script>
+        <script type="application/javascript" src="/lib/waypoints/lib/jquery.waypoints.min.js"></script>
+        <script type="application/javascript" src="/js/main.js"></script>
+        <script type="application/javascript" src="/js/custom.js"></script>
     </body>
 </html>

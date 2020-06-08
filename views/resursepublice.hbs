@@ -4,7 +4,7 @@
 {{> messages}}
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
 {{#each scripts}}
-    <script src="{{script}}" charset="utf-8"></script>
+    <script type="application/javascript"  src="{{script}}"></script>
 {{/each}}
 
     <div id="resursepublice">
