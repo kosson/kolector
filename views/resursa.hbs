@@ -11,6 +11,11 @@
                 {{!-- Dacă există copertă, afișeaz-o --}}
                 {{#if resursa.coperta}}
                     <img src="{{resursa.coperta}}" class="coperta card-img-top" alt="{{resursa.title}}">
+                    {{else}}
+                    <div style="position: relative;">
+                        <img src="/img/CREDlogo.jpg" alt="" width="100px" style="position: absolute; top: 5; left: 5">
+                        <img data-src="holder.js/100px100&textmode=exact?auto=yes&text=RED" class="coperta card-img-top" alt="{{resursa.title}}">
+                    </div>
                 {{/if}}
 
                 {{!-- Afișează titlul și descrierea --}}

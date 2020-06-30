@@ -1,5 +1,4 @@
-const GoogleStrategy   = require('passport-google-oauth20').Strategy;
-//TODO: implementează restul strategiilor!!!
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 module.exports = (passport) => {
     // Pentru a putea susține sesiuni de login persistent, 

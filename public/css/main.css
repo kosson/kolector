@@ -523,109 +523,14 @@ a[class$="8"], label[class$="8"] {
     padding: 0.3rem;
 }
 
-/* MENIUL deschis al instrumentelor editorului SVG-urile */
-/* .ce-toolbar__content {
-    height: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.scaling-svg-container {
-    position: relative; 
-    height: 0; 
-    width: 100%; 
-    padding: 0;
-    padding-bottom: 100%; 
-}
-
-.scaling-svg {
-    position: absolute; 
-    height: 100%; 
-    width: 100%; 
-    left: 0; 
-    top: 0;; 
-    padding-bottom: 92%; 
-    overflow: visible;
-} */
-
-/* ELEMENTELE DE SELECȚIE de tip RANGE */
+/* === CĂUTARE FAȚETATĂ === */
+.fatete, 
 .selectortxt {
     color: beige;
 }
 
-input[type='range'] {
-    box-sizing: border-box;
-    border: 0px solid transparent;
-    padding: 0px;
-    margin: 0px;
-    /* width: 210px; */
-    width: 12rem;    
-    height: 50px;
-    cursor: pointer;
-    background: -webkit-repeating-linear-gradient(90deg, #777, #777 1px, transparent 1px, transparent 40px) no-repeat 50% 50%;
-    background: -moz-repeating-linear-gradient(90deg, #777, #777 1px, transparent 1px, transparent 40px) no-repeat 50% 50%;
-    background: repeating-linear-gradient(90deg, #777, #777 1px, transparent 1px, transparent 40px) no-repeat 50% 50%;
-    background-size: 122px 25px;
-    font-size: 16px;
-}
-
-input[type='range'],
-input[type='range']::-webkit-slider-runnable-track,
-input[type='range']::-webkit-slider-thumb {
-    -webkit-appearance: none;
-}
-
-input[type='range']::-webkit-slider-runnable-track {
-    box-sizing: border-box;
-    /* width: 200px; */
-    width: 12rem;
-    height: 5px;
-    border-radius: 2px;
-    background: rgb(196, 191, 191);
-}
-input[type='range']::-moz-range-track {
-    box-sizing: border-box;
-    /* width: 200px; */
-    width: 12rem;
-    height: 5px;
-    border-radius: 2px;
-    padding: 0px;
-    background: #777;
-}
-input[type='range']::-webkit-slider-thumb {
-    box-sizing: border-box;
-    padding: 0px;
-    height: 20px;
-    width: 10px;
-    border-radius: 2px;
-    border: 1px solid;
-    margin-top: -8px;
-    background: #EEE;
-}
-input[type='range']::-ms-thumb {
-    box-sizing: border-box;
-    padding: 0px;
-    height: 20px;
-    width: 10px;
-    border-radius: 2px;
-    border: 1px solid;
-    background: #EEE;
-}
-input[type="range"]::-ms-fill-lower {
-    background: transparent;
-}
-input[type='range']:focus {
-    outline: none;
-}
-#selectlevel:after {
-    position: absolute;
-    color: #777;
-    content: '20 40 60 80';
-    padding: 40px;
-    word-spacing: 20px;
-    left: 0px;
-    top: 0px;
-    z-index: -1;
+.fatete {   
+    padding: 0.3rem;
 }
 
 #selectlevel {
@@ -637,10 +542,6 @@ input[type='range']:focus {
     display: block;
     color: #777;
 }
-/* #valoareclasa:before{
-    content:"";
-    font-weight: bold;
-} */
 
 #codex-editor {
     border: .1rem;

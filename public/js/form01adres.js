@@ -2603,7 +2603,6 @@ function clickPeDisciplina (evt) {
     }
 
     let e = evt || window.event;
-    console.log(e.dataset.nume);
     // DACĂ EXISTĂ CODUL ÎN disciplineSelectate, șterge-l
     if (disciplineSelectate.has(e.dataset.nume) == false) {
         disciplineSelectate.add(e.dataset.nume); // adaugă disciplina în `Set`-ul `disciplineSelectate`
@@ -3526,7 +3525,8 @@ deleteRes.addEventListener('click', function (evt) {
 var submitBtn = document.querySelector('#submit');
 submitBtn.addEventListener('click', (evt) => {
     pas4();
-    closeBag(evt); // ÎNCHIDE BAG-ul
+    // FIXME: Mai întâi verifică dacă are o imagine la copertă. Dacă nu are, generează una cu https://github.com/imsky/holder  https://www.cssscript.com/generating-custom-image-placeholders-with-pure-javascript-placeholder-js/
+    closeBag(evt); // ÎNCHIDE BAG-ul după ce ai verificat că ai o imagine la copertă, fie că este a utilizatorului, fie că este generată
     pubComm.emit('red', RED); // vezi în routes.js -> socket.on('red', (RED) => {...
     // aștept răspunsul de la server și redirecționez utilizatorul către resursa tocmai creată.
     pubComm.on('confirm', (redID) => {

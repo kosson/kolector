@@ -11,9 +11,9 @@
         <meta itemprop="description"    content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
         
         {{!-- SOCKET --}}
-        <script type="application/javascript" src="/socket.io/socket.io.js"></script>
+        {{!-- <script type="application/javascript" src="/socket.io/socket.io.js"></script> --}}
         {{!-- În cazul în care sunt probleme cu browserele, activează încărcarea scriptului în mod direct --}}
-        {{!-- <script type="application/javascript" src="/lib/socket.io-client/dist/socket.io.slim.js"></script> --}}
+        <script type="application/javascript" src="/lib/socket.io-client/dist/socket.io.slim.js"></script>
         
         {{!-- ES6 SHIM --}}
         <script type="application/javascript" src="/lib/es6-shim/es6-shim.min.js"></script>
@@ -35,19 +35,8 @@
         {{!-- BOOTSTRAP 4 --}}        
         <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
         <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script type="application/javascript" src="/lib/popper.js/dist/umd/popper.min.js"></script>       
+        <!-- jQuery first, then Bootstrap JS -->     
         <script type="application/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-
-        {{!-- DATATABLES --}}
-        <script type="application/javascript" src="/lib/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script type="application/javascript" src="/lib/datatables.net-select/js/dataTables.select.min.js"></script>
-        <script type="application/javascript" src="/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>        
-        <script type="application/javascript" src="/lib/datatables.net/js/dataTables.bootstrap.min.js"></script>
-
-        <script type="application/javascript" src="/lib/datatables.net-buttons/js/buttons.bootstrap.min.js"></script>
-        <script type="application/javascript" src="/lib/datatables.net-select/js/select.bootstrap.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="/lib/datatables.net-dt/css/jquery.dataTables.min.css">
 
         {{!-- HANDLEBARS --}}
         <script type="application/javascript" src="/lib/handlebars/handlebars.runtime.min.js"></script> 

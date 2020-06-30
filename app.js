@@ -129,6 +129,7 @@ app.use(function (req, res, next) {
     };
     lookupSession();
 });
+
 // when a socket.io connect connects, get the session and store the id in it (https://stackoverflow.com/questions/42379952/combine-sockets-and-express-when-using-express-middleware)
 io.use(function clbkIOuseSessions(socket, next) {
     sessionMiddleware(socket.request, socket.request.res, next);
@@ -149,6 +150,7 @@ app.use('/upload', upload);
 app.use('/signup',   signupLoco); // SIGNUP!!!
 // LOGIN
 const UserSchema = require('./models/user');
+const { shutdown, server_info } = require('./redis.config');
 const UserDetails = mongoose.model('users', UserSchema);
 
 passport.use(UserDetails.createStrategy()); // echivalentul lui passport.use(new LocalStrategy(Account.authenticate()));
@@ -221,7 +223,8 @@ function shouldCompress (req, res) {
 app.use(compression({ filter: shouldCompress }));
 
 // === MIDDLEWARE-ul RUTELOR ===
-app.use('/',               csurfProtection, index);
+// app.use('/',               csurfProtection, index);
+app.use('/',               index);
 app.use('/auth',           authG);
 app.use('/callback',       callbackG);
 app.use('/logout',         logout);
@@ -261,6 +264,26 @@ app.use(function catchAllMiddleware (err, req, res, next) {
     res.status(500).send('În lanțul de prelucrare a cererii, a apărut o eroare');
 });
 
+// GESTIONAREA SEMNALELOR
+process.on('SIGINIT', function onSiginit () {
+    console.info('Am prins un SIGINIT (ctr+c). Închid procesul gracefull', new Date().toISOString());
+    shutdownserver();
+});
+
+process.on('SIGTERM', function onSiginit () {
+    console.info('Am prins un SIGTERM (stop). Închid procesul gracefull', new Date().toISOString());
+    shutdownserver();
+});
+
+function shutdownserver () {
+    server.close(function onServerClosed (err) {
+        if (err) {
+            console.error(err);
+            process.exitCode = 1;
+        }
+        process.exit(1);
+    });
+};
 
 process.on('uncaughtException', (un) => {
     console.log('[app.js] A apărul un uncaughtException cu detaliile ', un);

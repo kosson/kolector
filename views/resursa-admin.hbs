@@ -11,6 +11,9 @@
             {{!-- Dacă există copertă, afișeaz-o --}}
             {{#if resursa.coperta}}
                 <img src="{{resursa.coperta}}" class="coperta card-img-top" alt="{{resursa.title}}">
+                {{else}}
+                <div class="holderjs" data-background-src="?holder.js/300x200"></div>
+                {{!-- <img src="holder.js/300x200" class="coperta card-img-top" alt="{{resursa.title}}"> --}}
             {{/if}}
             
             {{!-- Afișează titlul și descrierea --}}

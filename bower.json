@@ -40,6 +40,8 @@
     "popper.js": "^1.16.0",
     "moment": "^2.24.0",
     "handlebars": "^4.5.1",
-    "datatables.net-responsive-dt": "^2.2.3"
+    "datatables.net-responsive-dt": "^2.2.3",
+    "holderjs": "^2.9.7",
+    "socket.io-client": "^2.3.0"
   }
 }

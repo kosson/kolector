@@ -5,18 +5,18 @@ const express  = require('express');
 const router   = express.Router();
 const mongoose = require('mongoose');
 const moment   = require('moment');
-const redisClient = require('../redis.config');
+// const redisClient = require('../redis.config');
 // Încarcă mecanismele de verificare ale rolurilor
 let makeSureLoggedIn = require('connect-ensure-login');
-let checkRole = require('./controllers/checkRole.helper');
+let checkRole        = require('./controllers/checkRole.helper');
 // MODELE
-const Resursa = require('../models/resursa-red'); // Adu modelul resursei
+const Resursa    = require('../models/resursa-red'); // Adu modelul resursei
 // CONFIGURARI ACCES SERVICII
-const esClient= require('../elasticsearch.config');
+const esClient   = require('../elasticsearch.config');
 // HELPERI
-const schema        = require('../models/resursa-red-es7');
-const ES7Helper= require('../models/model-helpers/es7-helper');
-let editorJs2TXT  = require('./controllers/editorJs2TXT');
+const schema     = require('../models/resursa-red-es7');
+const ES7Helper  = require('../models/model-helpers/es7-helper');
+let editorJs2TXT = require('./controllers/editorJs2TXT');
 
 
 /* === PROFILUL PROPRIU === */
@@ -62,7 +62,9 @@ router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), function clbkProfRes (
                 {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
                 {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
                 {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
-                {script: '/js/res-visuals-user.js'}
+                {script: '/js/res-visuals-user.js'},
+                // HOLDERJS
+                {script: '/lib/holderjs/holder.min.js'},  
             ];
 
             let styles = [
@@ -195,7 +197,21 @@ router.get('/:idres', makeSureLoggedIn.ensureLoggedIn(), async function clbkProf
                         expertCheck:      obi.expertCheck
                     };
 
-                    ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
+                    ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS); // https://stackoverflow.com/questions/50609417/elasticsearch-error-cluster-block-exception-forbidden-12-index-read-only-all
+                    //FIXME: EROAREA care apare în consolă 
+                    // {
+                    //     "error": {
+                    //       "root_cause": [
+                    //         {
+                    //           "type": "cluster_block_exception",
+                    //           "reason": "index [resedus0] blocked by: [TOO_MANY_REQUESTS/12/index read-only / allow delete (api)];"
+                    //         }
+                    //       ],
+                    //       "type": "cluster_block_exception",
+                    //       "reason": "index [resedus0] blocked by: [TOO_MANY_REQUESTS/12/index read-only / allow delete (api)];"
+                    //     },
+                    //     "status": 429
+                    //   }                    
                 }
                 return resFromIdx;
             }).catch(err => {

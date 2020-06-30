@@ -1,5 +1,8 @@
 require('dotenv').config();
 
+/* === LIVRESQ - CONNECTOR === */
+const LivresqConnect = require('../../models/livresq-connect').LivresqConnect;
+
 /* === DEPENDINȚE === */
 const moment = require('moment');
 /* === MODELE === */
@@ -33,7 +36,9 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
     // SCRIPTURI
     let scripts = [       
         {script: '/lib/moment/min/moment.min.js'},
-        {script: '/js/redincredall.js'}
+        {script: '/js/redincredall.js'},
+        // HOLDERJS
+        {script: '/lib/holderjs/holder.min.js'},         
     ];
     
     /* === VERIFICAREA CREDENȚIALELOR === */
@@ -148,6 +153,8 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
                 {script: '/lib/editorjs/quote.js'},
                 {script: '/lib/editorjs/inlinecode.js'},
                 {script: '/lib/moment/min/moment.min.js'},
+                // HOLDERJS
+                {script: '/lib/holderjs/holder.min.js'},                
                 // UPLOADER
                 {script: '/js/uploader.js'},   
                 {script: '/js/cred-res.js'}      
@@ -189,6 +196,13 @@ exports.describeResource = function describeResource (req, res, next) {
         {script: '/lib/editorjs/code.js'},
         {script: '/lib/editorjs/quote.js'},
         {script: '/lib/editorjs/inlinecode.js'},
+        // Datatables
+        {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
+        {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
+        {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
+        {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
+        {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
+        {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},        
         // UPLOADER
         {script: '/js/uploader.js'},
         // HELPER DETECT URLS or PATHS
@@ -196,6 +210,12 @@ exports.describeResource = function describeResource (req, res, next) {
         // FORM
         {script: '/js/form01adres.js'}
     ];
+
+    let styles = [
+        {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'},
+        {style: '/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css'}
+    ];
+
     // roluri pe care un cont le poate avea în proiectul CRED.
     let roles = ["user", "cred", "validator"];
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
@@ -207,6 +227,10 @@ exports.describeResource = function describeResource (req, res, next) {
         // FIXME: Renunță la acest artificiu pentru conturile locale de îndată ce unifici localele cu profilurile Google.
         let given_name =  "Jane" || user.googleProfile.given_name;
         let family_name = "Doe"  || user.googleProfile.family_name;
+        
+        /* === LIVRESQ CONNECTOR === */
+        let url = new LivresqConnect().prepareProjectRequest(user.email, given_name, family_name);
+        if(!url.startsWith("http")) url = "#";
 
         // Dacă avem un admin, atunci oferă acces neîngrădit
         res.render('adauga-res', {
@@ -215,9 +239,10 @@ exports.describeResource = function describeResource (req, res, next) {
             style:   "/lib/fontawesome/css/fontawesome.min.css",
             logoimg: "/img/rED-logo192.png",
             credlogo:"/img/CREDlogo.jpg",
-            // csrfToken: cookieObj._csrf,
             csrfToken: req.csrfToken(),
-            scripts
+            styles,
+            scripts,
+            livresqProjectRequest: url /* === LIVRESQ CONNECTOR === */
         });
         // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere al resursei.
@@ -226,6 +251,7 @@ exports.describeResource = function describeResource (req, res, next) {
         // FIXME: Introdu în formularul de creare cont câmpurile name și surname pentru a elimina artificul făcut pentru integrarea cu Livresq
         let given_name = 'Jane' || user.googleProfile.given_name;
         let family_name = 'Doe' || user.googleProfile.family_name;
+        /* === LIVRESQ CONNECTOR === */
         let url = new LivresqConnect().prepareProjectRequest(user.email, given_name, family_name);
         if(!url.startsWith("http")) url = "#";
 
@@ -237,7 +263,8 @@ exports.describeResource = function describeResource (req, res, next) {
             credlogo:"/img/CREDlogo.jpg",
             // csrfToken: cookieObj._csrf,
             csrfToken: req.csrfToken(),
-            scripts
+            scripts,
+            livresqProjectRequest: url /* === LIVRESQ CONNECTOR === */
         });
     } else {
         res.redirect('/401');

@@ -27,7 +27,9 @@ router.get('/', function clbkRootRoute (req, res, next) {
         });
         
         let scripts = [       
-            {script: '/lib/moment/min/moment.min.js'}
+            {script: '/lib/moment/min/moment.min.js'},
+            // HOLDERJS
+            {script: '/lib/holderjs/holder.min.js'}  
         ];
         
         res.render('index', {
@@ -36,7 +38,7 @@ router.get('/', function clbkRootRoute (req, res, next) {
             logoimg:   "img/rED-logo192.png",
             user:      req.user,
             resurse:   newResultArr,
-            csfrToken: req.csrfToken(),
+            // csfrToken: req.csrfToken(),
             scripts
         });
     }).catch((err) => {

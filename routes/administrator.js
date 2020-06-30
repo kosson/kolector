@@ -5,8 +5,10 @@ const Resursa = require('../models/resursa-red');
 const pubComm = require('./sockets');
 
 // HELPERI
-const ES7Helper= require('../models/model-helpers/es7-helper');
-let content2html  = require('./controllers/editorJs2HTML');
+const ES7Helper  = require('../models/model-helpers/es7-helper');
+const schema     = require('../models/resursa-red-es7');
+// let content2html = require('./controllers/editorJs2HTML');
+let editorJs2TXT = require('./controllers/editorJs2TXT');
 
 // === VERIFICAREA ROLURILOR ===
 let checkRole = require('./controllers/checkRole.helper');
@@ -79,7 +81,7 @@ router.get('/reds', function clbkAdmReds (req, res) {
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
     
-    /* ====== VERIFICAREA CREDENȚIALELOR ====== */
+    /* === VERIFICAREA CREDENȚIALELOR === */
     // Dacă avem un admin, atunci oferă acces neîngrădit
     if(req.session.passport.user.roles.admin){
         let scripts = [       
@@ -176,8 +178,8 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
                     if(resFromIdx.body == false && resFromIdx.statusCode === 404){
                         // verifică dacă există conținut
                         var content2txt = '';
-                        if ('content' in newObi) {
-                            content2txt = editorJs2TXT(newObi.content.blocks); // transformă obiectul în text
+                        if ('content' in obi) {
+                            content2txt = editorJs2TXT(obi.content.blocks); // transformă obiectul în text
                         }
                         // indexează documentul
                         const data = {
@@ -216,6 +218,20 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
                         };
 
                         ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
+                        //FIXME: EROAREA care apare în consolă 
+                        // {
+                        //     "error": {
+                        //       "root_cause": [
+                        //         {
+                        //           "type": "cluster_block_exception",
+                        //           "reason": "index [resedus0] blocked by: [TOO_MANY_REQUESTS/12/index read-only / allow delete (api)];"
+                        //         }
+                        //       ],
+                        //       "type": "cluster_block_exception",
+                        //       "reason": "index [resedus0] blocked by: [TOO_MANY_REQUESTS/12/index read-only / allow delete (api)];"
+                        //     },
+                        //     "status": 429
+                        //   }
                     }
                     return resFromIdx;
                 }).catch(err => {
