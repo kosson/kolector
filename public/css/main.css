@@ -543,6 +543,12 @@ a[class$="8"], label[class$="8"] {
     color: #777;
 }
 
+a.facet {
+    text-decoration: none;
+    color: black;
+}
+/* === CĂUTARE FAȚETATĂ [END] === */
+
 #codex-editor {
     border: .1rem;
     border-style: solid;
@@ -922,3 +928,18 @@ a[class$="8"], label[class$="8"] {
     color: black;
 }
 
+/* MANSONRY */
+.masonry { /* Masonry container */
+    -webkit-column-count: 4;
+    -moz-column-count:4;
+    column-count: 4;
+    -webkit-column-gap: 1em;
+    -moz-column-gap: 1em;
+    column-gap: 1em;
+    margin: 1.5em;
+    padding: 0;
+    -moz-column-gap: 1.5em;
+    -webkit-column-gap: 1.5em;
+    column-gap: 1.5em;
+    font-size: .85em;
+}

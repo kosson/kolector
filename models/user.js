@@ -10,6 +10,7 @@ var Schema = mongoose.Schema;
 var User = new Schema({
     _id: Schema.Types.ObjectId,
     created:  Date,
+    avatar: String,
     email: {
         type: String,
         index: true

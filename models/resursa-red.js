@@ -170,4 +170,4 @@ ResursaSchema.post('save', function clbkPostSave1 (doc, next) {
     next();
 });
 
-module.exports = mongoose.model('resursedu', ResursaSchema);
+module.exports = mongoose.model(process.env.MONGO_REDS, ResursaSchema);

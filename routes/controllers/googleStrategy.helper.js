@@ -11,9 +11,11 @@ const mongoose  = require('mongoose');
  * @param {Function} done Callback
  */
 function googleStrategy (request, accessToken, refreshToken, params, profile, done) {
+    var avatar = descriere.googleProfile.picture ? descriere.googleProfile.picture : '';
     // constituirea obiectului cu date pentru a popula modelul
     const record = {
         _id: new mongoose.Types.ObjectId(),
+        avatar,
         email: profile._json.email,
         googleID: profile.id,
         googleProfile: {

@@ -1,0 +1,37 @@
+{
+    "lbcom": [
+        {"Comunicare în limba română": [
+            "lbcomRom0", 
+            "lbcomGermana0", 
+            "lbcomMaghiara0", 
+            "lbcomRroma0", 
+            "lbcomSarba0", 
+            "lbcomSlovaca0"
+        ]},
+        {"Comunicare în limba maternă": [
+            'lbmatBulgara0', 
+            'lbmatCeha0', 
+            'lbmatCroata0', 
+            'lbmatGermana0', 
+            'lbmatGerinrom0', 
+            'lbmatItaliana0', 
+            'lbmatMaghiara0', 
+            'lbmatMaginrom0', 
+            'lbmatMinlbmag0',
+            'lbmatMinlbrom0',
+            'lbmatNeogreaca0', 
+            'lbmatPolona0', 
+            'lbmatRroma0', 
+            'lbmatRusa0', 
+            'lbmatSarba0', 
+            'lbmatSlovaca0', 
+            'lbmatSlolbcl0',
+            'lbmatTurca0', 
+            'lbmatUcraina0',
+            'lbmatUcrarom0'
+        ]},
+        {"Comunicarea în limba modernă": [
+            "lbmod0"
+        ]}
+    ]
+}

@@ -777,7 +777,7 @@ module.exports = function sockets (pubComm) {
 
         // === PERSON === ::căutarea unui utilizator și reglarea înregistrărilor dintre ES și MONGODB
         socket.on('person', async function searchUserInES (queryString) {
-            // console.log("Stringul de interogare este următorul: ", queryString);
+            // console.log("Stringul de interogare din socket.on(person) este următorul: ", queryString);
             
             // FIXME: Sanetizează inputul care vine prin `queryString`!!! E posibil să fie flood. Taie dimensiunea la un singur cuvânt!!!
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html
@@ -817,7 +817,6 @@ module.exports = function sockets (pubComm) {
                                     socket.emit('mesaje', `Pentru că documentul nu mai există în baza de date, l-am șters și de la indexare cu detaliile: ${res}`);
                                 }).catch((error)=>{
                                     console.log(error);
-                                    socket.emit('mesaje', `Pentru că documentul nu mai există în baza de date, am încercat să-l șterg și din index, dar: ${error}`);
                                 });
                             } else {
                                 // dacă utilizatorul există și în MongoDB, dar și în ES7, trimite datele în client
@@ -879,7 +878,7 @@ module.exports = function sockets (pubComm) {
 
         // === PERSONRECORD === ::FIȘA completă de utilizator
         socket.on('personrecord', id => {
-            // TODO: constituie un query care să aducă înregistrarea de user și ultimele sale 5 contribuții RED
+            // console.log('Din sockets.js [personrecord] -> id-ul primit este ', id);
             // https://mongoosejs.com/docs/api.html#model_Model.populate
             const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
             UserModel.findById(id, function clbkFindById (error, user) {
@@ -890,7 +889,7 @@ module.exports = function sockets (pubComm) {
                 // setează opțiunile pentru căutare
                 var opts = [
                     {
-                        path: 'resurse', 
+                        path: 'resurse',
                         options: {
                             sort: {date: -1} // 1 este ascending; -1 este descending (pornește cu ultima adusă)
                             // limit: 5
@@ -898,14 +897,16 @@ module.exports = function sockets (pubComm) {
                         model: Resursa
                     }
                 ];
-                // Completarea datelor prin populare
+                // Populează modelul!
                 UserModel.populate(user, opts, function clbkExecPopUser (error, res) {
                     if (error) {
                         console.log(error);
-                        socket.emit('mesaje', 'A dat eroare căutarea...');
+                        // socket.emit('mesaje', 'A dat eroare căutarea...');
                     }
-                    // console.log(res);
-                    socket.emit('personrecord', res);
+                    // console.log('Din sockets.js[on(personrecord)] -> după populare: ', res);
+                    if (res) {
+                        socket.emit('personrecord', res); // trimite rezultatul în client
+                    }
                 });
             });
         });
@@ -975,7 +976,6 @@ module.exports = function sockets (pubComm) {
             });
         });
     });
-    /* === CONSTRUCȚIA BAG-ULUI - END === */
-    /* === ÎNCĂRCAREA UNUI fișier cu `multer` === */
+
     return pubComm;
 };

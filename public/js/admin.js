@@ -1,21 +1,22 @@
-// ======== CĂUTAREA UNUI UTILIZATOR
+/* === CĂUTAREA UNUI UTILIZATOR === */
+
 // --> Adaugă receptor pe butonul din formularul de căutare
 var findUserBtn = document.querySelector("#findUserBtn");
+/* === CERE PROFILUL USERULUI === */
 findUserBtn.addEventListener('click', function clbkFindUser (evt) {
     evt.preventDefault();
-    pubComm.emit('person', document.querySelector('#findUserField').value); // Emite pe `person` în backend
+    pubComm.emit('person', document.querySelector('#findUserField').value);
 });
 
+/* === PROFILUL ESTE PRIMIT și AFIȘAT === */
 pubComm.on('person', (data) => {
-    renderUsr.innerHTML = '';
-    // console.log(data);
+    renderUsr.innerHTML = ''; // șterge profilul anterior din DOM
     showUser(data);
-    // console.log(data.hits.hits);
     // Afișează eroare în cazul în care înregistrarea nu este indexată.
     if (data.length === 0) {
         $.toast({
             heading: 'Neindexat, poate?',
-            text: "Utilizatorul căutat, fie nu există, fie nu a fost indexat. Acum îl voi căuta în baza de date și încerc o reindexare",
+            text: "Schimbă cheia de căutare!",
             position: 'top-center',
             showHideTransition: 'fade',
             icon: 'error',
@@ -30,19 +31,25 @@ var userTmpl = document.querySelector('#usertpl');    // Pas 1 - Fă o referinț
 var renderUsr = document.getElementById('showusers'); // Pas 2 - Fă o referință către elementul din DOM unde va fi inserat conținutul rezultat din compilarea template-ului
 
 /**
- * Rolul funcției este de a popula un template Handlebars cu datele din backend
- * @param {Array} resurse 
+ * Funcția creează carduri pentru fiecare utilizator găsit la căutare.
+ * @param {Array} resurse Este un array al datelor utilizatorilor găsiți
  */
 function showUser (resurse) {
     resurse.map(user => {
         var cloneContent = userTmpl.content.cloneNode(true); // Pas 3 -  Clonează conținutul din template
         
-        // Injectează datele în elemente
+        // titul card-ului va fi adresa de email a userului
         var title = cloneContent.querySelector('.card-title');
         title.textContent = user._source.email;
+
+        // Butonul cardului va fi numele de familie în cazul unui cont de Google. Pe buton ascultă `exposeUser()`
         var family_name = cloneContent.querySelector('.userProfileBtn');
         family_name.name = user._id;
-        family_name.textContent = user._source.googleProfile.name;
+        if (user._source.googleProfile.name) {
+            family_name.textContent = user._source.googleProfile.name;
+        } else {
+            family_name.textContent = user._id;
+        }
 
         // Injectează rezultatul în DOM
         renderUsr.appendChild(cloneContent);
@@ -55,9 +62,8 @@ function showUser (resurse) {
  * Emite pe `personrecord`.
  */
 function exposeUser () {
-    // console.log(event.target.name);
     // adu toate datele despre user (administrative și contribuții)
-    pubComm.emit('personrecord', event.target.name);
+    pubComm.emit('personrecord', event.target.name); // este ascultat ma jos
 }
 
 var userFile; // (userFile.resurse)
@@ -88,9 +94,16 @@ TimelineObj = {
 pubComm.on('personrecord', function clblPersReds (resurse) {
     renderUsrDetails.innerHTML = '';
     userFile = resurse;
+    // console.log('Din admin.js [on(personrecord)] -> resurse ', resurse);
 
     // TODO: Transformă `resurse` într-un subset necesar lui Timeline
-    TimelineObj.title.text.headline = resurse.googleProfile.name;
+    if (resurse.googleProfile) {
+        console.log('Din admin.js [on(personrecord)] -> resurse.googleProfile ', resurse.googleProfile);
+        TimelineObj.title.text.headline = resurse.googleProfile.name;
+    } else {
+        TimelineObj.title.text.headline = resurse.username;
+    }
+    
     TimelineObj.title.text.text = `Acestea sunt resursele contribuite afișate temporal`;
 
     resurse.resurse.map(function clbkResursa2Timeline (resursa) {
@@ -224,16 +237,25 @@ function showUserDetails (descriere) {
     var cloneTbl = usrResTblTmpl.content.cloneNode(true); // clonarea template-ului pentru afișare tabelară
 
     // injectează datele primite în elementele template-ului
-    // ===== AVATAR =====
+    // === AVATAR ===
     var userAvatar = cloneContent.querySelector('.admUdesc__avatar'); // Numele utilizatorului
-    userAvatar.src = descriere.googleProfile.picture;
-    userAvatar.alt = descriere.googleProfile.name;
 
-    // ===== ID =====
+    // userAvatar.src = descriere.googleProfile.picture;
+    if (descriere.googleProfile) {
+        userAvatar.src = descriere.googleProfile.picture;
+        userAvatar.alt = descriere.googleProfile.name
+    } else if (descriere.avatar) {
+        userAvatar.src = descriere.avatar;
+    } else {
+        userAvatar.src = ''; // FIXME: Generează ceva aleatoriu sau ia de pe net ramdom o imagine, ceva
+    }
+    descriere.googleProfile ? userAvatar.alt = descriere.googleProfile.name : descriere.username;      // cazul localului
+
+    // === ID ===
     var userID = cloneContent.querySelector('.admUdesc__admUid');
     userID.textContent = descriere._id;
 
-    // ===== ROLES =====
+    // === ROLES ===
     var uRoles = cloneContent.querySelector('.admUsesc__admUroles');
     descriere.roles.rolInCRED.map(function clbkRolesTmpl (rol) {
         let rolTag = document.createElement('span');
@@ -244,7 +266,7 @@ function showUserDetails (descriere) {
         uRoles.appendChild(rolTag);
     });
 
-    // ==== UNITS =====
+    // === UNITS ===
     var uUnits = cloneContent.querySelector('.admUsesc__admUunits');
     descriere.roles.unit.map(function clbkUnitsTmpl (unit) {
         let unitTag = document.createElement('span');
@@ -255,7 +277,7 @@ function showUserDetails (descriere) {
         uUnits.appendChild(unitTag);
     });
 
-    // ===== RESURSE AFIȘARE [CARD-uri Bootstrap 4] =====
+    /* === RESURSE AFIȘARE [CARD-uri Bootstrap 4] === */
     var uResurse = cloneContent.querySelector('.resurseUser');
 
     // Extrage ultimele 5 resurse
@@ -335,7 +357,7 @@ pubComm.on('mkAdmin', (result) => {
     console.log(result);
 });
 
-// ==== ADAUGĂ ROLURI
+// === ADAUGĂ ROLURI
 var rolesSet = new Set(); // setul rolurilor care vor fi adăugate în profilul utilizatorului
 var unitsSet = new Set(); // setul unit-urilor care vor fi adăugate în profil.
 

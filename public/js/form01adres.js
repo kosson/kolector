@@ -622,7 +622,7 @@ const mapCodDisc = new Map();
 
 // La `parent` va fi codul care este precizat în `data-*` de la `Aria/arii curriculare` din HTML - client
 // REGULĂ: array-urile disciplinelor nu trebuie să aibă coduri copiate de la array-ul altei discipline (produce ghosturi și orfani pe ecran)
-// REGULĂ: pentru a se face colocarea sub-disciplinelor la o disciplină, cele din array trebuie să pornescă cu un fragment de caractere identic.
+// REGULĂ: pentru a se face colocarea sub-disciplinelor la o disciplină, cele din array trebuie să pornească cu un fragment de caractere identic.
 // CLASA 0
 mapCodDisc.set("0", 
     [
@@ -2554,7 +2554,7 @@ mapCodDisc.set("8",
 /**
  * Funcția este un helper și are rolul de a face o căutare în `Map`-ul `mapCodDisc` 
  * pentru a extrage numele disciplinei pilon
- * @ param {Object} `obidisc` //{nivel: n, cod: obi.codsdisc} 
+ * @param {Object} `obidisc` //{nivel: n, cod: obi.codsdisc} 
  */
 function extragNumeDisciplina (obidisc) {
     let disciplina;
@@ -2562,7 +2562,8 @@ function extragNumeDisciplina (obidisc) {
         // caută în clasa specificată de obidisc.nivel, înregistrarea în map de tip Array cu obiecte
         if (obidisc.nivel === k) {
             // pentru setul găsit
-            for (let obi of v) {  
+            let obi;
+            for (obi of v) {  
                 // caută în array-ul codurilor disciplinelor arondate unei arii a unui an              
                 if (obi.coduriDiscipline.includes(obidisc.cod)) {
                     // dacă am găsit-o, returnează!
@@ -2590,6 +2591,7 @@ const DISCMAP = new Map(); // colector de structuri {nivel: "5", 5: {art5: [], b
 // SETUL DISCIPLINELOR CARE AU FOST BIFATE
 var disciplineSelectate = new Set(); // selecția disciplinelor
 var discSelected = document.querySelector('#disciplineselectate'); // zona de afișare a disciplinelor care au fost selectate
+
 /**
  * Funcția e listener pentru fiecare checkbox disciplină. Odată selectată disciplina, aceasta va fi afișată într-o zonă de selecție
  * @param {NodeElement} `evt` fiind chiar elementul obiect
@@ -2646,7 +2648,7 @@ niveluri.forEach(function cbNiveluri (nivel) {
         // încărcarea setului de discipline pentru input-ul unei clase pentru care s-a dat click
         if (!DISCMAP.has(STRUCTURE.nivel)) {
             DISCMAP.set(STRUCTURE.nivel, STRUCTURE.rezultat);
-        } // prin click pe clase, se vor încărca progresiv toate, dacă se va da click pe toate.
+        }; // prin click pe clase, se vor încărca progresiv toate, dacă se va da click pe toate.
 
         // Info primare pentru constituire interfață
         let n = STRUCTURE.nivel; // -> 8, de exemplu

@@ -19,8 +19,8 @@ pubComm.on('mesaje', (mess) => {
 
 /**
  * Clasa `createElement` va creea elemente HTML
- * @param {String} tag este un și de caractere care indică ce tip de element va fi creat
- * @param {String} [id] este un șir de caractere care indică un id pentru element
+ * @param {string} tag este un șir de caractere care indică ce tip de element va fi creat
+ * @param {string} [id] este un șir de caractere care indică un id pentru element
  * @param {Array}  [cls] este un array ce cuprinde clasele elementului
  * @param {Object} [attrs] este un obiect de configurare a elementului care permite definirea de atribute
  */
@@ -101,4 +101,20 @@ function decodeCharEntities (str) {
         return newArr.join('');
     });
     return arrNew.join(' ');
+}
+/**
+ * Funcția are rolul de a extrage setul de date atașat unui element prin data-*
+ * @param {Object} elem 
+ */
+function datasetToObject(elem){
+    var data = {};
+    [].forEach.call(elem.attributes, function(attr) {
+        if (/^data-/.test(attr.name)) {
+            var camelCaseName = attr.name.substr(5).replace(/-(.)/g, function ($0, $1) {
+                return $1.toUpperCase();
+            });
+            data[camelCaseName] = attr.value;
+        }
+    });
+    return data;
 }
