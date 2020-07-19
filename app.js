@@ -14,6 +14,7 @@ const LocalStrategy  = require('passport-local').Strategy;
 const responseTime   = require('response-time');
 // const multer         = require('multer');
 const RedisStore     = require('connect-redis')(session);
+const chalk          = require('chalk');
 
 const hbs            = require('express-hbs');
 const app            = express();
@@ -27,8 +28,8 @@ const i18n           = require('i18n');
 
 let port = process.env.PORT || 8080;
 http.listen(port, '127.0.0.1', function cbConnection () {
-    console.log('Kolector ', process.env.APP_VER);
-    console.log('Server pornit pe 8080 -> binded pe 127.0.0.1');
+    console.log(chalk.blue('Kolector ', process.env.APP_VER));
+    console.log(chalk.blue('Server pornit pe 8080 -> binded pe 127.0.0.1'));
 });
 
 /* === ÎNCĂRCAREA RUTELOR === */
@@ -285,8 +286,9 @@ function shutdownserver () {
     });
 };
 
-process.on('uncaughtException', (un) => {
-    console.log('[app.js] A apărul un uncaughtException cu detaliile ', un);
+// gestionează erorile care ar putea aprea în async-uri netratate corespunzător sau alte promisiuni.
+process.on('uncaughtException', (err) => {
+    console.log(chalk.red.inverse('[app.js] A apărul un uncaughtException cu detaliile ', err.message));
 });
 
 /**
@@ -314,7 +316,7 @@ const detalii = {
     RAM: formatBytes(alocareProces.rss)
 }
 
-console.log("Memoria RAM alocată la pornire este de: ", detalii.RAM);
+console.log(chalk.green.inverse("Memoria RAM alocată la pornire este de: ", detalii.RAM));
 
 // exports.pubComm = pubComm;
 module.exports.io = io;

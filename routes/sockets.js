@@ -353,7 +353,7 @@ module.exports = function sockets (pubComm) {
 
             lastBag = BagIt(caleS, 'sha256');
             // introdu un nou fișier în Bag
-            strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));
+            strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`)); //FIXME: refactor cu pipeline();
             // construiește obiectul de răspuns.
             var responseObj4AddedFile = {
                 success: 1,
@@ -551,7 +551,7 @@ module.exports = function sockets (pubComm) {
                     // generează arhiva din subdirectorul resursei în subdirectorul țintă din deleted
                     archive.directory(dirPath, path2deres);
                     // constituie arhiva!                   
-                    archive.pipe(output);
+                    archive.pipe(output); //FIXME: refactor cu pipeline();
                     // WARNINGS
                     archive.on('warning', function(err) {
                         if (err.code === 'ENOENT') {

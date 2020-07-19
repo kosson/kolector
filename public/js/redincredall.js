@@ -1932,6 +1932,19 @@ mapCodDisc.set("8",
         }
     ]
 );
+mapCodDisc.set("a",{
+    lbcom:    "Limbă și comunicare",
+    matstnat: "Matematică și științe ale naturii",
+    omsoc:    "Om și societate",
+    edfizsp:  "Educație fizică, sport și sănătate",
+    arte:     "Arte",
+    teh:      "Tehnologii",
+    consor:   "Consiliere și orientare",
+    currsc:   "Curriculum la decizia școlii",
+});
+
+const coduriA = Object.keys(structA);
+const numedeA = Object.values(structA);
 
 const cl0 = document.querySelector('#cl0');
 const cl1 = document.querySelector('#cl1');
@@ -1996,19 +2009,22 @@ function structureAriAndDiscs (elem) {
     }; // FIXME: Cred că trebuie refăcută funcția `structDiscipline()`.
 
     // #5 restructurează obiectul aferent clasei (cheie) din `mapCodDisc`
-    const 
+    // Uneste toate disciplinele care au acelasi părinte
+    const ArrayFromMapCodDisc = Array.from(mapCodDisc);
 
-    const clsTouples = Object.entries(clsdata); // generează un array de array-uri
-    let k, v;
+
+
+    // const clsTouples = Object.entries(clsdata); // generează un array de array-uri
+    // let k, v;
     
-    // rând pe rând sunt create toate elementele achor pentru fiecare disciplină în parte
-    for (let [k, v] of clsTouples) {
-        // TODO: pentru disciplinele care sunt arondate unei arii, generează un dropdown pentru acea arie cu toate disciplinele
+    // // rând pe rând sunt create toate elementele achor pentru fiecare disciplină în parte
+    // for (let [k, v] of clsTouples) {
+    //     // TODO: pentru disciplinele care sunt arondate unei arii, generează un dropdown pentru acea arie cu toate disciplinele
 
-        let aelem = new createElement('a', k, ['badge', 'facet', 'mansonry', k], {'href': '#', 'data-text': v, 'data-cod': k}).creeazaElem(v);
-        aelem.addEventListener('click', highlightf);
-        discipline.appendChild(aelem);
-    }
+    //     let aelem = new createElement('a', k, ['badge', 'facet', 'mansonry', k], {'href': '#', 'data-text': v, 'data-cod': k}).creeazaElem(v);
+    //     aelem.addEventListener('click', highlightf);
+    //     discipline.appendChild(aelem);
+    // }
 }
 
 /**
@@ -2142,6 +2158,47 @@ function clickPeDisciplina (evt) {
 }
 
 /**
+ * Funcția are rolul de a întoarce un obiect complex format dintr-un obiect
+ * adus ca valoarea a proprietății corespondente clasei din `mapCodDisc` și 
+ * obiectul generat din datele extrase din data=* a elementului selectat
+ * @param {Object} struct 
+ * @param {String} codArie 
+ */
+function rehashDataStruct (struct, codArie) {
+    return struct.reduce((ac, elem, idx, arr) => {
+        const numeArie = structA[codArie];
+    
+        if (Object.keys(ac).length === 0 && ac.constructor === Object) {
+            // popularea primului obiect din serie; este necesar pentru a da structura dar și pentru că altfel va fi omis
+            if (coduriA.includes(codArie)){
+                ac[structA[codArie]] = {
+                    clasa: numeArie,
+                    cod: codArie,   
+                    [elem.nume]: {
+                        clasaDisc: elem.nume,
+                        discipline: elem.coduriDiscipline.map((x) => {return {[x]: clasaDate[x]}})
+                    }    
+                };
+            }
+        } else {
+            // console.log(elem)
+            if (elem.parent.includes(codArie)) {
+                // completarea obiectelor
+                ac[numeArie].clasa = structA[codArie];
+                ac[numeArie].cod = codArie;
+                ac[numeArie][elem.nume] = {
+                    clasaDisc: elem.nume,
+                    discipline: elem.coduriDiscipline.map((x) => {return {[x]: clasaDate[x]}})
+                } || {};
+            }
+            
+        }
+        // returnează ac-ul îmbogățit
+        return ac;
+    }, {});
+};
+
+/**
  * Funcția are rolul să structureze sub-disciplinele în raport cu Disciplina mare la care sunt arondate
  * Disciplina va fi codificată extrăgând un fragment din numele care este precizat în valorile setului extras din data=*
  * @param {Object} discs Este un obiect cu toate disciplinele din setul data=* aferent unei clase
@@ -2158,28 +2215,40 @@ function structDiscipline (discs = {}) {
     if (discs.cl) {
         nivelNo = discs.cl.split('').pop(); // scoate numărul aferent clasei!!!
     }
+
+    // obiectul care va fi returnat!!!
     const obj = {
         nivel: nivelNo,
         rezultat: {}
     };
+
     let claseDisc = new Set(); // constituie un Set cu discipline (are comportament de reducer)
 
     obj.rezultat = arrOfarr.reduce((ac, elem, idx, arr) => {
-        let classNameRegExp = /[a-z]+((\d)?|[A-Z])/gm; // orice caracter mic urmat, fie de un număr, fie de o literă mare
+        let classNameRegExp = /[a-z]+((\d)?|[A-Z])/gm; // orice caracter mic urmat, fie de un număr, fie de o literă mare. 
+        // În cazul acesta unele discipline au fragmentul de cod urmat de cifra clasei, dar alte nu
         // console.log('Fără shift numele clasei de disciplină arată așa: ', elem[0].match(classNameRegExp));
         
-        let className = elem[0].match(classNameRegExp).shift(); // Generează numele claselor extrăgând din elementul 0 al touple-ului, fragmentul ce corespunde șablonului RegExp
+        let className = elem[0].match(classNameRegExp).shift(); // Generează numele claselor de discipline, extrăgând din elementul 0 al touple-ului, fragmentul ce corespunde șablonului RegExp
 
+        // în cazul în care la debitarea cu shift rămâi fără numărul clasei, adaugă-l din oficiu la acest pas
         if (className.slice(-1) !== obj.nivel) {
             className += obj.nivel;
         }
+        // Adaug în Set numele disciplinei
         claseDisc.add(className);
 
         // definirea structurii de date când `ac` la început este `undefined`
         if (Object.keys(ac).length === 0 && ac.constructor === Object) {
             // dacă obiectul este gol, introdu prima înregistrare, care dă astfel și structura
             ac[obj.nivel] = {};
-            ac[obj.nivel][className] = [
+            // TODO: Aici caută className.slice(-1) în `mapCodDisc` aferent clasei si construiește înregistrarea
+            // dacă className.slice(-1) se află în mapCodDisc.get('0') obține numele ariei și a clasei de discipline
+            // let incadrare = incadreaza(className.slice(-1), mapCodDisc.get(obj.nivel))
+            /* ->
+                {parinti: ["Limbă și comunicare"],  }
+            */
+            ac[obj.nivel][className.slice(-1)] = [
                 {codsdisc: elem[0], nume: elem[1]}
             ];            
         } else {

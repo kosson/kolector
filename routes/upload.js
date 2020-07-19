@@ -69,7 +69,7 @@ module.exports = function uploader (pubComm) {
             }
             
             let destination = bag.createWriteStream(fileName);
-            file.stream.pipe(destination);
+            file.stream.pipe(destination); //FIXME: refactor cu pipeline();
             // https://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected
             destination.on('finish', function () {
                 // trimite clientului uuid-ul creat pentru fișierul încărcat ca PRIMA RESURSĂ

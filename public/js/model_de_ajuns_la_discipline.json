@@ -1,37 +1,98 @@
 {
-    "lbcom": [
-        {"Comunicare în limba română": [
-            "lbcomRom0", 
-            "lbcomGermana0", 
-            "lbcomMaghiara0", 
-            "lbcomRroma0", 
-            "lbcomSarba0", 
-            "lbcomSlovaca0"
-        ]},
-        {"Comunicare în limba maternă": [
-            'lbmatBulgara0', 
-            'lbmatCeha0', 
-            'lbmatCroata0', 
-            'lbmatGermana0', 
-            'lbmatGerinrom0', 
-            'lbmatItaliana0', 
-            'lbmatMaghiara0', 
-            'lbmatMaginrom0', 
-            'lbmatMinlbmag0',
-            'lbmatMinlbrom0',
-            'lbmatNeogreaca0', 
-            'lbmatPolona0', 
-            'lbmatRroma0', 
-            'lbmatRusa0', 
-            'lbmatSarba0', 
-            'lbmatSlovaca0', 
-            'lbmatSlolbcl0',
-            'lbmatTurca0', 
-            'lbmatUcraina0',
-            'lbmatUcrarom0'
-        ]},
-        {"Comunicarea în limba modernă": [
-            "lbmod0"
-        ]}
-    ]
+    "Limbă și comunicare": {
+        "clasa": "Limbă și comunicare",
+        "cod": "lbcom",
+        "Comunicare în limba română": {
+            "clasaDisc": "Comunicare în limba română",
+            "discipline": [{
+                    "lbcomRom0": "Comunicare în limba română"
+                },
+                {
+                    "lbcomGermana0": "Comunicare în limba română pentru școlile și secțiile cu predare în limba germană"
+                },
+                {
+                    "lbcomMaghiara0": "Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară"
+                },
+                {
+                    "lbcomRroma0": "Comunicare în limba română pentru școlile și secțiile cu predare în limba rromani"
+                },
+                {
+                    "lbcomSarba0": "Comunicare în limba română pentru școlile și secțiile cu predare în limba sârbă"
+                },
+                {
+                    "lbcomSlovaca0": "Comunicare în limba română pentru școlile și secțiile cu predare în limba slovacă"
+                }
+            ]
+        },
+        "Comunicare în limba maternă": {
+            "clasaDisc": "Comunicare în limba maternă",
+            "discipline": [{
+                    "lbmatBulgara0": "Comunicare în limba maternă bulgară"
+                },
+                {
+                    "lbmatCeha0": "Comunicare în limba maternă cehă"
+                },
+                {
+                    "lbmatCroata0": "Comunicare în limba maternă croată"
+                },
+                {
+                    "lbmatGermana0": "Comunicare în limba maternă germană"
+                },
+                {
+                    "lbmatGerinrom0": "Comunicare în limba maternă germană în limba română"
+                },
+                {
+                    "lbmatItaliana0": "Comunicare în limba maternă italiană"
+                },
+                {
+                    "lbmatMaghiara0": "Comunicare în limba maternă maghiară"
+                },
+                {
+                    "lbmatMaginrom0": "Comunicare în limba maternă maghiară în limba română"
+                },
+                {
+                    "lbmatMinlbmag0": "Comunicare în limba maternă maghiară pentru școlile sau clasele cu elevi aparținând minorității naționale maghiare care studiază în limba română (mag)"
+                },
+                {
+                    "lbmatMinlbrom0": "Comunicare în limba maternă maghiară pentru școlile sau clasele cu elevi aparținând minorității naționale maghiare care studiază în limba română (rom)"
+                },
+                {
+                    "lbmatNeogreaca0": "Comunicare în limba maternă neogreacă"
+                },
+                {
+                    "lbmatPolona0": "Comunicare în limba maternă polonă"
+                },
+                {
+                    "lbmatRroma0": "Comunicare în limba maternă rromani"
+                },
+                {
+                    "lbmatRusa0": "Comunicare în limba maternă rusă"
+                },
+                {
+                    "lbmatSarba0": "Comunicare în limba maternă sârbă"
+                },
+                {
+                    "lbmatSlovaca0": "Comunicare în limba maternă slovacă"
+                },
+                {
+                    "lbmatSlolbcl0": "Comunicare în limba maternă slovacă în limba slovacă"
+                },
+                {
+                    "lbmatTurca0": "Comunicare în limba maternă turcă"
+                },
+                {
+                    "lbmatUcraina0": "Comunicare în limba maternă ucraineană"
+                },
+                {
+                    "lbmatUcrarom0": "Comunicare în limba maternă ucraineană în limba română"
+                }
+            ]
+        },
+        "Comunicarea în limba modernă": {
+            "clasaDisc": "Comunicarea în limba modernă",
+            "discipline": [{
+                "lbmod0": "Comunicarea în limba modernă"
+            }]
+        }
+    }
 }

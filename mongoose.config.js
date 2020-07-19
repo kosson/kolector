@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const chalk = require('chalk');
+
 // MONGOOSE - Conectare la MongoDB
 mongoose.set('useCreateIndex', true); // Deprecation warning
 
@@ -16,7 +18,7 @@ mongoose.connection.on('error', function () {
     process.exit(1);
 });
 mongoose.connection.once('open', function () {
-    console.log("Conectare la baza de date făcută cu succes");
+    console.log(chalk.green("Conectare la baza de date făcută cu succes"));
 });
 
 module.exports = mongoose;

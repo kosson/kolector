@@ -170,4 +170,136 @@ ResursaSchema.post('save', function clbkPostSave1 (doc, next) {
     next();
 });
 
+// Adăugare middleware pe `post` pentru toate operațiunile `find`
+ResursaSchema.post(/^find/, async function clbkResFind (doc, next) {
+    // Când se face căutarea unei resurse folosindu-se metodele`find`, `findOne`, `findOneAndUpdate`, vezi dacă a fost indexat. Dacă nu, indexează-l!
+
+    // cazul `find` când rezultatele sunt multiple într-un array.
+    if (Array.isArray(doc)){
+        doc.map(function (res) {
+            try {                
+                // verifică dacă înregistrarea din Mongo există în ES?
+                ES7Helper.recExists(res._id, process.env.RES_IDX_ALS).then(e => {
+                    if (e === false) {
+                        let obi = Object.assign({}, res._doc);
+                        // verifică dacă există conținut
+                        var content2txt = '';
+                        if ('content' in obi) {
+                            content2txt = editorJs2TXT(obi.content.blocks); // transformă obiectul în text
+                        }
+                        // indexează documentul
+                        const data = {
+                            id:               obi._id,
+                            date:             obi.date,
+                            idContributor:    obi.idContributor,
+                            emailContrib:     obi.emailContrib,
+                            uuid:             obi.uuid,
+                            autori:           obi.autori,
+                            langRED:          obi.langRED,
+                            title:            obi.title,
+                            titleI18n:        obi.titleI18n,
+                            arieCurriculara:  obi.arieCurriculara,
+                            level:            obi.level,
+                            discipline:       obi.discipline,
+                            disciplinePropuse:obi.disciplinePropuse,
+                            competenteGen:    obi.competenteGen,
+                            rol:              obi.rol,
+                            abilitati:        obi.abilitati,
+                            materiale:        obi.materiale,
+                            grupuri:          obi.grupuri,
+                            domeniu:          obi.demersuri,
+                            spatii:           obi.spatii,
+                            invatarea:        obi.invatarea,
+                            description:      obi.description,
+                            dependinte:       obi.dependinte,
+                            coperta:          obi.coperta,
+                            content:          content2txt,
+                            bibliografie:     obi.bibliografie,
+                            contorAcces:      obi.contorAcces,
+                            generalPublic:    obi.generalPublic,
+                            contorDescarcare: obi.contorDescarcare,
+                            etichete:         obi.etichete,
+                            utilMie:          obi.utilMie,
+                            expertCheck:      obi.expertCheck
+                        };
+    
+                        ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
+                    }   
+                }).catch((error) => {
+                    console.error(JSON.stringify(error, null, 2));
+                });            
+            } catch (error) {
+                console.error(JSON.stringify(error, null, 2));
+            }
+        });
+    } else {
+        // console.log("De pe hook-ul `post` metoda ^find, ramura unui singur document: ", doc.title);
+        
+        try {
+            // verifică dacă înregistrarea din Mongo există în ES?
+            // console.log("ramura unui singur document - THEN: ", doc.title, "cu id: ", doc._id);
+            ES7Helper.recExists(doc._id, process.env.RES_IDX_ALS).then(function (e) {                
+                if (e === false) {
+
+                    console.log("ramura unui singur document - THEN: ", doc.title);
+
+                    let obi = Object.assign({}, doc._doc);
+                    
+                    //FIXME: Aici apare eroare: UnhandledPromiseRejectionWarning: ResponseError: mapper_parsing_exception
+
+                    // verifică dacă există conținut
+                    var content2txt = '';
+                    if ('content' in obi) {
+                        content2txt = editorJs2TXT(obi.content.blocks); // transformă obiectul în text
+                    }
+                    // indexează documentul
+                    const data = {
+                        id:               obi._id,
+                        date:             obi.date,
+                        idContributor:    obi.idContributor,
+                        emailContrib:     obi.emailContrib,
+                        uuid:             obi.uuid,
+                        autori:           obi.autori,
+                        langRED:          obi.langRED,
+                        title:            obi.title,
+                        titleI18n:        obi.titleI18n,
+                        arieCurriculara:  obi.arieCurriculara,
+                        level:            obi.level,
+                        discipline:       obi.discipline,
+                        disciplinePropuse:obi.disciplinePropuse,
+                        competenteGen:    obi.competenteGen,
+                        rol:              obi.rol,
+                        abilitati:        obi.abilitati,
+                        materiale:        obi.materiale,
+                        grupuri:          obi.grupuri,
+                        domeniu:          obi.demersuri,
+                        spatii:           obi.spatii,
+                        invatarea:        obi.invatarea,
+                        description:      obi.description,
+                        dependinte:       obi.dependinte,
+                        coperta:          obi.coperta,
+                        content:          content2txt,
+                        bibliografie:     obi.bibliografie,
+                        contorAcces:      obi.contorAcces,
+                        generalPublic:    obi.generalPublic,
+                        contorDescarcare: obi.contorDescarcare,
+                        etichete:         obi.etichete,
+                        utilMie:          obi.utilMie,
+                        expertCheck:      obi.expertCheck
+                    };
+
+                    // console.log("Înainte de indexare ramura documentului unic ", data._id, data.content2txt);
+
+                    ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
+                }   
+            }).catch((error) => {
+                console.error(JSON.stringify(error, null, 2));
+            });   
+        } catch (error) {
+            console.error(JSON.stringify(error, null, 2));
+        }
+    }
+    next();
+});
+
 module.exports = mongoose.model(process.env.MONGO_REDS, ResursaSchema);
