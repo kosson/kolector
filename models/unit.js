@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const mexp     = require('mongoose-elasticsearch-xp');
 
 let adresaSchema = new mongoose.Schema({
     tara:   String,
@@ -18,7 +17,5 @@ let Unit = new mongoose.Schema({
     logo:    [],
     adresa:  [adresaSchema]
 });
-
-adresaSchema.plugin(mexp);
 
 module.exports = new mongoose.model('unit', Unit);

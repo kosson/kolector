@@ -34,11 +34,19 @@ var User = new Schema({
     },
     ecusoane:      [], // [experimental] Va implementa standardul Open Badges și va fi cuplat cu atingerea Competențelor Specifice. Un badge poate fi emis pentru o competență sau un grup. https://www.imsglobal.org/sites/default/files/Badges/OBv2p0Final/index.html https://openbadges.org/get-started/
     recomandari:   [], // este o listă cu id-uri de recomandări apărute pentru resursele propuse. Fiecare identificator este un link către textul recomandării.
-    contributions: []
-},
-{ toJSON: {
-    virtuals: true
-}});
+    contributions: [],
+    comments: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'comment'
+    }
+},{
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    }
+});
 
 // Adăugarea middleware pe `post` pentru a constitui primul index și alias-ul.
 User.post('save', function clbkUsrSave (doc, next) {
@@ -127,6 +135,18 @@ User.post(/^find/, async function clbkUsrFind (doc, next) {
     next();
 });
 
+// TODO: Atunci când ștergi un utilizator, generează o mare arhivă cu propriile conținuturi
+// Înainte să ștergi un utilizator, șterge-i toate comentariile dacă există vreunul.
+User.pre('remove', async function (next) {
+    // în cazul în care vrem să-i ștergem comentariile
+    await this.model('Comment').deleteMany({
+        user: this._id // toate înregistrările care vor avea la `user` id-ul prezentului user, vor fi șterse.
+    });
+    // NOTE: Verifică ca în punctul în care faci ștergerea să faci căutarea cu `findById` și pe ce găsești aplici `remove()`. Este necesar pentru a declanșa acest middleware
+    next();
+});
+
+// Câmpul virtual pe care-l creăm se va numi `resurse`. În momentul în care faci căutarea după useri, nu uita că `populate('resurse')` face hidratarea după `find`!!!
 User.virtual('resurse', {
     ref: 'resursedu', // este numele modelului așa cum a fost exportat
     localField: '_id',  // este conectorul cu id-ul de user care este integrat în înregistrarea de RED.

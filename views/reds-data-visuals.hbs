@@ -2,9 +2,6 @@
 {{> nav-administrator}}
 {{> messages}}
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
-{{#each styles}}
-    <link rel="stylesheet" type="text/css" href="{{style}}">
-{{/each}}
 
 <div id="content">
     <h1>Acces la toate resursele:</h1>
@@ -29,5 +26,5 @@
 </template>
 
 {{#each scripts}}
-    <script type="application/javascript" src="{{script}}"></script>
+    <script defer type="application/javascript" src="{{script}}"></script>
 {{/each}}

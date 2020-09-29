@@ -14,33 +14,48 @@
         {{!-- SOCKET --}}
         {{!-- <script type="application/javascript" src="/socket.io/socket.io.js"></script> --}}
         {{!-- În cazul în care sunt probleme cu browserele, activează încărcarea scriptului în mod direct --}}
-        <script type="application/javascript" src="/lib/socket.io-client/dist/socket.io.slim.js"></script>
+        <script type="application/javascript" src="/lib/npm/socket.io.slim.js"></script>
         
         {{!-- ES6 SHIM --}}
-        <script type="application/javascript" src="/js/main.js"></script>
+        <script type="application/javascript" src="/lib/es6-shim/es6-shim.min.js"></script>
+
+        {{!-- BOOTSTRAP --}}
+        <link rel="stylesheet" type="text/css" href="/lib/npm/bootstrap.min.css">        
 
         <link rel="stylesheet" type="text/css" href="/css/main.css">
-        <link rel="stylesheet" type="text/css" href="/lib/jquery-toast-plugin/dist/jquery.toast.min.css">
-        <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/lib/jquery-toast-plugin/dist/jquery.toast.min.css">
 
-        <script type="application/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
-        <script type="application/javascript" src="/lib/handlebars/handlebars.runtime.min.js"></script> 
-        <script type="application/javascript" src="/lib/handlebars/handlebars.min.js"></script> 
+        {{!-- Încărcarea foilor de stil din module --}}
+        {{#each styles}}
+            <link rel="stylesheet" href="{{style}}" charset="utf-8"></script>
+        {{/each}}
+
+        {{!-- Preîncărcarea modulelor --}}
+        {{#each modules}}
+            <link rel="modulepreload" href="{{module}}"></script>
+        {{/each}}
+
+        {{!-- Încărcarea modulelor --}}
+        {{#each modules}}
+            <script type="module" src="{{module}}"></script>
+        {{/each}}
+
         <title>{{title}}</title>
     </head>
     <body>
+        
         {{{body}}}
 
-        <footer>
+        <section>
+            {{> digitaleducred}}
+        </section>
+
+        {{!-- Încărcarea scripturilor --}}
+        {{#each scripts}}
+            <script defer type="application/javascript" src="{{script}}"></script>
+        {{/each}}
+
+        {{!-- <footer class="footer">
             {{> footer}}
-        </footer>
-        <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script type="application/javascript" src="/lib/popper.js/dist/umd/popper.min.js"></script>        
-        <script type="application/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script type="application/javascript" src="/lib/fontawesome/js/all.js"></script>
-        <script type="application/javascript" src="/lib/jquery-toast-plugin/dist/jquery.toast.min.js"></script>    
-        <script type="application/javascript" src="/js/resursepublice.js"></script>
+        </footer> --}}
     </body>
 </html>

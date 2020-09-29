@@ -1,8 +1,21 @@
+// import {createElement, decodeCharEntities, datasetToObject} from './main.mjs';
+// import {AttachesToolPlus} from './uploader.mjs';
+
+var csrfToken = '';
+
+if(document.getElementsByName('_csrf')[0].value) {
+    csrfToken = document.getElementsByName('_csrf')[0].value;
+}
+
+var pubComm = io('/redcol', {
+    query: {['_csrf']: csrfToken}
+});
+
 var log = {
     contorAcces: 0
 };
 
-/* ======== Integrarea lui EditorJS ======== https://editorjs.io */
+/* === Integrarea lui EditorJS === https://editorjs.io */
 const editorX = new EditorJS({
     placeholder: 'Introdu aici conținutul',
     /**
@@ -42,6 +55,62 @@ const editorX = new EditorJS({
             class: InlineCode,
             shortcut: 'CMD+SHIFT+M',
         }
+    },
+    i18n: {
+        messages: {
+            // traducerea diferitelor componente ale UI-ului
+            ui: {
+                "blockTunes": {
+                    "toggler": {
+                        "Click to tune": "Apasă pentru a modifica",
+                        "or drag to move": "sau trage pentru a muta"
+                    },
+                },                
+                "toolbar": {
+                    "toolbox": {
+                        "Add": "Adaugă"
+                    }
+                }
+            },
+            toolNames: {
+                "Text": "Paragraf",
+                "Attaches": "Încarcă fișiere",
+                "Heading": "Subtitluri",
+                "List": "Listă",
+                "Warning": "Avertizare",
+                "Checklist": "Checklist",
+                "Quote": "Citat",
+                "Code": "Cod",
+                "Delimiter": "Delimitare",
+                "Raw HTML": "HTML pur",
+                "Table": "Tabel",
+                "Link": "Link",
+                "Marker": "Marker",
+                "Bold": "Bold",
+                "Italic": "Italic",
+                "InlineCode": "Cod inclus",
+            },
+            /**
+             * Section allows to translate Block Tunes
+             */
+            blockTunes: {
+                /**
+                 * Each subsection is the i18n dictionary that will be passed to the corresponded Block Tune plugin
+                 * The name of a plugin should be equal the name you specify in the 'tunes' section for that plugin
+                 *
+                 * Also, there are few internal block tunes: "delete", "moveUp" and "moveDown"
+                 */
+                "delete": {
+                    "Delete": "Șterge blocul"
+                },
+                "moveUp": {
+                    "Move up": "Mută mai sus"
+                },
+                "moveDown": {
+                    "Move down": "Mută mai jos"
+                }
+            }      
+        }
     }
 });
 
@@ -72,6 +141,5 @@ submitBtn.addEventListener('click', (evt) => {
 
 // aștept răspunsul de la server și redirecționez utilizatorul către resursa tocmai creată.
 pubComm.on('log', (entry) => {
-    console.log(entry); // FIXME: Dezactivează!
     window.location.href = '/log';
 });

@@ -9,23 +9,19 @@ Nicolaie Constantinescu <nicu.constantinescu@educred.ro>
 ## 1. Introducere
 
 Acest material descrie pașii pe care persoana care contribuie cu o resursă trebuie să-i parcurgă pentru a introduce o înregistrare viabilă. Formularul dedicat expune patru pași în succesiune, care la rândul lor, fiecare necesită completarea cu informații specifice.
-Completarea pașilor pentru adăugarea unei Resurse Educaționale Deschise va genera în baza de date o fișă descriptivă, iar în directorul dedicat `repo` se va constitui câte un subdirector pentru fiecare utilizator al platformei și câte un subdirector pentru fiecare resursă în parte în subdirectorul utilizatorului. Mai jos este un mic exemplu ilustrativ pentru structura unei resurse așa cum este structurată pe hard disk-ul serverului după ce s-a încheiat completarea formularului.
+Completarea pașilor pentru adăugarea unei Resurse Educaționale Deschise va genera în baza de date o fișă descriptivă, iar în directorul dedicat `repo` se va constitui câte un subdirector pentru fiecare utilizator al platformei și câte un subdirector pentru fiecare resursă în parte în subdirectorul utilizatorului. Mai jos este un mic exemplu ilustrativ pentru structura unei resurse așa cum este structurată pe hard disk-ul serverului după ce s-a încheiat introducerea.
 
 ![](img/0.8.5/Structura-pe-hdd.png)
 
-Ca detalii importante, o Resursă Educațională Deschisă este suma componentelor sale care au fost încărcate și descrise foloind formularul aplicației. Resursele RED-ului stau în subdirectorul `data`. Sunt observabile alte fișiere și un subdirector `.git`. Aceste resurse digitale care sunt intoroduse în plus, sunt dedicate versionării resursei (directorul `.git`), precum și a expunerii sale unor servicii specializate dedicate prezervării digitale viitoare (fișiere generate în baza standardului BagIt).
-
 Pentru a fi mai simplu, din acest moment vom folosi în întreg documentul acronimul RED pentru Resurse Educaționale Deschise.
-
-Așa cum se observă, conținutul subdirectorului reflectă toate resursele pe care cel care propune resursa le avea deja pregătite.
 
 ## 2. Preliminarii
 
 Utilizatorii, formabili, formatori, experți e-learning și în general toți cei care interacționează cu aplicația „Colector RED”, trebuie să înțeleagă de la bun început că această aplicație are rolul de a descrie entități digitale deja existente, fie acestea documente, teste, video, simple texte, etc.
 
-Toți cei care vor contribui cu resurse, vor trebui să aibă materialele deja pregătite, care răspund [Planului-cadru de învățâmânt în vigoare](http://programe.ise.ro/Actuale.aspx) și care sunt gata de a fi descrise și introduse.
+Toți cei care vor contribui cu resurse, vor trebui să aibă materialele deja pregătite, care răspund Planului-cadru de învățâmânt și care sunt gata de a fi descrise și introduse.
 
-Colectorul RED nu este un instrument de creație. Este o aplicație de agregare și colectare a materialelor care deja există, oferind cadrul descriptiv necesar încadrării din punct de vedere al Ariei curriculare, clasei, disciplinei, competenței specifice și al rigorii științifice din domeniul educației și pedagogiei.
+Colectorul RED nu este un instrument de creație. Este o aplicație de agregare a materialelor care deja există, oferind cadrul descriptiv necesar încadrării din punct de vedere al Ariei curriculare, clasei, disciplinei, competenței specifice și al rigorii științifice din domeniul educației și pedagogiei.
 
 Este necesară o bună cunoaștere a materialului care va urma să fie descris. Pentru a aprofunda cunoașterea privind elaborarea unei Resurse Educaționale Deschisă, vă invit să parcurgeți încă o dată cursul dedicat din cadrul proiectului „CRED în educație”.
 
@@ -124,19 +120,17 @@ Un RED poate fi conceput pentru a fi folosit la mai multe clase diferite. Acesta
 
 ![](img/0.8.5/introducere-resursa/Pas2-Alegerea-clasei-fara-selectie.png)
 
-Atenție, selectarea claselor este în directă legătură cu apariția disciplinelor, care sunt expuse pentru încadrarea granulară. Bifarea unei clase are drept efect apariția disciplinelor acelor clase. 
-
-### 4.3. Alege disciplinele
-
-Pentru fiecare disciplină bifată, aceasta va apărea distinct deasupra instrumentului de selecție pentru a avea un reper clar asupra opțiunii.
+Atenție, selectarea claselor este în directă legătură cu apariția disciplinelor, care sunt expuse pentru încadrarea granulară. Bifarea unei clase are drept efect apariția disciplinelor acelor clase. Pentru acest material, am ales să nu încărcăm toate disciplinele.
 
 ![](img/0.8.5/introducere-resursa/Pas2-Disciplina-si-arondatele.png)
 
-Bifarea mai multor clase, va adăuga setului existent disciplinele proprii. Acestea sunt cazuri de excepție. După ce ați selectat disciplina(ele) procedați la încărcarea seturilor de competențe specifice.
+Bifarea mai multor clase, va adăuga setului existent disciplinele proprii.
 
-<img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px">Cel mai important lucru de care trebuie să se țină seama este să nu fie selectate câteva discipline și apoi să fie acționat butonul „Alege competențele specifice”, iar apoi să se revină la selecție de alte discipline. În acest caz, vor apărea erori legate de mecanismul de selecție al competențelor specifice și singura cale de redresare este să se reîncarce formularul cu refresh la pagină.
+### 4.3. Alege disciplinele
 
-Selectarea disciplinei sau a mai multora încarcă competențele specifice și acestea la rândul lor vor încărca activitățile prevăzute.
+Selectarea disciplinei sau a mai multora încarcă competențele specifice. Atenție, în această versiune, nu toate disciplinele au seturile de date ale competențelor disponibile. Acestea vor apărea cât de curând. Pentru a avea acces la competențele specifice și implicit la activitățile proprii, cât și pentru a propune noi activități inexistente, se va alege una sau mai multe discipline.
+
+![](img/0.8.5/introducere-resursa/Pas2-Disciplina-cand-este-unica.png)
 
 În acest moment, după ce am putut selecta disciplina sau disciplinele în cazul în care RED-ul răspunde mai multor discipline, apare opțiunea de a încărca competențele specifice așa cum apar acestea în Planul Național. Pentru fiecare dintre Competențele Specifice prezente, există posibilitatea de a consulta activitățile care sunt arondate.
 
@@ -281,22 +275,7 @@ Documentele pe care deja le aveți și care conțin resursa, le puteți încărc
 
 ![](img/0.8.5/introducere-resursa/Pas4-Incarcarea-unui-fisier.png)
 
-<img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> În cazul în care atașamentul dă eroare, este posibil să fi depășit perioada alocacă sesiunii de lucru și va trebui să vă logați din nou, reluând procedura de descriere.
-
- <img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px">O altă cauză a unei posibile erori de încărcare este încercarea de a încărca un fișier a cărei exensie nu este permisă.
-
-În acest moment, Colectorul RED permite încărcarea următoarelor tipuri de fișiere media și document:
-
-- ​            "image/png": ".png",
-- ​            "image/jpeg": ".jpeg",
-- ​            "image/jpg": ".jpg",
-- ​            "application/pdf": ".pdf",
-- ​            "application/msword": ".doc",
-- ​            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
-- ​            "application/vnd.ms-powerpoint": ".ppt",
-- ​            "application/vnd.openxmlformats-officedocument.presentationml.presentation": ".pptx",
-- ​            "application/vnd.oasis.opendocument.text": ".odt",
-- ​            "application/vnd.oasis.opendocument.presentation": ".odp"
+<img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> În cazul în care atașamentul dă eroare, înseamnă că ați depășit perioada alocacă sesiunii de lucru și va trebui să vă logați din nou, reluând procedura de descriere.
 
 #### 6.1.1.5. Fișierele de imagine
 

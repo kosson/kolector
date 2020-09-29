@@ -18,6 +18,13 @@ var LogentrySchema = new mongoose.Schema({
     },
     content: {},
     contorAcces: Number
+}, {
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    }
 });
 
 // LogentrySchema.plugin(mexp);

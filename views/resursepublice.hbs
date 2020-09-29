@@ -3,16 +3,13 @@
 {{!-- {{> nav-resurse-publice}} --}}
 {{> messages}}
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
-{{#each scripts}}
-    <script type="application/javascript"  src="{{script}}"></script>
-{{/each}}
 
     <div id="resursepublice">
         <div class="resurse">
 
             <div id="searchpublic" class="container pb-3 searchFrm">
                 {{!-- Câmpul de căutare --}}
-                <div class="col-12">
+                {{!-- <div class="col-12">
                     <div class="input-group">
                         <input id="searchterms" class="form-control border-secondary py-2" type="search" value="">
                         <div class="input-group-append">
@@ -21,7 +18,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 
                 {{!-- Mecanismele de selecție a rezultatelor afișate --}}
                 {{!-- <div id="selectors" class="container-fluid">
@@ -64,7 +61,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h5 class="card-title">
-                                <a class="btn btn-dark" href="/resursepublice/{{this._id}}" class="">{{this.title}}</a>
+                                <a class="" href="/resursepublice/{{this._id}}" class="">{{this.title}}</a>
                             </h5>
                             <h6 class="card-subtitle mb-2">{{this.autori}}</h6>
                             <span class="text-muted">{{this.dataRo}}</span>                                   
@@ -101,7 +98,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h5 class="card-title">
-                                <a class="btn btn-dark" href="/resursepublice/{{this.id}}" class="">{{this.title}}</a>
+                                <a class="" href="/resursepublice/{{this.id}}" class="">{{this.title}}</a>
                             </h5>                                   
                         </div>
                         <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}">
@@ -116,7 +113,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">
-                            <a id="resid" class="btn btn-dark"></a>
+                            <a id="resid" class=""></a>
                         </h5>                                   
                     </div>
                     <div class="card-body">

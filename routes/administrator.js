@@ -13,7 +13,25 @@ let editorJs2TXT = require('./controllers/editorJs2TXT');
 // === VERIFICAREA ROLURILOR ===
 let checkRole = require('./controllers/checkRole.helper');
 
-/* === /administrator @->administrator === */
+// === SCRIPTURI și STILURI COMUNE ===
+let scriptsArr = [       
+    // MOMENT.JS
+    {script: '/lib/npm/moment-with-locales.min.js'},  
+    // DATATABLES
+    {script: '/lib/npm/jquery.dataTables.min.js'},
+    {script: '/lib/npm/dataTables.bootstrap4.min.js'},
+    {script: '/lib/npm/dataTables.select.min.js'},
+    {script: '/lib/npm/dataTables.buttons.min.js'},
+    {script: '/lib/npm/dataTables.responsive.min.js'}
+    // Scripturile caracteristice fiecărei rute vor fi injectate per rută
+];
+let styles = [
+    {style: '/lib/npm/jquery.dataTables.min.css'},
+    {style: '/lib/npm/responsive.dataTables.min.css'},
+    {style: '/lib/npm/dataTables.bootstrap4.min.css'}
+];
+
+/* === /administrator === */
 router.get('/', function clbkAdmRoot (req, res) {
     // ACL
     let roles = ["admin", "validator"];
@@ -21,51 +39,46 @@ router.get('/', function clbkAdmRoot (req, res) {
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
-    /* === VERIFICAREA CREDENȚIALELOR === */
-    // Dacă avem un admin, atunci oferă acces neîngrădit
+    /* === ADMIN === :: Dacă avem un admin, atunci oferă acces neîngrădit */
     if(req.session.passport.user.roles.admin){
-        let scripts = [       
-            {script: '/lib/moment/min/moment.min.js'},
-            {script: '/lib/moment/locale/ro.js'},    
-            {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
+
+        // Scripturile necesare rutei /administrator [rol: admin]
+        let admScripts = [
+            // LOCAL ADMIN
             {script: '/js/admin.js'}
         ];
-        let styles = [
-            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'},
-            {style: '/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css'}
-        ];
+        let scripts = scriptsArr.concat(admScripts); // injectează în array-ul `scripts`
+
         res.render('administrator', {
-            title:   "administrator",
-            user:    req.user,
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "/img/red-logo-small30.png",
-            credlogo: "../img/CREDlogo.jpg",
-            csfrToken: req.csrfToken(),
+            title:     "Admin",
+            user:      req.user,
+            logoimg:   "/img/red-logo-small30.png",
+            credlogo:  "../img/CREDlogo.jpg",
+            csrfToken: req.csrfToken(),
             scripts,
             styles,
             activeAdmLnk: true
         });
-    // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
+
+    /* === VALIDATOR === :: Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public */
     } else if (confirmedRoles.includes('validator')) {
-        let scripts = [
-            {script: '/js/validator.js'},       
-            {script: '/lib/moment/min/moment.min.js'},
-            {script: '/lib/timeline3/js/timeline.js'}
+
+        // Scripturile necesare rutei /administrator [rol: validator]
+        let valScripts = [
+            // TIMELINE 3
+            {script: '/lib/timeline3/js/timeline.js'},
+            // LOCALE
+            {script: '/js/validator.js'}
         ];
+        let scripts = scriptsArr.concat(valScripts); // injectează în array-ul `scripts`
+
         res.render('validator', {
-            title:   "validator",
-            user:    req.user,
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "/img/red-logo-small30.png",
-            credlogo: "../img/CREDlogo.jpg",
-            csfrToken: req.csrfToken(),
+            title:     "Validator",
+            user:      req.user,
+            logoimg:   "/img/red-logo-small30.png",
+            credlogo:  "../img/CREDlogo.jpg",
+            csrfToken: req.csrfToken(),
             scripts,
-            styles,
             activeAdmLnk: true
         });
     } else {
@@ -81,31 +94,21 @@ router.get('/reds', function clbkAdmReds (req, res) {
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
     
-    /* === VERIFICAREA CREDENȚIALELOR === */
-    // Dacă avem un admin, atunci oferă acces neîngrădit
+    /* === ADMIN === :: Dacă avem un admin, atunci oferă acces neîngrădit*/
     if(req.session.passport.user.roles.admin){
-        let scripts = [       
-            {script: '/lib/moment/min/moment.min.js'},
-            {script: '/lib/moment/locale/ro.js'},    
-            {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
+
+        // Scripturile necesare rutei /administrator/reds [rol: admin]
+        let admScripts = [
             {script: '/js/res-visuals.js'}
         ];
-        let styles = [
-            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'},
-            {style: '/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css'}
-        ];
+        let scripts = admScripts.concat(scriptsArr); // injectează în array-ul `scripts`
+
         res.render('reds-data-visuals', {
-            title:     "REDs data visuals",
+            title:     "REDs adm",
             user:      req.user,
-            style:     "/lib/fontawesome/css/fontawesome.min.css",
             logoimg:   "/img/red-logo-small30.png",
             credlogo:  "../img/CREDlogo.jpg",
-            csfrToken: req.csrfToken(),
+            csrfToken: req.csrfToken(),
             scripts,
             styles,
             activeAdmLnk: true
@@ -116,10 +119,13 @@ router.get('/reds', function clbkAdmReds (req, res) {
     }
 });
 
-router.get('/reds/:id', function clbkAdmOneRes (req, res) {
+/* === /administrator/reds/:id === */
+router.get('/reds/:id', function clbkAdmOneRes (req, res, next) {
         // const editorJs2html = require('./controllers/editorJs2HTML');
         let scripts = [
-            {script: '/lib/moment/min/moment.min.js'},
+            // MOMENT.JS
+            {script: '/lib/npm/moment-with-locales.min.js'},
+            // EDITOR.JS
             {script: '/lib/editorjs/editor.js'},
             {script: '/lib/editorjs/header.js'},
             {script: '/lib/editorjs/paragraph.js'},
@@ -132,8 +138,21 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
             {script: '/lib/editorjs/quote.js'},
             {script: '/lib/editorjs/inlinecode.js'},
             // {script: '/js/res-shown.js'},
-            {script: '/js/redincredadmin.js'} 
+            // LOCAL
+            {script: '/js/redincredadmin.js'},
+            // HELPER DETECT URLS or PATHS
+            {script: '/js/check4url.js'},
         ];
+
+        let styles = [
+            // FONTAWESOME
+            {style: '/lib/npm/all.min.css'},
+            // JQUERY TOAST
+            {style: '/lib/npm/jquery.toast.min.css'},
+            // BOOTSTRAP
+            {style: '/lib/npm/bootstrap.min.css'}
+        ];
+
         let roles = ["admin"];
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
         
@@ -257,26 +276,26 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
                     resursa.genPub = `<input type="checkbox" id="public" class="generalPublic">`;
                 }
 
-                res.render('resursa-admin', {
-                    user:    req.user,
-                    title:   "Administrare RED",
-                    style:   "/lib/fontawesome/css/fontawesome.min.css",
-                    scripts,
-                    logoimg: "/img/red-logo-small30.png",
+                res.render('resursa-admin', {                    
+                    title:    "RED admin",
+                    user:     req.user,
+                    logoimg:  "/img/red-logo-small30.png",
                     credlogo: "../img/CREDlogo.jpg",
-                    csfrToken: req.csrfToken(),
+                    csrfToken: req.csrfToken(),
                     resursa,
+                    scripts,
+                    styles
                 });
             } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
-                res.render('resursa', {
-                    user:    req.user,
-                    title:   "Afișare RED",
-                    style:   "/lib/fontawesome/css/fontawesome.min.css",
-                    logoimg: "/img/red-logo-small30.png",
+                res.render('resursa', {                    
+                    title:    "RED",
+                    user:     req.user,
+                    logoimg:  "/img/red-logo-small30.png",
                     credlogo: "../img/CREDlogo.jpg",
-                    csfrToken: req.csrfToken(),
-                    resursa: resursa,
-                    scripts
+                    csrfToken: req.csrfToken(),
+                    resursa,
+                    scripts,
+                    styles
                 });
             } else {
                 res.redirect('/401');
@@ -286,10 +305,12 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res) {
                 console.log(err);
                 // next(); // fugi pe următorul middleware / rută
                 res.redirect('/administrator/reds');
+                next(err);
             }
         });
 });
 
+/* === /administrator/users === */
 router.get('/users', function clbkAdmUsr (req, res) {
     // ACL
     let roles = ["admin", "validator"];
@@ -297,33 +318,21 @@ router.get('/users', function clbkAdmUsr (req, res) {
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
     
-    /* ====== VERIFICAREA CREDENȚIALELOR ====== */
-    // Dacă avem un admin, atunci oferă acces neîngrădit
+    /* === ADMIN === :: Dacă avem un admin, atunci oferă acces neîngrădit */
     if(req.session.passport.user.roles.admin){
-        let scripts = [
-            {script: '/lib/fontawesome/js/all.js'},
-            {script: '/lib/moment/min/moment.min.js'},
-            {script: '/lib/moment/locale/ro.js'},            
-            // DATATABLES
-            {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
 
+        // Scripturile necesare rutei /administrator/reds [rol: admin]
+        let admScripts = [
             {script: '/js/users-visuals.js'}
         ];
-        let styles = [
-            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'},
-            {style: '/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css'}
-        ];
+        let scripts = admScripts.concat(scriptsArr); // injectează în array-ul `scripts`
+
         res.render('users-data-visuals', {
-            title:   "User data visuals",
+            title:   "Utilizatorii",
             user:    req.user,
             logoimg: "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
-            csfrToken: req.csrfToken(),
+            csrfToken: req.csrfToken(),
             scripts,
             styles,
             activeAdmLnk: true
@@ -334,6 +343,7 @@ router.get('/users', function clbkAdmUsr (req, res) {
     }
 });
 
+/* === /administrator/users/:id === */
 router.get('/users/:id', function clbkAdmRoot (req, res) {
     // ACL
     let roles = ["admin", "validator"];
@@ -344,62 +354,44 @@ router.get('/users/:id', function clbkAdmRoot (req, res) {
     /* === VERIFICAREA CREDENȚIALELOR === */
     // Dacă avem un admin, atunci oferă acces neîngrădit
     if(req.session.passport.user.roles.admin){
-        let scripts = [       
-            {script: '/lib/fontawesome/js/all.js'},
+
+        // Scripturile necesare rutei /administrator [rol: admin]
+        let usrIdAdScripts = [
+            // TIMELINE 3
             {script: '/lib/timeline3/js/timeline.js'},
-            {script: '/lib/moment/min/moment.min.js'},
-            {script: '/lib/moment/locale/ro.js'},            
-            // DATATABLES
-            {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
             {script: '/js/user.js'}
         ];
-        let styles = [
-            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'},
-            {style: '/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css'}
-        ];
+
+        let scripts = scriptsArr.concat(usrIdAdScripts); // injectează în array-ul `scripts`
+                
         res.render('user-admin', {
-            title:   "fișa user",
-            user:    req.user,
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "/img/red-logo-small30.png",
+            title:    "Fișă user",
+            user:     req.user,
+            logoimg:  "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
-            csfrToken: req.csrfToken(),
+            csrfToken: req.csrfToken(),
             scripts,
             styles,
             activeAdmLnk: true
         });
     // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
     } else if (confirmedRoles.includes('validator')) {
-        let scripts = [
-            {script: '/lib/fontawesome/js/all.js'},
+
+        // Scripturile necesare rutei /administrator [rol: validator]
+        let usrIdValScripts = [
+            // TIMELINE 3
             {script: '/lib/timeline3/js/timeline.js'},
-            {script: '/lib/moment/min/moment.min.js'},
-            {script: '/lib/moment/locale/ro.js'},            
-            // DATATABLES
-            {script: '/lib/datatables.net/js/jquery.dataTables.min.js'},
-            {script: '/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-buttons/js/dataTables.buttons.min.js'},
-            {script: '/lib/datatables.net-select/js/dataTables.select.min.js'},
-            {script: '/lib/datatables.net-responsive/js/dataTables.responsive.min.js'},
-            {script: '/js/validator.js'},
+            {script: '/js/validator.js'}
         ];
-        let styles = [
-            {style: '/lib/datatables.net-dt/css/jquery.dataTables.min.css'},
-            {style: '/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css'}
-        ];
+    
+        let scripts = scriptsArr.concat(usrIdValScripts); // injectează în array-ul `scripts`        
+
         res.render('validator', {
-            title:   "validator",
-            user:    req.user,
-            style:   "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg: "/img/red-logo-small30.png",
+            title:    "Validator",
+            user:     req.user,
+            logoimg:  "/img/red-logo-small30.png",
             credlogo: "../img/CREDlogo.jpg",
-            csfrToken: req.csrfToken(),
+            csrfToken: req.csrfToken(),
             scripts,
             styles
         });

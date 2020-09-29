@@ -74,7 +74,7 @@ function check4url (url) {
         afterLastSlash: trail.substr(1),
         uri
     };
-};
+}
 
 // let ocalecufis = '/test/ceva/ceva.jpg';
 // let ocale      = '/test/ceva/';

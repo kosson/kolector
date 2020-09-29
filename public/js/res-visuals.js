@@ -1,3 +1,20 @@
+var csrfToken = '';
+
+if(document.getElementsByName('_csrf')[0].value) {
+    csrfToken = document.getElementsByName('_csrf')[0].value;
+}
+
+var pubComm = io('/redcol', {
+    query: {['_csrf']: csrfToken}
+});
+
+
+// TESTAREA CONEXIUNII
+// setInterval(() => {
+//     console.log("Conectat: ", pubComm.connected, " cu id-ul: ", pubComm.id);
+//     pubComm.emit('testconn', 'test');
+// }, 2000);
+
 // Resurse afișate tabelar
 var TblTmpl = document.querySelector('#userResTbl'); // ref către template-ul resurselor în format tabelar
 var cloneTbl = TblTmpl.content.cloneNode(true);      // clonarea template-ului pentru afișare tabelară

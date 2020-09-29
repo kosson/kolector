@@ -1,18 +1,20 @@
-/* ==== DEPENDINȚE ==== */
+/* === DEPENDINȚE === */
 const moment  = require('moment');
 const express = require('express');
 const router  = express.Router();
-/* ==== MODELE ==== */
+/* === MODELE === */
 const Resursa = require('../models/resursa-red'); // Adu modelul resursei
 
-/* ==== HELPERE  ==== */
+/* === HELPERE  === */
 // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
 let editorJs2html = require('./controllers/editorJs2HTML');
 
 /* GET::/tertium/:id - Pe această rută se obține formularul de adăugare a resurselor doar dacă ești logat, având rolurile menționate */
 router.get('/:id', function tertiumResource (req, res, next) {
     let scripts = [
-        {script: '/lib/moment/min/moment.min.js'},
+        // MOMENT.JS
+        {script: '/lib/npm/moment-with-locales.min.js'},
+        // EDITOR.JS
         {script: '/lib/editorjs/editor.js'},
         {script: '/lib/editorjs/header.js'},
         {script: '/lib/editorjs/paragraph.js'},
@@ -24,6 +26,7 @@ router.get('/:id', function tertiumResource (req, res, next) {
         {script: '/lib/editorjs/code.js'},
         {script: '/lib/editorjs/quote.js'},
         {script: '/lib/editorjs/inlinecode.js'},
+        // LOCALE
         {script: '/js/tertium.js'} 
     ];
     Resursa.findById(req.params.id).populate({
@@ -46,15 +49,15 @@ router.get('/:id', function tertiumResource (req, res, next) {
             } else {
                 resursa.validate = `<input type="checkbox" id="valid" class="expertCheck">`;
             }
-            res.render('resursa-tertium', {
-                user:    req.user,
-                title:   "Administrare RED",
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
-                scripts,
-                logoimg: "/img/red-logo-small30.png",
-                credlogo: "../img/CREDlogo.jpg",
-                csfrToken: req.csrfToken(),
-                resursa: resursa
+            res.render('resursa-tertium', {                
+                title:     "Terți",
+                user:      req.user,
+                // style:   "/lib/fontawesome/css/fontawesome.min.css",
+                logoimg:   "/img/red-logo-small30.png",
+                credlogo:  "../img/CREDlogo.jpg",
+                csrfToken: req.csrfToken(),
+                resursa:   resursa,
+                scripts
             });
         } else {
             res.redirect('/401');

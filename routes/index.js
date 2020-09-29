@@ -1,11 +1,12 @@
+require('dotenv').config();
 const express  = require('express');
 const router   = express.Router();
 const moment   = require('moment');
-const mongoose = require('mongoose');
 const Resursa  = require('../models/resursa-red'); // Adu modelul resursei
 
-// console.log(result.length);
+/* === LANDING :: / === */
 router.get('/', function clbkRootRoute (req, res, next) {
+
     // let localizat = moment(result.date).locale('ro').format('LLL');
     // result.dataRo = `${localizat}`; // formatarea datei pentru limba română.
 
@@ -14,9 +15,10 @@ router.get('/', function clbkRootRoute (req, res, next) {
         // console.log('Numărul resurselor este: ', count);
     });
 
+    // creează Promise
     let resursePublice = Resursa.find({'generalPublic': true}).sort({"date": -1}).limit(8);
-    let promiseResPub = resursePublice.exec();
-    promiseResPub.then((result) => {
+
+    resursePublice.exec().then((result) => {
         let newResultArr = [];
 
         result.map(function clbkMapResult (obi) {
@@ -26,23 +28,43 @@ router.get('/', function clbkRootRoute (req, res, next) {
             newResultArr.push(Object.assign(newObi));
         });
         
-        let scripts = [       
-            {script: '/lib/moment/min/moment.min.js'},
+        let scripts = [
+            //JQUERY
+            {script: '/lib/npm/jquery.slim.min.js'},
+            {script: '/lib/npm/jquery.waypoints.min.js'},
+            // MOMENT.JS
+            {script: '/lib/npm/moment-with-locales.min.js'}, 
+            // FONTAWESOME
+            {script: '/lib/npm/all.min.js'},
             // HOLDERJS
-            {script: '/lib/holderjs/holder.min.js'}  
+            {script: '/lib/npm/holder.min.js'},            
+            {script: '/lib/npm/bootstrap.bundle.min.js'},
+            {script: '/js/custom.js'}
         ];
-        
+
+        let modules = [
+            {module: '/lib/npm/popper.min.js'},
+            // {module: '/js/main.mjs'},
+            {module: '/js/indexpub.mjs'}
+        ];
+
+        let styles = [
+            {style: '/lib/npm/all.min.css'}
+        ];
+    
         res.render('index', {
-            title:     "RED colector",
-            style:     "/lib/fontawesome/css/fontawesome.min.css",
-            logoimg:   "img/rED-logo192.png",
+            title:     "Acasă",
             user:      req.user,
+            logoimg:   "img/rED-logo192.png",            
             resurse:   newResultArr,
-            // csfrToken: req.csrfToken(),
-            scripts
+            csrfToken: req.csrfToken(),
+            modules,
+            scripts,
+            styles
         });
     }).catch((err) => {
         if (err) throw err;
+        next(err);
     });
 });
 

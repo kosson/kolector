@@ -6,7 +6,6 @@ const path        = require('path');
 const BagIt       = require('bagit-fs');
 const {v4: uuidv4}= require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 // const Readable    = require('stream').Readable;
-// const {pipeline}  = require('stream');
 const {Readable, pipeline} = require('stream');
 const mongoose    = require('mongoose');
 const validator   = require('validator');
@@ -21,13 +20,15 @@ const git         = require('isomorphic-git');
 
 // funcțiile de căutare
 const {findInIdx, aggFromIdx} = require('./controllers/elasticsearch.ctrl');
+// căutare resurse în Mongo prin Mongoose
+const {pagination} = require('./controllers/pagination.ctrl');
 
 /**
  * Funcția are rolul de a face staging la tot ce există în parametrul `calea` urmat de commit
  * Funcția este echivalentul lui `git add .` (cu respectarea unui `.gitignore`, dacă există) combinat cu `git commit -a -m "mesajul"`
  * @param {String} calea Este calea relativă a subdirectorului resursei. Începe cu punct
  * @param {String} autori Este stringul autorilor din care va fi extras primul ca fiind cel care face repo-ul
- * @param {String} email Adresa de email a celui care dace repo-ul
+ * @param {String} email Adresa de email a celui care face repo-ul
  * @param {String} message 
  */
 async function commitAll (calea, autori, email, message) {    
@@ -76,15 +77,53 @@ async function commitAll (calea, autori, email, message) {
                 email: `${email}`
             }
         });
-        console.log(sha); // E neapărat!!! Altfel nu se face commit-ul!
+        console.log("[sockets.js] Vezi `let sha`", sha); // E neapărat!!! Altfel nu se face commit-ul!
     } catch (error) {
         if (error) {
-            console.error(error);
+            console.error("[sockets.js] Eroare de commit în fn `commitAll`: ", error);
         }
     }
 }
 
-module.exports = function sockets (pubComm) {
+// EXPORTĂ TOATE SOCKET-urile în app.js
+module.exports = function sockets (io) {
+    
+    // io.on('connection', socket => {
+    //     console.log("Id-ul conectat este: ", socket.id);
+    //     socket.on('testconn', function cbMesaje (mesaj) {
+    //         const detaliiConn = pubComm.server.eio.clients[socket.id]; // obține detaliile de conexiune individuale
+    //         console.log('Serverul a primit următorul mesaj: ', mesaj, detaliiConn.upgraded);
+    //     });
+    // });
+
+    var main = io.of('/');
+    var pubComm = io.of('/redcol'); // creează obiectul `Namespace` pentru comunicare în afara administrării
+    var adminNs = io.of('/admin'); //creează obiectul `Namespace` pentru administrare
+
+    // main.on('connection', socket => {
+
+    //     // === TEST CONNECTION === ::Vezi dacă e conectat și upgradat
+    //     socket.on('testconn', function cbMesaje (mesaj) {
+    //         const detaliiConn = pubComm.server.eio.clients[socket.id]; // obține detaliile de conexiune individuale
+    //         console.log('Serverul a primit următorul mesaj: ', mesaj, detaliiConn.upgraded);
+    //     });
+    // });
+
+    // Testează dacă primești socket format
+    // console.info('Server socket sniff: ', {
+    //     namespace: main.name,
+    //     path: main.server._path,
+    //     connected: main.server.parser.CONNECT,
+    //     error: main.server.parser.ERROR,
+    //     origins: main.server.encoder._origins,
+    //     rooms: main.server.sockets.rooms,
+    //     clients: main.server.eio.clients,
+    //     numberofclients: main.server.eio.clientsCount,
+    //     sockets: main.sockets,
+    //     ids: main.ids,
+    //     transports: main.server.eio.transports
+    // });
+
     /* === FUNCȚII HELPER PENTRU LUCRUL CU SOCKET-URI */
     // EMIT
     function rre (nameEvt, payload) {
@@ -112,19 +151,30 @@ module.exports = function sockets (pubComm) {
     /* === CONSTRUCȚIA BAG-ULUI, INTRODUCEREA ÎNREGISTRĂRII, INTRODUCEREA ÎN ELASTICSEARCH === */
     let lastBag;   // este o referință către un bag deja deschis
     let lastUuid;  // referință către UUID-ul în efect
-    let desiredMode = 0o2775
-    let options = { mode: 0o2775 }
+    let desiredMode = 0o2775;
+    let options = { mode: 0o2775 };
 
     /* === SOCKETURI!!! === */
     pubComm.on('connect', (socket) => {
+
+        // === ERORI === ::Ascultă erorile din server
+        socket.on('error', (reason) => {
+            console.log("[sockets.js::error] Acesta este motivul de eroare: ", reason);
+        });
+
+        // === TEST CONNECTION === ::Vezi dacă e conectat și upgradat
+        // socket.on('testconn', function cbMesaje (mesaj) {
+        //     console.log('Serverul a primit următorul mesaj: ', mesaj);
+        // });
+
         // === MESAJE === ::Ascultă mesajele
         socket.on('mesaje', function cbMesaje (mesaj) {
-            console.log(mesaj);
+            console.log('[sockets.js::mesaje] Serverul a primit următorul mesaj: ', mesaj);
         });
 
         // === COMPETENȚELE SPECIFICE ===
         socket.on('csuri', function cbCsuri (data) {
-            // console.log("[sokets.js::<'csuri'>] Array-ul disciplinelor selectate este ", data);// De ex: [ 'arteviz3', 'stanat3' ] `data` sunt codurile disciplinelor selectate
+            // console.log("[sokets.js::<'csuri'>] Array-ul disciplinelor selectate de client este ", data);// De ex: [ 'arteviz3', 'stanat3' ] `data` sunt codurile disciplinelor selectate
             
             const CSModel = require('../models/competenta-specifica');
             // Proiecția se constituie pe același câmp, dar pe valorile primite prin socket.
@@ -137,12 +187,13 @@ module.exports = function sockets (pubComm) {
 
         // === RESURSA === ::Primește fișiere, fapt care conduce la crearea Bag-ului. Servește instanței de Editor.js (uploadByFile și uploadByUrl)
         socket.on('resursa', function clbkResursa (resourceFile) {
+            //TODO: Detectează dimensiunea fișierului și dă un mesaj în cazul în care depășește anumită valoare (vezi API-ul File)
             /* 
                 Obiectul primit `resourceFile` este `objRes` din `form01adres` și are următoarea semnătură
                 {
                     user: RED.idContributor, // este de forma "5e31bbd8f482274f3ef29103" [înainte era email-ul]
                     name: RED.nameUser,      // este de forma "Nicu Constantinescu"
-                    uuid: RED.uuid,          // dacă deja a fost trimisă o primă resursă, înseamnă că în `RED.uuid` avem valoare deja. Dacă nu, la prima încărcare, serverul va emite unul înapoi în client
+                    uuid: uuid,              // `uuid` are valoare deja
                     resF: file,              // este chiar fișierul: lastModified: 1583135975000  name: "Sandro_Botticelli_083.jpg" size: 2245432 type: "image/jpeg"
                     numR: file.name,         // name: "Sandro_Botticelli_083.jpg"
                     type: file.type,         // type: "image/jpeg"
@@ -161,73 +212,17 @@ module.exports = function sockets (pubComm) {
             // asigură-te că poți scrie în directorul userului
             fs.access(calea, function clbkfsAccess (error) {
                 if (error) {
-                    console.log("[sockets.js::resursa] La verificarea posibilității de a scrie în directorul userului am dat de eroare: ", error);
+                    // console.log("[sockets.js::resursa] La verificarea posibilității de a scrie în directorul userului am dat de eroare: ", error);
                 } else {
                     // console.log("[sockets.js::resursa] Directorul există și poți scrie liniștit în el!!!");
                 }
             });
 
             /*
-            * === PRIMUL FIȘIER ÎNCĂRCAT ===
-            * dacă resursa primită nu are UUID, înseamnă că este prima. Tratează cazul primei resurse
+            * === ÎNCĂRCAREA FIȘIERELOR ===
+            * valoarea `uuid` este setată la momentul trimiterii template-ului
             */
-            if (resourceFile.uuid === '') {
-                // console.log('[sockets::resursa] Prima imagine incarcata uuid-ul va fi: ', typeof(resourceFile.uuid));
-                // setează lastUuid [este chiar numele subdirectorului resursei]
-                lastUuid = uuidv4();
-
-                // ajustează calea adăugând fragmentul uuid [subdirectorului resursei]
-                let newPath = calea + `${lastUuid}`;
-                // console.log("[sockets.js::'resource'] Aceasta este calea în care voi crea Bag-ul: ", newPath);
-
-                /* === ASIGURĂ-TE CĂ DIRECTORUL EXISTĂ === */
-                fs.ensureDir(newPath, desiredMode, err => {
-                    // dacă directorul nu există, va fi emisă eroarea, dar va fi creat
-                    if(err === null){
-                        // console.log("[sockets.js::'resource'] Încă nu am directorul în care să scriu fișierul. Urmează!!!");                        
-                    }
-                    // Generează bag-ul. La Contact-Name vei avea numele autorului/rilor introduși în formular
-                    lastBag = BagIt(newPath, 'sha256', {'Contact-Name': `${resourceFile.name}`}); //creează BAG-ul
-                    // console.log("[sockets.js::'resource'] Am creat Bag-ul și `lastBag` are aceste detalii: ", lastBag);
-                    
-                    // creează stream-ul destinație
-                    var destinationStream = lastBag.createWriteStream(`${resourceFile.numR}`);
-
-                    // adăugarea fișierului primit în Bag
-                    // sourceStream.pipe(destinationStream); // SCRIE PE HARD [OLD]
-                    pipeline(sourceStream, destinationStream, (error, val) => {
-                        if (error) {
-                            console.error("Nu s-a reușit scrierea primului fișier în Bag", error);
-                        }
-                        // console.log('[sockets.js::resursa] Am primit următoarea valoare de pe streamul destination ', val);
-                    });
-
-                    // Calea către fișier [ce pleacă în client] și calea locală către aceasta
-                    let file = `${process.env.BASE_URL}/${process.env.NAME_OF_REPO_DIR}/${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
-                    let localF = `${process.env.REPO_REL_PATH}${resourceFile.user}/${lastUuid}/data/${resourceFile.numR}`;
-
-                    /* === VERIFICĂ DACĂ FIȘIERUL CHIAR A FOST SCRIS === */
-                    fs.access(localF, fs.F_OK, (err) => {
-                        if (err) {
-                            console.log("[sockets.js::'resursa'::fără uuid] Nu am găsit fișierul tocmai scris: ",err);
-                        }
-                        // construiește obiectul de răspuns necesar lui Editor.js
-                        var responseObj = {
-                            success: 1,
-                            uuid: lastUuid,
-                            file,
-                            size: resourceFile.size
-                        };
-                        // trimite înapoi în client obiectul de care are nevoie Editor.js pentru confirmare
-                        socket.emit('resursa', responseObj);
-                        // socket.emit('uuid', lastUuid); // actualizează uuid-ul în client
-                    });
-                })            
-            /*
-            * === SCRIEREA CELORLALTE FIȘIERE CARE VIN ===
-            * dacă este primit un uuid din client, scrie fișierul în acel uuid!!
-            */
-            } else if (resourceFile.uuid) {
+            if (resourceFile.uuid) {
                 // setează calea către directorul deja existent al resursei
                 let existPath = calea + `${resourceFile.uuid}`;
 
@@ -237,12 +232,15 @@ module.exports = function sockets (pubComm) {
 
                 /* === ASIGURĂ-TE CĂ DIRECTORUL EXISTĂ === */
                 fs.ensureDir(existPath, desiredMode, err => {
-                    // console.log(err) // => null
                     if(err === null){
-                        console.log("[sockets.js::'resursa'::cu uuid] Încă nu am directorul în care să scriu fișierul. Urmează!!!");                        
+                        // console.log("[sockets.js::'resursa'::cu uuid] Încă nu am directorul în care să scriu fișierul. Urmează!!!");                        
+                    } else {
+                        console.log("[sockets.js::'resursa'::cu uuid] Eroare cu următoarele detalii: ", err);
+                        throw err;
                     }
+
                     // reactualizează referința către Bag. Verifică dacă cu cumva funcționează fără.
-                    lastBag = BagIt(existPath, 'sha256');
+                    lastBag = BagIt(existPath, 'sha256', {'Contact-Name': `${resourceFile.name}`});
 
                     // creează stream-ul destinație
                     var destinationStream = lastBag.createWriteStream(`${resourceFile.numR}`);
@@ -252,22 +250,26 @@ module.exports = function sockets (pubComm) {
                     pipeline(sourceStream, destinationStream, (error, val) => {
                         if (error) {
                             console.error("[sockets.js::'resursa'::cu uuid] Nu s-a reușit scrierea fișierului în Bag", error);
+                            next(error);
                         }
                         // console.log('[sockets.js::resursa] Am primit următoarea valoare de pe streamul destination ', val);
                     });
 
+                    // construiește obiectul de răspuns.
+                    var responseObj4AddedFile = {
+                        success: 0,
+                        file,
+                        size: resourceFile.size
+                    };
+
                     /* === VERIFICĂ DACĂ FIȘIERUL CHIAR A FOST SCRIS === */
                     fs.access(localF, fs.F_OK, (err) => {
                         if (err) {
-                            console.log("[sockets.js::'resursa'::cu uuid] Nu am găsit fișierul tocmai scris: ",err);
-                            // socket.emit('mesaje', 'Deci, e grav rău! Nu am putut găsi fișierul subdirectorul resursei din depozit!');
+                            console.log("[sockets.js::'resursa'::cu uuid] Nu am găsit fișierul tocmai scris: ", err);
+                            socket.emit('resursa', responseObj);
                         }
-                        // construiește obiectul de răspuns.
-                        var responseObj4AddedFile = {
-                            success: 1,
-                            file,
-                            size: resourceFile.size
-                        };
+                        // marchează succesul scrierii pe disc ca echivalent al succesului întregii operațiuni de upload
+                        responseObj4AddedFile.success = 1;
                         // trimite înapoi obiectul necesar confirmării operațiunii lui Editor.js
                         socket.emit('resursa', responseObj4AddedFile);
                     });                    
@@ -328,7 +330,7 @@ module.exports = function sockets (pubComm) {
                                         }).catch(error => {
                                             if (error) throw error;
                                         });
-                                    })
+                                    });
                                 }).catch(error => {
                                     if (error) throw error;
                                 });
@@ -340,10 +342,11 @@ module.exports = function sockets (pubComm) {
                         if (error) throw error;
                     });
                 }).catch(error => {
-                    console.log(error);
+                    if (error) throw error;
                 });
             }).catch(error => {
-                console.log(error);
+                console.log("[socket.js::createtempver] Eroare cu următoarele detalii: ", error);
+                if (error) throw error;
             });
 
             // Transformarea Buffer-ului primit într-un stream `Readable`
@@ -353,7 +356,7 @@ module.exports = function sockets (pubComm) {
 
             lastBag = BagIt(caleS, 'sha256');
             // introdu un nou fișier în Bag
-            strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`)); //FIXME: refactor cu pipeline();
+            strm.pipe(lastBag.createWriteStream(`${resourceFile.numR}`));
             // construiește obiectul de răspuns.
             var responseObj4AddedFile = {
                 success: 1,
@@ -429,7 +432,7 @@ module.exports = function sockets (pubComm) {
                 // transformă în Buffer obiecul `newRes`
                 const data = Buffer.from(JSON.stringify(newRes));
                 let strm = new Readable();
-                strm._read = () => {} // _read este necesar!!!
+                strm._read = () => {}; // _read este necesar!!!
                 strm.push(data);
                 strm.push(null);
 
@@ -453,13 +456,15 @@ module.exports = function sockets (pubComm) {
             }).then(res => {
                 socket.emit('confirm', res._id);
             }).catch(err => {
-                if (err) console.error;
+                if (err) {
+                    console.error(err);
+                }
                 // Dacă e vreo eroare, distruge directorul de pe hard!
                 fs.ensureDir(`${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`, 0o2775).then(async function clbkFsExists () {
                     // TODO: scrie logica de ștergere a directorului în cazul în care a eșuat crearea înregistrării în MongoDB.
                     await fs.remove(`${process.env.REPO_REL_PATH}${RED.idContributor}/${RED.uuid}/`);
                 }).then(() => {
-                    console.log('Am șters directorul în urma operațiunii eșuate de creare a înregistrării în MongoDB.')
+                    console.log('[socket.js::red] Am șters directorul în urma operațiunii eșuate de creare a înregistrării în MongoDB.');
                 }).catch(error => {
                     console.error(JSON.stringify(error.body, null, 2));
                 });
@@ -500,15 +505,14 @@ module.exports = function sockets (pubComm) {
         socket.on('delfile', (components) => {
             let cleanFileName = decodeURIComponent(components.fileName);
             let dirPath = path.join(`${process.env.REPO_REL_PATH}`, `${components.idContributor}/`, `${components.uuid}/`, `data/`, `${cleanFileName}`);
-            console.log("Fișierul pe care trebuie să-l șterg este: ", dirPath);
+            // console.log("[sockets::delfile] Fișierul pe care trebuie să-l șterg este: ", dirPath);
             
             /* === ȘTERGE FIȘIER === */
             fs.remove(dirPath, function clbkDirFolder (error) {
                 if (error) {
                     console.error(error);
                 }
-                // rre('mesaje', `Am șters fișierul ${cleanFileName}`);
-                // socket.emit('delfile', `Am șters fișierul ${cleanFileName}`);
+                socket.emit('delfile', `Am șters fișierul ${cleanFileName}`);
             });
         });
 
@@ -523,8 +527,8 @@ module.exports = function sockets (pubComm) {
                         }
                         socket.emit('deldir', true);
                     });
-                }).catch(err => {
-                    console.log(err);
+                }).catch(error => {
+                    console.log("[sockets.js::'deldir'] Eroare cu următoarele detalii: ", error);
                 });
         });
 
@@ -551,14 +555,13 @@ module.exports = function sockets (pubComm) {
                     // generează arhiva din subdirectorul resursei în subdirectorul țintă din deleted
                     archive.directory(dirPath, path2deres);
                     // constituie arhiva!                   
-                    archive.pipe(output); //FIXME: refactor cu pipeline();
+                    archive.pipe(output);
                     // WARNINGS
-                    archive.on('warning', function(err) {
+                    archive.on('warning', function(error) {
                         if (err.code === 'ENOENT') {
-                            // log warning
-                            console.log('Atenție, la arhivare a dat warning Error NO ENTry', err);
+                            console.warn("[sockets.js::'delresid'] Atenție, la arhivare a dat warning Error NO ENTry", error);
                         } else {
-                            throw err;
+                            throw error;
                         }
                     });
                     // ERRORS
@@ -574,8 +577,8 @@ module.exports = function sockets (pubComm) {
                         /* === Șterge din MONGODB și din Elasticsearch === */
                         Resursa.findOneAndDelete({_id: resource.id}, (err, doc) => {       
                             if (err) {
-                                console.log(err);
-                            };
+                                console.log("[sockets.js::'delresid'] Eroare cu următoarele detalii: ", err);
+                            }
 
                             if (doc) {
                                 // Șterge înregistrarea din Elasticsearch dacă ștergerea din bază a reușit
@@ -588,12 +591,13 @@ module.exports = function sockets (pubComm) {
                                 fs.ensureDir(dirPath, 0o2775).then(function clbkFsExists () {
                                     fs.remove(dirPath, function clbkDirFolder (error) {
                                         if (error) {
-                                            console.error(error);
+                                            console.error("[sockets.js::'delresid'] Eroare cu următoarele detalii: ", error);
                                         }
                                         socket.emit('delresid', true);
                                     });
                                 }).catch(err => {
-                                    console.log(err);
+                                    console.log("[sockets.js::'delresid'] Eroare cu următoarele detalii: ", error);
+                                    throw error;
                                 });
                             }
                         });
@@ -602,10 +606,12 @@ module.exports = function sockets (pubComm) {
                     /* === FINALIZEAZĂ ARHIVAREA === */
                     archive.finalize();
                 }).catch(error => {
-                    console.log(error);
+                    console.log("[sockets.js::'delresid'] Eroare cu următoarele detalii: ", error);
+                    throw error;
                 });
             }).catch(error => {
-                console.log(error);
+                console.log("[sockets.js::'delresid'] Eroare cu următoarele detalii: ", error);
+                throw error;
             });
         });
 
@@ -616,17 +622,24 @@ module.exports = function sockets (pubComm) {
             let docUser = UserModel.findOne({_id: userSet.id}, 'admin');
             if (userSet.admin == true) {                
                 docUser.exec(function clbkSetAdmTrue(error, doc) {
-                    if (error) console.log(error);
+                    if (error) {
+                        console.log("[sockets.js::'mkAdmin'] Eroare cu următoarele detalii: ", error);
+                        throw error;
+                    }
                     doc.roles.admin = true;
                     doc.save().then(() => {
                         rre('mesaje', 'Felicitări, ai devenit administrator!');
-                    }).catch(err => {
-                        if (err) throw err;
+                    }).catch(error => {
+                        console.log("[sockets.js::'mkAdmin'] Eroare cu următoarele detalii: ", error);
+                        if (err) throw error;
                     });
                 });
             } else {
                 docUser.exec(function clbkSetAdmFalse(error, doc) {
-                    if (error) console.log(error);
+                    if (error) {
+                        console.log("[sockets.js::'mkAdmin'] Eroare cu următoarele detalii: ", error);
+                        throw error;
+                    }
                     doc.roles.admin = false;
                     doc.save().then(() => {
                         rre('mesaje', 'Ai luat dreptul de administrare!');
@@ -643,7 +656,9 @@ module.exports = function sockets (pubComm) {
             let docUser = UserModel.findOne({_id: newRoles.id}, 'roles');
             // dacă vreunul din rolurile trimise nu există deja în array-ul din profilul utilizatorului, acesta va fi adăugat.
             docUser.exec(function clbkAddRole (error, doc) {
-                if (error) console.log(error);
+                if (error) {
+                    console.log("[sockets.js::'addRole'] Eroare cu următoarele detalii: ", error);
+                }
                 newRoles.roles.map( rol => {                    
                     if (!doc.roles.rolInCRED.includes(rol)) {
                         doc.roles.rolInCRED.push(rol);
@@ -664,7 +679,9 @@ module.exports = function sockets (pubComm) {
             let docUser = UserModel.findById(newUnits.id);
 
             docUser.exec(function clbkAddArrUnit (error, doc) {
-                if (error) console.log(error);
+                if (error) {
+                    console.log("[sockets.js::'addUnit'] Eroare cu următoarele detalii: ", error);
+                }
 
                 newUnits.units.map( unit => {
                     unit = unit.trim();
@@ -725,7 +742,7 @@ module.exports = function sockets (pubComm) {
                         },
                         refresh: true
                     }).then(result => {
-                        console.log(result.body.result);
+                        console.log("[sockets.js::'setPubRes'] Am setat resursa ca fiind publică. Înregistrarea: ", result.body.result);
                     }).catch(err => console.error);
                 }).catch(err => {
                     if (err) throw err;
@@ -763,7 +780,9 @@ module.exports = function sockets (pubComm) {
                 const rezProm = findInIdx(query.index, trimmedQ, query.fields);
                 rezProm.then(r => {              
                     socket.emit('searchres', r.body.hits.hits);
-                }).catch(e => console.log(e));
+                }).catch(error => {
+                    console.log("[sockets.js::'searchres'] Înregistrarea userului nu există. Detalii: ", error);
+                });
             } else {
                 rre('mesaje', "Nu am primit niciun termen de căutare...");
             }
@@ -813,10 +832,10 @@ module.exports = function sockets (pubComm) {
                                     type: 'user',
                                     id: user._id
                                 }).then((res) => {
-                                    console.log(res);
+                                    console.log("[sockets.js::'person'] Înregistrarea userului nu există. Detalii: ", res);
                                     socket.emit('mesaje', `Pentru că documentul nu mai există în baza de date, l-am șters și de la indexare cu detaliile: ${res}`);
                                 }).catch((error)=>{
-                                    console.log(error);
+                                    console.log("[sockets.js::'person'] Eroare la aducerea unui user cu următoarele detalii: ", error);
                                 });
                             } else {
                                 // dacă utilizatorul există și în MongoDB, dar și în ES7, trimite datele în client
@@ -864,12 +883,12 @@ module.exports = function sockets (pubComm) {
                     socket.emit('mesaje', `Am căutat în index fără succes. Pur și simplu nu există înregistrări sau trebuie să schimbi cheia de căutare nițel`);
                 }
             } catch (error) {
-                console.log(error);
+                console.log("[sockets.js::'person'] Eroare la aducerea unui user cu următoarele detalii: ", error);
                 socket.emit('mesaje', `Din nefericire, căutarea utilizatorului a eșuat cu următoarele detalii: ${error}`);
 
                 // CAZUL index_not_found_exception
                 if (error.body.error.type == "index_not_found_exception") {
-                    console.error("Nu am gîsit indexul utilizatorilor!!! Vezi dacă serverul de Elasticsearch este pornit.");
+                    console.error("[sockets.js::'person'] Nu am găsit indexul utilizatorilor!!! Vezi dacă serverul de Elasticsearch este pornit.");
                 } else if(error.body.error.type != "index_not_found_exception") {
                     console.error("Este o eroare pe care nu pot să o apreciez. Detalii: ", error);
                 }
@@ -883,7 +902,7 @@ module.exports = function sockets (pubComm) {
             const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
             UserModel.findById(id, function clbkFindById (error, user) {
                 if (error) {
-                    console.error(error);
+                    console.error("[sockets.js::'personrecord'] Eroare la aducerea resurselor personale cu următoarele detalii: ", error);
                     socket.emit('mesaje', 'A dat eroare căutarea...');
                 }
                 // setează opțiunile pentru căutare
@@ -900,7 +919,7 @@ module.exports = function sockets (pubComm) {
                 // Populează modelul!
                 UserModel.populate(user, opts, function clbkExecPopUser (error, res) {
                     if (error) {
-                        console.log(error);
+                        console.log("[sockets.js::'personrecord'] Eroare la aducerea resurselor personale cu următoarele detalii: ", error);
                         // socket.emit('mesaje', 'A dat eroare căutarea...');
                     }
                     // console.log('Din sockets.js[on(personrecord)] -> după populare: ', res);
@@ -922,7 +941,7 @@ module.exports = function sockets (pubComm) {
                     if (descriptor === 'reds') {
                         const TotalREDs = Resursa.estimatedDocumentCount({}, function clbkResTotal (error, result) {
                             if (error) {
-                                console.log(error);
+                                console.log("[sockets.js::'stats'] Eroare la aducerea statisticilor cu următoarele detalii: ", error);
                             } else {
                                 // console.log(result);
                                 socket.emit('stats', {reds: result});
@@ -935,7 +954,7 @@ module.exports = function sockets (pubComm) {
                         const UserModel = mongoose.model('user', UserSchema); // constituie model din schema de user
                         const TotalUsers = UserModel.estimatedDocumentCount({}, function clbkUsersTotal (error, result) {
                             if (error) {
-                                console.log(error);
+                                console.log("[sockets.js::'stats'] Eroare la aducerea statisticilor cu următoarele detalii: ", error);
                             } else {
                                 socket.emit('stats', {users: result});
                                 return result;
@@ -953,7 +972,21 @@ module.exports = function sockets (pubComm) {
             Resursa.find({}).exec().then(allRes => {
                 socket.emit('allRes', allRes);
             }).catch(error => {
-                console.log(error);
+                console.log("[sockets.js::'allRes'] Eroare la aducerea tuturor resurselor cu următoarele detalii: ", error);
+            });
+        });
+
+        // === PAGEDRES === :: RESURSELE PAGINATE
+        socket.on('pagedRes', (data) => {
+            // TODO: modelează acest eveniment pentru resursele paginate necesare clientului
+            // console.log("[sockets] Din client au venit datele: ", data);
+
+            let dataPromise = pagination(data, Resursa);
+            dataPromise.then( data => {
+                // console.log('[sockets] Datele aduse din Mongoo', data);
+                socket.emit('pagedRes', data);
+            }).catch(error => {
+                console.log("[sockets.js::'pagedRes'] Eroare la aducerea resurselor paginate cu următoarele detalii: ", error);
             });
         });
 
@@ -962,7 +995,7 @@ module.exports = function sockets (pubComm) {
             Resursa.find({idContributor: id}).exec().then(pRes => {
                 socket.emit('usrRes', pRes);
             }).catch(error => {
-                console.log(error);
+                console.log("[sockets.js::'usrRes'] Eroare la aducerea utilizatorului cu următoarele detalii: ", error);
             });
         });
 
@@ -972,10 +1005,10 @@ module.exports = function sockets (pubComm) {
             UserModel.find({}).exec().then(allUsers => {
                 socket.emit('allUsers', allUsers);
             }).catch(error => {
-                console.log(error);
+                console.log("[sockets.js::'allUsers'] Eroare la aducerea utilizatorilor cu următoarele detalii: ", error);
             });
         });
     });
 
-    return pubComm;
+    return io;
 };

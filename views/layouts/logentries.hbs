@@ -14,27 +14,41 @@
         {{!-- SOCKET --}}
         {{!-- <script type="application/javascript" src="/socket.io/socket.io.js"></script> --}}
         {{!-- În cazul în care sunt probleme cu browserele, activează încărcarea scriptului în mod direct --}}
-        <script type="application/javascript" src="/lib/socket.io-client/dist/socket.io.slim.js"></script>
+        <script type="application/javascript" src="/lib/npm/socket.io.slim.js"></script>
         
         {{!-- ES6 SHIM --}}
-        <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+        <script type="application/javascript" src="/lib/es6-shim/es6-shim.min.js"></script>
         
-        <link rel="stylesheet" href="{{style}}" media="screen" title="no title" charset="utf-8">
         <link rel="stylesheet" href="/css/main.css">
+
+        {{!-- Încărcarea foilor de stil din module --}}
+        {{#each styles}}
+            <link rel="stylesheet" href="{{style}}" charset="utf-8"></script>
+        {{/each}}
+
+        {{!-- Preîncărcarea modulelor --}}
+        {{#each modules}}
+            <link rel="modulepreload" href="{{module}}"></script>
+        {{/each}}
+
+        {{!-- Încărcarea modulelor --}}
+        {{#each modules}}
+            <script type="module" src="{{module}}"></script>
+        {{/each}}        
 
         <title>{{title}}</title>
     </head>
     <body data-spy="scroll" data-target="#navbarResponsive">
+
         {{{body}}}
+
         <footer>
             {{> footer}}
         </footer>
-        <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script type="application/javascript" src="/lib/jquery/dist/jquery.slim.min.js"></script>
-        <script type="application/javascript" src="/lib/popper.js/dist/popper.min.js"></script>
-        <script type="application/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="/lib/fontawesome/js/all.js" charset="utf-8"></script>
-        <script src="/js/main.js" charset="utf-8"></script>
+
+        {{#each scripts}}
+            <script defer type="application/javascript" src="{{script}}"></script>
+        {{/each}}
+
     </body>
 </html>

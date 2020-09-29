@@ -28,7 +28,7 @@ module.exports = (passport) => {
         auth(req, res){
             res.render('auth', {
                 title:    "auth",
-                style:   "/lib/fontawesome/css/fontawesome.min.css",
+                // style:   "/lib/fontawesome/css/fontawesome.min.css",
                 logoimg:  "img/rED-logo192.png",
                 credlogo: "img/CREDlogo150.jpg"
             });

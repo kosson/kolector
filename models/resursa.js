@@ -9,9 +9,16 @@ let Resursa = new mongoose.Schema({
     etichete: [],
     coperta: String,
     value: Number,
-    coment: {
+    comments: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'comment'
+    }
+}, {
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
     }
 });
 

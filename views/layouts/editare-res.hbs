@@ -12,27 +12,58 @@
         {{!-- SOCKET --}}
         {{!-- <script type="application/javascript" src="/socket.io/socket.io.js"></script> --}}
         {{!-- În cazul în care sunt probleme cu browserele, activează încărcarea scriptului în mod direct --}}
-        <script type="application/javascript" src="/lib/socket.io-client/dist/socket.io.slim.js"></script>
-        
+        <script type="application/javascript" src="/lib/npm/socket.io.slim.js"></script>
+
         {{!-- ES6 SHIM --}}
-        <script type="text/javascript" charset="utf8" src="/lib/es6-shim/es6-shim.min.js"></script>
+        <script type="application/javascript" src="/lib/es6-shim/es6-shim.min.js"></script>
 
         {{!-- MAIN --}}
-        <script type="text/javascript" charset="utf8" src="/js/main.js"></script>
-        <link rel="stylesheet" type="text/css" href="/css/main.css">        
+        <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+        {{!-- JQUERY --}}
+        <script type="application/javascript" src="/lib/npm/jquery.slim.min.js"></script>
 
         {{!-- FONTAWESOME --}}
-        <script type="text/javascript" charset="utf8" src="/lib/fontawesome/js/all.min.js"></script>
-        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/lib/fontawesome/css/all.min.css">
+        <script type="application/javascript" src="/lib/npm/all.min.js"></script>
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/lib/npm/all.min.css">
 
-        <script type="text/javascript" charset="utf8" src="/lib/jquery/dist/jquery.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="/lib/popper.js/dist/umd/popper.min.js"></script>  
+        {{!-- TIMELINE --}}
+        <script type="application/javascript" src="/lib/timeline3/js/timeline.js"></script>
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/lib/timeline3/css/timeline.css">
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/lib/timeline3/css/fonts/font.roboto-megrim.css">
 
         {{!-- JQUERY TOAST --}}
-        <link rel="stylesheet" type="text/css" href="/lib/jquery-toast-plugin/dist/jquery.toast.min.css">
+        <script type="application/javascript" src="/lib/npm/jquery.toast.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/lib/npm/jquery.toast.min.css">
 
-        {{!-- BOOTSTRAP 4 --}}        
-        <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+        {{!-- BOOTSTRAP 4  CSS--}}        
+        <link rel="stylesheet" type="text/css" href="/lib/npm/bootstrap.min.css">
+
+        {{!-- HANDLEBARS --}}
+        <script type="application/javascript" src="/lib/npm/handlebars.min.js"></script>
+
+        {{!-- BOOTSTRAP 4  JS --}}
+        <script type="application/javascript" src="/lib/npm/bootstrap.bundle.min.js"></script>
+
+        {{!-- Încărcarea foilor de stil din module --}}
+        {{#each styles}}
+            <link rel="stylesheet" href="{{style}}" charset="utf-8"></script>
+        {{/each}}
+
+        {{!-- Încărcarea scripturilor --}}
+        {{#each scripts}}
+            <script defer type="application/javascript" src="{{script}}"></script>
+        {{/each}}
+
+        {{!-- Preîncărcarea modulelor --}}
+        {{#each modules}}
+            <link rel="modulepreload" href="{{module}}"></script>
+        {{/each}}
+
+        {{!-- Încărcarea modulelor --}}
+        {{#each modules}}
+            <script type="module" src="{{module}}"></script>
+        {{/each}}
 
         <title>{{title}}</title>
     </head>
@@ -43,11 +74,4 @@
             {{> footer}}
         </footer>
 
-        <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script type="text/javascript" charset="utf8" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-
-        {{!-- JQUERY TOAST PLUGIN --}}
-        <script type="text/javascript" charset="utf8" src="/lib/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-    </body>
 </html>

@@ -14,21 +14,17 @@
         {{!-- SOCKET --}}
         {{!-- <script type="application/javascript" src="/socket.io/socket.io.js"></script> --}}
         {{!-- În cazul în care sunt probleme cu browserele, activează încărcarea scriptului în mod direct --}}
-        <script type="application/javascript" src="/lib/socket.io-client/dist/socket.io.slim.js"></script>
+        <script type="application/javascript" src="/lib/npm/socket.io.slim.js"></script>
 
         {{!-- ES6 SHIM --}}
         <script type="application/javascript" src="/lib/es6-shim/es6-shim.min.js"></script>
 
-        {{!-- MAIN --}}
-        <script type="application/javascript" src="/js/main.js"></script>
-        <link rel="stylesheet" type="text/css" href="/css/main.css">
-
         {{!-- JQUERY --}}
-        <script type="application/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+        <script type="application/javascript" src="/lib/npm/jquery.slim.min.js"></script>
 
         {{!-- FONTAWESOME --}}
-        <script type="application/javascript" src="/lib/fontawesome/js/all.min.js"></script>
-        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/lib/fontawesome/css/all.min.css">
+        <script type="application/javascript" src="/lib/npm/all.min.js"></script>
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/lib/npm/all.min.css">
 
         {{!-- TIMELINE --}}
         <script type="application/javascript" src="/lib/timeline3/js/timeline.js"></script>
@@ -36,18 +32,40 @@
         <link title="timeline-styles" rel="stylesheet" type="text/css" href="/lib/timeline3/css/fonts/font.roboto-megrim.css">
 
         {{!-- JQUERY TOAST --}}
-        <link rel="stylesheet" type="text/css" href="/lib/jquery-toast-plugin/dist/jquery.toast.min.css">
+        <script type="application/javascript" src="/lib/npm/jquery.toast.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/lib/npm/jquery.toast.min.css">
 
-        {{!-- BOOTSTRAP 4 --}}        
-        <link rel="stylesheet" type="text/css" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+        {{!-- BOOTSTRAP 4  CSS--}}        
+        <link rel="stylesheet" type="text/css" href="/lib/npm/bootstrap.min.css">
+
+        {{!-- MAIN --}}
+        <link rel="stylesheet" type="text/css" href="/css/main.css">
 
         {{!-- HANDLEBARS --}}
-        <script type="application/javascript" src="/lib/handlebars/handlebars.runtime.min.js"></script> 
-        <script type="application/javascript" src="/lib/handlebars/handlebars.min.js"></script>
+        <script type="application/javascript" src="/lib/npm/handlebars.min.js"></script>
 
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script type="application/javascript" src="/lib/popper.js/dist/umd/popper.min.js"></script>        
-        <script type="application/javascript" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        {{!-- ATENȚIE!!! Popper-ul trebuie încărcat ca modul --}}
+        {{!-- <script type="application/javascript" src="/lib/npm/popper.min.js"></script>      --}}
+        {{!-- <script type="application/javascript" src="/lib/npm/popper-utils.min.js"></script>    --}}
+
+        {{!-- BOOTSTRAP 4  JS --}}
+        <script type="application/javascript" src="/lib/npm/bootstrap.bundle.min.js"></script>
+
+        {{!-- Încărcarea foilor de stil din module --}}
+        {{#each styles}}
+            <link rel="stylesheet" href="{{style}}" charset="utf-8"></script>
+        {{/each}}
+
+        {{!-- Preîncărcarea modulelor --}}
+        {{#each modules}}
+            <script rel="modulepreload" href="{{module}}"></script>
+        {{/each}}
+
+        {{!-- Încărcarea modulelor --}}
+        {{#each modules}}
+            <script type="module" src="{{module}}"></script>
+        {{/each}}
 
         <title>{{title}}</title>
     </head>
@@ -57,14 +75,6 @@
         <footer class="footer">
             {{> footer}}
         </footer>
-
-        <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        {{!-- <script type="text/javascript" charset="utf8" src="/lib/popper.js/dist/umd/popper.min.js"></script>        
-        <script type="text/javascript" charset="utf8" src="/lib/bootstrap/dist/js/bootstrap.min.js"></script> --}}
-
-        {{!-- JQUERY TOAST PLUGIN --}}
-        <script type="application/javascript" src="/lib/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
         
         <script type="application/javascript" src="/js/custom.js"></script>
     </body>

@@ -1,6 +1,9 @@
 {{!< logentries}}
 {{> nav-resurse}}
 {{> messages}}
+
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
     <div id="container" class="container">
         {{#each logentries}}
             <article class="logentry p-1 mt-1">

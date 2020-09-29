@@ -5,7 +5,7 @@ const moment     = require('moment');
 var content2html = require('./controllers/editorJs2HTML');
 const Log        = require('../models/logentry'); // Adu modelul unei înregistrări de jurnal
 
-// ========== VERIFICAREA ROLURILOR ==========
+// === VERIFICAREA ROLURILOR ===
 let checkRole = require('./controllers/checkRole.helper');
 
 router.get('/', function clbkLog (req, res, next) {
@@ -28,22 +28,48 @@ router.get('/', function clbkLog (req, res, next) {
                 newResultArr.push(newObi);
             });
 
-            let scripts = [     
-                {script: '/lib/moment/min/moment.min.js'}        
+            let scripts = [
+                // FA
+                {script: '/lib/npm/all.min.js'},
+                // MOMENT.JS
+                {script: '/lib/npm/moment-with-locales.min.js'},
+                // JQUERY
+                {script: '/lib/npm/jquery.slim.min.js'},                
+                // BOOTSTRAP
+                {script: '/lib/npm/bootstrap.bundle.min.js'},
+                // HOLDERJS
+                {script: '/lib/npm/holder.min.js'}       
+            ];
+
+            let modules = [
+                // {module: '/js/main.mjs'},
+                // LOCAL
+                // {module: '/js/form02log.js'} 
+            ];
+
+            let styles = [
+                // FONTAWESOME
+                {style: '/lib/npm/all.min.css'},
+                // JQUERY TOAST
+                {style: '/lib/npm/jquery.toast.min.css'},
+                // BOOTSTRAP
+                {style: '/lib/npm/bootstrap.min.css'},
             ];
             
             res.render('logentry', {
-                user:       req.user,
                 title:      "Noutăți",
-                style:      "/lib/fontawesome/css/fontawesome.min.css",
+                user:       req.user,
                 logoimg:    "/img/red-logo-small30.png",
                 credlogo:   "../img/CREDlogo.jpg",
-                csfrToken:  req.csrfToken(),
+                csrfToken:  req.csrfToken(),
                 logentries: newResultArr,
-                scripts
+                scripts,
+                styles,
+                modules 
             });
         }).catch((err) => {
-            if (err) throw err;
+            console.error(err);
+            next(err);
         });
     } else {
         res.redirect('/401');
@@ -53,29 +79,59 @@ router.get('/', function clbkLog (req, res, next) {
 // Jurnalier - introducere articol
 router.get('/new', function (req, res) {
     let scripts = [
-        {script: '/lib/editorjs/editor.js'},
-        {script: '/lib/editorjs/header.js'},
-        {script: '/lib/editorjs/paragraph.js'},
-        {script: '/lib/editorjs/list.js'},
-        {script: '/lib/editorjs/image.js'},
-        {script: '/lib/editorjs/table.js'},
-        {script: '/lib/editorjs/attaches.js'},
-        {script: '/lib/editorjs/embed.js'},
-        {script: '/lib/editorjs/code.js'},
-        {script: '/lib/editorjs/inlinecode.js'}
+        // FA
+        {script: '/lib/npm/all.min.js'},
+        // MOMENT.JS
+        {script: '/lib/npm/moment-with-locales.min.js'},
+        // JQUERY
+        {script: '/lib/npm/jquery.slim.min.js'},                
+        // BOOTSTRAP
+        {script: '/lib/npm/bootstrap.bundle.min.js'},
+        // HOLDERJS
+        {script: '/lib/npm/holder.min.js'}   
     ];
 
-    /* ====== VERIFICAREA CREDENȚIALELOR ====== */
+    let modules = [
+        // EDITOR.JS
+        {module: '/lib/editorjs/editor.js'},
+        {module: '/lib/editorjs/header.js'},
+        {module: '/lib/editorjs/paragraph.js'},
+        {module: '/lib/editorjs/checklist.js'},
+        {module: '/lib/editorjs/list.js'},
+        {module: '/lib/editorjs/image.js'},
+        {module: '/lib/editorjs/embed.js'},
+        {module: '/lib/editorjs/code.js'},
+        {module: '/lib/editorjs/quote.js'},
+        {module: '/lib/editorjs/inlinecode.js'},
+        {module: '/lib/editorjs/table.js'},
+        {module: '/lib/editorjs/attaches.js'},
+        {module: '/lib/editorjs/ajax.js'},
+        // LOCAL
+        {module: '/js/uploader.mjs'},
+        {module: '/js/form02log.js'} 
+    ];
+
+    let styles = [
+        // FONTAWESOME
+        {style: '/lib/npm/all.min.css'},
+        // JQUERY TOAST
+        {style: '/lib/npm/jquery.toast.min.css'},
+        // BOOTSTRAP
+        {style: '/lib/npm/bootstrap.min.css'},
+    ];
+
+    /* === VERIFICAREA CREDENȚIALELOR === */
     if(req.session.passport.user.roles.admin){
         // Dacă avem un admin, atunci oferă acces neîngrădit
         res.render('logentry-form', {
-            user:      req.user,
             title:     "Adaugă în log",
-            style:     "/lib/fontawesome/css/fontawesome.min.css",
+            user:      req.user,
             logoimg:   "/img/red-logo-small30.png",
             credlogo:  "../img/CREDlogo.jpg",
-            csfrToken: req.csrfToken(),
-            scripts
+            csrfToken: req.csrfToken(),
+            scripts,
+            modules,
+            styles
         });
     } else {
         res.redirect('/401');

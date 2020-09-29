@@ -1,3 +1,23 @@
+// import {socket, createElement, decodeCharEntities, datasetToObject} from './main.mjs';
+
+var csrfToken = '';
+
+if(document.getElementsByName('_csrf')[0].value) {
+    csrfToken = document.getElementsByName('_csrf')[0].value;
+}
+
+var pubComm = io('/redcol', {
+    query: {['_csrf']: csrfToken}
+});
+
+
+// TESTAREA CONEXIUNII
+// setInterval(() => {
+//     console.log("Conectat: ", pubComm.connected, " cu id-ul: ", pubComm.id);
+//     pubComm.emit('testconn', 'test');
+// }, 2000);
+
+
 // TODO: Introdu mecanismul de ștergere
 // #1 Ref element
 // #2 Trimite un event „delresid” in server::serverul șterge înregistrarea din MongoDB și din Elasticsearch și directorul de pe HDD.
@@ -23,6 +43,7 @@ const editorX = new EditorJS({
     tools: { 
         header: {
             class: Header,
+            inlineToolbar: ['link'],
             config: {
                 placeholder: 'Introdu titlul sau subtitlul'
             }
@@ -288,6 +309,62 @@ const editorX = new EditorJS({
                 quotePlaceholder: 'Introdu citatul',
                 captionPlaceholder: 'Autorul citatului',
             }
+        }
+    },
+    i18n: {
+        messages: {
+            // traducerea diferitelor componente ale UI-ului
+            ui: {
+                "blockTunes": {
+                    "toggler": {
+                        "Click to tune": "Apasă pentru a modifica",
+                        "or drag to move": "sau trage pentru a muta"
+                    },
+                },                
+                "toolbar": {
+                    "toolbox": {
+                        "Add": "Adaugă"
+                    }
+                }
+            },
+            toolNames: {
+                "Text": "Paragraf",
+                "Attaches": "Încarcă fișiere",
+                "Heading": "Subtitluri",
+                "List": "Listă",
+                "Warning": "Avertizare",
+                "Checklist": "Checklist",
+                "Quote": "Citat",
+                "Code": "Cod",
+                "Delimiter": "Delimitare",
+                "Raw HTML": "HTML pur",
+                "Table": "Tabel",
+                "Link": "Link",
+                "Marker": "Marker",
+                "Bold": "Bold",
+                "Italic": "Italic",
+                "InlineCode": "Cod inclus",
+            },
+            /**
+             * Section allows to translate Block Tunes
+             */
+            blockTunes: {
+                /**
+                 * Each subsection is the i18n dictionary that will be passed to the corresponded Block Tune plugin
+                 * The name of a plugin should be equal the name you specify in the 'tunes' section for that plugin
+                 *
+                 * Also, there are few internal block tunes: "delete", "moveUp" and "moveDown"
+                 */
+                "delete": {
+                    "Delete": "Șterge blocul"
+                },
+                "moveUp": {
+                    "Move up": "Mută mai sus"
+                },
+                "moveDown": {
+                    "Move down": "Mută mai jos"
+                }
+            }      
         }
     }
 });

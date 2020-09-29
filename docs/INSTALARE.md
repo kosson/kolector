@@ -253,15 +253,15 @@ git fetch origin
 git checkout master
 ```
 
-### Instalarea resurselor cu Bower
+### Instalarea resurselor cu npm
 
-Imediat după aducerea resurselor de pe Github, este indicată instalarea din consola serverului a dependințelor externe necesare. Toate dependințele necesare specificate în `bower.json` vor fi instalate în directorul specificat de `.bowerrc`. În cazul nostru, în `public/lib`.
+Imediat după aducerea resurselor de pe Github, este indicată instalarea din consola serverului a dependințelor externe necesare. Se va executa `npm install`.
 
-```bash
-bower install
-```
+Toate dependințele necesare specificate în fișierul `assets.js` din rădăcină, vor trebui copiate în `public/lib/npm`. Acest lucru se face prin rularea comenzii `npm run build` din rădăcina proiectului după ce s-au instalat toate pachetele.
 
-#### Dependințe DataTable
+#### Dependințe 
+
+**DataTable**
 
 Aceste dependințe sunt necesare pentru a realiza mediul de prezentare a datelor în format tabelar.
 
@@ -272,19 +272,31 @@ Acest fișier este necesar pentru că ține datele necesare conectării cu serve
 Primul pas este să creezi fișierul `.env` chiar în rădăcina aplicației. Deschide-l și introdu datele necesare așa cum sunt specificate în următoarele câmpuri:
 
 ```text
+PUBLISHER=EDUCRED
+DOMAIN=localhost:8080
+PORT=8080
 MONGO_LOCAL_CONN=mongodb://localhost:27017/redcolector
 MONGO_USER=nume_utilizator
 MONGO_PASSWD=parola_utilizatorului
+MONGO_REDS=resursedu
 ELASTIC_URL=http://localhost:9200
 GOOGLE_CLIENT_ID=xsdkkdfkjkuf8s9df9sdfsf9sdfhsvp84.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=fdsao09sad99s0fuajfas
+COOKIE_ENCODING=Ce_Va_?Neiteligibil
 BASE_URL=http://localhost:8080
 NAME_OF_REPO_DIR=repo
 REPO_REL_PATH=./repo/
 FILE_LIMIT_UPL_RES=5242880
 USR_IDX_ES7=users
-URS_IDX_ALS=users0
-APP_VER=0.1.3
+USR_IDX_ALS=users0
+RES_IDX_ES7=resedus
+RES_IDX_ALS=resedus0
+LIVRESQ_TOKEN = 'gasrwe54333m'
+LIVRESQ_TOKEN_PLAN = '1dafsdfsb2b'
+LIVRESQ_HOSTNAME = 'livresq.com'
+API_LIVRESQ_HOSTNAME = 'api.livresq.com'
+LIVRESQ_PATH = 'wp-content/plugins/livresq-connector/inc/api.php'
+APP_VER=0.9.2
 ```
 
 Câmpurile `GOOGLE_CLIENT_ID` și `GOOGLE_CLIENT_SECRET` sunt proprii administratorului care face instalarea.

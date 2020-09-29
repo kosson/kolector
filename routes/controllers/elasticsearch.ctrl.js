@@ -28,7 +28,7 @@ exports.findInIdx = async function findInIdx (idxname, queryString, TrFaFields) 
             size: RESULTS_PER_PAGE,
             // from: frompg,
             // to: topg
-        }
+        };
         // introdu termenii de căutare la nivel individual în `must` din `must_match_all`
         for (let fragment of parts) {
             let obi_must = {
@@ -49,7 +49,7 @@ exports.findInIdx = async function findInIdx (idxname, queryString, TrFaFields) 
                     term: {
                         [tfts[0]]: tfts[1]
                     }
-                }
+                };
                 must_match_all.query.bool.filter.push(filter_must);
             }
         }
@@ -62,7 +62,7 @@ exports.findInIdx = async function findInIdx (idxname, queryString, TrFaFields) 
     } catch (error) {
         console.log(error);
     }
-}
+};
 
 exports.aggFromIdx = async function aggFromIdx (idxname, queryString) {
     try {
@@ -78,7 +78,7 @@ exports.aggFromIdx = async function aggFromIdx (idxname, queryString) {
                     }
                 }
             }
-        }
+        };
 
         console.log(JSON.stringify(must_match_all));
         
@@ -118,4 +118,4 @@ exports.aggFromIdx = async function aggFromIdx (idxname, queryString) {
         }
     }
     */
-}
+};

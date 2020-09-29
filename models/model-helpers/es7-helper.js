@@ -11,15 +11,16 @@ const esClient = require('../../elasticsearch.config');
 exports.searchIdxAlCreateDoc = async function searchCreateIdx (schema, data, idx, aliasidx) {
     // console.log(data, idx, aliasidx);
     try {
-        // fii foarte atent, testează după alias, nu după indexul pentru care se creează alias-ul.
+        // #1 Testează dacă există indexul. Fii foarte atent, testează după alias, nu după indexul pentru care se creează alias-ul.
         await esClient.indices.exists(
             {index: aliasidx}, 
             {errorTrace: true}
         ).then(async function clbkAfterExist (rezultat) {
-            //console.log(rezultat);
-            try {                    
+            // Mai verific încă o dată aici dacă documentul există sau nu chiar dacă am verificat în `resursa-cred` -> vezi mai jos `recExists`.
+            try {
+                /* === 404 Documentul nu există === */          
                 if (rezultat.statusCode === 404) {
-                    console.log("Indexul și alias-ul nu există. Le creez acum!");
+                    // console.log("[es7-helper.js] Indexul și alias-ul nu există. Le creez acum!");
                     
                     // creează indexul
                     await esClient.indices.create({
@@ -40,22 +41,6 @@ exports.searchIdxAlCreateDoc = async function searchCreateIdx (schema, data, idx
                         refresh: true,
                         body:    data
                     });
-                } else {
-                    // Verifică dacă nu cumva documentul deja există în index
-                    const {body} = await esClient.exists({
-                        index: aliasidx,
-                        id:    data.id
-                    });
-                    
-                    if (body == false) {            
-                        // INDEXEAZĂ DOCUMENT!!!
-                        await esClient.create({
-                            id:      data.id,
-                            index:   aliasidx,
-                            refresh: true,
-                            body:    data
-                        });
-                    }
                 }
             } catch (error) {
                 if (error) {
@@ -93,4 +78,4 @@ exports.deleteIndex = function (idx) {
             console.log('\x1b[33m' + 'Nu am reușit să șerg indexul' + '\x1b[37m');
         }
     });
-}
+};

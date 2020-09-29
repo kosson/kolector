@@ -1,15 +1,17 @@
 {{!< layout}}
 {{> nav-administrator}}
+
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
 <div id="content">
-    <section class="container-fluid" id="userres">
+    <section class="" id="userres">
         {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
         <div id="contributii" class="">
             {{!-- Background video --}}
             <div class="bg-video">
                 <video class="bg-video__content" autoplay muted loop>
                     {{!-- https://coverr.co/videos/modem-lights-u4MPlcF4EE --}}
-                    <source src="img/coverr-typing-in-laptop-1578678668153.mp4" type="video/mp4">
+                    <source src="/img/coverr-typing-in-laptop-1578678668153.mp4" type="video/mp4">
                     Browserul tău nu are support pentru caracteristicile web moderne. Actualizează-l!
                 </video>
             </div>
@@ -43,68 +45,80 @@
 
     {{!-- TEMPLATE_UL DETALIILOR PENTRU UTILIZATORUL SELECTAT --}}
     <template id="userdetailtpl">
-        {{!-- SECȚIUNE DETALII --}}
-        <section class="admUview container">
-            {{!-- Detaliile primare ale utilizatorului --}}
-            <div class="admUview__admUdesc">
-                {{!-- Imaginea utilizatorului --}}
-                <img class="admUdesc__avatar" src="" alt="">
-                {{!-- ID-ul din baza de date --}}
-                <strong class="admUdesc__admUid"></strong>
-                <p class="admUsesc__admUroles">
-                    Roluri în sistem: 
-                    {{!-- Sunt injectate elemente span --}}                    
-                </p>
 
-                <p class="admUsesc__admUunits">
-                    Unit-urile în care participă: 
-                </p>
-                {{!-- Părți ale mecanismului de abilitare a unui user --}}
-                <div id="form03" class="container">
-                    <form>
-                        {{!-- Setează administrator!!! --}}
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    Admin: 
-                                    <input id="adminSet" type="checkbox" aria-label="Setează administrator" onchange="mkAdmin()">
+        <div class="">
+            {{!-- SECȚIUNE DETALII --}}
+            <section class="admUview">
+
+                {{!-- Detaliile primare ale utilizatorului --}}
+                <div class="admUview__admUdesc">
+                    {{!-- Imaginea utilizatorului --}}
+                    <img class="admUdesc__avatar" src="" alt="">
+                    {{!-- ID-ul din baza de date --}}
+                    <strong class="admUdesc__admUid"></strong>
+                    <p class="admUsesc__admUroles">
+                        Roluri în sistem: 
+                        {{!-- Sunt injectate elemente span --}}                    
+                    </p>
+
+                    <p class="admUsesc__admUunits">
+                        Unit-urile în care participă: 
+                    </p>
+
+                    {{!-- Părți ale mecanismului de abilitare a unui user --}}
+                    <div id="form03" class="container">
+                        <form>
+                            {{!-- Setează administrator!!! --}}
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        Admin: 
+                                        <input id="adminSet" type="checkbox" aria-label="Setează administrator" onchange="mkAdmin()">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        {{!-- Afișarea detaliilor privind rolurile în sistem; Adăugarea de roluri și eliminarea de roluri --}}
-                        <div class="form-group">
-                            <label for="exitingRoles">Selectarea posibilelor roluri suplimentare</label>
-                            <select multiple name="roles" class="form-control" id="existingRoles" onchange="colectRoles()">
-                                <option value="validator">validator</option>
-                                <option value="cred">cred</option>
-                            </select>
-                        </div>
-                        <button type="button" class="btn btn-secondary" onclick="addNewRole()">Adaugă rol</button>
-                        {{!-- Adăugarea de units --}}
-                        <div class="form-group">
-                            <label for="units">Adăugarea unităților (cursuri, activități, etc.)</label>
-                            <textarea class="form-control" id="units" rows="3"></textarea>
-                        </div>
-                        <button type="button" class="btn btn-secondary" onclick="colectUnits()">Adaugă unități noi</button>
-                    </form>
+                            {{!-- Afișarea detaliilor privind rolurile în sistem; Adăugarea de roluri și eliminarea de roluri --}}
+                            <div class="form-group">
+                                <label for="exitingRoles">Selectarea posibilelor roluri suplimentare</label>
+                                <select multiple name="roles" class="form-control" id="existingRoles" onchange="colectRoles()">
+                                    <option value="validator">validator</option>
+                                    <option value="cred">cred</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="addNewRole()">Adaugă rol</button>
+                            {{!-- Adăugarea de units --}}
+                            <div class="form-group">
+                                <label for="units">Adăugarea unităților (cursuri, activități, etc.)</label>
+                                <textarea class="form-control" id="units" rows="3"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="colectUnits()">Adaugă unități noi</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </section>
-        {{!-- SECȚIUNE RESURSE ALE UTILIZATORULUI --}}
-        <section>
-            {{!-- TIMELINE AL RESURSELOR --}}
-            <div id="timeline-embed" class="tline"></div>
+            </section>
+            
+            {{!-- SECȚIUNE RESURSE ALE UTILIZATORULUI --}}
+            <section class="admUview">
+                {{!-- TIMELINE AL RESURSELOR --}}
+                <div id="timeline-embed" class="tline"></div>
+            </section>
+            <section class="admUview">
+                {{!-- ULTIMELE 5 resurse --}}
+                <h5>Ultimele cinci resurse contribuite:</h5>
+                <div class="resurseUser">
+                    
+                    {{!-- Vor fi inserate resursele utilizatorului - ultimele 5 --}}
+                </div>
+            </section>
+        </div>        
 
-            {{!-- ULTIMELE 5 resurse --}}
-            <div class="resurseUser">
-                {{!-- Vor fi inserate resursele utilizatorului - ultimele 5 --}}
-            </div>
-        </section>
     </template>
 
     {{!-- Tabelul resurselor personale --}}
     <template id="userResTbl">
-        <div id="resurseTab" class=""></div>
+        <section>
+            <div id="resurseTab" class=""></div>
+        </section>
     </template>
 
     {{#each scripts}}

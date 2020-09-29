@@ -18,14 +18,15 @@ passport.deserializeUser(UserDetails.deserializeUser());
 /* === SIGNUP [GET] ===*/
 router.get('/', function clbkSignUpGet (req, res, next) {
     let scripts = [
+        // LOCALE
         {script: '/js/signup.js'} 
     ];
     res.render('signup', {
-        title:   "Signuo RED",
+        title:   "Signup RED",
         style:   "/lib/fontawesome/css/fontawesome.min.css",
-        scripts,
         logoimg: "/img/red-logo-small30.png",
-        credlogo: "../img/CREDlogo.jpg"
+        credlogo: "../img/CREDlogo.jpg",
+        scripts
     });
 });
 
@@ -49,7 +50,6 @@ router.post('/', function clbkPostSignUp (req, res, next) {
                 console.error(err);
                 return next(err);
             }
-            console.log('Am creat contul! (signup.js)');
             if (result) {
                 res.redirect('/login');
             }

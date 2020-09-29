@@ -1,4 +1,15 @@
-// ======== CĂUTAREA UNUI UTILIZATOR
+var csrfToken = '';
+
+if(document.getElementsByName('_csrf')[0].value) {
+    csrfToken = document.getElementsByName('_csrf')[0].value;
+}
+
+var pubComm = io('/redcol', {
+    query: {['_csrf']: csrfToken}
+});
+
+
+// === CĂUTAREA UNUI UTILIZATOR ===
 pubComm.emit('personrecord', window.location.pathname.split('/').pop());
 
 var userTmpl = document.querySelector('#usertpl');    // Pas 1 - Fă o referință către template
@@ -35,6 +46,7 @@ function exposeUser () {
     pubComm.emit('personrecord', event.target.name);
 }
 
+// Referință către fișa de utilizator.
 var userFile; // (userFile.resurse)
 var tmlOptions = {
     // height: 350,
@@ -42,7 +54,9 @@ var tmlOptions = {
     // timenav_height_percentage: 22,
     zoom_sequence: 5,
     scale_factor: 2
-}; // opțiuni necesare obiectului Timeline
+};
+
+// opțiuni necesare obiectului Timeline
 TimelineObj = {
     // scale: "human",
     title: {
@@ -59,16 +73,37 @@ TimelineObj = {
     events: [],
 };
 
+/**
+ * Funcția are rolul de a elimina toate nodurile copil ale unei rădăcini din DOM
+ * @param {Node} element 
+ */
+function removeAllChildren(element) {
+    while (element.firstChild) {
+        element.removeChild(element.firstChild);
+    }
+}
+
 // Primirea detaliilor privind utilizatorul ales
-pubComm.on('personrecord', function clblPersReds (resurse) {
+pubComm.on('personrecord', function clbkPersReds (resurse) {
+    // TODO: La un moment dat, va trebui schimbat sistemul de afișare pentru a acomoda mii de resurse individuale
     // console.log(resurse.resurse);
-    renderUsrDetails.innerHTML = '';
+    // renderUsrDetails.innerHTML = '';
+    removeAllChildren(renderUsrDetails);
+
     userFile = resurse;
 
     showUserDetails(resurse); // AFIȘEAZĂ detaliile utilizatorului
 
     if(resurse.resurse.length > 0) {
-        TimelineObj.title.text.headline = resurse.googleProfile.name;
+
+        // Tratează cazul existenței avatarului în profilul Google!!!
+        if (resurse.hasOwnProperty('googleProfile')) {
+            TimelineObj.title.text.headline = resurse.googleProfile.name;
+        } else {
+            TimelineObj.title.text.headline = resurse.username;
+        }
+
+        // TimelineObj.title.text.headline = resurse.googleProfile.name;
         TimelineObj.title.text.text = `Acestea sunt resursele contribuite afișate temporal`;
 
         resurse.resurse.map(function clbkResursa2Timeline (resursa) {
@@ -131,12 +166,14 @@ pubComm.on('personrecord', function clblPersReds (resurse) {
             data: resurse.resurse,
             columns: [
                 {
+                    title: 'Accesează',
                     data: '_id',
                     render: function clbkId (data, type, row) {
-                        return `<a href="${window.location.origin}/profile/resurse/${data}">Deschide</a>`;
+                        return `<a href="${window.location.origin}/profile/${data}">Deschide</a>`;
                     }
                 },
                 {
+                    title: 'Validare',
                     data: 'expertCheck',
                     render: function clbkExpertChk (data, type, row) {
                         // if ( type === 'display' || type === 'filter' ) {
@@ -160,11 +197,28 @@ pubComm.on('personrecord', function clblPersReds (resurse) {
                         }
                     }
                 },
-                {data: 'title'},
-                {data: 'autori'},
-                {data: 'description'},
-                {data: 'licenta'}
-            ]
+                {title: 'Titlu',data: 'title'},
+                {title: 'Autori',data: 'autori'},
+                {title: 'Descriere',data: 'description'},
+                {title: 'Licența',data: 'licenta'}
+            ],
+            language: {
+                "sProcessing":   "Procesează...",
+                "sLengthMenu":   "Afișează _MENU_ înregistrări pe pagină",
+                "sZeroRecords":  "Nu am găsit nimic - ne pare rău",
+                "sInfo":         "Afișate de la _START_ la _END_ din _TOTAL_ înregistrări",
+                "sInfoEmpty":    "Afișate de la 0 la 0 din 0 înregistrări",
+                "sInfoFiltered": "(filtrate dintr-un total de _MAX_ înregistrări)",
+                "sInfoPostFix":  "",
+                "sSearch":       "Caută:",
+                "sUrl":          "",
+                "oPaginate": {
+                    "sFirst":    "Prima",
+                    "sPrevious": "Precedenta",
+                    "sNext":     "Următoarea",
+                    "sLast":     "Ultima"
+                }
+            }
         });
     }
 });
@@ -184,16 +238,23 @@ function showUserDetails (descriere) {
     var cloneTbl = usrResTblTmpl.content.cloneNode(true); // clonarea template-ului pentru afișare tabelară
 
     // injectează datele primite în elementele template-ului
-    // ===== AVATAR =====
+    // === AVATAR ===
     var userAvatar = cloneContent.querySelector('.admUdesc__avatar'); // Numele utilizatorului
-    userAvatar.src = descriere.googleProfile.picture;
-    userAvatar.alt = descriere.googleProfile.name;
 
-    // ===== ID =====
+    // Tratează cazul existenței avatarului în profilul Google!!!
+    if (descriere.hasOwnProperty('googleProfile')) {
+        userAvatar.src = descriere.googleProfile.picture;
+        userAvatar.alt = descriere.googleProfile.name;
+    } else {
+        userAvatar.src = '/img/karl-magnuson-85J99sGggnw-unsplash-small.jpg';
+        userAvatar.alt = descriere.username;
+    }
+
+    // === ID ===
     var userID = cloneContent.querySelector('.admUdesc__admUid');
     userID.textContent = descriere._id;
 
-    // ===== ROLES =====
+    // === ROLES ===
     var uRoles = cloneContent.querySelector('.admUsesc__admUroles');
     descriere.roles.rolInCRED.map(function clbkRolesTmpl (rol) {
         let rolTag = document.createElement('span');
@@ -204,7 +265,7 @@ function showUserDetails (descriere) {
         uRoles.appendChild(rolTag);
     });
 
-    // ==== UNITS =====
+    // === UNITS ===
     var uUnits = cloneContent.querySelector('.admUsesc__admUunits');
     descriere.roles.unit.map(function clbkUnitsTmpl (unit) {
         let unitTag = document.createElement('span');
@@ -215,7 +276,7 @@ function showUserDetails (descriere) {
         uUnits.appendChild(unitTag);
     });
 
-    // ===== RESURSE AFIȘARE [CARD-uri Bootstrap 4] =====
+    // === RESURSE AFIȘARE ultimele cinci resurse contribuite [CARD-uri Bootstrap 4] ===
     var uResurse = cloneContent.querySelector('.resurseUser');
 
     // Extrage ultimele 5 resurse
@@ -225,15 +286,17 @@ function showUserDetails (descriere) {
     last5REDs.map( function clbkResUser (resursa) {
         // Creează containerul cardului
         let divCard = document.createElement('div');
-        divCard.classList.add('card');
+        // divCard.classList.add('card');
+        divCard.classList.add('last_contributed');
 
         // Creează headerul cardului
-        let divCardHeader = document.createElement('div');
-        divCardHeader.classList.add('card-header');
+        // let divCardHeader = document.createElement('div');
+        let divCardHeader = document.createElement('p');
+        // divCardHeader.classList.add('card-header');
         let h5CardHeader = document.createElement('h5');
-        h5CardHeader.classList.add('card-title');
+        // h5CardHeader.classList.add('card-title');
         let aH5CardHeader = document.createElement('a');
-        aH5CardHeader.href = `/profile/resurse/${resursa._id}`;
+        aH5CardHeader.href = `/profile/${resursa._id}`;
         aH5CardHeader.role = 'button';
         aH5CardHeader.classList.add('btn');
         aH5CardHeader.classList.add('btn-dark');
@@ -243,20 +306,21 @@ function showUserDetails (descriere) {
         divCard.appendChild(divCardHeader); // inkectează .card-header în .card
 
         // Creează body-ul card-ului
-        let divCardBody = document.createElement('div');
-        divCardBody.classList.add('card-body');
-        divCard.appendChild(divCardBody);
+        // let divCardBody = document.createElement('div');
+        // divCardBody.classList.add('card-body');
+        // divCard.appendChild(divCardBody);
 
         // creează descriere în card
         let resDescr = document.createElement('p');
         resDescr.textContent = resursa.description;
-        divCardBody.appendChild(resDescr);
+        // divCardBody.appendChild(resDescr);
+        divCard.appendChild(resDescr);
 
         // injectează
         uResurse.appendChild(divCard);
     });
 
-    // ===== SET ADMIN =====
+    // === SET ADMIN ===
     var admCheck = cloneContent.querySelector('#adminSet');
     if (descriere.roles.admin) {admCheck.checked = true; }
 
@@ -295,7 +359,7 @@ pubComm.on('mkAdmin', (result) => {
     console.log(result);
 });
 
-// ==== ADAUGĂ ROLURI
+// === ADAUGĂ ROLURI ===
 var rolesSet = new Set(); // setul rolurilor care vor fi adăugate în profilul utilizatorului
 var unitsSet = new Set(); // setul unit-urilor care vor fi adăugate în profil.
 

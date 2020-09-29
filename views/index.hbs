@@ -1,49 +1,64 @@
 {{!< landing}}
 {{> nav-landing}}
 
-{{#each scripts}}
-    <script type="application/javascript" src="{{script}}"></script>
+<input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+{{!-- Încărcarea modulelor --}}
+{{#each modules}}
+    <script type="module" src="{{module}}"></script>
 {{/each}}
 
-{{!-- {{#if user}}
-    <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
-{{/if}} --}}
+{{!-- Încărcarea scripturilor --}}
+{{#each scripts}}
+    <script defer type="application/javascript" src="{{script}}"></script>
+{{/each}}
 
 {{!-- secțiunea landing --}}
-<div class="landing">
-    <div class="home-wrap">
-        <div class="home-inner">
-            {{!-- "Ants" by revolution540 is licensed under CC BY 2.0 --}}
-        </div>
-    </div>
-</div>
+<!--<div class="landing">-->
+<!--    <div class="home-wrap">-->
+<!--        <div class="">-->
+<!--            {{!-- "Ants" by revolution540 is licensed under CC BY 2.0 --}}-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 {{!-- secțiune landing final --}}
 
 {{!-- secțiune întâmpinare --}}
-<div class="caption text-center">
+<div class="home-inner caption text-center">
 
     <div class="os-animation" data-animation="bounceInUp" data-delay=".3s">
-        <ul class="nav justify-content-center">
+        <p><img src="img/rED-logo192.png" alt="logo RED.EDUCRED.RO" height="100px"> <img src="img/SIGLA-CRED1.png" alt="logo CRED"></p>
+        {{!-- <ul class="nav justify-content-center">
             <li class="nav-item">
-                <a class="nav-link active" href="#"><img src="img/intrumentestructurale-1.png" alt="Instrumente Structurale logo."></a>
+                <a class="nav-link active" href="#"><img src="img/intrumentestructurale-1.png" alt="Instrumente Structurale logo." width="50%"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><img src="img/ue-1.png" alt="Uniunea Europeană logo."></a>
+                <a class="nav-link" href="#"><img src="img/ue-1.png" alt="Uniunea Europeană logo."  width="50%"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#"><img src="img/guvern-1.png" alt="Uniunea Europeană logo."></a>
+                <a class="nav-link" href="#"><img src="img/guvern-1.png" alt="Uniunea Europeană logo."  width="50%"></a>
             </li>
-        </ul>
+        </ul> --}}
     </div>
-    <div class="os-animation" data-animation="bounceInUp" data-delay=".4s">
+    {{!-- <div class="os-animation" data-animation="bounceInUp" data-delay=".4s">
         <h1>Bine ai venit!</h1>
+    </div> --}}
+    <div id="txthead" class="os-animation" data-animation="bounceInUp" data-delay=".5s">
+        <p>
+            Colectorul de Resurse Educaționale Deschise este o aplicație creată în cadrul proiectului <em>CRED-Curriculum relevant, educație deschisă pentru toți</em>– cod SMIS 2014+:118327
+Proiect cofinanțat din Fondul Social European prin Programul Operațional Capital Uman 2014-2020
+        </p>
+        <div>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/d_Xov5X2iMk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p>
+            Pentru a vă ajuta în efortul de elaborare a Resurselor Educaționale Deschise, aducem în atenția dumneavoastră un portal elaborat în cadrul proiectului cu scopul de a vă oferi sprijin: <a href="http://digital.educred.ro">digital.educred.ro</a>
+            Acest spațiu a fost creat pentru toți profesorii care doresc să valorifice noile tehnologii în activitățile de învățare cu elevii, valorificând experiența și rezultatele obținute până acum în proiectul CRED (<a href="https://www.educred.ro/" target="_black">site</a> si <a href="https://www.facebook.com/ProiectulCRED/" target="_blank">pagina Facebook</a>). Ne dorim astfel să contribuim la dezvoltarea competențelor cadrelor didactice de a utiliza și de a dezvolta resurse educaționale deschise (<a href="https://www.youtube.com/watch?v=d_Xov5X2iMk&t=230s">RED</a>). În egală măsură, așteptăm  ca în timp acest spațiu să susțină comunități de învățare dedicate resurselor educaționale deschise.
+            Pentru alte propuneri, inclusiv de grupuri de bune practici în educație, ne puteți scrie la adresa resurse@educred.ro
+        </p>
+        {{!-- <p><a href="http://digital.educred.ro"><img src="img/digitalPeEducred.png" alt="fragment din headerul digital.educred.ro"></a></p> --}}
     </div>
 
-    <div class="os-animation" data-animation="bounceInUp" data-delay=".5s">
-        <p>Colectorul de Resurse Educaționale Deschise este o aplicație creată în cadrul proiectului <em>CRED-Curriculum relevant, educație deschisă pentru toți</em>– cod SMIS 2014+:118327
-Proiect cofinanțat din Fondul Social European prin Programul Operațional Capital Uman 2014-2020</p>
-    </div>
-            
     <div class="os-animation" data-animation="bounceInUp" data-delay=".6s">
         <a class="btn btn-outline-light btn-lg" href="/resursepublice">Zona resurselor deschise public</a>
     </div>
@@ -61,7 +76,7 @@ Proiect cofinanțat din Fondul Social European prin Programul Operațional Capit
 {{!-- <div class="container"> --}}
     {{!-- {{> mainInfo}} --}}
 <div class="offset">
-    <div class="os-animation narrow text-center" data-animation="fadeInUp">
+<!--    <div class="os-animation narrow text-center" data-animation="fadeInUp">-->
         {{!-- <h3 class="heading">
             Resurse la îndemâna dumneavoastră
         </h3>
@@ -145,7 +160,7 @@ Proiect cofinanțat din Fondul Social European prin Programul Operațional Capit
                 </div>
             </article>
         </div> --}}
-    </div>
+<!--    </div>-->
 
     <div id="resurse" class="resurse os-animation" data-animation="fadeInUp">
         <div class="resurse">
@@ -159,12 +174,12 @@ Proiect cofinanțat din Fondul Social European prin Programul Operațional Capit
                 </video>
             </div>
 
-            {{!-- Șablon de resursă în landing --}}
+            {{!-- Randează resursele în landing --}}
             {{#each resurse}}
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">
-                            <a class="btn btn-dark" href="/resursepublice/{{this._id}}" class="">{{this.title}}</a>
+                            <a class="" href="/resursepublice/{{this._id}}" class="">{{this.title}}</a>
                         </h5>
                         <h6 class="card-subtitle mb-2">{{this.autori}}</h6>
                         <span class="text-muted">{{this.dataRo}}</span>                                   
@@ -176,18 +191,21 @@ Proiect cofinanțat din Fondul Social European prin Programul Operațional Capit
                         {{else}}
                         <div style="position: relative;">
                             <img src="/img/CREDlogo.jpg" alt="" width="100px" style="position: absolute; top: 5; left: 5">
-                            <img data-src="holder.js/100px100&textmode=exact?auto=yes&text=RED" class="coperta card-img-top" alt="{{this.title}}">
+                            <img data-src="holder.js/100px100&textmode=exact?auto=yes&text=RED" class="card-img-top">
                         </div>
                     {{/if}}
                     
                     <div class="card-body">
-
                         <p class="card-text">{{this.description}}</p>
                         {{!-- <a href="/resursepublice/{{this.id}}" class="btn btn-primary">Afișează</a>    --}}
                     </div>
+
                     <div class="card-footer text-muted">
-                        {{!-- {{this.date}} --}}
-                        {{this.dataRo}}
+                        {{#each this.etichete}}
+                            <a href="/tag/{{this}}">
+                                <span class="badge badge-info">{{this}}</span>
+                            </a>
+                        {{/each}}
                     </div>
                 </div>
             {{/each}}

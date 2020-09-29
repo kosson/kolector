@@ -1,3 +1,20 @@
+var csrfToken = '';
+
+if(document.getElementsByName('_csrf')[0].value) {
+    csrfToken = document.getElementsByName('_csrf')[0].value;
+}
+
+var pubComm = io('/redcol', {
+    query: {['_csrf']: csrfToken}
+});
+
+
+// TESTAREA CONEXIUNII
+// setInterval(() => {
+//     console.log("Conectat: ", pubComm.connected, " cu id-ul: ", pubComm.id);
+//     pubComm.emit('testconn', 'test');
+// }, 2000);
+
 /* === CĂUTAREA UNUI UTILIZATOR === */
 
 // --> Adaugă receptor pe butonul din formularul de căutare
@@ -431,6 +448,8 @@ pubComm.on('addRole', (resurce) => {
 pubComm.emit('stats', {descriptors: ['reds', 'users']}); // Se pasează descriptorii pentru care se dorește aducerea datelor corespondente. Prin convenție, fiecare descriptor înseamnă un set de date.
 // la primirea datelor statistice, se generează articole.
 pubComm.on('stats', (stats) => {
+    restatsEntry = document.querySelector('#restats');
+
     if (stats.hasOwnProperty('reds')) {
         const resObi = {
             descriptor: 'reds',
@@ -448,7 +467,8 @@ pubComm.on('stats', (stats) => {
     }
 });
 
-var restatsEntry = document.querySelector('#restats'); // Ancora din DOM a elementului deja existent
+var restatsEntry; // Ancora din DOM a elementului deja existent
+// restatsEntry.innerHTML = '';
 var statsTmpl = document.querySelector('#statstpl'); // ref la template
 
 /**
@@ -457,7 +477,9 @@ var statsTmpl = document.querySelector('#statstpl'); // ref la template
  * @param {Object} data Sunt datele care vin din backend pentru datele statistice sumare
  */
 function populateStatisticArticle (data) {
-    // console.log(data);
+    // Următoarea este necesară pentru a nu dubla numărul elementelor generate la reload sau back
+    Array.prototype.forEach.call(document.getElementsByClassName(data.descriptor), elem => elem.remove());
+
     // clonează nodul în care vom crea dinamic elementele DOM 
     var cloneStatsContent = statsTmpl.content.cloneNode(true); // clonarea template-ului pentru statistici
 

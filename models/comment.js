@@ -1,18 +1,16 @@
 const mongoose = require('mongoose');
-const mexp     = require('mongoose-elasticsearch-xp');
 
 let Comment = new mongoose.Schema({
     _id: Schema.Types.ObjectId,
-    titlu: String,
-    contributor: String,
-    continut: {},
-    value: Number,
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
-    }
+    resourceId: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    user: String,
+    title: String,
+    content: {},
+    value: Number
 });
-
-Comment.plugin(mexp);
 
 module.exports = new mongoose.model('comment', Comment);

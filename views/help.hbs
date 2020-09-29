@@ -1,13 +1,19 @@
 {{!< landing}}
 {{> nav-resurse}}
 {{> messages}}
-    <div id="container">
-        <h1>Acesta este sistemul de asistență</h1>
-        <h2>Resurse Educaționale Deschise</h2>
-        <div>
-            <p><a href="/help/ResurseleEducationale.html">1. Despre Resurse Educaționale Deschise</a></p>
-            <p><a href="/help/CreareaUnuiCont.html">2. Crearea unui cont</a></p>
-            <p><a href="/help/IntroducereaUneiResurseEducationaleDeschise.html">3. Introducerea unei Resurse Educaționale Deschise</a></p>
-            <p><a href="/help/Administrare.html">4. Administrarea conturilor și a utilizatorilor</a></p>            
-        </div>
+
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
+    <div id="help">
+        <fieldset>
+            <legend>Sistemul de asistență</legend>
+            
+            <div id="help-landing" class="container">
+                <h2>Resurse Educaționale Deschise</h2>
+                <p><a href="/help/ResurseleEducationale.html">1. Despre Resurse Educaționale Deschise</a></p>
+                <p><a href="/help/CreareaUnuiCont.html">2. Crearea unui cont</a></p>
+                <p><a href="/help/IntroducereaUneiResurseEducationaleDeschise.html">3. Introducerea unei Resurse Educaționale Deschise</a></p>
+                <p><a href="/help/Administrare.html">4. Administrarea conturilor și a utilizatorilor</a></p>    
+            </div>
+        </fieldset>
     </div>

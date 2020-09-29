@@ -86,7 +86,7 @@ var ResursaSchema = new mongoose.Schema({
     licenta:       String,
     comentarii:    [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'coment'
+        ref: 'comment'
     }],     // este o listă de identificatori pentru comentariile aduse unei anumite resurse.
     content: {}, // Este conținutul adăugat cu Editor.js
     bibliografie:  String, // este o listă de referințe bibliografice dacă acest lucru există. Formatul este APA, versiunea 6.
@@ -105,15 +105,21 @@ var ResursaSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'badge'
     }],
-    
+}, {
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    }
 });
 
 /* === HOOKS === */
 // PRE
 
 // Stergerea comentariilor asociate utiliatorului atunci când acesta este șters din baza de date.
-ResursaSchema.pre('remove', function hRemoveCb() {
-    const Coment = monoose.model('coment'); // acces direct la model fără require
+ResursaSchema.pre('remove', function hRemoveClbk (next) {
+    const Coment = mongoose.model('coment'); // acces direct la model fără require
     Coment.remove({ // -> Parcurge întreaga colecție a comentariilor
         // -> iar dacă un `_id`  din întreaga colecție de comentarii se potrivește cu id-urile de comentariu din întregistrarea resursei (`$in: this.Coment`), șterge-le. 
         _id: {$in: this.Coment} // se va folosi operatorul de query `in` pentru a șterge înregistrările asociate
@@ -171,7 +177,7 @@ ResursaSchema.post('save', function clbkPostSave1 (doc, next) {
 });
 
 // Adăugare middleware pe `post` pentru toate operațiunile `find`
-ResursaSchema.post(/^find/, async function clbkResFind (doc, next) {
+ResursaSchema.post(/^find/, async function clbkResFindPostHookREDschema (doc, next) {
     // Când se face căutarea unei resurse folosindu-se metodele`find`, `findOne`, `findOneAndUpdate`, vezi dacă a fost indexat. Dacă nu, indexează-l!
 
     // cazul `find` când rezultatele sunt multiple într-un array.
@@ -227,25 +233,21 @@ ResursaSchema.post(/^find/, async function clbkResFind (doc, next) {
                     }   
                 }).catch((error) => {
                     console.error(JSON.stringify(error, null, 2));
+                    next(error);
                 });            
             } catch (error) {
                 console.error(JSON.stringify(error, null, 2));
+                next(error);
             }
         });
     } else {
         // console.log("De pe hook-ul `post` metoda ^find, ramura unui singur document: ", doc.title);
-        
         try {
             // verifică dacă înregistrarea din Mongo există în ES?
-            // console.log("ramura unui singur document - THEN: ", doc.title, "cu id: ", doc._id);
+            // console.log("[Scheme::resursa-red.js] Documentul nu este array și este de forma: ", doc);
             ES7Helper.recExists(doc._id, process.env.RES_IDX_ALS).then(function (e) {                
                 if (e === false) {
-
-                    console.log("ramura unui singur document - THEN: ", doc.title);
-
-                    let obi = Object.assign({}, doc._doc);
-                    
-                    //FIXME: Aici apare eroare: UnhandledPromiseRejectionWarning: ResponseError: mapper_parsing_exception
+                    let obi = Object.assign({}, doc); // recast la înregistrare pentru a elimina artefacte Mongoose document
 
                     // verifică dacă există conținut
                     var content2txt = '';
@@ -288,15 +290,27 @@ ResursaSchema.post(/^find/, async function clbkResFind (doc, next) {
                         expertCheck:      obi.expertCheck
                     };
 
-                    // console.log("Înainte de indexare ramura documentului unic ", data._id, data.content2txt);
-
                     ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
-                }   
+                }
+                /* TODO: === REINDEXARE ÎN BAZA HASHULUI DE CONȚINUT :: componentă a REEDITĂRII de resursă === */
+                // else {
+                    //  version conflict, document already exists (statusCode === 409)
+                    // Aici va fi tratat cazul în care documentul există, dar conținutul a fost actualizat și ca urmare este necesară reindexare
+                    // Verifică dacă nu cumva documentul deja există în index
+                    // const {body} = await esClient.exists({
+                    //     index: aliasidx,
+                    //     id:    data.id
+                    // });
+                    // Compară HASH-ul conținutului existent al lui `body` in ES cu hash-ul documentului curent
+                    // În cazul în care diferă, REINDEXEAZĂ DOCUMENT!!!
+                // } 
             }).catch((error) => {
                 console.error(JSON.stringify(error, null, 2));
+                next(error);
             });   
         } catch (error) {
             console.error(JSON.stringify(error, null, 2));
+            next(error);
         }
     }
     next();

@@ -1,9 +1,9 @@
 {{!< log}}
 {{> nav-resurse}}
 {{> messages}}
-    {{#each scripts}}
-        <script src="{{script}}" charset="utf-8"></script>
-    {{/each}}
+
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    
     <div id="container">
         <h1>Intrare nouă în jurnal</h1>
         <div id="editorcrate" class="container p-2">
@@ -26,3 +26,7 @@
             </form>
         </div>
     </div>
+
+    {{#each scripts}}
+        <script defer type="application/javascript" src="{{script}}"></script>
+    {{/each}}
