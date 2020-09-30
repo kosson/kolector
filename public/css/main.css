@@ -100,10 +100,7 @@ nav.navbar-light {
 
 /* === LANDING PAGE IMAGE === */
 .home-inner {
-    /* background-image: url("/img/15144968188_c6938eb1a3_b.jpg"); */
-    /* background-image: url("/img/black-1072366_1920.jpg"); */
-    background-image: url("/img/focus-photo-of-4-wooden-pawn-figurine-209728.jpg");
-    /* Imagine de la https://www.pexels.com/photo/focus-photo-of-4-wooden-pawn-figurine-209728/ */
+    background-image: url("/img/ramon-salinero-vEE00Hx5d0Q-unsplash.jpg");
     
     /* Adaug efect de blur */
     filter: blur(4px);

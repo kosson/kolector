@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="{{language}}">
     <head prefix="dc: http://purl.org/dc/elements/1.1 dcterms: http://purl.org/dc/terms">
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        
-        <meta property="dc:title"       content="Jurnalierul Colectorului pentru Resurse Educaționale Deschise">
-        <meta property="dc:description" content="Acesta este jurnalierul Colectorului RED">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <meta itemprop="name"        content="Jurnalierul Colectorului pentru Resurse Educaționale Deschise">
-        <meta itemprop="description" content="Acesta este jurnalierul Colectorului RED">
+        <meta name="keywords"    content="{{creator}} {{publisher}} {{brandname}}">
+        <meta name="description" content="{{description}}">
+        <meta name="generator"   content="{{brandname}}">
+        <meta name="creator"     content="{{creator}}">
+        <meta name="autor"       content="Constantinescu Nicolaie">
+        <meta name="publisher"   content="{{publisher}}">
+        
+        <meta property="dc:title"       content="{{brandname}}">
+        <meta property="dc:description" content="{{description}}">
+        
+        <meta itemprop="name" content="{{brandname}}">
+        <meta itemprop="description" content="{{description}}">
         
         {{!-- SOCKET --}}
         {{!-- <script type="application/javascript" src="/socket.io/socket.io.js"></script> --}}
@@ -45,17 +52,17 @@
         
         {{{body}}}
 
-        <section>
+        {{!-- <section>
             {{> digitaleducred}}
-        </section>
+        </section> --}}
 
         {{!-- Încărcarea scripturilor --}}
         {{#each scripts}}
             <script defer type="application/javascript" src="{{script}}"></script>
         {{/each}}
 
-        {{!-- <footer class="footer">
+        <footer class="footer">
             {{> footer}}
-        </footer> --}}
+        </footer>
     </body>
 </html>

@@ -9,8 +9,12 @@ var content2html = require('./controllers/editorJs2HTML');
 // Indexul de căutare
 let idxRes = process.env.RES_IDX_ALS;
 
+// CONSTANTE
+let logoimg = "img/" + process.env.LOGO;
+
 // === RESURSE PUBLICE ===
 router.get('/', (req, res) => {
+    
     Resursa.where({'generalPublic': true}).countDocuments(function cbCountResPub (err, count) {
         if (err) throw err;
         // console.log('Numărul resurselor este: ', count);
@@ -56,7 +60,8 @@ router.get('/', (req, res) => {
         res.render('resursepublice', {
             title:        "Publice",
             user:         req.user,
-            logoimg:      "img/rED-logo192.png",
+            logoimg,
+            language:     "ro",
             csrfToken:    req.csrfToken(),            
             resurse:      newResultArr,
             activeResLnk: true,
@@ -97,10 +102,9 @@ router.get('/:id', (req, res) => {
             
             // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
             res.render('resursa-publica', {                
-                title:     "RED public",
+                title:     "Publică",
                 user:      req.user,
-                logoimg:   "/img/red-logo-small30.png",
-                credlogo:  "../img/CREDlogo.jpg",
+                logoimg,
                 csrfToken: req.csrfToken(),
                 resursa:   newObi,
                 scripts
@@ -112,6 +116,7 @@ router.get('/:id', (req, res) => {
         if (err) {
             console.log(err);
         }
+        next(err);
     });
 });
 

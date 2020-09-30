@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <nav class="navbar navbar-expand-lg fixed-top">
         <a class="navbar-brand" href="/">
-            <img id="logo-small" src="{{{logoimg}}}" alt="RED colector logo"> RED Colector
+            <img id="logo-small" src="{{{logoimg}}}" alt="logo"> Acasă
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
@@ -12,9 +12,11 @@
                 <span class="salut">Salut, {{user.googleProfile.name}} <img class="avatar" data-email="{{user.email}}" data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" src="{{user.googleProfile.picture}}" alt="Imagine cont" /></span>
             {{/if}}
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/resursepublice">Resurse publice</a>
-                </li>
+                {{#if user}}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/resursepublice">Resurse publice</a>
+                    </li>
+                {{/if}}
                 {{#if user}}
                     {{#if user.roles.admin}}
                         <li class="nav-item">
@@ -34,7 +36,7 @@
                         <a class="nav-link" href="/resurse/adauga">Adaugă</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/resurse">Resurse CRED</a>
+                        <a class="nav-link" href="/resurse">Resurse</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/help">Asistență</a>

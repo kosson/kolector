@@ -29,9 +29,8 @@ router.get('/', (req, res, next) => {
     // console.log("Din user.ctrl avem din req.body pe /login: ", req.body);
     res.render('login', {
         title:    "login",
-        // style:   "/lib/fontawesome/css/fontawesome.min.css",
-        logoimg:  "img/rED-logo192.png",
-        credlogo: "img/CREDlogo150.jpg",
+        logoimg:  process.env.LOGO ,
+        googlelogo: "img/Google-logo.png",
         scripts,
         modules,
         styles

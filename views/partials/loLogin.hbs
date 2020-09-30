@@ -10,13 +10,13 @@
             </a> --}}
 
             <form class="form-signin">
-                <h3>Dacă ai cont EDUCRED (nume@educred.ro), te rog, autentifică-te apăsând logo-ul</h3>
+                <h3>Dacă ai cont Google, te poți autentifica cu acesta, apăsând logo-ul</h3>
                 <a href="/auth/google">
-                    <img src="{{credlogo}}" alt="Acesta este logo-ul proiectului CRED în Educație">
+                    <img src="{{googlelogo}}" alt="Acesta este logo-ul proiectului CRED în Educație" width="80px">
                 </a>
             </form>
             <form action="/login" method="post">
-                <h3 class="h3 mb-3 font-weight-normal">Dacă ai cont pe platfoma RED Colector</h1>
+                <h3 class="h3 mb-3 font-weight-normal">Dacă ai cont local</h1>
                 <label for="inputEmail" class="sr-only">Adresa email</label>
                 <input type="email" name="username" id="inputEmail" class="form-control" placeholder="Email address" required>
                 <label for="inputPassword" class="sr-only">Parola</label>

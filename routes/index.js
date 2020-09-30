@@ -53,11 +53,17 @@ router.get('/', function clbkRootRoute (req, res, next) {
         ];
     
         res.render('index', {
-            title:     "Acasă",
-            user:      req.user,
-            logoimg:   "img/rED-logo192.png",            
-            resurse:   newResultArr,
-            csrfToken: req.csrfToken(),
+            title:       "Acasă",
+            user:        req.user,
+            language:    "ro",
+            creator:     process.env.CREATOR,
+            publisher:   process.env.PUBLISHER,
+            brandname:   process.env.BRAND_NAME,
+            description: process.env.DESCRIPTION,
+            contact:     process.env.CONTACT,
+            logoimg:     "img/" + process.env.LOGO,            
+            resurse:     newResultArr,
+            csrfToken:   req.csrfToken(),
             modules,
             scripts,
             styles

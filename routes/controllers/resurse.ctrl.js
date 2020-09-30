@@ -22,6 +22,9 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
     // Indexul de căutare
     let idxRes = process.env.RES_IDX_ALS;
 
+    // CONSTANTE
+    let logoimg = "img/" + process.env.LOGO;
+
     // ACL
     let roles = ["user", "validator", "cred"];
 
@@ -59,9 +62,9 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
                 return newObi;
             });
             res.render('resurse', {
-                title:        "CRED RED",
+                title:        "Interne",
                 user:         req.user,
-                logoimg:      "img/rED-logo192.png",
+                logoimg,
                 csrfToken:    req.csrfToken(),
                 resurse:      newResultArr,
                 activeResLnk: true,
@@ -72,6 +75,7 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
         }).catch((err) => {
             if (err) {
                 console.log(JSON.stringify(err.body, null, 2));
+                next(err);
             }
         });
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
@@ -86,9 +90,9 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
             });
         
             res.render('resurse', {
-                title:        "Resurse publice",
+                title:        "Publice",
                 user:         req.user,
-                logoimg:      "img/rED-logo192.png",
+                logoimg,
                 csrfToken:    req.csrfToken(),                
                 resurse:      newResultArr,
                 activeResLnk: true,
@@ -99,6 +103,7 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
             if (err) {
                 console.log(JSON.stringify(err.body, null, 2));
             }
+            next(err);
         });
     } else {
         res.redirect('/401');
@@ -108,6 +113,9 @@ exports.loadRootResources = function loadRootResources (req, res, next) {
 
 /* AFIȘAREA UNEI SINGURE RESURSE / ȘTERGERE / EDITARE */
 exports.loadOneResource = function loadOneResource (req, res, next) {
+    // CONSTANTE
+    let logoimg = "img/" + process.env.LOGO;
+
     let query = Resursa.findById(req.params.id).populate({path: 'competenteS'});
     query.then( (resursa) => {
             if (resursa.id) {
@@ -173,11 +181,10 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
                 publisher: process.env.PUBLISHER
             };            
 
-            res.render('resursa-cred', {                
-                title:     "RED in CRED",
+            res.render('resursa-interna', {                
+                title:     "Resursă",
                 user:      req.user,
-                logoimg:   "/img/red-logo-small30.png",
-                credlogo:  "../img/CREDlogo.jpg",
+                logoimg,
                 csrfToken: req.csrfToken(),
                 resursa:   result,
                 data,
@@ -188,11 +195,15 @@ exports.loadOneResource = function loadOneResource (req, res, next) {
             if (err) {
                 console.log(JSON.stringify(err.body, null, 2));
             }
+            next(err);
         });
 };
 
 /* FORM DESCRIERE RESURSE (ADAUGĂ) */
 exports.describeResource = function describeResource (req, res, next) {
+    // CONSTANTE
+    let logoimg = "img/" + process.env.LOGO;
+
     const cookieObj = cookieHelper.cock2obj(req.headers.cookie);
     // Unică sursă de identificator
     let uuid = uuidv4();
@@ -280,8 +291,7 @@ exports.describeResource = function describeResource (req, res, next) {
         res.render('adauga-res', {            
             title:   "Adauga",
             user:    req.user,
-            logoimg: "red-logo-small30.png",
-            credlogo:"/img/CREDlogo.jpg",
+            logoimg,
             csrfToken: req.csrfToken(),
             styles,
             modules,
@@ -302,10 +312,9 @@ exports.describeResource = function describeResource (req, res, next) {
         if(!url.startsWith("http")) url = "#";
 
         res.render('adauga-res', {            
-            title:   "Adauga",
-            user:    req.user,
-            logoimg: "/img/rED-logo192.png",
-            credlogo:"/img/CREDlogo.jpg",
+            title:     "Adauga",
+            user:      req.user,
+            logoimg,
             csrfToken: req.csrfToken(),
             styles,
             modules,
