@@ -268,13 +268,6 @@ app.use('*', function (req, res, next) {
     });
 });
 
-/* === SETAREA MODULUI DE RULARE === */
-app.set('env', 'development'); // `preview`, `production`, `test`, `stage`
-// vezi http://expressjs.com/api.html#app.locals
-// app.locals({
-//     'PROD_MODE': 'production' === app.get('env')
-// });
-
 // colectarea erorilor de pe toate middleware-urile
 app.use(function catchAllMiddleware (err, req, res, next) {
     console.error(err.stack);
@@ -306,7 +299,10 @@ const detalii = {
     RAM: formatBytes(alocareProces.rss)
 };
 
-console.log("Memoria RAM alocată la pornire este de: ", detalii.RAM);
+console.info("Memoria RAM alocată la pornire este de: ", detalii.RAM);
+if(process.env.NODE_ENV === 'production') {
+    console.info("Aplicația rulează în modul de producție");
+}
 
 /* === Pornește serverul! === */
 let port = process.env.PORT || 8080;
