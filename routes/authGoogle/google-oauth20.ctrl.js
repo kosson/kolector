@@ -1,3 +1,4 @@
+require('dotenv').config();
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 module.exports = (passport) => {
@@ -10,9 +11,11 @@ module.exports = (passport) => {
     passport.deserializeUser(function(obj, cb) {
         cb(null, obj);
     });
+    // CONSTANTE
+    let logoimg = "img/" + process.env.LOGO;
 
-    // Încarcă funcția care tratează autentificarea cu Google pentru strategia dedicată
-    let cbGoogleStrategy = require('./googleStrategy.helper');
+    /* === STRATEGIA GOOGLE === */
+    let cbGoogleStrategy = require('./google-oauth20.clbk'); // Încarcă funcția care tratează autentificarea cu Google pentru strategia dedicată
     // Strategia de access pentru conturile de Google
     passport.use(new GoogleStrategy({
             clientID:          process.env.GOOGLE_CLIENT_ID,
@@ -28,9 +31,7 @@ module.exports = (passport) => {
         auth(req, res){
             res.render('auth', {
                 title:    "auth",
-                // style:   "/lib/fontawesome/css/fontawesome.min.css",
-                logoimg:  "img/rED-logo192.png",
-                credlogo: "img/CREDlogo150.jpg"
+                logoimg
             });
         },
         ensureAuthenticated(req, res, next){

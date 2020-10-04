@@ -2,19 +2,20 @@ require('dotenv').config();
 /* === DEPENDINȚE === */
 const express = require('express');
 const router  = express.Router();
+const crypto  = require('crypto');
 
 // Cere gestionarul pentru versiunea 1
-let {getREDs, getRED, postRED, putRED, delRED} = require('./api/v1');
+let {getResources, getResource, postResource, putResource, delResource} = require('./api/v1');
 
 router
     .route('/')
-    .get(getREDs)
-    .post(postRED);
+    .get(getResources)
+    .post(getResource);
 
 router
     .route('/:id')
-    .get(getRED)
-    .put(putRED)
-    .delete(delRED);
+    .get(getResource)
+    .put(putResource)
+    .delete(delResource);
 
 module.exports = router;

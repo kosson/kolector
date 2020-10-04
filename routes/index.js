@@ -6,9 +6,7 @@ const Resursa  = require('../models/resursa-red'); // Adu modelul resursei
 
 /* === LANDING :: / === */
 router.get('/', function clbkRootRoute (req, res, next) {
-
-    // let localizat = moment(result.date).locale('ro').format('LLL');
-    // result.dataRo = `${localizat}`; // formatarea datei pentru limba română.
+    // console.log('/routes/index:: / Sesiunea este: ', req.session.passport);
 
     Resursa.where({'generalPublic': true}).countDocuments(function cbCountResPub (err, count) {
         if (err) throw err;

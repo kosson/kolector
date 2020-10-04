@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const passportLocalMongoose = require('passport-local-mongoose');
+// const passportLocalMongoose = require('passport-local-mongoose'); // https://www.npmjs.com/package/passport-local-mongoose
 const esClient = require('../elasticsearch.config');
 const schema  = require('./user-es7');
 const ES7Helper= require('./model-helpers/es7-helper');
@@ -15,6 +15,8 @@ var User = new Schema({
         type: String,
         index: true
     },
+    hash: String,
+    salt: String, /* pentru formul de creare cont, sunt introduse automat de `passport-local-mongoose` */
     googleID: String,
     googleProfile: {
         name:          {type: String},
@@ -38,6 +40,11 @@ var User = new Schema({
     comments: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'comment'
+    },
+    /* Primii pași pentru legarea conturilor */
+    localAccounts: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 },{
     toJSON: {
@@ -154,6 +161,6 @@ User.virtual('resurse', {
 });
 //https://mongoosejs.com/docs/populate.html#populate-virtuals
 
-User.plugin(passportLocalMongoose);
+// User.plugin(passportLocalMongoose);
 
 module.exports = User;

@@ -1,16 +1,23 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="{{language}}">
     <head prefix="dc: http://purl.org/dc/elements/1.1 dcterms: http://purl.org/dc/terms">
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <meta name="keywords"    content="{{creator}} {{publisher}} {{brandname}}">
+        <meta name="description" content="{{description}}">
+        <meta name="generator"   content="{{brandname}}">
+        <meta name="creator"     content="{{creator}}">
+        <meta name="autor"       content="Constantinescu Nicolaie">
+        <meta name="publisher"   content="{{publisher}}">
         
-        <meta property="dc:title"       content="Colector Resurse Educaționale Deschise">
-        <meta property="dc:description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
+        <meta property="dc:title"       content="{{brandname}}">
+        <meta property="dc:description" content="{{description}}">
         
-        <meta itemprop="name"        content="Colector Resurse Educaționale Deschise">
-        <meta itemprop="description" content="Aceasta este aplicația care colectează Resurse Educaționale Deschise create în cadrul proiectului EDUCRED.">
-        
+        <meta itemprop="name" content="{{brandname}}">
+        <meta itemprop="description" content="{{description}}">
+
         {{!-- SOCKET --}}
         {{!-- <script type="application/javascript" src="/socket.io/socket.io.js"></script> --}}
         {{!-- În cazul în care sunt probleme cu browserele, activează încărcarea scriptului în mod direct --}}
@@ -46,8 +53,6 @@
 
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         {{!-- ATENȚIE!!! Popper-ul trebuie încărcat ca modul --}}
-        {{!-- <script type="application/javascript" src="/lib/npm/popper.min.js"></script>      --}}
-        {{!-- <script type="application/javascript" src="/lib/npm/popper-utils.min.js"></script>    --}}
 
         {{!-- BOOTSTRAP 4  JS --}}
         <script type="application/javascript" src="/lib/npm/bootstrap.bundle.min.js"></script>

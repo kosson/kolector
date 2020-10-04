@@ -9,7 +9,7 @@ let asyncHandler = require('../utils/async_helper');
 // @desc   adu-mi toate RED-urile
 // @route  GET /api/v1/getREDs
 // @acces  privat
-exports.getREDs = asyncHandler(async function getREDs (req, res, next) {
+exports.getResources = asyncHandler(async function getREDs (req, res, next) {
         // ACL
         let roles = ["user", "validator", "cred"];
 
@@ -26,7 +26,7 @@ exports.getREDs = asyncHandler(async function getREDs (req, res, next) {
         let queryStr = JSON.stringify(reqQuery); // transformă obiectul în text.
         // crearea operatorilor de lucru pentru MongoDB.
 
-        queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`); //întoarce operatorul cu un $ în față necesar query-urilor MongoDB.
+        queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`); // întoarce operatorul cu un $ în față necesar query-urilor MongoDB.
         // căutarea resurselor
         query = RedModel.find(JSON.parse(queryStr)); // trasformă înapoi în obiect
 
@@ -48,11 +48,12 @@ exports.getREDs = asyncHandler(async function getREDs (req, res, next) {
         }
 
         // Paginarea rezultatelor
-        let page = parseInt(req.query.page, 10) || 1; // preia pagina iar dacă aceasta nu este menționată, din oficiu va fi 1
-        let limit = parseInt(req.query.limit, 10) || 100; // numărul de înregistrăru din setul de date, dar nu mai mult de 100
+        let page       = parseInt(req.query.page, 10) || 1;    // preia pagina iar dacă aceasta nu este menționată, din oficiu va fi 1
+        let limit      = parseInt(req.query.limit, 10) || 100; // numărul de înregistrăru din setul de date, dar nu mai mult de 100
         let startIndex = (page - 1) * limit;
-        let endIndex = page * limit;
-        let total = RedModel.count();
+        let endIndex   = page * limit;
+        let total      = RedModel.count();
+
         // aplicarea lui skip și a limitării
         query = query.skip(startIndex).limit(limit);
 
@@ -88,7 +89,7 @@ exports.getREDs = asyncHandler(async function getREDs (req, res, next) {
 // @desc   adu-mi un singur RED
 // @route  GET /api/v1/getRED/:id
 // @acces  privat
-exports.getRED = asyncHandler(async function getRED (req, res, next) {
+exports.getResource = asyncHandler(async function getRED (req, res, next) {
         // ACL
         let roles = ["user", "validator", "cred"];
 
@@ -110,7 +111,7 @@ exports.getRED = asyncHandler(async function getRED (req, res, next) {
 // @desc   creează un RED
 // @route  POST /api/v1/postRED/:idUser
 // @access privat
-exports.postRED = asyncHandler(async function postRED (req, res, next) {
+exports.postResource = asyncHandler(async function postRED (req, res, next) {
         // ACL
         let roles = ["user", "validator", "cred"];
 
@@ -126,7 +127,7 @@ exports.postRED = asyncHandler(async function postRED (req, res, next) {
 // @desc   actualizează un RED
 // @route  POST /api/v1/putRED/:idRed
 // @access privat
-exports.putRED = asyncHandler(async function putRED (req, res, next) {
+exports.putResource = asyncHandler(async function putRED (req, res, next) {
         // ACL
         let roles = ["user", "validator", "cred"];
 
@@ -145,7 +146,7 @@ exports.putRED = asyncHandler(async function putRED (req, res, next) {
 // @desc   șterge un RED
 // @route  DELETE /api/v1/delRED/:id
 // @access privat
-exports.delRED = function delRED (req, res, next) {
+exports.delResource = function delResource (req, res, next) {
         // ACL
         let roles = ["user", "validator", "cred"];
         res.status(201).send({creat: true});

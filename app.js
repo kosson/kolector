@@ -4,15 +4,15 @@ const path           = require('path');
 const logger         = require('morgan');
 const compression    = require('compression');
 const express        = require('express');
-const cookies        = require('cookie-parser');
 const session        = require('express-session');
+const cookieParser   = require('cookie-parser');
 const csurf          = require('csurf');
-const redisClient    = require('./redis.config');
+
 const helmet         = require('helmet');
 const passport       = require('passport');
-const LocalStrategy  = require('passport-local').Strategy;
 const responseTime   = require('response-time');
 const RedisStore     = require('connect-redis')(session);
+const redisClient    = require('./redis.config');
 
 const hbs            = require('express-hbs');
 const app            = express();
@@ -22,10 +22,6 @@ const cors           = require('cors');
 const favicon        = require('serve-favicon');
 const { v1: uuidv1 } = require('uuid'); // https://github.com/uuidjs/uuid#deep-requires-now-deprecated
 const i18n           = require('i18n');
-
-/* === ÎNCĂRCAREA RUTELOR NEPORTEJATE === */
-let login          = require('./routes/login');
-let signupLoco     = require('./routes/signup');
 
 /* === I18N === */
 i18n.configure({
@@ -72,123 +68,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 /* === SESIUNI === */
-app.use(cookies());// Parse Cookie header and populate req.cookies with an object keyed by the cookie names
+app.use(cookieParser());// Parse Cookie header and populate req.cookies with an object keyed by the cookie names
 
 /* === TIMP RĂSPUNS ÎN HEADER === */
 app.use(responseTime());
-
-/* === PROXY SUPPORT === */
-app.set('trust proxy', true);
-app.enable('trust proxy');
-
-/* === INIȚIALIZARE I18N === */
-app.use(i18n.init); // instanțiere modul i18n - este necesar ca înainte de a adăuga acest middleware să fie cerut cookies
-
-// creează sesiune - https://expressjs.com/en/advanced/best-practice-security.html
-let sessionMiddleware = session({
-    name: 'redcolector',
-    secret: process.env.COOKIE_ENCODING,
-    genid: function(req) {
-        return uuidv1(); // use UUIDs for session IDs
-    },
-    store: new RedisStore({client: redisClient}),
-    unref: true,
-	proxy:  true,
-    resave: false, 
-    saveUninitialized: true,
-    logErrors: true,
-    cookie: {
-        httpOnly: true,
-        maxAge: (1 * 24 * 3600 * 1000),
-        sameSite: 'lax' // https://www.npmjs.com/package/express-session#cookiesamesite
-    }
-});
-
-// MIDDLEWARE de stabilirea a sesiunii de lucru prin încercări repetate. Vezi: https://github.com/expressjs/session/issues/99
-app.use(function (req, res, next) {
-    var tries = 3; // număr de încercări
-    function lookupSession (error) {
-        if (error) {
-            return next(error);
-        }
-        tries -= 1;
-
-        if (req.session !== undefined) {
-            return next();
-        }
-
-        if (tries < 0) {
-            return next(new Error('Nu am putut stabili o sesiune cu Redis chiar după trei încercări'));
-        }
-
-        sessionMiddleware(req, res, lookupSession);
-    }
-    lookupSession();
-});
-
-/* === PASSPORT === */
-app.use(passport.initialize()); // Instanțiază Passport
-app.use(passport.session()); // restaurează starea sesiunii dacă aceasta există
-
-/* === SERVER SOCKETURI === */
-// #1 Creează server prin atașarea celui existent
-const io = require('socket.io')(http);
-// #2 Creează un wrapper de middleware Express pentru Socket.io
-function wrap (middleware) {
-    return function matcher (socket, next) {
-        middleware (socket.request, {}, next);
-    };
-}
-io.use(wrap(sessionMiddleware));
-// conectarea obiectului sesiune ca middleware în tratarea conexiunilor socket.io (ALTERNATIVĂ, nu șterge)
-// io.use(function clbkIOuseSessions(socket, next) {
-//     sessionMiddleware(socket.request, socket.request.res, next);
-// });
-// when a socket.io connect connects, get the session and store the id in it (https://stackoverflow.com/questions/42379952/combine-sockets-and-express-when-using-express-middleware)
-
-/* === PASAREA SERVERULUI SOCKET === */
-require('./routes/sockets')(io);
-
-/* === RUTE ÎN AFARA CSRF-ului === */
-// UPLOAD
-let upload = require('./routes/upload')(io);
-app.use('/upload', upload);
-// SIGNUP
-app.use('/signup', signupLoco); // SIGNUP!!!
-// LOGIN
-const UserSchema = require('./models/user');
-const { shutdown, server_info } = require('./redis.config');
-const UserDetails = mongoose.model('users', UserSchema);
-
-/* === PASSPORT middleware === */
-passport.use(UserDetails.createStrategy()); // echivalentul lui passport.use(new LocalStrategy(Account.authenticate()));
-passport.serializeUser(UserDetails.serializeUser());
-passport.deserializeUser(UserDetails.deserializeUser());
-app.use('/login', login);
-
-/* === CSRF - Cross Site Request Forgery - expressjs.com/en/resources/middleware/csurf.html === */
-const csurfProtection = csurf({
-    cookie: {
-        key: '_csrf',
-        path: '/',
-        httpOnly: false,
-        secure: false, // dacă folosești HTTPS setează la true
-        signed: false, // în caz de signed cookies, setează la true
-        sameSite: 'strict', // https://www.owaspsafar.org/index.php/SameSite
-        maxAge: 24 * 60 * 60 * 1000, // 24 ore
-    }
-});
-app.use(csurfProtection); // activarea protecției la CSRF
-app.use(function (err, req, res, next) {
-    if (err.code !== 'EBADCSRFTOKEN') return next(err);
-    // gestionarea erorilor CSRF token:
-    res.status(403).send('Sockets.io nu trimite înapoi tokenul!!!');
-});
-//https://github.com/expressjs/csurf/issues/21
-// app.use(function (req, res, next) {
-//     if (req.url === '/repo') return next();
-//     csurfProtection(req, res, next);
-// })
 
 /* === HANDLEBARS :: SETAREA MOTORULUI DE ȘABLONARE === */
 hbs.registerHelper('json', function clbkHbsHelperJSON (obi) {
@@ -215,9 +98,95 @@ function shouldCompress (req, res) {
 }
 app.use(compression({ filter: shouldCompress }));
 
+app.use(i18n.init); // instanțiere modul i18n - este necesar ca înainte de a adăuga acest middleware să fie cerut cookies
+
+// creează sesiune - https://expressjs.com/en/advanced/best-practice-security.html
+let sessionMiddleware = session({
+    store:  new RedisStore({client: redisClient}),
+    name:   'kolector',
+    secret: process.env.COOKIE_ENCODING,
+    genid:  function (req) {
+        return uuidv1(); // use UUIDs for session IDs
+    },
+	proxy:  true,
+    resave: false, 
+    saveUninitialized: true,
+    logErrors: true,
+    cookie: {
+        httpOnly: true,
+        maxAge: (24 * 3600 * 1000),
+        sameSite: 'lax' // https://www.npmjs.com/package/express-session#cookiesamesite
+    }
+});
+// https://www.npmjs.com/package/express-session
+if (app.get('env') === 'production') {
+    app.set('trust proxy', 1);              // trust first proxy
+    sessionMiddleware.cookie.secure = true; // serve secure cookies
+}
+
+/* === PASSPORT === */
+app.use(passport.initialize()); // Instanțiază Passport pentru a fi asigurată trecerea mai departe a cererii pe rute
+app.use(passport.session());    // restaurează starea sesiunii dacă aceasta există
+
+// MIDDLEWARE de stabilirea a sesiunii de lucru prin încercări repetate. Vezi: https://github.com/expressjs/session/issues/99
+app.use(function (req, res, next) {
+    var tries = 3; // număr de încercări
+    function lookupSession (error) {
+        if (error) {
+            return next(error);
+        }
+        tries -= 1;
+
+        if (req.session !== undefined) {
+            // console.log('app.js::stabilirea sesiunii de lucru -> req.session', req.session);
+            // doar dacă sesiunea este stabilită, se va trece pe următorul middleware
+            return next();
+        }
+
+        if (tries < 0) {
+            return next(new Error('Nu am putut stabili o sesiune cu Redis chiar după trei încercări'));
+        }
+
+        sessionMiddleware(req, res, lookupSession);
+    }
+    lookupSession();
+});
+
+/* === SERVER SOCKETURI === */
+// #1 Creează server prin atașarea celui existent
+const io = require('socket.io')(http);
+// #2 Creează un wrapper de middleware Express pentru Socket.io
+function wrap (middleware) {
+    return function matcher (socket, next) {
+        middleware (socket.request, {}, next);
+    };
+}
+io.use(wrap(sessionMiddleware));
+// conectarea obiectului sesiune ca middleware în tratarea conexiunilor socket.io (ALTERNATIVĂ, nu șterge)
+// io.use(function clbkIOuseSessions(socket, next) {
+//     sessionMiddleware(socket.request, socket.request.res, next);
+// });
+// when a socket.io connect connects, get the session and store the id in it (https://stackoverflow.com/questions/42379952/combine-sockets-and-express-when-using-express-middleware)
+
+/* === PASAREA SERVERULUI SOCKET === */
+require('./routes/sockets')(io);
+
+/* === RUTE ÎN AFARA CSRF-ului === */
+// UPLOAD
+let upload = require('./routes/upload')(io);
+app.use('/upload', upload);
+
+/* === CSRF - Cross Site Request Forgery - expressjs.com/en/resources/middleware/csurf.html https://github.com/expressjs/csurf === */
+const csurfProtection = csurf({cookie: false});
+app.use(csurfProtection); // activarea protecției la CSRF
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 /* === ÎNCĂRCAREA RUTELOR === */
-const UserPassport = require('./routes/controllers/user.ctrl')(passport);
+const UserPassport = require('./routes/authGoogle/google-oauth20.ctrl')(passport);
 let index          = require('./routes/index');
+let login          = require('./routes/login');
 let authG          = require('./routes/authGoogle/authG');
 let callbackG      = require('./routes/authGoogle/callbackG');
 let logout         = require('./routes/logout');
@@ -231,13 +200,16 @@ let tags           = require('./routes/tags');
 let tools          = require('./routes/tools');
 let help           = require('./routes/help');
 let apiv1          = require('./routes/apiV1');
+let signupLoco     = require('./routes/signup');
 
 // === MIDDLEWARE-ul RUTELOR ===
-app.use('/api/v1',         apiv1); // accesul la prima versiune a api-ului
-app.use('/auth',           authG);
-app.use('/callback',       callbackG);
-app.use('/logout',         logout);
-app.use('/',               csurfProtection, index);
+app.use('/',               index);
+app.use('/api/v1',         csurfProtection, apiv1); // accesul la prima versiune a api-ului
+app.use('/auth',           csurfProtection, authG);
+app.use('/callback',       csurfProtection, callbackG);
+app.use('/signup',         csurfProtection, signupLoco);
+app.use('/login',          csurfProtection, login);
+app.use('/logout',         csurfProtection, logout);
 app.use('/resursepublice', csurfProtection, resursepublice);
 app.use('/tertium',        csurfProtection, tertium);
 app.use('/help',           csurfProtection, help);
@@ -247,6 +219,14 @@ app.use('/log',            csurfProtection, UserPassport.ensureAuthenticated, lo
 app.use('/profile',        csurfProtection, profile);
 app.use('/tags',           csurfProtection, tags);
 app.use('/tools',          csurfProtection, tools);
+
+app.use(function midwVerifyCSRFtoken (err, req, res, next) {
+    // console.error('[app.js (CSRF)] Token incorect sau lipsă! Diferă ce este în cookie de ce este în headere!');
+    console.log('[app.js::midwVerifyCSRFtoken] headerele ', req.headers, ' Cookies: ', req.cookies, ' Codul de eroare ', err.code);
+    if (err.code === 'EBADCSRFTOKEN') {
+        return next(err);
+    }
+});
 
 // === 401 - NEPERMIS ===
 app.get('/401', function(req, res){

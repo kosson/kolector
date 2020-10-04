@@ -1,10 +1,10 @@
 {{!< layout}}
+
 {{!-- Încărcarea scripturilor --}}
 {{#each scripts}}
     <script defer type="application/javascript" src="{{script}}"></script>
 {{/each}}
 
 <div class="container">
-    <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
     {{> loLogin}}
 </div>

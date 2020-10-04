@@ -1,5 +1,5 @@
-const User = require('../../models/user');
-const mongoose  = require('mongoose');
+const User     = require('../../models/user');
+const mongoose = require('mongoose');
 
 /**
  * Funcția `googleStrategy` are rolul de a crea înregistrările de utilizatori în MongoDB și de a trimite spre indexare lui Elasticsearch obiectul document creat.
@@ -11,15 +11,10 @@ const mongoose  = require('mongoose');
  * @param {Function} done Callback
  */
 function googleStrategy (request, accessToken, refreshToken, params, profile, done) {
-    if (profile.googleProfile) {
-        avatar = profile.googleProfile.picture;
-    } else {
-        avatar = '';
-    }
     // constituirea obiectului cu date pentru a popula modelul
     const record = {
         _id: new mongoose.Types.ObjectId(),
-        avatar,
+        avatar: '',
         email: profile._json.email,
         googleID: profile.id,
         googleProfile: {
@@ -40,18 +35,29 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
         },
         created: Date.now()
     };
+    
+    // tratează cazul în care nu ai link-ul avatarului
+    if (profile.googleProfile) {
+        record.avatar = profile.googleProfile.picture;
+    } else {
+        record.avatar = '';
+    }
 
     /* === Crearea primului utilizator [admin] === */
     const userModel = mongoose.model('user', User);
 
     // numără câte înregistrări sunt în colecție.
     userModel.find().estimatedDocumentCount( async function (err, count) {
-        if (err) console.error;
+        if (err) {
+            console.error(err);
+        }
         
+        // TODO: Aici este locul unde ar trebui introdus hash și salt pentru un cont luat de la Google.
+
         // DACĂ nu găsește nicio înregistrare, creează direct pe prima care va fi și administratorul aplicației
         if (count == 0) {
             record.roles.rolInCRED.push('admin'); // introdu rolul de administrator în array-ul rolurilor
-            // FIXME: [ROLURI] Ieși din hardocadarea rolurilor. Constituie un mecanism separat de acordare ale acestora. Primul admin ca trebuie să aibă un mecanism de creare de roluri noi și acordare ale acestora.
+            // FIXME: [ROLURI] Ieși din hardocadarea rolurilor. Constituie un mecanism separat de acordare a acestora. Primul admin ca trebuie să aibă un mecanism de creare de roluri noi și acordare ale acestora.
             record.roles.rolInCRED.push('cred');  // introdu rolul de user cred în array-ul rolurilor
             record.roles.unit.push('global');     // unitatea este necesară pentru a face segregări ulterioare în funcție de apartenența la o unitate orice ar însemna aceasta
             record.roles.admin = true;
@@ -63,7 +69,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
                 // FIXME: Indexează în Elasticsearch!!!.
                 await userObj.save(function clbkSaveFromGStrat (err, user) {                
                     if (err) throw new Error('Eroarea la salvarea userului este: ', err.message);
-                    console.log("Salvez user în bază!");
+                    console.log("Am creat administratorul!");
                     // console.log(user);
                     done(null, user.toObject({ virtuals: true }));
                 });
@@ -80,7 +86,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
                     // este prelucrat de hook-ul `.post(/^find/` ceea ce implică o indexare în Elasticsearch, dacă nu există deja (vezi schema user).
                     done(null, user); 
                 } else {
-                    // FIXME: Aici se restricționează accesul la platformă doar celor care au email la domeniul educred.
+                    // FIXME: Aici cei care au email la domeniul educred primesc rol `cred`.
                     if (profile._json.email.endsWith('@educred.ro')) {
                         record.roles.rolInCRED.push("cred"); // în afară de admin, toți cei care se vor loga ulterior vor porni ca useri simpli
                     } else {
@@ -95,7 +101,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
                     // constituie documentul în baza modelului `UserModel` și salvează-l în bază. Atenție, va fi indexat și în Elasticsearch (vezi middleware `save` pe `post`).
                     const newUserObj = new userModel(record);
                     newUserObj.save(function (err, user) {
-                        if (err) throw err;
+                        if (err) throw new Error('Eroarea la salvarea userului este: ', err.message);
                         // console.log("Salvez user în bază!");
                         done(null, user);
                     });

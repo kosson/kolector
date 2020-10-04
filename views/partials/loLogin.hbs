@@ -1,35 +1,30 @@
-<div class="container">
+<div id="localogin" class="">
     {{!-- AFIȘEAZĂ UN MODAL --}}
-    <div id="authblock" class="modal">
-        <span class="close cursor" onclick="closeModal()">&times;</span>
-        <div class="modal-content">
-                        {{!-- <button type="" class="btn">Google</button> --}}
-            {{!-- <p>Dacă ai cont EDUCRED, te rog, autentifică-te apăsând logo-ul</p>
-            <a href="/auth/google">
-                <img src="{{credlogo}}" alt="" srcset="" width="150">
-            </a> --}}
-
-            <form class="form-signin">
-                <h3>Dacă ai cont Google, te poți autentifica cu acesta, apăsând logo-ul</h3>
-                <a href="/auth/google">
-                    <img src="{{googlelogo}}" alt="Acesta este logo-ul proiectului CRED în Educație" width="80px">
-                </a>
-            </form>
-            <form action="/login" method="post">
-                <h3 class="h3 mb-3 font-weight-normal">Dacă ai cont local</h1>
-                <label for="inputEmail" class="sr-only">Adresa email</label>
-                <input type="email" name="username" id="inputEmail" class="form-control" placeholder="Email address" required>
-                <label for="inputPassword" class="sr-only">Parola</label>
-                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-                <p>Vrei să-ți faci cont?
-                    <a href="/signup">Signup</a>
-                </p>
-                <p>Sau mergi la
-                    <a href="/">prima pagină</a>.
-                </p>
-                <label id="error-message"></label>
-            </form>
+    <div id="authblock" class="">
+        {{!-- <span class="close cursor" onclick="closeModal()">&times;</span> --}}
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <form action="/login" method="post">
+                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                    <h3 class="h3 mb-3 font-weight-normal">Dacă ai cont local</h1>
+                    <label for="inputEmail" class="sr-only">Adresa email</label>
+                    <input type="email" name="username" id="inputEmail" class="form-control" placeholder="Email address" required>
+                    <label for="inputPassword" class="sr-only">Parola</label>
+                    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+                    <p>Vrei să-ți faci cont?
+                        <a href="/signup">Signup</a>
+                    </p>
+                </form>
+            </div>
+            <div class="col-md-8 mx-auto">
+                <div class="form-signin">
+                    <h3>Dacă ai cont Google, te poți autentifica cu acesta</h3>
+                    <a href="/auth/google">
+                        <img src="{{googlelogo}}" class="mx-auto d-block" alt="logo google" width="80px">
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
     <script>

@@ -9,11 +9,11 @@ let redisClient = redis.createClient({
 
 redisClient.on('ready', function clbkRedReady () {
     console.log('Conectare la REDIS ok!');
-})
+});
 
 redisClient.on('reconnecting', function clbkRedReady () {
     console.log('M-am reconectat la Redis!');
-})
+});
 
 redisClient.on('error', console.error);
 

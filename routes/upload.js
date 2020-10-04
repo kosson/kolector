@@ -12,7 +12,7 @@ const {pipeline}   = require('stream');
 
 const passport     = require('passport');
 // Încarcă controlerul necesar tratării rutelor de autentificare
-const UserPassport = require('./controllers/user.ctrl')(passport);
+const UserPassport = require('./authGoogle/google-oauth20.ctrl')(passport);
 
 /* === ÎNCĂRCAREA UNUI fișier cu `multer` === */
 var multer = require('multer');

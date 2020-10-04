@@ -13,8 +13,8 @@ const Resursa = require('../../models/resursa-red'); // Adu modelul resursei
 let checkRole     = require('./checkRole.helper');
 let content2html  = require('./editorJs2HTML');
 // cere helperul pentru cache-ing
-require('./cache.helper');
-const {clearHash} = require('./cache.helper');
+// require('./cache.helper');
+// const {clearHash} = require('./cache.helper');
 let cookieHelper  = require('./cookie2obj.helper');
 
 /* === AFIȘAREA RESURSELOR :: /resurse === */
