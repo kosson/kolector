@@ -32,15 +32,15 @@ let styles = [
 ];
 
 /* === /administrator === */
-router.get('/', function clbkAdmRoot (req, res) {
+router.get('/', function clbkAdmRoot (req, res, next) {
     // ACL
     let roles = ["admin", "validator"];
-    
+
     // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
 
     /* === ADMIN === :: Dacă avem un admin, atunci oferă acces neîngrădit */
-    if(req.session.passport.user.roles.admin){
+    if(req.isAuthenticated() && req.session.passport.user.roles.admin){
 
         // Scripturile necesare rutei /administrator [rol: admin]
         let admScripts = [
@@ -61,7 +61,7 @@ router.get('/', function clbkAdmRoot (req, res) {
         });
 
     /* === VALIDATOR === :: Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public */
-    } else if (confirmedRoles.includes('validator')) {
+    } else if (req.isAuthenticated() && confirmedRoles.includes('validator')) {
 
         // Scripturile necesare rutei /administrator [rol: validator]
         let valScripts = [
@@ -88,15 +88,10 @@ router.get('/', function clbkAdmRoot (req, res) {
 
 /* === /administrator/reds === */
 router.get('/reds', function clbkAdmReds (req, res) {
-    // ACL
-    let roles = ["admin", "validator"];
+    // pe această rută nu vom verifica și alte roluri în afară de administrator.
     
-    // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
-    let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
-    
-    /* === ADMIN === :: Dacă avem un admin, atunci oferă acces neîngrădit*/
-    if(req.session.passport.user.roles.admin){
-
+    /* acă avem un admin, atunci oferă acces neîngrădit*/
+    if(req.isAuthenticated() && req.session.passport.user.roles.admin){
         // Scripturile necesare rutei /administrator/reds [rol: admin]
         let admScripts = [
             {script: '/js/res-visuals.js'}
@@ -113,7 +108,7 @@ router.get('/reds', function clbkAdmReds (req, res) {
             styles,
             activeAdmLnk: true
         });
-    // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
+    // TODO: Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
     } else {
         res.redirect('/401');
     }
@@ -156,158 +151,148 @@ router.get('/reds/:id', function clbkAdmOneRes (req, res, next) {
         let roles = ["admin"];
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
         
-        // adu înregistrarea din MongoDB după ce a fost încărcată o nouă resursă
-        Resursa.findById(req.params.id).populate({
-            path: 'competenteS'
-        }).exec().then(resursa => {
-            /* === Resursa încă există în MongoDB === */
-            if (resursa.id) {
-                // transformă obiectul document de Mongoose într-un obiect normal.
-                const obi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+        if (req.isAuthenticated() && req.session.passport.user.roles.admin) {
+            // adu înregistrarea din MongoDB după ce a fost încărcată o nouă resursă
+            Resursa.findById(req.params.id).populate({
+                path: 'competenteS'
+            }).exec().then(resursa => {
+                /* === Resursa încă există în MongoDB === */
+                if (resursa.id) {
+                    // transformă obiectul document de Mongoose într-un obiect normal.
+                    const obi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
 
-                // obiectul competenței specifice cu toate datele sale trebuie curățat.
-                obi.competenteS = obi.competenteS.map(obi => {
-                    return Object.assign({}, obi._doc);
-                });
+                    // obiectul competenței specifice cu toate datele sale trebuie curățat.
+                    obi.competenteS = obi.competenteS.map(obi => {
+                        return Object.assign({}, obi._doc);
+                    });
 
-                // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
-                obi.editorContent = JSON.stringify(resursa);
+                    // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
+                    obi.editorContent = JSON.stringify(resursa);
 
-                // resursa._doc.content = editorJs2html(resursa.content);
-                let localizat = moment(obi.date).locale('ro').format('LLL');
-                // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
-                obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
-                
-                // Array-ul activităților modificat
-                let activitatiRehashed = obi.activitati.map((elem) => {
-                    let sablon = /^([aA-zZ])+\d/g;
-                    let cssClass = elem[0].match(sablon);
-                    let composed = '<span class="' + cssClass[0] + 'data-code="' + elem[0] + '">' + elem[1] + '</span>';
-                    return composed;
-                });
-                
-                obi.activitati = activitatiRehashed;
+                    // resursa._doc.content = editorJs2html(resursa.content);
+                    let localizat = moment(obi.date).locale('ro').format('LLL');
+                    // resursa._doc.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+                    obi.dataRo  = `${localizat}`; // formatarea datei pentru limba română.
+                    
+                    // Array-ul activităților modificat
+                    let activitatiRehashed = obi.activitati.map((elem) => {
+                        let sablon = /^([aA-zZ])+\d/g;
+                        let cssClass = elem[0].match(sablon);
+                        let composed = '<span class="' + cssClass[0] + 'data-code="' + elem[0] + '">' + elem[1] + '</span>';
+                        return composed;
+                    });
+                    
+                    obi.activitati = activitatiRehashed;
 
-                // Dacă nu este indexată în Elasticsearch deja, indexează aici!
-                esClient.exists({
-                    index: process.env.RES_IDX_ALS,
-                    id: req.params.id
-                }).then(resFromIdx => {
-                    /* DACĂ RESURSA NU ESTE INDEXATĂ, introdu-o în indexul Elasticsearch */
-                    if(resFromIdx.body == false && resFromIdx.statusCode === 404){
-                        // verifică dacă există conținut
-                        var content2txt = '';
-                        if ('content' in obi) {
-                            content2txt = editorJs2TXT(obi.content.blocks); // transformă obiectul în text
+                    // Dacă nu este indexată în Elasticsearch deja, indexează aici!
+                    esClient.exists({
+                        index: process.env.RES_IDX_ALS,
+                        id: req.params.id
+                    }).then(resFromIdx => {
+                        /* DACĂ RESURSA NU ESTE INDEXATĂ, introdu-o în indexul Elasticsearch */
+                        if(resFromIdx.body == false && resFromIdx.statusCode === 404){
+                            // verifică dacă există conținut
+                            var content2txt = '';
+                            if ('content' in obi) {
+                                content2txt = editorJs2TXT(obi.content.blocks); // transformă obiectul în text
+                            }
+                            // indexează documentul
+                            const data = {
+                                id:               obi._id,
+                                date:             obi.date,
+                                idContributor:    obi.idContributor,
+                                emailContrib:     obi.emailContrib,
+                                uuid:             obi.uuid,
+                                autori:           obi.autori,
+                                langRED:          obi.langRED,
+                                title:            obi.title,
+                                titleI18n:        obi.titleI18n,
+                                arieCurriculara:  obi.arieCurriculara,
+                                level:            obi.level,
+                                discipline:       obi.discipline,
+                                disciplinePropuse:obi.disciplinePropuse,
+                                competenteGen:    obi.competenteGen,
+                                rol:              obi.rol,
+                                abilitati:        obi.abilitati,
+                                materiale:        obi.materiale,
+                                grupuri:          obi.grupuri,
+                                domeniu:          obi.demersuri,
+                                spatii:           obi.spatii,
+                                invatarea:        obi.invatarea,
+                                description:      obi.description,
+                                dependinte:       obi.dependinte,
+                                coperta:          obi.coperta,
+                                content:          content2txt,
+                                bibliografie:     obi.bibliografie,
+                                contorAcces:      obi.contorAcces,
+                                generalPublic:    obi.generalPublic,
+                                contorDescarcare: obi.contorDescarcare,
+                                etichete:         obi.etichete,
+                                utilMie:          obi.utilMie,
+                                expertCheck:      obi.expertCheck
+                            };
+
+                            ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
                         }
-                        // indexează documentul
-                        const data = {
-                            id:               obi._id,
-                            date:             obi.date,
-                            idContributor:    obi.idContributor,
-                            emailContrib:     obi.emailContrib,
-                            uuid:             obi.uuid,
-                            autori:           obi.autori,
-                            langRED:          obi.langRED,
-                            title:            obi.title,
-                            titleI18n:        obi.titleI18n,
-                            arieCurriculara:  obi.arieCurriculara,
-                            level:            obi.level,
-                            discipline:       obi.discipline,
-                            disciplinePropuse:obi.disciplinePropuse,
-                            competenteGen:    obi.competenteGen,
-                            rol:              obi.rol,
-                            abilitati:        obi.abilitati,
-                            materiale:        obi.materiale,
-                            grupuri:          obi.grupuri,
-                            domeniu:          obi.demersuri,
-                            spatii:           obi.spatii,
-                            invatarea:        obi.invatarea,
-                            description:      obi.description,
-                            dependinte:       obi.dependinte,
-                            coperta:          obi.coperta,
-                            content:          content2txt,
-                            bibliografie:     obi.bibliografie,
-                            contorAcces:      obi.contorAcces,
-                            generalPublic:    obi.generalPublic,
-                            contorDescarcare: obi.contorDescarcare,
-                            etichete:         obi.etichete,
-                            utilMie:          obi.utilMie,
-                            expertCheck:      obi.expertCheck
-                        };
+                        return resFromIdx;
+                    }).catch(err => {
+                        console.error(err);
+                    });
+                    return obi;
+                }
+            }).then(resursa => {
+                /* === ADMIN === */
+                if(req.session.passport.user.roles.admin){
 
-                        ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.RES_IDX_ES7, process.env.RES_IDX_ALS);
-                        //FIXME: EROAREA care apare în consolă 
-                        // {
-                        //     "error": {
-                        //       "root_cause": [
-                        //         {
-                        //           "type": "cluster_block_exception",
-                        //           "reason": "index [resedus0] blocked by: [TOO_MANY_REQUESTS/12/index read-only / allow delete (api)];"
-                        //         }
-                        //       ],
-                        //       "type": "cluster_block_exception",
-                        //       "reason": "index [resedus0] blocked by: [TOO_MANY_REQUESTS/12/index read-only / allow delete (api)];"
-                        //     },
-                        //     "status": 429
-                        //   }
+                    // Adaugă mecanismul de validare al resursei
+                    if (resursa.expertCheck) {
+                        resursa.validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
+                    } else {
+                        resursa.validate = `<input type="checkbox" id="valid" class="expertCheck">`;
                     }
-                    return resFromIdx;
-                }).catch(err => {
-                    console.error(err);
-                });
-                return obi;
-            }
-        }).then(resursa => {
-            /* === ADMIN === */
-            if(req.session.passport.user.roles.admin){
+                    
+                    // Adaugă mecanismul de prezentare la public
+                    if (resursa.generalPublic) {
+                        resursa.genPub = `<input type="checkbox" id="public" class="generalPublic" checked>`;
+                    } else {
+                        resursa.genPub = `<input type="checkbox" id="public" class="generalPublic">`;
+                    }
 
-                // Adaugă mecanismul de validare al resursei
-                if (resursa.expertCheck) {
-                    resursa.validate = `<input type="checkbox" id="valid" class="expertCheck" checked>`;
+                    res.render('resursa-admin', {                    
+                        title:    "RED admin",
+                        user:     req.user,
+                        logoimg:  "/img/red-logo-small30.png",
+                        credlogo: "../img/CREDlogo.jpg",
+                        csrfToken: req.csrfToken(),
+                        resursa,
+                        scripts,
+                        styles
+                    });
+                } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
+                    res.render('resursa', {                    
+                        title:    "RED",
+                        user:     req.user,
+                        logoimg:  "/img/red-logo-small30.png",
+                        credlogo: "../img/CREDlogo.jpg",
+                        csrfToken: req.csrfToken(),
+                        resursa,
+                        scripts,
+                        styles
+                    });
                 } else {
-                    resursa.validate = `<input type="checkbox" id="valid" class="expertCheck">`;
+                    res.redirect('/401');
                 }
-                
-                // Adaugă mecanismul de prezentare la public
-                if (resursa.generalPublic) {
-                    resursa.genPub = `<input type="checkbox" id="public" class="generalPublic" checked>`;
-                } else {
-                    resursa.genPub = `<input type="checkbox" id="public" class="generalPublic">`;
+            }).catch(err => {
+                if (err) {
+                    console.log(err);
+                    // next(); // fugi pe următorul middleware / rută
+                    res.redirect('/administrator/reds');
+                    next(err);
                 }
+            });
+        } else {
 
-                res.render('resursa-admin', {                    
-                    title:    "RED admin",
-                    user:     req.user,
-                    logoimg:  "/img/red-logo-small30.png",
-                    credlogo: "../img/CREDlogo.jpg",
-                    csrfToken: req.csrfToken(),
-                    resursa,
-                    scripts,
-                    styles
-                });
-            } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
-                res.render('resursa', {                    
-                    title:    "RED",
-                    user:     req.user,
-                    logoimg:  "/img/red-logo-small30.png",
-                    credlogo: "../img/CREDlogo.jpg",
-                    csrfToken: req.csrfToken(),
-                    resursa,
-                    scripts,
-                    styles
-                });
-            } else {
-                res.redirect('/401');
-            }
-        }).catch(err => {
-            if (err) {
-                console.log(err);
-                // next(); // fugi pe următorul middleware / rută
-                res.redirect('/administrator/reds');
-                next(err);
-            }
-        });
+        }
 });
 
 /* === /administrator/users === */

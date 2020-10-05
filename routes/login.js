@@ -58,10 +58,12 @@ passport.use('local', new LocalStrategy(clbkLocal));
 // obiectul user din sesiune
 passport.serializeUser((user, done) => {
     // console.log('[authL::serializeuser] user este: ', user);
-    done(null, user);
+    done(null, user); // în momentul acesta `passport` creează proprietatea `passport` în obiectul `req.session`: {user: dso8fs89afds998fsda}.
 });
 
 passport.deserializeUser((userId, done) => {
+    // preia datele din `req.session.passport.user`, aduci datele din bază și
+    // se va contrui cu acele date specifice user-ului obiectul `req.user`.
     UserModel.findById(userId).then((user) => {
         done(null, user);
     }).catch(err => done(err));

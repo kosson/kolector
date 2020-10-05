@@ -41,8 +41,8 @@ router.post('/', function clbkPostSignUp (req, res, next) {
         email:    req.body.email,
         roles: {
             admin:     false,
-            public:    false,
-            rolInCRED: ['general']
+            public:    true,
+            rolInCRED: ['general', 'user'] // permit astfel ca userii din public să propună resurse
         },
         hash: hash,
         salt: salt

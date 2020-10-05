@@ -272,7 +272,7 @@ exports.describeResource = function describeResource (req, res, next) {
     };
 
     // roluri pe care un cont le poate avea în proiectul CRED.
-    let roles = ["user", "cred", "validator"];
+    let roles = ["cred", "validator"]; // TODO: când vei permite tuturor să adauge resurse, introdu și `user`!!
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
     // console.log(req.session.passport.user.roles.rolInCRED);
 

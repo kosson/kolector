@@ -124,10 +124,6 @@ if (app.get('env') === 'production') {
     sessionMiddleware.cookie.secure = true; // serve secure cookies
 }
 
-/* === PASSPORT === */
-app.use(passport.initialize()); // Instanțiază Passport pentru a fi asigurată trecerea mai departe a cererii pe rute
-app.use(passport.session());    // restaurează starea sesiunii dacă aceasta există
-
 // MIDDLEWARE de stabilirea a sesiunii de lucru prin încercări repetate. Vezi: https://github.com/expressjs/session/issues/99
 app.use(function (req, res, next) {
     var tries = 3; // număr de încercări
@@ -180,8 +176,16 @@ app.use('/upload', upload);
 const csurfProtection = csurf({cookie: false});
 app.use(csurfProtection); // activarea protecției la CSRF
 
-app.use(passport.initialize());
-app.use(passport.session());
+/* === PASSPORT === */
+app.use(passport.initialize()); // Instanțiază Passport pentru a fi asigurată trecerea mai departe a cererii pe rute. Serializează și deserializează userul!
+app.use(passport.session());    // restaurează starea sesiunii dacă aceasta există
+
+/* middleware de verificare a sesiunii și a existenței user-ului. */
+// app.use((req, res, next) => {
+//     console.log('app.js::passport initializare - obiectul sesiunii este: ', req.session); // req.session este generat de `express-session`.
+//     console.log('app.js::passport initializare - obiectul user este: ', req.user);        // req.user este generat de `passport`.
+//     next();
+// });
 
 /* === ÎNCĂRCAREA RUTELOR === */
 const UserPassport = require('./routes/authGoogle/google-oauth20.ctrl')(passport);

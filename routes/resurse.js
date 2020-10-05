@@ -7,13 +7,14 @@ const router  = express.Router();
 const resurseCtrl = require('./controllers/resurse.ctrl');
 // helper de caching
 // const cleanCache = require('./controllers/cacheClear.helper');
+const isAuth = require('./controllers/authentication.helper').isAuth;
 
 /* GET::/resurse */
 // console.log(typeof(resurseCtrl.loadRootResources));
 router.get('/', resurseCtrl.loadRootResources);
 
 /* GET::/resurse/adauga - Pe această rută se obține formularul de adăugare a resurselor doar dacă ești logat, având rolurile menționate */
-router.get('/adauga', resurseCtrl.describeResource);
+router.get('/adauga', isAuth, resurseCtrl.describeResource);
 
 /* GET::/resurse/:id */
 router.get('/:id', resurseCtrl.loadOneResource);
