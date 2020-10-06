@@ -1,10 +1,14 @@
 require('dotenv').config();
 /* === DEPENDINȚE === */
-const express  = require('express');
-const router   = express.Router();
-const mongoose   = require('mongoose');
-const passport = require('passport');
+const express       = require('express');
+const router        = express.Router();
+const mongoose      = require('mongoose');
+const passport      = require('passport');
 const LocalStrategy = require('passport-local').Strategy; // passport-local este un middleware care modifică obiectul creat de express-session
+// constituie modelul user-ului -> necesar fazei de logare
+const UserSchema = require('../models/user');               // Cere schema unui `User`
+const UserModel  = mongoose.model('users', UserSchema);     // constituie modelul `UserModel` din schema cerută
+const {validPassword, generatePassword, issueJWT} = require('./utils/password.js');  // cere funcția de hashing și cea de emitere a unui JWT
 
 /* === LOGIN [GET] - Afișează template-ul === */
 router.get('/', (req, res, next) => {
@@ -51,16 +55,11 @@ router.get('/', (req, res, next) => {
 /* === LOGIN [POST] - Autentificare locală ===*/
 // https://zachgoll.github.io/blog/2019/choosing-authentication-strategy/
 let clbkLocal = require('./authLocal/authL'); // controlerul pentru autentificare locală cu Passport Local
-
 passport.use('local', new LocalStrategy(clbkLocal));
-// Pentru a putea susține sesiuni de login persistent, 
-// Passport trebuie să serializeze și deserializeze 
-// obiectul user din sesiune
 passport.serializeUser((user, done) => {
     // console.log('[authL::serializeuser] user este: ', user);
     done(null, user); // în momentul acesta `passport` creează proprietatea `passport` în obiectul `req.session`: {user: dso8fs89afds998fsda}.
 });
-
 passport.deserializeUser((userId, done) => {
     // preia datele din `req.session.passport.user`, aduci datele din bază și
     // se va contrui cu acele date specifice user-ului obiectul `req.user`.
@@ -69,10 +68,34 @@ passport.deserializeUser((userId, done) => {
     }).catch(err => done(err));
 });
 
-router.post('/', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/401' }), (err, req, res, next) => {
-    if (err) next(err);
-    console.log('You are logged in!');
-    res.redirect('/');
-});
+router.post('/', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/401' }));
+// router.post('/', function (req, res, next) {
+//     console.log('[/routes/login POST::Am ajuns în rută!!! Body este: ]', req.body);
+//     UserModel.findOne({email: req.body.username})
+//     .then((user) => {
+//         // cazul în care nu au userul în baza de date!!!
+//         if (!user) {
+//             res.status(401).json({succes: false, msg: "nu am găsit userul"});
+//             // res.redirect('401');
+//         }
+//         // dacă ai userul
+//         const isValid = validPassword(req.body.password, user.hash, user.salt);
+//         if (isValid) {
+//             const tokenObj = issueJWT(user);
+            
+//             // FIXME: Pune tokenul într-un cookie sau asigură mecanism în client de stocare în local storage
+//             res.json({success: true, user: user, token: tokenObj.token, expires: tokenObj.expires});
+
+//         } 
+//         else {
+//             res.status(401).json({success: false, message: "Ceva nu este în regulă cu utilizatorul!"});
+//             // res.redirect('/401');
+//             // next();
+//         }
+//     }).catch((err) => {
+//         console.error(err);
+//         next(err);
+//     });
+// });
 
 module.exports = router;

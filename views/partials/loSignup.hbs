@@ -1,14 +1,13 @@
         <div class="">
             <form class="form-signup" action="signup" method="POST">
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
                 <h3 class="h3 mb-3 font-weight-normal">Creează un cont local</h1>
-
 
                 <div class="form-group">
                     <label for="inputEmail">Adresa de email este username-ul</label>
                     <input type="email" class="form-control" id="inputEmail" name="email" aria-describedby="emailHelp" placeholder="Introdu adreasa de email">
                     <small id="emailHelp" class="form-text text-muted">Dacă ai o adresă adresă de email Gmail, folosește-o pe aceea.</small>
                 </div>
-
 
                 <div class="form-group">
                     <label for="inputPassword1">Password</label>

@@ -6,6 +6,7 @@ const UserModel  = mongoose.model('users', UserSchema); // constituie modelul
 
 const {validPassword} = require('../utils/password.js');
 
+// cerut pe /routes/login [POST]
 module.exports = function verifyClbk4LocalStrat (email, password, done) {
         /* passport.authenticate() va executa acest callback */
         // Caută în bază userul

@@ -5,7 +5,3 @@ module.exports.isAuth = (req, res, next) => {
         res.redirect('/401');
     }
 };
-
-module.exports.isAdmin = (req, res, next) => {
-
-};

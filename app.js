@@ -180,13 +180,6 @@ app.use(csurfProtection); // activarea protecției la CSRF
 app.use(passport.initialize()); // Instanțiază Passport pentru a fi asigurată trecerea mai departe a cererii pe rute. Serializează și deserializează userul!
 app.use(passport.session());    // restaurează starea sesiunii dacă aceasta există
 
-/* middleware de verificare a sesiunii și a existenței user-ului. */
-// app.use((req, res, next) => {
-//     console.log('app.js::passport initializare - obiectul sesiunii este: ', req.session); // req.session este generat de `express-session`.
-//     console.log('app.js::passport initializare - obiectul user este: ', req.user);        // req.user este generat de `passport`.
-//     next();
-// });
-
 /* === ÎNCĂRCAREA RUTELOR === */
 const UserPassport = require('./routes/authGoogle/google-oauth20.ctrl')(passport);
 let index          = require('./routes/index');
@@ -225,11 +218,17 @@ app.use('/tags',           csurfProtection, tags);
 app.use('/tools',          csurfProtection, tools);
 
 app.use(function midwVerifyCSRFtoken (err, req, res, next) {
-    // console.error('[app.js (CSRF)] Token incorect sau lipsă! Diferă ce este în cookie de ce este în headere!');
-    console.log('[app.js::midwVerifyCSRFtoken] headerele ', req.headers, ' Cookies: ', req.cookies, ' Codul de eroare ', err.code);
+    console.log('[app.js::midwVerifyCSRFtoken] headerele primite din client', req.headers, ' Codul de eroare ', err.code);
     if (err.code === 'EBADCSRFTOKEN') {
         return next(err);
     }
+});
+
+/* middleware de verificare a sesiunii și a existenței user-ului. */
+app.use((req, res, next) => {
+    console.log('app.js::passport initializare - obiectul sesiunii este: ', req.session); // req.session este generat de `express-session`.
+    console.log('app.js::passport initializare - obiectul user este: ', req.user);        // req.user este generat de `passport`.
+    next();
 });
 
 // === 401 - NEPERMIS ===
@@ -291,7 +290,7 @@ if(process.env.NODE_ENV === 'production') {
 /* === Pornește serverul! === */
 let port = process.env.PORT || 8080;
 var server = http.listen(port, '127.0.0.1', function cbConnection () {
-    console.log('RED Colector ', process.env.APP_VER);
+    console.log('Version: ', process.env.APP_VER);
     console.log('Server pornit pe 8080 -> binded pe 127.0.0.1. Proces no: ', process.pid);
 });
 

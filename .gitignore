@@ -57,24 +57,8 @@ typings/
 # next.js build output
 .next
 
-# nu salva toate bibliotecile de cod aduse de bower
-public/lib/datatables.net-dt
-public/lib/datatables.net-buttons
-public/lib/datatables.net-buttons-dt
-public/lib/datatables.net-buttons-bs4
-public/lib/datatables.net
-public/lib/datatables.net-select
-public/lib/datatables.net-select-dt
-public/lib/datatables.net-bs4
-public/lib/datatables.net-select-bs4
-public/lib/bootstrap
-public/lib/fontawesome
-public/lib/jquery
-public/lib/jquery-toast-plugin
-public/lib/waypoints
-public/lib/popper.js
-public/lib/moment
-public/lib/handlebars
+# nu salva toate bibliotecile de cod transferate din npm
+public/lib
 
 # nu salva resursele de test din repo
 repo
