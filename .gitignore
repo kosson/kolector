@@ -77,3 +77,7 @@ ecosystem.config.js
 
 # ignoră logul
 log.md
+
+# ignoră cheile
+id_rsa_priv.pem
+id_rsa_pub.pem
