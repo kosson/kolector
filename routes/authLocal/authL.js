@@ -13,7 +13,7 @@ module.exports = function verifyClbk4LocalStrat (email, password, done) {
         UserModel.findOne({ email: email }).then((user) => {
             // console.log('[authL::UserModel.findOne] user este: ', user);
             if (!user) {
-                return done(null, false); // nu este nicio eroare, dar nici user n-ai. trimite un 401
+                return done(null, false, {message: 'Problemă la user sau la parolă!'}); // nu este nicio eroare, dar nici user n-ai. trimite un 401
             }
             const userValid = validPassword(password, user.hash, user.salt);
             // console.log('[authL] Funcția `userValid` returnează valoarea: ', userValid);
@@ -22,7 +22,7 @@ module.exports = function verifyClbk4LocalStrat (email, password, done) {
                 return done(null, user); // este permisă trecerea în rută
                 /* The user object is then serialized with `passport.serializeUser()` and added to the  `req.session.passport` object. */
             } else {
-                return done(null, false);
+                return done(null, false, {message: 'Problemă la user sau la parolă!'});
             }
         }).catch(err => {
             if (err) {

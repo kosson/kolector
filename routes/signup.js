@@ -52,7 +52,7 @@ router.get('/', function clbkSignUpGet (req, res, next) {
 
 /* === SIGNUP [POST] - Crearea contului ===*/
 router.post('/', function clbkPostSignUp (req, res, next) {
-    console.log('/routes/signup [POST] Am următoarele cookie-uri: ', req.cookies);
+    // console.log('/routes/signup [POST] Am următoarele cookie-uri: ', req.cookies);
     const saltHash = generatePassword(req.body.password); // heșuiește parola și salt-ul
     // separă-le pe bucăți pentru a le băga în record-ul de user
     const salt = saltHash.salt;
@@ -76,6 +76,7 @@ router.post('/', function clbkPostSignUp (req, res, next) {
         const jwt = issueJWT(user); // îl iei chiar din bază după ce înregistrarea a fost făcută
         // console.log('Am creat contul utilizatorului: ', user);
         if (user) {
+            // FIXME: Când treci complet la JWT, activează!!!
             // res.json({
             //     success:   true,
             //     user:      user,

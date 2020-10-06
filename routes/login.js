@@ -8,7 +8,7 @@ const LocalStrategy = require('passport-local').Strategy; // passport-local este
 // constituie modelul user-ului -> necesar fazei de logare
 const UserSchema = require('../models/user');               // Cere schema unui `User`
 const UserModel  = mongoose.model('users', UserSchema);     // constituie modelul `UserModel` din schema cerută
-const {validPassword, generatePassword, issueJWT} = require('./utils/password.js');  // cere funcția de hashing și cea de emitere a unui JWT
+const {validPassword, issueJWT} = require('./utils/password.js');  // cere funcția de hashing și cea de emitere a unui JWT
 
 /* === LOGIN [GET] - Afișează template-ul === */
 router.get('/', (req, res, next) => {
@@ -18,6 +18,9 @@ router.get('/', (req, res, next) => {
     let scripts = [
         // FONTAWESOME
         {script: '/lib/npm/all.min.js'},
+        //JQUERY
+        {script: '/lib/npm/jquery.min.js'},
+        {script: '/lib/npm/bootstrap.bundle.min.js'}
     ];
 
     let styles = [
@@ -30,8 +33,7 @@ router.get('/', (req, res, next) => {
         {module: '/js/indexpub.mjs'}
     ];
 
-    res.cookie('_csrf', csrf);
-    // res.locals.csrfToken = csrf;
+    // res.cookie('_csrf', csrf);
 
     // console.log("Din user.ctrl avem din req.body pe /login: ", req.body);
     res.render('login', {
@@ -45,7 +47,7 @@ router.get('/', (req, res, next) => {
         contact:     process.env.CONTACT,
         googlelogo:  "img/Google-logo.png",
         csrfToken:   csrf,
-        // csrfToken:   req.cookies._csrf,
+        errorMessage:req.flash('error'),
         scripts,
         modules,
         styles
@@ -68,9 +70,15 @@ passport.deserializeUser((userId, done) => {
     }).catch(err => done(err));
 });
 
-router.post('/', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/401' }));
+// VECHEA VERIFICARE LOCAL CU SESSION
+// router.post('/', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/401' }));
+router.post('/', passport.authenticate('local', {failureRedirect: '/login', failureFlash: true }), (req, res, next) => {
+    res.redirect('/');
+});
+
+// pentru toate rutele protejate, va trebui să pui drept middleware de verificare: 
+// router.get('/protejata', passport('jwt', {session: false}), (req, res, next) => {});
 // router.post('/', function (req, res, next) {
-//     console.log('[/routes/login POST::Am ajuns în rută!!! Body este: ]', req.body);
 //     UserModel.findOne({email: req.body.username})
 //     .then((user) => {
 //         // cazul în care nu au userul în baza de date!!!

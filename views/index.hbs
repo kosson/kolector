@@ -3,16 +3,6 @@
 
 <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
-{{!-- Încărcarea modulelor --}}
-{{#each modules}}
-    <script type="module" src="{{module}}"></script>
-{{/each}}
-
-{{!-- Încărcarea scripturilor --}}
-{{#each scripts}}
-    <script defer type="application/javascript" src="{{script}}"></script>
-{{/each}}
-
 {{!-- secțiunea landing --}}
 <!--<div class="landing">-->
 <!--    <div class="home-wrap">-->
@@ -25,6 +15,10 @@
 
 {{!-- secțiune întâmpinare --}}
 <div class="home-inner caption text-center">
+    {{!-- {{#if isAuthenticated}}
+        <h4>SUNT AUTENTIFICAT! {{isAuthenticated}}</h4>
+        <p>{{csrfToken}}</p>
+    {{/if}} --}}
 
     <div class="os-animation" data-animation="bounceInUp" data-delay=".3s">
         <img src="{{logoimg}}" alt="logo depozit repo" height="200px">

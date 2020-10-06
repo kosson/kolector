@@ -1474,9 +1474,7 @@ fieldset #nivel .form-check{
     padding-bottom:2rem;
 }
 
-/*******/
-
-
-/**
-END OF PROPOSALS
- */
+/* LOGIN */
+#loginFrm {
+    padding: 3rem 0;
+}

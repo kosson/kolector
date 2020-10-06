@@ -7,6 +7,7 @@ const express        = require('express');
 const session        = require('express-session');
 const cookieParser   = require('cookie-parser');
 const csurf          = require('csurf');
+const flash          = require('connect-flash');
 
 const helmet         = require('helmet');
 const passport       = require('passport');
@@ -78,6 +79,9 @@ hbs.registerHelper('json', function clbkHbsHelperJSON (obi) {
     // console.log(JSON.stringify(obi.content));
     return JSON.stringify(obi);
 });
+hbs.registerHelper('message2toast', function clbkHbsHelperM2T (message) {
+    errorRender(message);
+});
 app.engine('hbs', hbs.express4({
     i18n: i18n,
     partialsDir: __dirname + '/views/partials',
@@ -118,6 +122,7 @@ let sessionMiddleware = session({
         sameSite: 'lax' // https://www.npmjs.com/package/express-session#cookiesamesite
     }
 });
+
 // https://www.npmjs.com/package/express-session
 if (app.get('env') === 'production') {
     app.set('trust proxy', 1);              // trust first proxy
@@ -147,6 +152,11 @@ app.use(function (req, res, next) {
     }
     lookupSession();
 });
+
+
+
+// introdu mesaje flash
+app.use(flash()); // acum ai acces în rute la `req.flash()`.
 
 /* === SERVER SOCKETURI === */
 // #1 Creează server prin atașarea celui existent
@@ -218,16 +228,12 @@ app.use('/tags',           csurfProtection, tags);
 app.use('/tools',          csurfProtection, tools);
 
 app.use(function midwVerifyCSRFtoken (err, req, res, next) {
-    console.log('[app.js::midwVerifyCSRFtoken] headerele primite din client', req.headers, ' Codul de eroare ', err.code);
+    // console.log('[app.js::midwVerifyCSRFtoken] headerele primite din client', req.headers, ' Codul de eroare ', err.code);
+    // console.log('app.js::midwVerifyCSRFtoken - obiectul sesiunii este: ', req.session); // req.session este generat de `express-session`.
+    // console.log('app.js::midwVerifyCSRFtoken - obiectul user este: ', req.user);        // req.user este generat de `passport`.
     if (err.code === 'EBADCSRFTOKEN') {
         return next(err);
     }
-});
-
-/* middleware de verificare a sesiunii și a existenței user-ului. */
-app.use((req, res, next) => {
-    console.log('app.js::passport initializare - obiectul sesiunii este: ', req.session); // req.session este generat de `express-session`.
-    console.log('app.js::passport initializare - obiectul user este: ', req.user);        // req.user este generat de `passport`.
     next();
 });
 

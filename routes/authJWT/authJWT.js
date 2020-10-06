@@ -30,8 +30,9 @@ const strategy = new JwtStrategy(options, (payload, done) => {
     }).catch(err => done(err, null));    
 });
 
+// pentru toate rutele protejate, va trebui să imporți strategia și să pui drept middleware de verificare: 
+// router.get('/protejata', passport('jwt', {session: false}), (req, res, next) => {});
 
 module.exports = (passport) => {
     passport.use(strategy);
-    
 };

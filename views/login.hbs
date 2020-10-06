@@ -1,10 +1,6 @@
 {{!< layout}}
+{{> nav-landing}}
 
-{{!-- Încărcarea scripturilor --}}
-{{#each scripts}}
-    <script defer type="application/javascript" src="{{script}}"></script>
-{{/each}}
-
-<div class="container">
+<div id="loginFrm" class="container">
     {{> loLogin}}
 </div>

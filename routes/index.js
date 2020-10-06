@@ -28,7 +28,7 @@ router.get('/', function clbkRootRoute (req, res, next) {
         
         let scripts = [
             //JQUERY
-            {script: '/lib/npm/jquery.slim.min.js'},
+            {script: '/lib/npm/jquery.min.js'},
             {script: '/lib/npm/jquery.waypoints.min.js'},
             // MOMENT.JS
             {script: '/lib/npm/moment-with-locales.min.js'}, 
