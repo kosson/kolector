@@ -52,7 +52,7 @@
     "express": "^4.17.1",
     "express-hbs": "^2.3.4",
     "express-session": "^1.17.1",
-    "fast-csv": "^4.3.1",
+    "fast-csv": "^4.3.6",
     "fs": "0.0.2",
     "fs-extra": "^9.0.1",
     "globby": "^11.0.1",
