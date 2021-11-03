@@ -88,7 +88,7 @@
     "stream": "0.0.2",
     "supertest": "^4.0.2",
     "uuid": "^8.3.1",
-    "validator": "^13.1.1",
+    "validator": "^13.7.0",
     "waypoints": "^4.0.1"
   },
   "devDependencies": {
