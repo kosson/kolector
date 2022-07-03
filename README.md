@@ -1,7 +1,5 @@
 # Kolector
 
-![](public/k1/img/repologo.png)
-
 Kolectorul este o aplicație derivată din Colectorul RED construit pentru proiectul european CRED-Curriculum relevant. Acesta reprezintă un hard fork de cod necesar dezvoltării în regim dedicat a noilor servicii și a noilor modele de date pe care le va gestiona. Acestă dezvoltare va constitui sursa de origine pentru noi servicii și pentru Colectorul RED, dar nu va integra module dedicate 
 în cele strict necesare gestionării resurselor educaționale deschise.
 
