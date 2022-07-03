@@ -1,24 +1,30 @@
-# RED Colector
+# Kolector
 
-![](public/img/rED-logo192.png)
+![](public/k1/img/repologo.png)
 
-RED Colector este aplicația care gestionează Resurse Educaționale Deschise. Această aplicație este integrată fluxului de lucru din proiectul CRED în Educație.
+Kolectorul este o aplicație derivată din Colectorul RED construit pentru proiectul european CRED-Curriculum relevant. Acesta reprezintă un hard fork de cod necesar dezvoltării în regim dedicat a noilor servicii și a noilor modele de date pe care le va gestiona. Acestă dezvoltare va constitui sursa de origine pentru noi servicii și pentru Colectorul RED, dar nu va integra module dedicate 
+în cele strict necesare gestionării resurselor educaționale deschise.
 
-![](public/img/CREDlogo.jpg)
+Ținta depozitului digital Kosson este să integreze fluid fluxuri de lucru cu scopul de a gestiona obiecte digitale complexe din perspectiva interconectării cu altele similare disponibile din API-uri sau IPFS.
 
-## Echipa de dezvoltare
+Versiunea aplicației de la care pornește dezvoltarea este 0.9.94 iulie 2022. Această aplicație va urmări să integreze cât mai puțin posibile biblioteci de cod, ținta fiind o amprentă redusă în ceea ce privește creditul tehnologic. Acest demers va micșora efortul de mentenanță odată cu integrarea noilor dezvoltări ale ECMAScript. Ideal ar fi ca întreaga aplicație să nu necesite nicio bibliotecă externă sau numărul acestora să nu împovăreze pe cei care trebuie să țină la zi versiunile pachetelor.
 
-Acest efort este al echipei compuse din:
+# Dependițe
 
-- Nicolaie Constantinescu, developer (mailto:nicu.constantinescu@educred.ro);
-- Liviu Constandache, analist date și workflow (mailto:liviu.constandache@educred.ro);
-- George Boroș, specialist infrastructură, (mailto:george.boros@educred.ro);
-- Doru Ștefănescu, specialist (mailto:doru.stefanescu@educred.ro).
+Următoarele biblioteci de cod și dependințe sunt integrate după cum urmează:
 
-O contribuție a echipei [Ascendia](https://www.ascendia.ro/) a fost integrată în versiunea 0.9.3.
+## NodeJS
 
-Mulțumiri celor care au contribuit de-a lungul dezvoltării și implementării:
+- Express,
+- Mongoose
 
-- Radu Vasile, developer (mailto:radu.vasile@educred.ro);
-- Alina Crăciunescu, analist de date (mailto:alina.craciunescu@educred.ro);
-- Andreea Diana Scoda, analist (andreea.scoda@educred.ro);
+## UX în SPAs
+
+- JQuery,
+- Bootstrap 5,
+- Datatables,
+- Editor.js
+
+## Dezvoltare
+
+- Nicolaie Constantinescu, developer (kosson@gmail.com)
