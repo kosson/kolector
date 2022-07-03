@@ -264,7 +264,7 @@ app.use(compression({ filter: shouldCompress }));
 
 // ÎNCĂRCAREA DEPENDINȚELOR FĂRĂ A MAI DUBLA ÎN PUBLIC
 const deps = [
-    'jquery', 'bootstrap', 'bootstrap-icons',
+    'jquery', 'jquery-toast-plugin', 'bootstrap', 'bootstrap-icons',
     'datatables.net', 'datatables.net-dt', 'datatables.net-buttons', 'datatables.net-buttons-dt', 'datatables.net-responsive', 'datatables.net-responsive-dt', 'datatables.net-select-dt',
     'holderjs', 'moment'];
 deps.forEach(dep => {
@@ -373,7 +373,7 @@ if( process.env.NODE_ENV === 'production') {
 let port = process.env.PORT || 8080;
 let hostname = os.hostname();
 var server = http.listen(port, '0.0.0.0', function cbConnection () {
-    console.log('RED Colector ', process.env.APP_VER);
+    console.log(`${process.env.APP_NAME }`, process.env.APP_VER);
     console.log(`Hostname: \x1b[32m ${hostname}\x1b[37m, \n port: \x1b[32m${process.env.PORT}\x1b[37m, \n proces no: \x1b[32m${process.pid}\x1b[37m, \n node: \x1b[32m${process.version}\x1b[37m, \n mongoose: \x1b[32m${mongoose.version}\x1b[37m.`);
 });
 server.on('error', onError);

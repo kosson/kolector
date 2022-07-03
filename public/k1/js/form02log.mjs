@@ -369,6 +369,120 @@ newTags.addEventListener('keypress', (evt) => {
     // console.log(`Setul acum este `, tagsUnq);
 });
 
+
+/**
+ * Funcția `creeazaTitluAlternativ` generează mecanismul prin care se pot adăuga titluri alternative celui principal
+ * Folosește funcția `creeazaTitluAlternativHelper` pentru a genera structura DOM
+ */
+ function creeazaBody () {
+    // creează aceleași elemente de formular responsabile cu generarea unui titlu
+    let insertie = document.querySelector('#detailBody');// punct de aclanșare în DOM pentru elementele generate dinamic
+
+    const divInputGroup        = new createElement('div', '', ['input-group', 'bodiesfrm'], {}).creeazaElem();
+    const divInputGroupPrepend = new createElement('div', '', ['input-group-prepend'], {}).creeazaElem();
+    const spanInputgroupText   = new createElement('span','', ['input-group-text'],    {}).creeazaElem('Persoană');
+    divInputGroupPrepend.appendChild(spanInputgroupText);
+    divInputGroup.appendChild(divInputGroupPrepend);
+
+    const inputName = new createElement('input', 'namePerson', ['form-control'], {
+        type: 'text',
+        placeholder: 'Numele persoanei fizice sau juridice',
+        ['aria-label']: 'Nume',
+        ['aria-describedby']: `nume`
+    }).creeazaElem('', true);
+    divInputGroup.appendChild(inputName);
+
+    const divInputGroupPrepend2 = new createElement('div',  '', ['input-group-prepend'], {}).creeazaElem();        
+    const emailLabel            = new createElement('span', '', ['input-group-text'],    {}).creeazaElem('email');    
+    divInputGroupPrepend2.appendChild(emailLabel);
+    divInputGroup.appendChild(divInputGroupPrepend2);
+
+    const inputEmail = new createElement('input', 'bodyEmail', ['form-control'], {
+        type: 'text',
+        placeholder: 'email contact',
+        ['aria-label']: 'Email',
+        ['aria-describedby']: `bodyEmail`
+    }).creeazaElem('', true);
+    divInputGroup.appendChild(inputEmail);
+
+    const divInputGroupPrepend3 = new createElement('div', '', ['input-group-prepend'], {}).creeazaElem();        
+    const idLabel               = new createElement('span','', ['input-group-text'],    {}).creeazaElem('id');    
+    divInputGroupPrepend2.appendChild(idLabel);
+    divInputGroup.appendChild(divInputGroupPrepend3);
+
+    const inputId = new createElement('input', 'bodyId', ['form-control'], {
+        type: 'text',
+        placeholder: 'identificatori separați prin virgule',
+        ['aria-label']: 'Id',
+        ['aria-describedby']: `bodyId`
+    }).creeazaElem('', true);
+    divInputGroup.appendChild(inputId);
+
+    const addBodyBtn = new createElement('button', `addbody`, ['btn', 'btn-info'], {}).creeazaElem("Adaugă");
+    divInputGroup.appendChild(addBodyBtn);
+
+    let bodies = document.querySelector('#bodies');
+    if (!bodies) {
+        const bodyPlace   = new createElement('div', 'bodyplace', ['d-flex'], {}).creeazaElem();
+        const bodyentries = new createElement('section',  'bodyentries', ['personul'], {}).creeazaElem();
+        bodyPlace.appendChild(bodyentries);
+        divInputGroup.appendChild(bodyPlace);
+    }
+
+    insertie.appendChild(divInputGroup);
+
+    addBodyBtn.addEventListener('click', addPerson); // funcția callback este mai jos
+};
+
+globalThis.creeazaBody = creeazaBody; // trimite în global funcția
+
+const personMapper = new Map();
+/**
+ * funcție callback pentru creeazaBody ()
+ * @param {Object} event 
+ */
+function addPerson (event) {
+    //#1 culege datele din elemente
+    let personEl = document.querySelector('#namePerson').value,
+        bodyEmEl = document.querySelector('#bodyEmail').value,
+        bodyIdEl = document.querySelector('#bodyId').value,
+        persUUID = crypto.randomUUID(),
+        persOb   = {personEl, bodyEmEl, bodyIdEl};
+    
+    if(!personMapper.has(persUUID)) {
+        personMapper.set(persUUID, persOb);
+    }
+
+    // console.log(`Mapul are valorile`, personMapper);
+
+    //#3 creează o intrare nouă în div-ul de evidență al persoanelor
+    const bentries = document.querySelector('#bodyentries');
+
+    //#4 creează un hash uni din email si nume persoana care să fie id-ul
+    const bodyplus = new createElement('div', `${persUUID}`, ['text-warning', 'mr-2'], {}).creeazaElem(`${persOb.personEl} ${persOb.bodyEmEl} ${persOb.bodyIdEl}`);
+    var aClose = new createElement('a', '', null, null).creeazaElem();
+    var aGlyph = new createElement('i', '', ['remove', 'fa', 'fa-times', 'ml-1'], null).creeazaElem();
+    aClose.appendChild(aGlyph);
+    bodyplus.appendChild(aClose);
+    bentries.appendChild(bodyplus);
+
+    document.querySelector('#namePerson').value = '';
+    document.querySelector('#bodyEmail').value = '';
+    document.querySelector('#bodyId').value = '';
+
+    aClose.addEventListener('click', function removePerson (evt) {
+        let targetElem = document.getElementById(evt.currentTarget.parentNode.id);
+        personMapper.delete(evt.currentTarget.parentNode.id);
+        bentries.removeChild(targetElem);
+        // console.log(`După ștergere setul este `, personMapper);
+    });
+
+    // let test2arr = Array.from(personMapper, ([persUUID, obi]) => ({ name: obi.personEl, email: obi.bodyEmEl, id: obi.bodyIdEl }));
+    let test2arr =  [...personMapper].map((x) => (x[1]));
+    console.log(`testul de transformare este `, test2arr);
+}
+
+
 // SALVEAZĂ ÎNREGISTRAREA
 let submitBtn = document.querySelector('#enterlog');
 let idContributor = document.querySelector('#idContributor');
@@ -380,6 +494,10 @@ submitBtn.addEventListener('click', (evt) => {
     
     // ID CONTRIBUTOR <log.content>
     log['idContributor'] = idContributor.value;
+
+    // colectează creatorii
+    log['creator'] = [...personMapper].map((x) => ({name: x[1].personEl, email: x[1].bodyEmEl, id: x[1].bodyIdEl.split(',')}));
+
     editorX.save().then((content) => {
         log['content'] = content;
 

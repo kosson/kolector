@@ -180,7 +180,7 @@ User.virtual('resurse', {
 });
 //https://mongoosejs.com/docs/populate.html#populate-virtuals
 
-// Verificarea credențialeleor în cazul folosirii jsontoken
+// Verificarea credențialelor în cazul folosirii jsontoken
 // Metoda statică poate fi accesată din model (static -> metodele modelului creat)
 User.static.findByCredentials = async (email, password) => {
     const user = await User.findOne({email});

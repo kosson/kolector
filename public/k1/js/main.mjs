@@ -59,7 +59,7 @@ class createElement {
         this.tag = tag;
         this.id = id;
         if (cls === null){
-            this.classes = '';
+            this.classes = [];
         } else {
             this.classes = [...cls];
         };        

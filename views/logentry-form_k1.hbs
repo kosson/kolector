@@ -21,6 +21,30 @@
                         <input id="userId" name="unerId" type="hidden" value="{{user.id}}">
                         <input id="autor" type="text" value="{{user.googleProfile.name}}" class="form-control" placeholder="{{user.googleProfile.name}}">
                     </div>
+
+
+                    {{!-- LIMBĂ - OPȚIUNI --}}
+                    <div class="frm01-lang-opt form-group d-flex">
+                        {{!-- Info la câmp --}}
+                        <aside data-toggle="tooltip" 
+                            data-container="body" 
+                            data-placement="top" 
+                            data-html="true" 
+                            title="Adaugă creatorii resursei originale.">
+                            <i class="fas fa-info-circle fa-2x text-info"></i>
+                        </aside>
+                        <button id="addBody" class="btn btn-outline-secondary m-2" type="button" onclick="creeazaBody()">
+                            <i class="fas fa-plus-circle"></i> Creatori
+                        </button>
+                    </div>
+                    <div id="detailBody">
+                        {{!-- AICI SUNT INTRODUSE TITLURILE ALTERNATIVE (dynamic) --}}
+                    </div>
+
+
+
+
+
                 </div>
                 <div class="justify-content-center mt-4">
                     <div id="codex"></div>

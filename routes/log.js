@@ -38,19 +38,15 @@ async function logRoot (req, res, next) {
                 newResultArr.push(newObi);
             });
 
-            // console.log(newResultArr[0]);
-
             let scripts = [
                 // FA
                 {script: `${gensettings.template}/lib/npm/all.min.js`},
                 // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-                // JQUERY
-                {script: `${gensettings.template}/lib/npm/jquery.slim.min.js`},                
-                // BOOTSTRAP
-                {script: `${gensettings.template}/lib/npm/bootstrap.bundle.min.js`},
+                {script: `moment/min/moment-with-locales.min.js`},
                 // HOLDERJS
-                {script: `${gensettings.template}/lib/npm/holder.min.js`}       
+                {script: `holderjs/holder.min.js`},
+                // JQUERY TOAST
+                {script: `jquery-toast-plugin/dist/jquery.toast.min.js`}
             ];
 
             let modules = [
@@ -63,9 +59,7 @@ async function logRoot (req, res, next) {
                 // FONTAWESOME
                 {style: `${gensettings.template}/lib/npm/all.min.css`},
                 // JQUERY TOAST
-                {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`},
-                // BOOTSTRAP
-                {style: `${gensettings.template}/lib/npm/bootstrap.min.css`},
+                {style: `jquery-toast-plugin/dist/jquery.toast.min.css`}
             ];
             
             res.render(`log_${gensettings.template}`, {
@@ -105,13 +99,9 @@ async function addLog (req, res, next) {
         // FA
         {script: `${gensettings.template}/lib/npm/all.min.js`},
         // MOMENT.JS
-        {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-        // JQUERY
-        {script: `${gensettings.template}/lib/npm/jquery.slim.min.js`},                
-        // BOOTSTRAP
-        {script: `${gensettings.template}/lib/npm/bootstrap.bundle.min.js`},
+        {script: `moment/min/moment-with-locales.min.js`},
         // HOLDERJS
-        {script: `${gensettings.template}/lib/npm/holder.min.js`}   
+        {script: `holderjs/holder.min.js`}
     ];
 
     let modules = [
@@ -129,8 +119,6 @@ async function addLog (req, res, next) {
         {module: `${gensettings.template}/lib/editorjs/table.js`},
         {module: `${gensettings.template}/lib/editorjs/attaches.js`},
         {module: `${gensettings.template}/lib/editorjs/ajax.js`},
-        // JQuery
-        {module: `${gensettings.template}/lib/npm/jquery.min.js`},
         // Toast
         {module: `${gensettings.template}/lib/npm/jquery.toast.min.js`},
         // LOCAL
@@ -142,9 +130,7 @@ async function addLog (req, res, next) {
         // FONTAWESOME
         {style: `${gensettings.template}/lib/npm/all.min.css`},
         // JQUERY TOAST
-        {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`},
-        // BOOTSTRAP
-        {style: `${gensettings.template}/lib/npm/bootstrap.min.css`},
+        {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`}
     ];
 
     /* === VERIFICAREA CREDENȚIALELOR === */
@@ -192,13 +178,11 @@ async function logEntry (req, res, next) {
         // FA
         {script: `${gensettings.template}/lib/npm/all.min.js`},
         // MOMENT.JS
-        {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-        // JQUERY
-        {script: `${gensettings.template}/lib/npm/jquery.slim.min.js`},                
-        // BOOTSTRAP
-        {script: `${gensettings.template}/lib/npm/bootstrap.bundle.min.js`},
+        {script: `moment/min/moment-with-locales.min.js`},
         // HOLDERJS
-        {script: `${gensettings.template}/lib/npm/holder.min.js`}   
+        {script: `holderjs/holder.min.js`},
+        // JQUERY TOAST
+        {script: `jquery-toast-plugin/dist/jquery.toast.min.js`}
     ];
 
     let modules = [
@@ -229,9 +213,7 @@ async function logEntry (req, res, next) {
         // FONTAWESOME
         {style: `${gensettings.template}/lib/npm/all.min.css`},
         // JQUERY TOAST
-        {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`},
-        // BOOTSTRAP
-        {style: `${gensettings.template}/lib/npm/bootstrap.min.css`},
+        {style: `jquery-toast-plugin/dist/jquery.toast.min.css`}
     ];
 
     if (confirmedRoles.length > 0) {
