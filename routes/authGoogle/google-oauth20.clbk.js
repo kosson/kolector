@@ -52,12 +52,12 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
             console.error(err);
         }
         
-        // TODO: Aici este locul unde ar trebui introdus hash și salt pentru un cont luat de la Google.
+        //- TODO: Aici este locul unde ar trebui introdus hash și salt pentru un cont luat de la Google.
 
         // DACĂ nu găsește nicio înregistrare, creează direct pe prima care va fi și administratorul aplicației
         if (count == 0) {
             record.roles.rolInCRED.push('admin'); // introdu rolul de administrator în array-ul rolurilor
-            // FIXME: [ROLURI] Ieși din hardocadarea rolurilor. Constituie un mecanism separat de acordare a acestora. Primul admin ca trebuie să aibă un mecanism de creare de roluri noi și acordare ale acestora.
+            //- FIXME: [ROLURI] Ieși din hardocadarea rolurilor. Constituie un mecanism separat de acordare a acestora. Primul admin ca trebuie să aibă un mecanism de creare de roluri noi și acordare ale acestora.
             record.roles.rolInCRED.push('cred');  // introdu rolul de user cred în array-ul rolurilor
             record.roles.unit.push('global');     // unitatea este necesară pentru a face segregări ulterioare în funcție de apartenența la o unitate orice ar însemna aceasta
             record.roles.admin = true;
@@ -66,7 +66,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
             const userObj = new userModel(record);
             try {
                 // Salvează documentul în bază! 
-                // FIXME: Indexează în Elasticsearch!!!.
+                //- FIXME: Indexează în Elasticsearch!!!.
                 await userObj.save(function clbkSaveFromGStrat (err, user) {                
                     if (err) throw new Error('Eroarea la salvarea userului este: ', err.message);
                     console.log("Am creat administratorul!");

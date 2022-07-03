@@ -56,6 +56,7 @@ function foldOneField (data) {
 /* ============ OBȚINEREA CĂILOR TUTUROR FIȘIERELOR =============== */
 // De la https://gist.github.com/kethinov/6658166
 var dir = 'surse'; // este numele directorului în care vor sta toate fișierele care trebuie concatenate
+
 /**
  * Funcția area rolul de a genera un Array cu toate fișierele existente în directorul desemnat prin variabila `dir`
  * @param {String} dir Numele directorului în care se află fișierele care trebuie concatenate
@@ -84,8 +85,8 @@ class CsvFile {
     }
 
     constructor(opts) {
-        this.headers = opts.headers;
-        this.path = opts.path;
+        this.headers   = opts.headers;
+        this.path      = opts.path;
         this.writeOpts = { headers: this.headers, includeEndRowDelimiter: true };
     }
 
@@ -125,7 +126,7 @@ class CsvFile {
  * @param {String} outputFilePath 
  * @returns {Promise}
  */
-function concatCSVAndOutput(csvFilePaths, outputFilePath) {
+function concatCSVAndOutput (csvFilePaths, outputFilePath) {
     // console.log(csvFilePaths);
     
     // construiești un array de promisiuni

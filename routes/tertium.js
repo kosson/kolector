@@ -5,6 +5,9 @@ const router  = express.Router();
 /* === MODELE === */
 const Resursa = require('../models/resursa-red'); // Adu modelul resursei
 
+// CONSTANTE
+const LOGO_IMG = "img/" + process.env.LOGO;
+
 /* === HELPERE  === */
 // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
 let editorJs2html = require('./controllers/editorJs2HTML');
@@ -52,9 +55,7 @@ router.get('/:id', function tertiumResource (req, res, next) {
             res.render('resursa-tertium', {                
                 title:     "Terți",
                 user:      req.user,
-                // style:   "/lib/fontawesome/css/fontawesome.min.css",
-                logoimg:   "/img/red-logo-small30.png",
-                credlogo:  "../img/CREDlogo.jpg",
+                logoimg:   LOGO_IMG,
                 csrfToken: req.csrfToken(),
                 resursa:   resursa,
                 scripts

@@ -1,0 +1,46 @@
+{{!< k1/log}}
+{{> nav-resurse}}
+{{> messages}}
+
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    
+    <div id="container">
+        <div id="editorcrate" class="container p-2">
+            <h1>Înregistrare nouă</h1>
+            <form onsubmit="return false;" action="javascript:void(0)">
+                {{!-- Formular de introducere articol --}}
+                <div class="row">
+                    <div id="titlelog" class="col">
+                        <input type="text" class="form-control" placeholder="Titlu">
+                    </div>
+                    <div class="col">
+                        <input id="aliaslog" type="text" class="form-control" placeholder="alias-la-titlu-cu-care-se-termina-linkul">
+                    </div>
+                    <div id="autorlog" class="col">
+                        <input id="idContributor" name="emailUser" type="hidden" value="{{user.email}}">
+                        <input id="userId" name="unerId" type="hidden" value="{{user.id}}">
+                        <input id="autor" type="text" value="{{user.googleProfile.name}}" class="form-control" placeholder="{{user.googleProfile.name}}">
+                    </div>
+                </div>
+                <div class="justify-content-center mt-4">
+                    <div id="codex"></div>
+                </div>
+
+                {{!-- ETICHETE --}}
+                <fieldset>
+                    <div id="tags"></div>
+                    <div id="etichete" class="form-group row">
+                        <label for="redTags" class="col-sm-4 col-form-label">Etichetează intrarea</label>
+                        
+                        <div id="redTags" class="col-sm-8">
+                            <input type="text" id="eticheteLog" class="form-control" placeholder="ex: palindrom, funcție matematică, CevaPersonalizat01">
+                        </div>
+                    </div>
+                </fieldset>
+                {{!-- ETICHETE END --}}
+
+                <br>
+                <button id="enterlog" class="btn btn-danger">Salvează</button>
+            </form>
+        </div>
+    </div>

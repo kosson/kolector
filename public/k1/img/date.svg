@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   data-name="Layer 1"
+   viewBox="0 0 512 640"
+   x="0px"
+   y="0px"
+   version="1.1"
+   id="svg22"
+   sodipodi:docname="noun_date_1797142.svg"
+   inkscape:version="1.0.1 (1.0.1+r75)">
+  <metadata
+     id="metadata28">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs26" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     id="namedview24"
+     showgrid="false"
+     inkscape:zoom="1.34375"
+     inkscape:cx="256"
+     inkscape:cy="320"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg22" />
+  <title
+     id="title2">cl</title>
+  <path
+     d="M481.83,37H458v72.83c0,23.53-18.86,42.17-41.45,42.17h-12.8C381.17,152,364,133.36,364,109.83V37H305v72.83A42.36,42.36,0,0,1,263,152h-12.8C227.57,152,210,133.36,210,109.83V37H161v72.83c0,23.53-18.5,42.17-41.09,42.17h-12.8C84.53,152,67,133.36,67,109.83V37H31.27C14.38,37,0,52.69,0,70.29V481a31.08,31.08,0,0,0,31.27,31H481.83c16.9,0,30.17-13.41,30.17-31V70.29C512,52.69,498.73,37,481.83,37ZM469,445.5A22.57,22.57,0,0,1,446.5,468H65.5A22.57,22.57,0,0,1,43,445.5v-230A22.57,22.57,0,0,1,65.5,193h381A22.57,22.57,0,0,1,469,215.5v230Z"
+     id="path4" />
+  <path
+     d="M250.88,133h12.8A23.48,23.48,0,0,0,287,109.33V24c0-13.25-10.6-24-23.32-24h-12.8C238.16,0,228,10.75,228,24v85.33C228,122.59,238.16,133,250.88,133Z"
+     id="path6" />
+  <path
+     d="M404.48,133h12.8C430,133,440,122.59,440,109.33V24c0-13.25-10-24-22.72-24h-12.8C391.76,0,381,10.75,381,24v85.33A23.61,23.61,0,0,0,404.48,133Z"
+     id="path8" />
+  <path
+     d="M107.52,133h12.8C133,133,143,122.59,143,109.33V24c0-13.25-10-24-22.68-24h-12.8C94.8,0,84,10.75,84,24v85.33A23.65,23.65,0,0,0,107.52,133Z"
+     id="path10" />
+  <rect
+     x="84"
+     y="232"
+     width="344"
+     height="48"
+     rx="12"
+     ry="12"
+     id="rect12" />
+  <rect
+     x="85"
+     y="307"
+     width="344"
+     height="48"
+     rx="12"
+     ry="12"
+     id="rect14" />
+  <rect
+     x="84"
+     y="381"
+     width="344"
+     height="48"
+     rx="12"
+     ry="12"
+     id="rect16" />
+</svg>

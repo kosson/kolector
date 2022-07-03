@@ -2,20 +2,26 @@ require('dotenv').config();
 /* === DEPENDINȚE === */
 const express = require('express');
 const router  = express.Router();
-const crypto  = require('crypto');
+const passport= require('passport');
+require('./controllers/user.ctrl')(passport); // încarcă strategiile
 
 // Cere gestionarul pentru versiunea 1
-let {getResources, getResource, postResource, putResource, delResource} = require('./api/v1');
+let {getREDs, getRED, postRED, putRED, delRED, currentUser, loginUser} = require('./api/v1');
+
+router
+    .get('/user/current', passport.authenticate('jwt', {session: false}), currentUser)
+    .post('/user/login', passport.authenticate('local'), loginUser);
 
 router
     .route('/')
-    .get(getResources)
-    .post(getResource);
+    .get(getREDs)
+    .post(postRED);
 
 router
-    .route('/:id')
-    .get(getResource)
-    .put(putResource)
-    .delete(delResource);
+    .route('/:id', passport.authenticate('jwt', {session: false}))
+    .get(getRED)
+    .post(postRED)
+    .put(putRED)
+    .delete(delRED);
 
 module.exports = router;

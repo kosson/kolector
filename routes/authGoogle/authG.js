@@ -1,15 +1,15 @@
 require('dotenv').config();
-/* === DEPENDINȚE === */
+/* ==== DEPENDINȚE ==== */
 const express = require('express');
 const router  = express.Router();
 const passport= require('passport');
 // Încarcă controlerul necesar tratării rutelor de autentificare
-const GAuth = require('./google-oauth20.ctrl')(passport);
+const UserPassport = require('../controllers/user.ctrl')(passport);
 
-// === /auth ===
-router.get('/', GAuth.auth);
+// === AUTH ===
+router.get('/', UserPassport.auth); // Încarcă template-ul hbs pentru afișarea butonului de autorizare
 
-// === /auth/google ===
+// AUTH/GOOGLE -> RUTA BUTONULUI CATRE SERVERUL DE AUTORIZARE (trebuie să ai deja ClientID și Secretul)
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email']}));
 
 module.exports = router;

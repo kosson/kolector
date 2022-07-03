@@ -26,11 +26,8 @@ function content2text (blocuri) {
                     }
                     break;
                 case 'embed':
-                    let ytbLnk = `${obj.data.source}`;
-                    let ytbID = ytbLnk.match(/([A-Z])\w+/)[0];
-                    // console.log(ytbID);
-                    let embYtbLink = `https://www.youtube.com/embed/${ytbID}`;
-                    articleTXT += `${obj.data.caption}\n`;
+                    // transformi linkurile din embeduri doar în acore
+                    articleTXT += `<a href="${obj.data.source}">${obj.data.caption}</a>\n`;
                     break;
                 case 'table':
                     let theadData = obj.data.content.shift();

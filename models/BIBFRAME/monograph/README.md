@@ -1,0 +1,1 @@
+Pentru transformarea în JSON Schema de care va fi nevoie la un nivel legat de modelare date în viitor, se va putea genera un JSON Schema din Mongoose Schema folosind https://www.npmjs.com/package/mongoose-schema-jsonschema

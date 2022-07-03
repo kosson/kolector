@@ -5,7 +5,7 @@ const router  = express.Router();
 
 /* === LOGOUT === */
 router.get('/', function clbkLogout (req, res) {
-    req.logout(); // în momentul acesta `passport` șterge datele din proprietatea `passport` a obiectului `req.session`; de ex: passport: {user: dso8fs89afds998fsda} va fi passport:{}.
+    req.logout(); // metoda este pusă la dispoziție de Passport. Distruge res.session.passport.user
     req.session.destroy(function clbkDestr (err) {
         if (err) throw new Error('A apărut o eroare la logout: ', err);
         res.redirect('/');

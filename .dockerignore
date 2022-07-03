@@ -1,31 +1,20 @@
 # exclude modulele Node
 node_modules
-# exclude repo-ul de git
-.git/
-# exlude design-ul aplicației
+# exclude repo-ul de git local
+.git
+# exclude .gitignore
+.gitignore
+# exclude design-ul aplicației
 docker-compose*.yml
-# exclude /repo
+# exclude /repo pentru că se creează in container
 /repo
 # exclude .env
 .env
-# exclude tot ce instalează Bower
-/public/lib/bootstrap
-/public/lib/datatables.net
-/public/lib/datatables.net-bs4
-/public/lib/datatables.net-buttons
-/public/lib/datatables.net-buttons-dt
-/public/lib/datatables.net-dt
-/public/lib/datatables.net-responsive
-/public/lib/datatables.net-responsive-dt
-/public/lib/datatables.net-select
-/public/lib/datatables.net-select-dt
-/public/lib/fontawesome
-/public/lib/handlebars
-/public/lib/holderjs
-/public/lib/jquery
-/public/lib/jquery-toast-plugin
-/public/lib/moment
-/public/lib/popper.js
-/public/lib/socket.io-client
-/public/lib/timeline3
-/public/lib/waypoints
+# exclude Dockerfile
+Dockerfile
+# exclude .dockerignore
+.dockerignore
+# exclude loguri
+npm-debug.log
+# exclude secrete montate cu npm
+.npmrc

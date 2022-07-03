@@ -1,0 +1,605 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+
+<link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
+.mac-os-11 { --title-bar-height:28px; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0px; padding: 0px; height: auto; inset: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; tab-size: 4; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; overflow-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 36px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+.typora-export .task-list-item input { pointer-events: none; }
+@media screen and (max-width: 500px) {
+  body.typora-export { padding-left: 0px; padding-right: 0px; }
+  #write { padding-left: 20px; padding-right: 20px; }
+  .CodeMirror-sizer { margin-left: 0px !important; }
+  .CodeMirror-gutters { display: none !important; }
+}
+#write li > figure:last-child { margin-bottom: 0.5rem; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; image-orientation: from-image; }
+button, input, select, textarea { color: inherit; font: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position: relative; }
+p { line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 4; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.7); color: rgb(85, 85, 85); border-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px; }
+tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right: 0px; background-color: inherit; }
+.CodeMirror-linenumber { user-select: none; }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background: inherit; position: relative !important; }
+.md-fences-adv-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; background: 0px 0px; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; -webkit-tap-highlight-color: transparent; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li blockquote { margin: 1rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print {
+  body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; font-variant-ligatures: no-common-ligatures; }
+  #write { margin-top: 0px; padding-top: 0px; border-color: transparent !important; }
+  .typora-export * { -webkit-print-color-adjust: exact; }
+  .typora-export #write { break-after: avoid; }
+  .typora-export #write::after { height: 0px; }
+  .is-mac table { break-inside: avoid; }
+  .typora-export-show-outline .typora-export-sidebar { display: none; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background: rgb(204, 204, 204); display: block; overflow-x: hidden; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+#write.first-line-indent p > .md-image:only-child:not(.md-img-error) img { left: -2em; position: relative; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+.MathJax_ref { fill: currentcolor; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus, [contenteditable="false"]:active, [contenteditable="false"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) {
+  .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+  .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+  .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+  .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.8; font-family: var(--monospace); }
+code { text-align: left; vertical-align: initial; }
+a.md-print-anchor { white-space: pre !important; border-width: initial !important; border-style: none !important; border-color: initial !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; background: 0px 0px !important; text-decoration: initial !important; text-shadow: initial !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="flow"] svg, [lang="mermaid"] svg { max-width: 100%; height: auto; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+mark { background: rgb(255, 255, 0); color: rgb(0, 0, 0); }
+.md-html-inline .md-plain, .md-html-inline strong, mark .md-inline-math, mark strong { color: inherit; }
+.md-expand mark .md-meta { opacity: 0.3 !important; }
+mark .md-meta { color: rgb(0, 0, 0); }
+@media print {
+  .typora-export h1, .typora-export h2, .typora-export h3, .typora-export h4, .typora-export h5, .typora-export h6 { break-inside: avoid; }
+}
+.md-diagram-panel .messageText { stroke: none !important; }
+.md-diagram-panel .start-state { fill: var(--node-fill); }
+.md-diagram-panel .edgeLabel rect { opacity: 1 !important; }
+.md-fences.md-fences-math { font-size: 1em; }
+.md-fences-advanced:not(.md-focus) { padding: 0px; white-space: nowrap; border: 0px; }
+.md-fences-advanced:not(.md-focus) { background: inherit; }
+.typora-export-show-outline .typora-export-content { max-width: 1440px; margin: auto; display: flex; flex-direction: row; }
+.typora-export-sidebar { width: 300px; font-size: 0.8rem; margin-top: 80px; margin-right: 18px; }
+.typora-export-show-outline #write { --webkit-flex:2; flex: 2 1 0%; }
+.typora-export-sidebar .outline-content { position: fixed; top: 0px; max-height: 100%; overflow: hidden auto; padding-bottom: 30px; padding-top: 60px; width: 300px; }
+@media screen and (max-width: 1024px) {
+  .typora-export-sidebar, .typora-export-sidebar .outline-content { width: 240px; }
+}
+@media screen and (max-width: 800px) {
+  .typora-export-sidebar { display: none; }
+}
+.outline-content li, .outline-content ul { margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px; list-style: none; }
+.outline-content ul { margin-top: 0px; margin-bottom: 0px; }
+.outline-content strong { font-weight: 400; }
+.outline-expander { width: 1rem; height: 1.42857rem; position: relative; display: table-cell; vertical-align: middle; cursor: pointer; padding-left: 4px; }
+.outline-expander::before { content: ""; position: relative; font-family: Ionicons; display: inline-block; font-size: 8px; vertical-align: middle; }
+.outline-item { padding-top: 3px; padding-bottom: 3px; cursor: pointer; }
+.outline-expander:hover::before { content: ""; }
+.outline-h1 > .outline-item { padding-left: 0px; }
+.outline-h2 > .outline-item { padding-left: 1em; }
+.outline-h3 > .outline-item { padding-left: 2em; }
+.outline-h4 > .outline-item { padding-left: 3em; }
+.outline-h5 > .outline-item { padding-left: 4em; }
+.outline-h6 > .outline-item { padding-left: 5em; }
+.outline-label { cursor: pointer; display: table-cell; vertical-align: middle; text-decoration: none; color: inherit; }
+.outline-label:hover { text-decoration: underline; }
+.outline-item:hover { border-color: rgb(245, 245, 245); background-color: var(--item-hover-bg-color); }
+.outline-item:hover { margin-left: -28px; margin-right: -28px; border-left: 28px solid transparent; border-right: 28px solid transparent; }
+.outline-item-single .outline-expander::before, .outline-item-single .outline-expander:hover::before { display: none; }
+.outline-item-open > .outline-item > .outline-expander::before { content: ""; }
+.outline-children { display: none; }
+.info-panel-tab-wrapper { display: none; }
+.outline-item-open > .outline-children { display: block; }
+.typora-export .outline-item { padding-top: 1px; padding-bottom: 1px; }
+.typora-export .outline-item:hover { margin-right: -8px; border-right: 8px solid transparent; }
+.typora-export .outline-expander::before { content: "+"; font-family: inherit; top: -1px; }
+.typora-export .outline-expander:hover::before, .typora-export .outline-item-open > .outline-item > .outline-expander::before { content: "−"; }
+.typora-export-collapse-outline .outline-children { display: none; }
+.typora-export-collapse-outline .outline-item-open > .outline-children, .typora-export-no-collapse-outline .outline-children { display: block; }
+.typora-export-no-collapse-outline .outline-expander::before { content: "" !important; }
+.typora-export-show-outline .outline-item-active > .outline-item .outline-label { font-weight: 700; }
+.md-inline-math-container mjx-container { zoom: 0.95; }
+
+
+:root {
+    --side-bar-bg-color: #fafafa;
+    --control-text-color: #777;
+}
+
+@include-when-export url(https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext);
+
+/* open-sans-regular - latin-ext_latin */
+  /* open-sans-italic - latin-ext_latin */
+    /* open-sans-700 - latin-ext_latin */
+    /* open-sans-700italic - latin-ext_latin */
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: "Open Sans","Clear Sans", "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', sans-serif;
+    color: rgb(51, 51, 51);
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 860px;
+  	margin: 0 auto;
+  	padding: 30px;
+    padding-bottom: 100px;
+}
+
+@media only screen and (min-width: 1400px) {
+	#write {
+		max-width: 1024px;
+	}
+}
+
+@media only screen and (min-width: 1800px) {
+	#write {
+		max-width: 1200px;
+	}
+}
+
+#write > ul:first-child,
+#write > ol:first-child{
+    margin-top: 30px;
+}
+
+a {
+    color: #4183C4;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    line-height: 1.4;
+    cursor: text;
+}
+h1:hover a.anchor,
+h2:hover a.anchor,
+h3:hover a.anchor,
+h4:hover a.anchor,
+h5:hover a.anchor,
+h6:hover a.anchor {
+    text-decoration: none;
+}
+h1 tt,
+h1 code {
+    font-size: inherit;
+}
+h2 tt,
+h2 code {
+    font-size: inherit;
+}
+h3 tt,
+h3 code {
+    font-size: inherit;
+}
+h4 tt,
+h4 code {
+    font-size: inherit;
+}
+h5 tt,
+h5 code {
+    font-size: inherit;
+}
+h6 tt,
+h6 code {
+    font-size: inherit;
+}
+h1 {
+    font-size: 2.25em;
+    line-height: 1.2;
+    border-bottom: 1px solid #eee;
+}
+h2 {
+    font-size: 1.75em;
+    line-height: 1.225;
+    border-bottom: 1px solid #eee;
+}
+
+/*@media print {
+    .typora-export h1,
+    .typora-export h2 {
+        border-bottom: none;
+        padding-bottom: initial;
+    }
+
+    .typora-export h1::after,
+    .typora-export h2::after {
+        content: "";
+        display: block;
+        height: 100px;
+        margin-top: -96px;
+        border-top: 1px solid #eee;
+    }
+}*/
+
+h3 {
+    font-size: 1.5em;
+    line-height: 1.43;
+}
+h4 {
+    font-size: 1.25em;
+}
+h5 {
+    font-size: 1em;
+}
+h6 {
+   font-size: 1em;
+    color: #777;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table{
+    margin: 0.8em 0;
+}
+li>ol,
+li>ul {
+    margin: 0 0;
+}
+hr {
+    height: 2px;
+    padding: 0;
+    margin: 16px 0;
+    background-color: #e7e7e7;
+    border: 0 none;
+    overflow: hidden;
+    box-sizing: content-box;
+}
+
+li p.first {
+    display: inline-block;
+}
+ul,
+ol {
+    padding-left: 30px;
+}
+ul:first-child,
+ol:first-child {
+    margin-top: 0;
+}
+ul:last-child,
+ol:last-child {
+    margin-bottom: 0;
+}
+blockquote {
+    border-left: 4px solid #dfe2e5;
+    padding: 0 15px;
+    color: #777777;
+}
+blockquote blockquote {
+    padding-right: 0;
+}
+table {
+    padding: 0;
+    word-break: initial;
+}
+table tr {
+    border: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 0;
+}
+table tr:nth-child(2n),
+thead {
+    background-color: #f8f8f8;
+}
+table th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    border-bottom: 0;
+    margin: 0;
+    padding: 6px 13px;
+}
+table td {
+    border: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 6px 13px;
+}
+table th:first-child,
+table td:first-child {
+    margin-top: 0;
+}
+table th:last-child,
+table td:last-child {
+    margin-bottom: 0;
+}
+
+.CodeMirror-lines {
+    padding-left: 4px;
+}
+
+.code-tooltip {
+    box-shadow: 0 1px 1px 0 rgba(0,28,36,.3);
+    border-top: 1px solid #eef2f2;
+}
+
+.md-fences,
+code,
+tt {
+    border: 1px solid #e7eaed;
+    background-color: #f8f8f8;
+    border-radius: 3px;
+    padding: 0;
+    padding: 2px 4px 0px 4px;
+    font-size: 0.9em;
+}
+
+code {
+    background-color: #f3f4f4;
+    padding: 0 2px 0 2px;
+}
+
+.md-fences {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding-top: 8px;
+    padding-bottom: 6px;
+}
+
+
+.md-task-list-item > input {
+  margin-left: -1.3em;
+}
+
+@media print {
+    html {
+        font-size: 13px;
+    }
+    table,
+    pre {
+        page-break-inside: avoid;
+    }
+    pre {
+        word-wrap: break-word;
+    }
+}
+
+.md-fences {
+	background-color: #f8f8f8;
+}
+#write pre.md-meta-block {
+	padding: 1rem;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border: 0;
+    border-radius: 3px;
+    color: #777777;
+    margin-top: 0 !important;
+}
+
+.mathjax-block>.code-tooltip {
+	bottom: .375rem;
+}
+
+.md-mathjax-midline {
+    background: #fafafa;
+}
+
+#write>h3.md-focus:before{
+	left: -1.5625rem;
+	top: .375rem;
+}
+#write>h4.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h5.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h6.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+.md-image>.md-meta {
+    /*border: 1px solid #ddd;*/
+    border-radius: 3px;
+    padding: 2px 0px 0px 4px;
+    font-size: 0.9em;
+    color: inherit;
+}
+
+.md-tag {
+    color: #a7a7a7;
+    opacity: 1;
+}
+
+.md-toc { 
+    margin-top:20px;
+    padding-bottom:20px;
+}
+
+.sidebar-tabs {
+    border-bottom: none;
+}
+
+#typora-quick-open {
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+#typora-quick-open-item {
+    background-color: #FAFAFA;
+    border-color: #FEFEFE #e5e5e5 #e5e5e5 #eee;
+    border-style: solid;
+    border-width: 1px;
+}
+
+/** focus mode */
+.on-focus-mode blockquote {
+    border-left-color: rgba(85, 85, 85, 0.12);
+}
+
+header, .context-menu, .megamenu-content, footer{
+    font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.file-node-content:hover .file-node-icon,
+.file-node-content:hover .file-node-open-state{
+    visibility: visible;
+}
+
+.mac-seamless-mode #typora-sidebar {
+    background-color: #fafafa;
+    background-color: var(--side-bar-bg-color);
+}
+
+.md-lang {
+    color: #b4654d;
+}
+
+/*.html-for-mac {
+    --item-hover-bg-color: #E6F0FE;
+}*/
+
+#md-notification .btn {
+    border: 0;
+}
+
+.dropdown-menu .divider {
+    border-color: #e5e5e5;
+    opacity: 0.4;
+}
+
+.ty-preferences .window-content {
+    background-color: #fafafa;
+}
+
+.ty-preferences .nav-group-item.active {
+    color: white;
+    background: #999;
+}
+
+.menu-item-container a.menu-style-btn {
+    background-color: #f5f8fa;
+    background-image: linear-gradient( 180deg , hsla(0, 0%, 100%, 0.8), hsla(0, 0%, 100%, 0)); 
+}
+
+
+
+</style><title>IntroducereaUneiResurseEducationaleDeschise</title>
+</head>
+<body class='typora-export'><div class='typora-export-content'>
+<div id='write'  class=''><h1 id='descrierea-unei-resurse-educaționale-deschise'><span>Descrierea unei Resurse Educaționale Deschise</span></h1><p><em><span>Versiunea 0.9.8, septembrie, 2021</span></em>
+<span>Nicolaie Constantinescu </span><a href='mailto:nicu.constantinescu@educred.ro' target='_blank' class='url'>nicu.constantinescu@educred.ro</a></p><p><img src="img/0.9.3/REDinCREDinternalREDs.png" referrerpolicy="no-referrer"></p><h2 id='1-introducere'><span>1. Introducere</span></h2><p><span>Acest material descrie pașii pe care persoana care contribuie cu o resursă trebuie să-i parcurgă pentru a introduce o înregistrare viabilă. Formularul dedicat expune patru pași în succesiune, care la rândul lor, fiecare necesită completarea cu informații specifice.</span></p><p><span>Pentru a aprofunda cunoașterea privind elaborarea unei Resurse Educaționale Deschisă (RED), vă invit să parcurgeți încă o dată cursul dedicat din cadrul proiectului „CRED în educație”.</span></p><p><span>Completarea pașilor pentru adăugarea unei Resurse Educaționale Deschise va genera în baza de date o fișă descriptivă, iar în directorul dedicat </span><code>repo</code><span> se va constitui câte un subdirector pentru fiecare utilizator al platformei și câte un subdirector pentru fiecare resursă în parte în subdirectorul utilizatorului.</span></p><p><span>În continuare vom folosi acronimul RED pentru Resursele Educționale Deschise.</span></p><h3 id='11-structura-de-date-generată'><span>1.1 Structura de date generată</span></h3><p><span>Mai jos este un mic exemplu ilustrativ pentru structura unei resurse așa cum este structurată pe hard disk-ul serverului după ce s-a încheiat introducerea.</span></p><p><img src="img/0.9.3/REDPeHDD.png" referrerpolicy="no-referrer"></p><p><span>Pentru a fi mai simplu, din acest moment vom folosi în întreg documentul acronimul RED pentru Resurse Educaționale Deschise.</span></p><h2 id='2-preliminarii'><span>2. Preliminarii</span></h2><p><span>Utilizatorii, formabili, formatori, experți e-learning și în general toți cei care interacționează cu aplicația „Colector RED”, trebuie să înțeleagă de la bun început că această aplicație are rolul de a descrie entități digitale deja existente, fie acestea documente, teste, video, simple texte, etc.</span></p><p><span>Creatorii de resurse care vor începe descrierea și introducerea resursei, trebuie să aibă o bună cunoaștere a documentului „Repere pentru proiectarea și actualizarea Curriculumului național” disponibil de la următorul link </span><a href='https://www.edu.ro/sites/default/files/DPC_31.10.19_consultare.pdf'><span>https://www.edu.ro/sites/default/files/DPC_31.10.19_consultare.pdf </span></a><span>.</span></p><p><img src="img/0.9.3/curriculum-repere-cop-231x300.png" referrerpolicy="no-referrer"></p><p><span>Consultarea acestui document familiarizează creatorul cu cerințele descriptive ale aplicației și astfel, va fi deja familiar cu toate câmpurile prezente la fiecare pas.</span></p><p><span>Un alt lucru foarte importat este ca profesorul care va contribui cu resurse, să aibă deja conținuturile gata de a fi descrise și introduse pentru că aplicația „Colectorul RED” nu este un instrument de creație. Această aplicație este una dedicată exclusiv descrierii și încărcării materialelor care deja există. Aplicația oferă doar cadrul descriptiv necesar încadrării din punct de vedere al Ariei curriculare, clasei, disciplinei, competenței specifice și al câtorva criterii suplimentare din domeniul educației și pedagogiei.</span></p><p><span>Introducerea unui RED se face prin completarea unui formular în patru pași.</span></p><h2 id='3-pasul-1---titlu-și-responsabilitate'><span>3. Pasul 1 - Titlu și responsabilitate</span></h2><p><span>Primul pas a fișei este dedicat introducerii titlului, descrierii și a licenței pe care o poartă RED-ul.</span></p><p><img src="img/0.9.3/Pas1-DefinireTitluSiResponsabilitate.png" referrerpolicy="no-referrer"></p><h3 id='31-titlul-resursei'><span>3.1. Titlul resursei</span></h3><p><span>Titlul resursei primește informația care va identifica resursa educațională. Aceasta trebuie formulată concisă în limba română. Indiferent de limba aleasă pentru crearea RED-ului, titlul va trebui să fie introdus în limba română.</span></p><p><img src="img/0.9.3/Pas1-Titlu-limba-resursei-titlu-alternativ.png" referrerpolicy="no-referrer"></p><p><span>În cazul în care limba în care este redactat conținutul resursei este alta decât română, se va putea menționa acest lucru selectând una din limbile minorităților, disponibilă din elementul de selecție de la „Indică limba”.</span></p><p><span>Aplicația oferă posibilitatea introducerii titlului în mai multe limbi, dacă acest lucru este necesar imediat după menționarea titlului în limba română. Pentru a face ast lucru, se va apăsa pe butonul „În altă limbă”, fiind oferit un câmp în care poate fi introdus titlul în limba maternă cu specificarea obligatorie a limbii minorității pentru care a fost adusă această completare.</span></p><p><img src="img/0.9.3/Pas1-Titlu-in-alta-limba.png" referrerpolicy="no-referrer"></p><p><span>Dacă se renunță la titlul în limba maternă sau a unei limbi de circulație internațională, se va apăsa pe butonul coșului de gunoi atașat câmpului, pentru a evita introducrea accidentală în înregistrare.</span></p><h3 id='32-responsabilitate-contribuitor'><span>3.2. Responsabilitate (contribuitor)</span></h3><p><span>Secțiunea </span><code>Responsabilitate</code><span> are un câmp care va fi completat automat cu datele persoanei care s-a autentificat șcare face contribuția. În baza adresei de email se va face generarea subdirectoarelor proprii fiecărui utilizator care contribuie cu resurse.</span></p><p><img src="img/0.9.3/Pas1-Responsabilitate-Autori.png" referrerpolicy="no-referrer"></p><p><span>Persoana care descrie și încarcă RED-ul folosind formularul aplicației este considerată a fi </span><em><span>contribuitorul</span></em><span> acesteia. Un </span><em><span>contribuitor</span></em><span> poate fi autorul RED-ului, dar în cazul în care acesta este produsul a mai multor autori, unul dintre aceștia va fi desemnat să încarce resursa în aplicație, fiind cel care </span><em><span>contribuie</span></em><span> RED-ul. În acest caz, contribuitorul poate fi considerat autor colectiv.</span></p><p><span>Autorii unei resurse pot fi o singură persoană, un grup, un colectiv, o instituție. În cazul în care sunt mai mulți autori, vor fi introduși rând pe rând, separați de virgule. Nu uitați separarea cu virgule care este esențială. Trebuie înțeleasă distincția clară dintre autor și cel care contribuie cu resursa. De regulă, atunci când sunt mai mulți autori, unul dintre aceștia va fi desemnat să descrie și să încarce resursa.</span></p><p><span>În continuare ne vom referi la persoana care face descrierea ca fiind </span><em><span>contribuitorul</span></em><span>.</span></p><h3 id='33-o-scurtă-descriere-a-resursei'><span>3.3. O scurtă descriere a resursei</span></h3><p><span>În maxim 1000 de caractere, contribuitorul trebuie să descrie conținutul RED-ului. Contribuitorul va introduce toate detaliile necesare realizării unei bune corelații între titlu, descriere și conținut. În maxim 1000 caractere contribuitorul face o descriere sintetică a conținutului resursei și a contextelor concrete de învățare pentru care acesta este relevantă.</span>
+<span>Recomandăm să fie evidențiate pe scurt elementele de noutate și avantajele din perspectiva învățării/elevului.</span></p><p><img src="img/0.9.3/Pas1-Scurta-descriere-a-resursei.png" referrerpolicy="no-referrer"></p><p><span>Textul descrierii trebuie ales cu grijă pentru că va fi indexat de motorul de căutare intern al aplicației, precum și de motoarele de căutare terțe.</span></p><h3 id='34-activități-de-învățare-susținute'><span>3.4. Activități de învățare susținute</span></h3><p><span>Un RED este conceput, fie pentru a susține o activitate de învățare, fie pentru a complementa una. Aici trebuie încadrată resursa în funcție de cele două opțiuni oferite</span></p><p><img src="img/0.9.3/Pas1-Activitati-de-invatare.png" referrerpolicy="no-referrer"></p><p><span>Opțiuniunile disponibile sunt următoarele:</span></p><ul><li><em><span>Resursa susține o activitate de învățare indicată în programa școlară</span></em><span> (din oficiu)</span></li><li><em><span>Promovează o nouă activitate de învățare complementară celor din programa școlară</span></em><span>.</span></li></ul><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> Este recomandabil să fie analizat RED-ul sub acest aspect înainte de a-l introduce.</div><br><h3 id='35-alegerea-licenței-resursei'><span>3.5. Alegerea licenței resursei</span></h3><p><span>Un RED poartă chiar în denumire atributul „deschis”, fapt care permite tuturor celor interesați utilizarea și în anumite condiții reutilizarea în scopuri didactice sau chiar pentru realizarea de opere derivate. Reținem faptul că pentru orice creație umană care are suport, din punct de vedere legal, spunem că este o </span><strong><span>operă</span></strong><span>.</span>
+<span>Pentru a crește nivelul de implicare și gradul de refolosire al materialelor, a fost aleasă suita de licențe Creative Commons. Această alegere este sincronizată cu opțiunile de licențiere de la nivel mondial.</span></p><p><img src="img/0.9.3/Pas1-Licente-disponibile.png" referrerpolicy="no-referrer"></p><p><span>Prima opțiune, care este și cea selectată implicit este „Atribuire”, fiind cea mai deschisă din toate cele posibile. Despre licențele Creative Commons puteți citi mai multe la „</span><a href='https://creativecommons.org/licenses/?lang=ro'><span>Despre licențe</span></a><span>”. Despre efectele și aria de protecție pentru fiecare licență în parte consultă și „</span><a href='https://creativecommons.org/choose/?lang=ro'><span>Distribuie-ți opera</span></a><span>”</span></p><p><span>Pentru că este posibil ca unii dintre creatori să considere codul sursă a unui software ca fiind o Resursă Educațională Deschisă, am introdus și licența generică GNU - General Public License.</span>
+<span>Despre licența </span><a href='https://www.gnu.org/licenses/gpl-3.0.en.html'><span>GNU General Public License</span></a><span> puteți să aflați mai multe de la </span><a href='https://ro.wikipedia.org/wiki/Licen%C8%9Ba_Public%C4%83_General%C4%83_GNU'><span>articolul Wikipedia dedicat</span></a><span>.</span></p><h2 id='4-pasul-2---încadrarea-resursei'><span>4. Pasul 2 - Încadrarea resursei</span></h2><p><span>Pasul doi adaugă informație privind </span><strong><span>Aria curriculară</span></strong><span>, clasa sau clasele la care poate fi folosită resursa și competențele specifice expuse de fiecare disciplină.</span></p><p><img src="img/0.9.3/Pas2-Privire-de-ansamblu.png" referrerpolicy="no-referrer"></p><h3 id='41-ariaarii-curricularăe-relevante-pentru-resursa-propusă'><span>4.1. Aria/arii curriculară(e) relevante pentru resursa propusă</span></h3><p><span>Selectarea corectă a </span><strong><span>Ariei curriculare</span></strong><span> este primul criteriu de încadrare al resursei. Acest criteriu este obligatoriu.</span></p><p><img src="img/0.9.3/Pas2-Selectarea-ariei-curriculare.png" referrerpolicy="no-referrer"></p><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> Lipsa unei selecții se va solda cu apariția unui mesaj de atenționare.</div><br><p><span>Se poate opta pentru mai multe </span><em><span>arii curriculare</span></em><span> atunci când resursa are un caracter transversal, dacă există astfel de cazuri.</span></p><p><img src="img/0.9.3/Pas2-Selectie-multipla-arii.png" referrerpolicy="no-referrer"></p><p><span>Acest element permite o selecție multiplă care se face selectând și/sau deselectând opțiunile ținând tasta CTRL apăsată. Selecțiile multiple se pot face și folosind tasta SHIFT având primul element selectat. Se va opta pentru limita până la care se face selecția având tasta SHIFT apăsată.</span></p><p><span>Pentru mai multe detalii privind încadrarea în aria curriculară, puteți consulta următoarele documentele:</span></p><ul><li><a href='http://programe.ise.ro/Portals/1/Curriculum/Pl_cadru-actuale/Gimnaziu/OMENCS%203590_5%20apr%202016_Plan-cadru%20de%20%C3%AEnvatamant%20pentru%20gimnaziu.pdf'><span>Ordin privind aprobarea planurilor-cadru de învățământ pentru învățământul gimnazial</span></a></li><li><a href='http://programe.ise.ro/Portals/1/Curriculum/Pl_cadru-actuale/Primar/1_OMEN_3.371_12.03.2%20013%20%20privind%20aprobarea%20planurilor-cadru%20inv_primar%20si%20a%20Metodologiei%20privind%20aplicarea%20planurilor-cadru%20de%20invatamant.pdf'><span>ORDIN nr. 3.371 din 12 martie 2013 privind aprobarea planurilor-cadru de invatamant pentru invatamantul primar si a Metodologiei privind aplicarea planurilor-cadru de invatamant pentru invatamantul primar</span></a></li></ul><p><span>Reamintim faptul că alegerea </span><em><span>Ariei curriculare</span></em><span> este un pas obligatoriu.</span></p><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> Este recomandabil să fie analizat RED-ul sub acest aspect înainte de a-l descrie.</div><br><h3 id='42-alegerea-clasei'><span>4.2. Alegerea clasei,</span></h3><p><span>Un RED este conceput pentru a corespunde activităților unei competențe specifice ale unui anumit an de studiu. În acest caz, aplicația oferă posibilitatea de a opta pentru o clasă.</span></p><p><span>Un RED poate fi conceput pentru a fi folosit la doi sau mai mulți ani diferiți, dacă există astfel de posibile stratificări într-un conținut al unui RED. Acesta este și motivul pentru care a fost lăsată opțiunea de a alege mai multe clase.</span></p><p><img src="img/0.9.3/Pas2-Distributia-claselor.png" referrerpolicy="no-referrer"></p><p><span>Atenție, selectarea claselor este în directă legătură cu apariția disciplinelor, care sunt expuse pentru încadrarea granulară. Bifarea unei clase are drept efect apariția disciplinelor acelor clase.</span></p><p><img src="img/0.9.3/Pas2-Selectarea-anului-si-a-disciplinei.png" referrerpolicy="no-referrer"></p><p><span>Selectând disciplina, vor apărea pentru cele care au mai multe opțiuni în funcție de </span><em><span>profilurile de formare</span></em><span> pentru competențele specifice vizate.</span></p><p><img src="img/0.9.3/Pas2-Profil-de-formare-com-lb-materna.png" referrerpolicy="no-referrer"></p><p><span>Pentru fiecare disciplină există un buton rotund, care odată apăsat, va introduce acea opțiune pentru mecanismul care încarcă datele aferente competențelor general și astfel a celor specifice cu suita lor de activități.</span></p><p><span>Bifarea mai multor clase, va adăuga setului existent disciplinele proprii.</span></p><h3 id='43-alege-disciplinele'><span>4.3. Alege disciplinele</span></h3><p><span>Selectarea disciplinei sau a mai multora încarcă competențele specifice. Pentru a avea acces la competențele specifice și implicit la activitățile proprii, cât și pentru a propune noi activități inexistente, se va alege una sau mai multe discipline, dacă acest lucru este conform unui caz special de lucru.</span></p><p><img src="img/0.9.3/Pas2-Evidentierea-selectiei-optiunii.png" referrerpolicy="no-referrer"></p><p><span>În acest moment, după ce am putut selecta disciplina sau disciplinele în cazul în care RED-ul răspunde mai multor discipline, apare opțiunea de a încărca competențele specifice așa cum apar acestea în Planul Național. De îndată ce contribuitorul a optat pentru prima disciplină, aceasta va fi evidențiată vizual printr-o etichetă deasupra panoului de selecție, iar în partea inferioară a acestuia se va activa un buton a cărui apăsare va popula dinamic un tabel ce va cuprinde mecanismele de selecție ale competențelor și activităților pentru disciplinele selectate.</span></p><p><img src="img/0.9.3/Pas2-Alege-competentele-specifice-buton.png" referrerpolicy="no-referrer"></p><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> Atenție, nu apăsați butonul „Alege competențele specifice” înainte de a încheia selecția disciplinelor. Odată apăsat, nu se mai poate reveni la selectarea disciplinelor. Făcând acest lucru veți declanșa o stare de eroare și va trebui să reluați completarea formularului prin reîncărcarea paginii.</div><br><p><span>Pentru fiecare dintre Competențele Specifice prezente, există posibilitatea de a consulta activitățile care sunt arondate.</span></p><p><img src="img/0.9.3/Pas2-Alegerea-competentei-si-activitatilor.png" referrerpolicy="no-referrer"></p><p><span>Pentru fiecare competență specifică, apăsând butonul verde, vei avea acces la cunoștințe, abilități, atitudini arondate fiecărei competențe specifice.</span></p><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> Atenție, doar dacă este aleasă o activitate a unei competențe specifice, aceasta va fi selectată. O bifă dată pe titlul competenței specifice, nu o va introduce în fișa descrierii. Selectarea depinde de bifarea unei activități sau introducerea uneia noi.</div><br><p><span>Ceea ce veți observa este faptul că setul competențelor specifice este chiar cel din documentele oficiale, având în plus un cod distinct pentru fiecare competență și activitate. Aceste coduri sunt foarte importante pentru dinamica aplicației și evidența caracteristicilor unei resurse educaționale.</span></p><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> Aici este necesară o mențiune importantă: bifarea competenței specifice nu va fi luată în considerare de aplicație. Este nevoie să fie bifată cel puțin o activitate, iar selecția acesteia se va face automat.</div><br><p><img src="img/0.9.3/Pas2-Corespondentul-in-documentul-oficial.png" referrerpolicy="no-referrer"></p><p><span>Activitățile pot fi selectate, iar în cazul în care se dorește ceva ce nu există, este oferită posibilitatea de a introduce una nouă. În momentul în care este exprimată opțiunea pentru prima activitate, abia atunci aplicația bifează automat și competența specifică a cărei atribut este.</span></p><p><img src="img/0.9.3/Pas2-Introduc-o-activitate-noua.png" referrerpolicy="no-referrer"></p><p><span>Activitățile noi introduse, vor completa setul celor deja existente. Pentru a introduce o activitate nouă, se va completa cu un text care să descrie îndeajuns de bine noua activitate și apoi se va da clic pe butonul „Adaugă o nouă activitate de învățare”.</span></p><p><img src="img/0.9.3/Pas2-Introducerea-unei-activitati-noi-1.png" referrerpolicy="no-referrer"></p><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> Atenție, activitățile noi introduse de cel care propune Resursa Educațională Deschisă vor fi strict legate doar de propria fișă descriptivă. Nu vor fi disponibile și altor contribuitori.</div><br><p><span>Odată apăsat butonul, se va evidenția și noua activitate.</span></p><p><img src="img/0.9.3/Pas2-Introducerea-unei-activitati-noi-2.png" referrerpolicy="no-referrer"></p><p><span>Un contribuitor poate alege oricâte competențe specifice crede că sunt acoperite prin activitățile cuprinse în conținuturile RED-ului. Nu există restricții în acest sens.</span></p><h2 id='5-pasul-3---detalii-despre-resursa-propusă'><span>5. Pasul 3 - Detalii despre resursa propusă</span></h2><p><span>Acest pas permite o mai mare granularitate în ceea ce privește atributele și necesitățile pentru lucrul cu RED-ul propus.</span></p><p><img src="img/0.9.3/Pas3-Vedere-de-ansamblu.png" referrerpolicy="no-referrer"></p><h3 id='51-competențe-digitale'><span>5.1. Competențe digitale</span></h3><p><span>Competențele digitale necesare este un selector care permite aprecierea abilităților necesare pentru a lucra cu acestea pe trei niveluri distincte:</span></p><ul><li><span>minim,</span></li><li><span>mediu,</span></li><li><span>avansat.</span></li></ul><p><span>Opțiunea din oficiu este </span><strong><span>minim</span></strong><span>.</span></p><p><img src="img/0.9.3/Pas3-Nivelul-competentelor-digitale-optiuni.png" referrerpolicy="no-referrer"></p><h3 id='52-cui-îi-este-adresat-red-ul'><span>5.2. Cui îi este adresat RED-ul</span></h3><p><em><span>Red-ul se adresează în mod direct</span></em><span> oferă o selecție multiplă dacă acest lucru este necesar. În acest scop, se vor selecta și deselecta opțiunile, apăsând tasta CTRL și cu mouse-ul, fiind făcută selecția.</span></p><p><img src="img/0.9.3/Pas3-Cui-se-adreseaza-resursa.png" referrerpolicy="no-referrer"></p><h3 id='53-dependințele-red-ului'><span>5.3. Dependințele RED-ului</span></h3><p><span>Contribuitorul va introduce toate detaliile privind necesitățile sau condiționalitățile pentru a deschide, citi, interpreta sau rula conținutul resursei.</span></p><p><img src="img/0.9.3/Pas3-Alte-resurse-necesare.png" referrerpolicy="no-referrer"></p><h3 id='54-resursele-online-folosite'><span>5.4. Resursele online folosite</span></h3><p><span>Se vor menționa aici, dacă este cazul sau dacă licența materialelor folosite o cere, toate resursele web utilizare în crearea RED-ului. Fiecare intrare va fi pe un rând propriu.</span></p><p><img src="img/0.9.3/Pas3-Resursele-folosite-in-elaborarea-RED-ului.png" referrerpolicy="no-referrer"></p><p><span>Aceste resurse online folosite pot fi de la cele statice așa cum sunt imaginile, audio, video, text, până la aplicații online de prelucrare, etc.</span></p><p><span>Fiecare resursă digitală utilizată, remixată, interpretată pentru a o elabora pe cea prezentă va fi trecută aici. Poți privi acest câmp ca pe o listă de ingrediente a unei rețete culinare, numai că în loc de ingrediente, vom folosi linkuri către acestea. Motivul este că o parte din resursele pe care le folosești pentru a crea ceva nou sunt și ele la rândul lor cu o licență deschisă, dar acestea necesită cel puțin citarea autorului.</span></p><h2 id='6-pasul-4---introducerea-conținuturilor'><span>6. Pasul 4 - Introducerea conținuturilor</span></h2><p><span>Ați ajuns la zona în care este oferit un editor necesar încărcării pe server a Resursei Educaționale Deschise cu toate conținuturile necesare.</span></p><p><img src="img/0.9.3/Pas4-Vedere-generala.png" referrerpolicy="no-referrer"></p><h3 id='61-detalii-privind-resursele-electronice-acceptate'><span>6.1. Detalii privind resursele electronice acceptate</span></h3><p><span>Un RED poate fi un singur fișier, dar poate fi constituit din mai multe, acest aspect fiind legat de practica pedagogică specifică fiecăruia. Din acest motiv, este permisă încărcarea de documente și de imagini. Dacă aveți un videoclip, care este offline, adică nu este pe o platformă deja, dacă acesta face parte din resursă sau chiar este resursa în sine, atunci dimensiunile sale nu trebuie să depășească 20 MB. Din rațiuni economice, recomandarea pentru videoclipurile de mare dimensiune, este ca acestea deja să fie online deja și să menționați aici doar linkul, fie să existe deja în directorul Drive propriu, de unde se va genera un link accesibil public, iar acest link să fie menționat aici.</span>
+<span>Aceste precizări sunt valabile pentru toate resursele, indiferent de natura și formatul lor.</span></p><p><img src="img/ilustratii/RESURSA.png" referrerpolicy="no-referrer"></p><p><span>Aceasta este zona unde pot fi aduse și completări importante prin puterea lor de clarificare a anumitor aspecte legate de înțelegerea și lucrul cu resursa în sine. Puteți să considerați că aceasta este zona în care puteți descrie în mai multe detalii ce conține materialul și cum se poate folosi... poate un mic ghid?! În acest scop, editorul permite încărcarea de fișiere tip document, text, referințe către materiale video, fragmente de cod active și fișiere de imagine în format </span><code>jpg</code><span> și </span><code>png</code><span>. Este permisă copierea și inserarea de text care conține hyperlinkuri.</span></p><h3 id='62-lucrul-cu-editorul-din-oficiu'><span>6.2. Lucrul cu editorul din oficiu</span></h3><p><span>Un posibil scenariu de completare poate implica introducerea unui fragment de text cu o imagine și un material video de pe YouTube. În acest sens, editorul oferit este foarte flexibil considerând fiecare intrare drept un bloc de conținut distinct.</span></p><p><img src="img/0.9.3/Pas4-Editorul-propriu.png" referrerpolicy="no-referrer"></p><p><span>Tot ce este necesar pentru a începe este să dai clip pe suprafața de editare, fiind returna un cursor și câteva marcaje ale instrumentelor disponibile. Plusul din partea stângă și cele patru puncte din partea dreaptă.</span></p><p><img src="img/0.9.3/Pas4-Editor-propriu-start.png" referrerpolicy="no-referrer"></p><p><span>În cazul fișierelor de imagine este permisă încărcarea urmată de afișarea imaginii. Este preferabil ca una dintre imaginile încărcate, să fie cea mai reprezentativă pentru resursă. În cazul în care sunt mai multe imagini asociate conținutului, acestea pot fi încărcate fără probleme concomitent cu afișarea lor.</span></p><p><img src="img/Pas4-EditorVideoYT.png" referrerpolicy="no-referrer"></p><p><span>Încărcarea pentru imagine înseamnă copy/paste a unui link a cărui element final indică o imagine sau chiar încărcarea de pe hard disk a unei imagini. Pentru fiecare imagine, se va introduce un element descriptiv în zona </span><code>Caption</code><span> afișată dedesubt. Chiar dacă nu există nicio mențiune atașată imaginii, se va trece obligatoriu numele fișierului (este necesar pentru a asigura specificitatea resursei de imagine în contextul înregistrării).</span></p><p><span>Editorul permite încărcarea de fișiere word, pdf, etc.</span></p><p><span>Toate aceste fișiere încărcate vor sta împreună în același director dedicat al resursei pentru care se constituie înregistrarea.</span></p><h3 id='611-instrumentele-editorului'><span>6.1.1. Instrumentele editorului</span></h3><p><span>Editorul folosit pentru introducerea componentelor unei resurse este unul care oferă instrumente de bază pentru redactarea rapidă a unor fragmente de text, introducerea unor imagini, a unor fragmente de cod, a unor citări și a atașamentelor.</span></p><p><span>Totul începe cu selectarea butonului plus. Editorul folosit te va obișnui cu un nou mod de lucru cu fragmentele de text, imaginile, etc.</span></p><p><img src="img/0.9.3/Pas4-Editorul-instrumente.png" referrerpolicy="no-referrer"></p><p><span>Pentru a ne obișnui mai repede cu modul de lucru, să numim ceea ce punem cap la cap cu ajutorul lui </span><code>compoziție</code><span>. Compoziția noastră va fi alcătuită din </span><code>blocuri</code><span>. Fiecare tip de fragment digital care intră în </span><code>compoziție</code><span>, va ocupa un bloc distinct. Un bloc este de un anumit tip și poate fi modificat în funcție de tipul său.</span></p><p><span>Blocurile pot fi create într-un anumit loc, dar pot fi mutate prin acționarea modificatorilor prezenți apăsând pe cele patru puncte din colțul dreapta sus. De exemplu, putem să-l mutăm mai jos.</span></p><p><img src="img/0.9.3/Editor-Block-Move-Down.png" referrerpolicy="no-referrer"></p><p><span>Sau să-l așezăm mai sus, dacă este nevoie.</span></p><p><img src="img/0.9.3/Editor-Block-Move-Up.png" referrerpolicy="no-referrer"></p><p><span>Iar atunci când este necesar, putem să ștergem blocul cu totul.</span></p><p><img src="img/0.9.3/Editor-Block-Delete.png" referrerpolicy="no-referrer"></p><p><span>Să le luăm pe rând în ordinea apariției lor în interfață.</span></p><h4 id='6111-headings'><span>6.1.1.1. Headings</span></h4><p><span>Când dorești structurarea fragmentelor de text în funcție de heading, poți alege care nivel este potrivit.</span></p><p><img src="img/0.9.3/Pas4-Editor-default-heading-modificari.png" referrerpolicy="no-referrer"></p><p><span>Apăsând pe cele patru puncte din colțul fiecărui bloc, poți face modificările aferente tipului de bloc.</span></p><h4 id='6112-listele'><span>6.1.1.2. Listele</span></h4><p><span>Listele pot fi ordonate cu puncte nemerotate sau cu puncte.</span></p><p><img src="img/0.9.3/Pas4-Editor-default-setarea-unei-liste.png" referrerpolicy="no-referrer"></p><h4 id='6113-tabelele'><span>6.1.1.3. Tabelele</span></h4><p><span>Editorul permite introducerea de tabele dacă acest lucru este necesar. Din start, tabelul este de două coloane, cu două rânduri. Pentru a introduce mai multe coloane, se va face hover pe linia de coloană până apare selectorul albastru care permite introducerea uneia noi.</span></p><p><img src="img/0.9.3/Pas4-Introducerea-unui-Tabel-selector-introd-coloane.png" referrerpolicy="no-referrer"></p><p><span>Același lucru este posibil și pentru rânduri pentru adăugarea lor.</span></p><p><img src="img/0.9.3/Pas4-Introducerea-unui-Tabel-selector-introd-randuri.png" referrerpolicy="no-referrer"></p><h4 id='6114-fișierele-de-conținut'><span>6.1.1.4. Fișierele de conținut</span></h4><p><span>Documentele pe care deja le aveți și care conțin resursa, le puteți încărca folosind opțiunea </span><code>Attach</code><span> din meniul editorului. Imediat după încărcare fișierul este prezent în editor.</span></p><p><img src="img/0.9.3/Pas4-Incarcarea-unui-fisier.png" referrerpolicy="no-referrer"></p><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> În cazul în care atașamentul dă eroare, este posibil să fi depășit perioada alocată sesiunii de lucru și va trebui să vă logați din nou, reluând procedura de descriere. Acesta este un eveniment rar, dar posibil.</div><br><h4 id='6115-fișierele-de-imagine'><span>6.1.1.5. Fișierele de imagine</span></h4><p><span>Pentru încărcarea imaginilor în editor, există un buton specializat în meniu, dar poate că cea mai rapidă cale este să executați o operațiune de </span><em><span>drag and drop</span></em><span> a unei imagini. Dacă </span><em><span>drag and drop</span></em><span> nu funcționează, încărcați imaginile folosind elementul dedicat din meniu.</span></p><p><img src="img/0.9.3/Pas4-Otiuni-modificarea-unei-imagini.png" referrerpolicy="no-referrer"></p><p><span>Odată încărcate imaginile, vor fi disponibile din previzualizator pentru a se alege o copertă.</span></p><h4 id='6116-citate'><span>6.1.1.6. Citate</span></h4><p><span>Ultima opțiune a editorului este aceea de a introduce citate, dacă acest lucru este necesar.</span></p><h4 id='6117-videoclipuri'><span>6.1.1.7 Videoclipuri</span></h4><p><span>Copierea linkului unui videoclip de pe YouTube într-un bloc de editor, permite transformarea acestuia într-un player care permite rularea materialului video.</span></p><p><img src="img/0.9.3/Pas4-Youtube-videos.png" referrerpolicy="no-referrer"></p><p><span>Odată copiat linkul, în blocul transformat în player va fi disponibil și un câmp dedicat legendei, unde se va putea introduce o descriere. Dacă se ia titlul de pe Youtube prin copiere, dați paste prin combinația de taste CTRL+SHIFT+V pentru a elimina orice formatare, care ar conduce la generarea unui bloc H1.</span></p><h3 id='62-lucrul-cu-editorul-livresq'><span>6.2. Lucrul cu editorul Livresq</span></h3><p><img src="img/0.9.3/Pas4-Integrare-Livresq.png" referrerpolicy="no-referrer"></p><p><span>În dorința de a oferi cele mai bune instrumente de realizare a Resurselor Educaționale Deschise, a fost realizată o poartă de salt către mediul de editare Livresq prin bifarea butonului corespondent - „Editează cu LIVRESQ”.</span>
+<span>Apăsând acel buton, veți ajunge într-un mediu deja pregătit pentru a pregăti RED-ul. Acesta se va deschide în propriul tab. Acest instrument vă va permite să accesați resursele deja create pentru a le descărca pe propriul calculator în vederea încărcării în Colectorul RED.</span></p><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> Atenție, vi se va crea automat un cont în aplicația Livresq și veți putea începe să creați acolo o resursă.</div><br><p><span>Inevitabil, în funcție de natura și întinderea resursei pe care veți dori să o creați cu Livresq, veți putea reveni în tabul de introducere a resursei sau veți realiza că sesiunea de lucru pe red.educred.ro a expirat, ceea ce va necesita inițierea uneia noi prin logare. După ce veți fi fost parcurs din nou pașii de completare a fișei, veți putea încărca fișierul zip creat cu Livresq.</span></p><h3 id='63-încărcarea-unei-coperte'><span>6.3. Încărcarea unei coperte</span></h3><p><span>După ce am încărcat în editor fragmentele necesare sau am încărcat un fișier care reprezintă resursa, se va proceda la alegerea imaginii, care va ilustra resursa la momentul afisării sale în zona publică. Putem să ne gândim la această imagine ca la o copertă.</span></p><div style="background-color: yellow; padding: .6rem"><img src="img/ilustratii/96px-Belgian_road_sign_A51.svg.png" height="35px"> Este foarte util să ilustrați cu o imagine sugestivă resursa pe care ați creat-o, fie alegând una din cele încărcare deja, parte a RED-ului, fie încărcați una care să fie dedicată ilustrării.</div><br><h3 id='64-cuvintele-cheie'><span>6.4. Cuvintele cheie</span></h3><p><span>Din moment ce am făcut și acest mic pas, nu mai rămâne decât să completăm cuvintele cheie de care avem nevoie în plus față de cele generate prin completarea formularului.</span>
+<span>Cuvintele cheie se completează delimitându-se cu virgulă, dar, atenție, fără spații între cuvintele cheie și virgule.</span></p><h3 id='65-bibliografia'><span>6.5. Bibliografia</span></h3><p><span>La final, se va introduce bibliografia în cazul în care materialul are un aparat critic atașat. Fiecare înregitrare bibliografică va fi introdusă pe propriul rând.</span></p><h2 id='7-salvarea-resursei'><span>7. Salvarea resursei</span></h2><p><span>Odată ce toți pașii au fost parcurși, se va proceda la trimiterea resursei în baza de date. Pentru acest lucru aveți la dispoziție butonul </span><code>Adaugă resursă</code><span>, iar dacă v-ați răzgândit între timp, puteți renunța de tot prin apăsarea butonului </span><code>Renunță</code><span>. Butonul </span><code>Renunță</code><span> este activ doar dacă ați încărcat vreun fișier. În cazul în care nu aveți fișiere încărcate, pentru a renunța la introducerea resursei, pur și simplu navigați la altă pagină sau dați </span><code>Logout</code><span>. Ca efect, se vor șterge fișierele încărcate.</span></p></div></div>
+</body>
+</html>

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const mexp     = require('mongoose-elasticsearch-xp');
 
 let Eticheta = new mongoose.Schema({
     nume: {
@@ -15,7 +14,5 @@ let Eticheta = new mongoose.Schema({
         ref: 'resursedu'
     }]
 });
-
-Eticheta.plugin(mexp);
 
 module.exports = new mongoose.model('eticheta', Eticheta);

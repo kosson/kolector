@@ -5,9 +5,6 @@ const redisClient = require('../../redis.config');
 // fă o referință către funcția originală
 const exec = mongoose.Query.prototype.exec;
 
-// promisifică metoda get a obiectului client (`redisClient`);
-redisClient.getAsync = util.promisify(redisClient.get).bind(redisClient);
-
 // introdu o funcție `cache` chainable, care să indice faptul că un query trebuie cache-at. 
 // Acesteia trebuie să-i fi pasată valoarea de identificare a bucket-ului pentru obiectele stocate. Se va chema metoda cu ceva asemănător: `cache({key: req.user.id})`
 mongoose.Query.prototype.cache = function toCache (options = {}) {
@@ -33,7 +30,8 @@ mongoose.Query.prototype.exec = async function newExec () {
 
         // vezi dacă există cheia generată în cache deja. Dacă există, returnează valoarea sa imediat.
         // let cacheValue = await redisClient.get(key).then(data => data).catch(error => console.error);
-        let cacheValue = redisClient.hmget(this.hashKey, key, function clbkHGET (error, rezultat) {
+        let client = await redisClient; // mai întâi rezolvă clientul!
+        let cacheValue = client.hmget(this.hashKey, key, function clbkHGET (error, rezultat) {
             if (error) console.error;
             // console.log('Rezultatul oferit de cache este ', rezultat);
         });
@@ -49,7 +47,7 @@ mongoose.Query.prototype.exec = async function newExec () {
         const dateDinBaza = await exec.apply(this, arguments); // nu uita că ceea ce este adus din bază sunt documente Mongoose. Acum ai documente.
         
         // introdu datele în Redis
-        redisClient.hmset(this.hashKey, key, JSON.stringify(dateDinBaza), function clbkHMSET (error, raspuns) {
+        client.hmset(this.hashKey, key, JSON.stringify(dateDinBaza), function clbkHMSET (error, raspuns) {
             if (error) {console.error};
             // console.log(raspuns); // dacă totul este în regulă, răspunsul este OK.
         }); // Este introdus hash-ul în REDIS.
@@ -61,11 +59,17 @@ mongoose.Query.prototype.exec = async function newExec () {
     }
 };
 
-module.exports = {
-    clear4Id: function clrId (id) {
-        redisClient.del(id);
-    },
-    clearHash: function clrHash (hashKey) {
-        redisClient.hdel(userId, JSON.stringify(hashKey));
+async function utilityFunctions () {
+    let client = await redisClient; // mai întâi rezolvă clientul!
+    return {
+        clear4Id: async function clrId (id) {
+            client.del(id);
+        },
+        clearHash: async function clrHash (hashKey) {
+            let client = await redisClient; // mai întâi rezolvă clientul!
+            client.hdel(userId, JSON.stringify(hashKey));
+        }
     }
-};
+} 
+
+module.exports = utilityFunctions;

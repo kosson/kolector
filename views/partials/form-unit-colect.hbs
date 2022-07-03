@@ -1,0 +1,75 @@
+<div class="container p-2">
+    <div class="mt-4">
+
+      {{!-- Inițiere FORM --}}
+      <form id="form03unitcolect" class="" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+        {{!-- ÎNCEPUT FORM --}}
+        <div id="accordionFrm" class="p-4 rounded accordion-frame">
+          {{!-- Câmpuri ascunse METADATE ADMINISTRATIVE --}}
+          <input id="idUser"       name="idUser"       type="hidden" value="{{user._id}}">
+          <input id="emailContrib" name="emailContrib" type="hidden" value="{{user.email}}">
+          <input id="nameUser"     name="nameUser"     type="hidden" value="{{#if user.googleProfile.name}}{{user.googleProfile.name}}{{/if}}">
+
+          {{!-- SECȚIUNEA - #1. WORK (vezi modelul de date bf-monograph-work-01.js) --}}
+          <div id="unu">
+            {{!-- Acționarea grupului de controale pentru #1 --}}
+            <div class="starting-heading" id="heading01">
+                <h4>Colectare date [ELEM - 01]</h4>
+                <small class="alert alert-info form-text text-muted font-italic">
+                  Acest formular colectează date [ELEM - 02]
+                </small>
+            </div>
+            {{!-- Acționarea grupului de controale pentru #1 END--}}
+
+            <div id="sec01" aria-labelledby="heading01" data-parent="#accordionFrm">
+
+              {{!-- CREATOR -> [bootstrap::acordeon] --}}
+              <div class="accordion" id="unitateElement">
+                <div class="card-header" id="unitateHeading">
+                  <h2 class="mb-0">
+                    <button 
+                      class="btn btn-link btn-block text-left" 
+                      type="button" 
+                      data-toggle="collapse" 
+                      data-target="#unitate" 
+                      aria-expanded="false" 
+                      aria-controls="collapseOne">
+                      <img src="/img/CreatorulIcon.svg" style="height: 2.5rem;" alt="management By Victoruler, CC-BY, https://thenounproject.com/term/management/2686168/">
+                      Unitatea
+                    </button>               
+                  </h2>
+                  <div>
+                    <small class="">
+                      Unitatea de învățământ de care aparții
+                    </small>  
+                  </div>
+                </div>
+
+                <div id="unitate" class="collapse" aria-labelledby="unitateHeading" data-parent="#unitateElement">
+                  <div class="card-body">
+                      <div class="form-group row">
+
+                        {{!-- Trebuie contruit un mic motoraș de segregare după județ --}}
+                        <label for="unitate" class="col-form-label">Numele unității</label>
+                        <div class="col-sm-10">
+                            <input id="unitateField" list="unitatile" name="unitate" type="text" aria-label="Unitate" class="form-control" value="" required>
+                            <datalist id="unitatile">
+                              <option value=""></option>
+                            </datalist>
+                            <small class="form-text text-muted font-italic">
+                              Unitatea poate fi căutată prin introducerea câtorva litere, dacă poartă un nume specific.
+                            </small>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              {{!-- CREATOR -> [bootstrap::acordeon] END--}}
+            </div>
+          </div>
+        </div>
+        {{!-- FORM END --}}
+      </form>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+[
+    {
+        "name": "users",
+        "type": "collection",
+        "options": {},
+        "info": {
+            "readOnly": false,
+            "uuid": "LZkl0eCjS4m2SR3Jfz/FBQ=="
+        },
+        "idIndex": {
+            "v": 2,
+            "key": {
+                "_id": 1
+            },
+            "name": "_id_",
+            "ns": "redcolector.users"
+        }
+    },
+    {
+        "name": "resursedus",
+        "type": "collection",
+        "options": {},
+        "info": {
+            "readOnly": false,
+            "uuid": "Svlbo3HxTJKZUVFXeilw1w=="
+        },
+        "idIndex": {
+            "v": 2,
+            "key": {
+                "_id": 1
+            },
+            "name": "_id_",
+            "ns": "redcolector.resursedus"
+        }
+    },
+    {
+        "name": "logentries",
+        "type": "collection",
+        "options": {},
+        "info": {
+            "readOnly": false,
+            "uuid": "hEreCNmvSCmSRkZGNnEGqg=="
+        },
+        "idIndex": {
+            "v": 2,
+            "key": {
+                "_id": 1
+            },
+            "name": "_id_",
+            "ns": "redcolector.logentries"
+        }
+    },
+    {
+        "name": "resursas",
+        "type": "collection",
+        "options": {},
+        "info": {
+            "readOnly": false,
+            "uuid": "m1/3VocARVyWPxTmLqNcTA=="
+        },
+        "idIndex": {
+            "v": 2,
+            "key": {
+                "_id": 1
+            },
+            "name": "_id_",
+            "ns": "redcolector.resursas"
+        }
+    },
+    {
+        "name": "competentaspecificas",
+        "type": "collection",
+        "options": {},
+        "info": {
+            "readOnly": false,
+            "uuid": "pgd8UdbSTkmn0f0qTKIuvQ=="
+        },
+        "idIndex": {
+            "v": 2,
+            "key": {
+                "_id": 1
+            },
+            "name": "_id_",
+            "ns": "redcolector.competentaspecificas"
+        }
+    },
+    {
+        "name": "userInfo",
+        "type": "collection",
+        "options": {},
+        "info": {
+            "readOnly": false,
+            "uuid": "rtUk7YfYSXm1fTjRiIys7A=="
+        },
+        "idIndex": {
+            "v": 2,
+            "key": {
+                "_id": 1
+            },
+            "name": "_id_",
+            "ns": "redcolector.userInfo"
+        }
+    }
+]

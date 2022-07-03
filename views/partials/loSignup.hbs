@@ -1,30 +1,35 @@
         <div class="">
-            <form class="form-signup" action="signup" method="POST">
+            <form id="signupfrm" class="form-signup" action="signup" method="POST" data-frm="{{json}}" novalidate>
                 <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                {{#if errorMessage}}
+                    <p class="errfrm">{{errorMessage}}</p>
+                {{/if}}
                 <h3 class="h3 mb-3 font-weight-normal">Creează un cont local</h1>
-
+                {{!-- email --}}
                 <div class="form-group">
                     <label for="inputEmail">Adresa de email este username-ul</label>
-                    <input type="email" class="form-control" id="inputEmail" name="email" aria-describedby="emailHelp" placeholder="Introdu adreasa de email">
+                    <input type="email" class="form-control {{#each validationErrors}} {{#if param}}invalid{{/if}}{{/each}}" 
+                            id="inputEmail" 
+                            name="email" aria-describedby="emailHelp" placeholder="Introdu adreasa de email" value="{{lastInput.email}}">
                     <small id="emailHelp" class="form-text text-muted">Dacă ai o adresă adresă de email Gmail, folosește-o pe aceea.</small>
                 </div>
-
+                {{!-- password --}}
                 <div class="form-group">
                     <label for="inputPassword1">Password</label>
-                    <input type="password" class="form-control" id="inputPassword1" name="password" placeholder="Parola" aria-describedby="passwordHelpBlock" minlength="8" required>
+                    <input type="password" class="form-control" id="inputPassword1" name="password" placeholder="Parola" aria-describedby="passwordHelpBlock" minlength="8"  value="{{lastInput.password}}"required>
                     <small id="passwordHelpBlock" class="form-text text-muted">
                         Parola trebuie să aibă cel puțin 8 caractere și să conțină litere și cifre, dar fără spații sau emoji.
                     </small>
                 </div>
-
+                {{!-- passwordchk --}}
                 <div class="form-group">
                     <label for="inputPassword2">Confirmă parola</label>
-                    <input type="password" class="form-control" id="inputPassword2" placeholder="Parola încă o dată" onkeyup="" required>
+                    <input type="password" class="form-control" id="inputPassword2" name="passwordchk" placeholder="Parola încă o dată"  value="{{lastInput.passwordchk}}" required>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-sm-10">
-                        <button id="facont" type="submit" class="btn btn-primary">Sign in</button>
+                        <button id="facont" type="submit" class="btn btn-primary">Creează cont</button>
                     </div>
                 </div>
             </form>

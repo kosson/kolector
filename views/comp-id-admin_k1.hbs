@@ -1,0 +1,105 @@
+{{!< k1/layout}}
+{{> nav-administrator}}
+{{!-- {{> messages}} --}}
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
+<div id="content">
+    <div class="title">
+        {{#if comp._id}}
+            <h1>Competența specifică</h1>
+            <h4 id="compinfo">{{comp._id}}, ver. {{comp.__v}}, RED-uri {{comp.nrREDuri}}</h4>
+        {{else}}
+            <h1>Introdu o competență specifică</h1>
+        {{/if}}
+    </div>
+    <section class="container" id="comps-form">
+        {{!-- Va încărca detaliile competenței specifice cu ajutorul template-ului --}}
+        <div id="competenta" class="comp-{{comp._id}}">
+            {{!-- <p contenteditable="true">{{comp.nume}} {{cod}} {{activitati}} {{disciplina}}</p> --}}
+            <form id="form04" class="" enctype="multipart/form-data" name="form04">
+                {{!-- id-ul --}}
+                {{#if comp._id}}
+                    <input id="compid" name="id" type="hidden" value="{{comp._id}}">
+                {{/if}}
+
+                <div class="form-group row">
+                    <label for="nume">Nume</label>
+                    <input type="text" class="form-control" name="nume" value="{{comp.nume}}" id="nume" placeholder="Este chiar numele activității">
+                </div>
+
+                <div class="form-group row">
+                    <label for="parteA">Parte a competenței generale</label>
+                    <input type="text" class="form-control" name="parteA" value="{{comp.parteA}}" id="parteA" placeholder="Aici introduci exact competența generală">
+                </div>
+
+                <div class="form-group row">
+                    <label for="ids">ID document oficial</label>
+                    <input type="text" class="form-control" name="ids" value="{{comp.ids}}" id="ids" placeholder="Este numărul de bulet din documentul oficial. De ex: 2.3.">
+                </div>
+
+                <div class="form-group row">
+                    <label for="cod">Cod intern</label>
+                    <input type="text" class="form-control" name="cod" value="{{comp.cod}}" id="cod" placeholder="Codul intern este construit din prescurtarea disciplinei, liniuță și numarul de bullet dară fără punct în coadă. De ex: ist6-2.2">
+                </div>
+
+                <div class="form-group">
+                    <div class="form-row">
+                        <legend class="col-form-label col-sm-1 pt-0">Activități</legend>
+                        <div class="col-sm-10" id="compactivs">
+                            {{!-- array-ul activităților existente --}}
+                            {{#each comp.activitati}}
+                                <div id="activitate-{{@index}}" class="input-group mb-2">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">{{@index}}</div>
+                                    </div>                                    
+                                    <input type="text" class="form-control" name="activitate-{{@index}}" value="{{this}}" id="act-{{@index}}" placeholder="">
+                                    <button type="button" class="btn btn-warning ml-2">&#128465;</button>
+                                </div>
+                            {{/each}}
+                            {{!-- Aplicație de adăugare a unei noi activități --}}
+                        </div>
+                        <div class="col-sm-10">
+                            <button id="adaugaAct" class="btn btn-success mb-2" type="button">Adaugă</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{!-- Locul în care sunt generate activitățile --}}
+                <div id="addactivitati"></div>
+
+                <div class="form-group">
+                    <label for="disciplina">Disciplină</label>
+                    <input type="text" class="form-control" name="disciplina" value="{{comp.disciplina}}" id="disciplina" placeholder="Trece disciplina așa cum este ea menționată în documentul oficial. De ex: Istorie">
+                </div>
+
+                <div class="form-group">
+                    <label for="coddisc">Cod disciplină</label>
+                    <input type="text" class="form-control" name="coddisc" value="{{comp.coddisc}}" id="coddisc" placeholder="Codul disciplinei este prescurtarea disciplinei urmată de cifra clasei. Atenție, prescurtarea este stabilită canonic deja. De ex: ist6">
+                </div>
+
+                <div class="form-group">
+                    <label for="nivel">Clasa</label>
+                    <input type="text" class="form-control" name="nivel" value="{{comp.nivel}}" id="nivel" placeholder="Este scris prescurtat cl pentru clasa urmat de cifra care o indică. De ex: cl6">
+                </div>
+
+                <div class="form-group">
+                    <label for="clasa">Act oficial</label>
+                    <input type="text" class="form-control" name="ref" value="{{comp.ref}}" id="ref" placeholder="Este documentul prin care a fost aprobat.">
+                </div>                
+
+                {{#if comp._id}}
+                    <button id="sendData" class="btn btn-warning mb-2" type="button">Actualizează</button>
+                    <button id="clearFrm" class="btn btn-info mb-2"    type="reset">Creează competență nouă</button>
+                    <button id="del1Comp" class="btn btn-danger mb-2"  type="button">Șterge</button>
+                {{else}}
+                    <button id="sendData" class="btn btn-warning mb-2" type="button">Creează</button>
+                {{/if}} 
+            </form>
+
+        </div>
+    </section>
+</div>
+
+{{#each scripts}}
+    <script defer type="application/javascript" src="/{{template}}{{script}}"></script>
+{{/each}}

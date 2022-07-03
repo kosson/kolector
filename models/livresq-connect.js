@@ -1,6 +1,6 @@
 'use strict';
 
-const REQUEST_MODULE = require('request');
+// const REQUEST_MODULE = require('request'); // REVIEW: PRODUCE PROBLEME!!! INACTIVAT
 const CRYPTO = require('crypto');
 
 /**

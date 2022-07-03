@@ -1,109 +1,59 @@
 require('dotenv').config();
 /* === DEPENDINȚE === */
-const express       = require('express');
-const router        = express.Router();
-const mongoose      = require('mongoose');
-const passport      = require('passport');
-const LocalStrategy = require('passport-local').Strategy; // passport-local este un middleware care modifică obiectul creat de express-session
-// constituie modelul user-ului -> necesar fazei de logare
-const UserSchema = require('../models/user');               // Cere schema unui `User`
-const UserModel  = mongoose.model('users', UserSchema);     // constituie modelul `UserModel` din schema cerută
-const {validPassword, issueJWT} = require('./utils/password.js');  // cere funcția de hashing și cea de emitere a unui JWT
+const path     = require('path');
+const fs       = require('fs');
+const express  = require('express');
+const router   = express.Router();
+const passport = require('passport');
+const logger   = require('../util/logger');
+const Mgmtgeneral = require('../models/MANAGEMENT/general'); // Adu modelul management
 
-/* === LOGIN [GET] - Afișează template-ul === */
-router.get('/', (req, res, next) => {
-    // console.log('Din ruta /routes/login [GET] obiectul cookies înainte de orice este: ', req.session, ' cu headere ', req.headers);
-    let csrf = req.csrfToken();
-    
+// LOGO
+let LOGO_IMG = "img/" + process.env.LOGO;
+
+/* === LOGIN [GET] === */
+async function clbkLogin (req, res, next) {
+    // Setări în funcție de template
+    let filterMgmt = {focus: 'general'};
+    let gensettings = await Mgmtgeneral.findOne(filterMgmt);
+
     let scripts = [
         // FONTAWESOME
-        {script: '/lib/npm/all.min.js'},
-        //JQUERY
-        {script: '/lib/npm/jquery.min.js'},
-        {script: '/lib/npm/bootstrap.bundle.min.js'}
+        {script: `${gensettings.template}/lib/npm/all.min.js`},
     ];
 
     let styles = [
-        {style: '/lib/npm/all.min.css'}
+        {style: `${gensettings.template}/lib/npm/all.min.css`}
     ];
 
     let modules = [
-        {module: '/lib/npm/popper.min.js'},
-        {module: '/lib/npm/popper-utils.min.js'},
-        {module: '/js/indexpub.mjs'}
-    ];
-
-    // res.cookie('_csrf', csrf);
-
+        {module: `${gensettings.template}/lib/npm/popper.min.js`},
+        {module: `${gensettings.template}/lib/npm/popper-utils.min.js`}
+    ]
     // console.log("Din user.ctrl avem din req.body pe /login: ", req.body);
-    res.render('login', {
-        title:       "login",
-        language:    "ro",
-        logoimg:     "img/" + process.env.LOGO,
-        creator:     process.env.CREATOR,
-        publisher:   process.env.PUBLISHER,
-        brandname:   process.env.BRAND_NAME,
-        description: process.env.DESCRIPTION,
-        contact:     process.env.CONTACT,
-        googlelogo:  "img/Google-logo.png",
-        csrfToken:   csrf,
-        errorMessage:req.flash('error'),
+    res.render(`login_${gensettings.template}`, {
+        template: `${gensettings.template}`,
+        title:   "login",
+        logoimg:   `${gensettings.template}/${LOGO_IMG}`,
         scripts,
         modules,
         styles
     });
+};
+router.get('/', (req, res, next) => {
+    clbkLogin(req, res, next).catch((error) => {
+        console.log(error);
+        logger(error);
+        next(error);
+    });
 });
 
-/* === LOGIN [POST] - Autentificare locală ===*/
-// https://zachgoll.github.io/blog/2019/choosing-authentication-strategy/
-let clbkLocal = require('./authLocal/authL'); // controlerul pentru autentificare locală cu Passport Local
-passport.use('local', new LocalStrategy(clbkLocal));
-passport.serializeUser((user, done) => {
-    // console.log('[authL::serializeuser] user este: ', user);
-    done(null, user); // în momentul acesta `passport` creează proprietatea `passport` în obiectul `req.session`: {user: dso8fs89afds998fsda}.
+// Utilitarele pentru validarea parolei și emiterea JWT-ul!
+let {issueJWT, validPassword} = require('./utils/password');
+/* === LOGIN [POST] ===*/
+router.post('/',  passport.authenticate('local'), async (req, res, next) => {
+    // console.log("Din login.js avem din req.body pe /login: ", req.body, 'USER este ', req.user);
+    res.redirect(301, '/');
 });
-passport.deserializeUser((userId, done) => {
-    // preia datele din `req.session.passport.user`, aduci datele din bază și
-    // se va contrui cu acele date specifice user-ului obiectul `req.user`.
-    UserModel.findById(userId).then((user) => {
-        done(null, user);
-    }).catch(err => done(err));
-});
-
-// VECHEA VERIFICARE LOCAL CU SESSION
-// router.post('/', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/401' }));
-router.post('/', passport.authenticate('local', {failureRedirect: '/login', failureFlash: true }), (req, res, next) => {
-    res.redirect('/');
-});
-
-// pentru toate rutele protejate, va trebui să pui drept middleware de verificare: 
-// router.get('/protejata', passport('jwt', {session: false}), (req, res, next) => {});
-// router.post('/', function (req, res, next) {
-//     UserModel.findOne({email: req.body.username})
-//     .then((user) => {
-//         // cazul în care nu au userul în baza de date!!!
-//         if (!user) {
-//             res.status(401).json({succes: false, msg: "nu am găsit userul"});
-//             // res.redirect('401');
-//         }
-//         // dacă ai userul
-//         const isValid = validPassword(req.body.password, user.hash, user.salt);
-//         if (isValid) {
-//             const tokenObj = issueJWT(user);
-            
-//             // FIXME: Pune tokenul într-un cookie sau asigură mecanism în client de stocare în local storage
-//             res.json({success: true, user: user, token: tokenObj.token, expires: tokenObj.expires});
-
-//         } 
-//         else {
-//             res.status(401).json({success: false, message: "Ceva nu este în regulă cu utilizatorul!"});
-//             // res.redirect('/401');
-//             // next();
-//         }
-//     }).catch((err) => {
-//         console.error(err);
-//         next(err);
-//     });
-// });
 
 module.exports = router;

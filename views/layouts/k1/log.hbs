@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ro">
+    <head prefix="dc: http://purl.org/dc/elements/1.1 dcterms: http://purl.org/dc/terms">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <meta name="keywords"    content="{{brandname}}">
+        <meta name="description" content="{{description}}">
+        <meta name="generator"   content="{{brandname}}">
+        <meta name="creator"     content="{{creator}}">
+        <meta name="author"      content="{{author}}">
+        <meta name="publisher"   content="{{publisher}}">
+        
+        <meta property="dc:title"       content="{{brandname}}">
+        <meta property="dc:description" content="{{description}}">
+        
+        <meta itemprop="name" content="{{brandname}}">
+        <meta itemprop="description" content="{{description}}">
+        
+        <script type="application/javascript" src="/{{template}}/lib/npm/socket.io.min.js"></script>
+        
+        {{!-- ES6 SHIM --}}
+        <script type="application/javascript" src="/{{template}}/lib/es6-shim/es6-shim.min.js"></script>
+
+        {{!-- BOOTSTRAP 5 --}}
+        <script type="application/javascript" src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap-utilities.min.css">
+        <link rel="stylesheet" type="text/css" href="bootstrap-icons/font/bootstrap-icons.css">
+
+        {{!-- MAIN --}}
+        <link rel="stylesheet" type="text/css" href="/{{template}}/css/main.css">
+
+        {{!-- Încărcarea foilor de stil din module --}}
+        {{#each styles}}
+            <link rel="stylesheet" href="{{style}}" charset="utf-8"></script>
+        {{/each}}
+
+        {{!-- Preîncărcarea modulelor --}}
+        {{#each modules}}
+            <link rel="modulepreload" href="/{{template}}{{module}}"></script>
+        {{/each}}
+
+        {{!-- Încărcarea modulelor --}}
+        {{#each modules}}
+            <script type="module" src="/{{template}}{{module}}"></script>
+        {{/each}}
+
+        {{!-- Încărcarea scripturilor --}}
+        {{#each scripts}}
+            <script defer type="application/javascript" src="/{{template}}{{script}}"></script>
+        {{/each}}
+
+        <title>{{title}}</title>
+    </head>
+    <body data-spy="scroll" data-target="#navbarResponsive">
+        {{{body}}}
+
+        <footer>
+            {{> footer_k1}}
+        </footer>
+    </body>
+</html>

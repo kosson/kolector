@@ -1,0 +1,1078 @@
+<div class="container p-2">
+  <div class="mt-4">
+
+    {{!-- Progress bar --}}
+    <div class="progress">
+      
+      {{!-- MODULUL DE PROGRESS-BAR --}}
+      <div id="progressBar" class="" role="progressbar">
+
+        {{!-- PRIMUL SEGMENT -> PAS1 --}}
+        <div id="progressText1" class="progressText lead active disccomponent">
+          <div class="round disccomponentcontent">
+            <p class="nstep">
+              <span>1</span>
+            </p>            
+            <p>
+              <a href="#unu" class="btn" role="button">
+                <img class="disccentral disccentralimg" src="/img/WorkIcon.png" alt="">
+              </a>
+            </p>
+            <p>
+              <span class='w0'>O</span>peră
+            </p>
+          </div>
+        </div>
+
+        {{!-- AL DOILEA SEGMENT -> PAS2 --}}
+        <div id="progressText2" class="progressText lead disccomponent">
+          <div class="round disccomponentcontent">
+            <p class="nstep">
+              <span>2</span>
+            </p>                  
+            <p>
+              <a href="#doi" class="btn" role="button">
+                <img class="disccentral disccentralimg" src="/img/InstanceIcon.svg" alt="">
+              </a>
+            </p>
+            <p>
+              <span class='w0'>I</span>nstanță
+            </p>       
+          </div>
+        </div>
+
+        {{!-- AL TREILEA SEGMENT -> PAS3 --}}
+        <div id="progressText1" class="progressText lead disccomponent">          
+          <div class="round disccomponentcontent">
+            <p class="nstep">
+              <span>3</span>
+            </p>            
+            <p>
+              <a href="#trei" class="btn" role="button">
+                <img class="disccentral disccentralimg" src="/img/ItemIcon.svg" alt="">
+              </a>
+            </p>
+            <p>
+              <span class='w0'>E</span>xemplar
+            </p>
+          </div>
+        </div>
+
+        {{!-- AL PATRULEA SEGMENT -> PAS4 --}}
+        <div id="progressText2" class="progressText lead disccomponent">
+          <div class="round disccomponentcontent">
+            <p class="nstep">
+              <span>4</span>
+            </p>                  
+            <p>
+              <a href="#patru" class="btn" role="button">
+                <img class="disccentral disccentralimg" src="/img/ManifestationIcon.svg" alt="">
+              </a>              
+            </p>
+            <p>
+              <span class='w0'>M</span>anifestare
+            </p>    
+          </div>   
+        </div>
+
+      </div>
+    </div>
+    <br>
+    {{!-- Progress bar END --}}
+
+    <nav class="navbar navbar-light bg-light">
+        <p>Caută mai întâi pentru a vedea dacă există opera deja in baza de date.</p>
+        <form class="form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </nav>
+
+
+    {{!-- Inițiere FORM --}}
+    <form id="form02admonograph" class="" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+      {{!-- ÎNCEPUT FORM --}}
+      <div id="accordionFrm" class="p-4 rounded accordion-frame">
+        {{!-- Câmpuri ascunse METADATE ADMINISTRATIVE --}}
+        <input id="idUser"       name="idUser"       type="hidden" value="{{user._id}}">
+        <input id="emailContrib" name="emailContrib" type="hidden" value="{{user.email}}">
+        <input id="nameUser"     name="nameUser"     type="hidden" value="{{#if user.googleProfile.name}}{{user.googleProfile.name}}{{/if}}">
+
+        {{!-- SECȚIUNEA - #1. WORK (vezi modelul de date bf-monograph-work-01.js) --}}
+        <div id="unu">
+          {{!-- Acționarea grupului de controale pentru #1 --}}
+          <div class="starting-heading" id="heading01">
+              <h4>Opera</h4>
+              <small class="alert alert-info form-text text-muted font-italic">
+                Resursă ce reflectă esența conceptuală a uneia de catalogare. <span><a href="https://id.loc.gov/ontologies/bibframe.html#c_Work"><i class="fas fa-link"></i></a></span>
+              </small>
+          </div>
+          {{!-- Acționarea grupului de controale pentru #1 END--}}
+
+          <div id="sec01" aria-labelledby="heading01" data-parent="#accordionFrm">
+
+            {{!-- CREATOR -> [bootstrap::acordeon] --}}
+            <div class="accordion" id="creatorElement">
+              <div class="card-header" id="creatorHeading">
+                <h2 class="mb-0">
+                  <button 
+                    class="btn btn-link btn-block text-left" 
+                    type="button" 
+                    data-toggle="collapse" 
+                    data-target="#creator" 
+                    aria-expanded="false" 
+                    aria-controls="collapseOne">
+                    <img src="/img/CreatorulIcon.svg" style="height: 2.5rem;" alt="management By Victoruler, CC-BY, https://thenounproject.com/term/management/2686168/">
+                    Creatorul/creatorii operei
+                  </button>               
+                </h2>
+                <div>
+                  <small class="">
+                    O persoană sau o organizație care este responsabilă pentru conținutul intelectual sau artistic al unei resurse <span><a href="https://id.loc.gov/vocabulary/relators/cre.html"><i class="fas fa-link"></i></a></span>.
+                  </small>  
+                </div>
+              </div>
+
+              <div id="creator" class="collapse" aria-labelledby="creatorHeading" data-parent="#creatorElement">
+                <div class="card-body">
+                    <div class="form-group row">
+                      <label for="creator" class="col-form-label">Creator</label>
+                      <div class="col-sm-10">
+                          <input id="creatorField" name="creator" type="text" aria-label="Creator" class="form-control" value="" required>
+                          <small class="form-text text-muted font-italic">Creatorii vor fi trecuți în continuarea numelui contribuitorului menționând nume și prenume. Aceștia vor fi delimitați prin virgule</small>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+            {{!-- CREATOR -> [bootstrap::acordeon] END--}}            
+            
+            {{!-- CATEGORIE/GEN/FORMĂ -> genreForm --}}
+            <div class="accordion" id="genreFormElement">
+                <div class="card-header" id="genreFormHeading">
+                    <h2 class="mb-0">
+                        <button 
+                            class="btn btn-link btn-block text-left" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#genreForm" 
+                            aria-expanded="false" 
+                            aria-controls="collapseOne">
+                            <img src="/img/category.svg" style="height: 2.5rem;" alt="Category by Fahmi from the Noun Project, CC-BY, https://thenounproject.com/term/category/2706226/">
+                            Categoria/genul/forma
+                        </button>
+                    </h2>
+                    <div>
+                        <small class="">
+                            Forma, categoria sau genul de care aparține o resursă <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_genreForm"><i class="fas fa-link"></i></a></span>.
+                        </small>
+                    </div>
+                </div>
+
+                <div id="genreForm" class="collapse" aria-labelledby="genreFormHeading" data-parent="#genreFormElement">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="genreForm" class="col-form-label">Introdu sau alege</label>
+                            <div class="col-sm-10">
+                                <input id="genreFormField" name="genreForm" type="text" aria-label="genreForm" class="form-control" value="" required>
+                                <small class="form-text text-muted font-italic">
+                                    Caracteristicile operelor care au intrigi, teme și aranjamente similare, etc. (de ex., western-urile, thriller-ele), sau care au un anumit format privind scopul (de ex., animație, scurt metraj), sau o combinație (de ex., filme horror în care genul este horror iar filmul este forma).
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{!-- CATEGORIE/GEN/FORMĂ -> genreForm END --}}
+
+            {{!-- DATA APARIȚIEI -> originDate --}}
+            <div class="accordion" id="originDateElement">
+                <div class="card-header" id="originDateHeading">
+                    <h2 class="mb-0">
+                        <button 
+                            class="btn btn-link btn-block text-left" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#originDate" 
+                            aria-expanded="false" 
+                            aria-controls="collapseOne">
+                            <img src="/img/date.svg" style="height: 2.5rem;" alt="date by i cons from the Noun Project, CC-BY, https://thenounproject.com/search/?q=date&i=1797142">
+                            Data când a apărut opera
+                        </button>
+                    </h2>
+                    <small class="">
+                        Desemnarea datei asociate cu o resursă sau cu un element al descrierii, cum ar fi data sau varianta de titlu; anul când a fost acordat un titlu; data asociată cu publicarea, tipărirea, distribuirea, numărul, apariția sau producția unei resurse. Poate să fie tip de dată <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_date"><i class="fas fa-link"></i></a></span>.
+                    </small>                    
+                </div>
+
+                <div id="originDate" class="collapse" aria-labelledby="originDateHeading" data-parent="#originDateElement">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="originDate" class="col-form-label">Introdu sau alege</label>
+                            <div class="col-sm-10">
+                                <input id="originDateField" name="originDate" type="text" aria-label="originDate" class="form-control" value="" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{!-- DATA APARIȚIEI -> originDate END --}}
+
+            {{!-- LOCUL APARIȚIEI -> originPlace --}}
+            <div class="accordion" id="originPlaceElement">
+                <div class="card-header" id="originPlaceHeading">
+                    <h2 class="mb-0">
+                        <button 
+                            class="btn btn-link btn-block text-left" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#originPlace" 
+                            aria-expanded="false" 
+                            aria-controls="collapseOne">
+                            <img src="/img/originPlace.svg" style="height: 2.5rem;" alt="place by Lyhn from the Noun Project, CC-BY, https://thenounproject.com/search/?q=place&i=3386653">
+                            Unde a apărut opera
+                        </button>
+                    </h2>
+                    <small class="">
+                        Localizarea geografică sau entitatea locației asociată cu o resursă sau un element de descriere, cum ar fi locul asociat cu publicarea, tipărirea, distribuirea, numărul, difuzarea sau publicarea unei resurse, loc sau a unui eveniment. <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_place"><i class="fas fa-link"></i></a></span>.
+                    </small>                    
+                </div>
+
+                <div id="originPlace" class="collapse" aria-labelledby="originPlaceHeading" data-parent="#originPlaceElement">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="originPlace" class="col-form-label">Locul de apariție</label>
+                            <div class="col-sm-10">
+                                <input id="originPlaceField" name="originPlace" type="text" aria-label="originPlace" class="form-control" value="" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{!-- LOCUL APARIȚIEI -> originPlace END --}}
+
+            {{!-- ACOPERIREA GEOGRAFICĂ -> geographicCoverage --}}
+            <div class="accordion" id="geographicCoverageElement">
+                <div class="card-header" id="geographicCoverageHeading">
+                    <h2 class="mb-0">
+                        <button 
+                            class="btn btn-link btn-block text-left" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#geographicCoverage" 
+                            aria-expanded="false" 
+                            aria-controls="collapseOne">
+                            <img src="/img/geographicCoverage.svg" style="height: 2.5rem;" alt="Geography by Komkrit Noenpoempisut from the Noun Project, CC-BY, https://thenounproject.com/search/?q=geographic&i=3468767">
+                            Acoperire geografică
+                        </button>
+                    </h2>
+                    <small class="">
+                        Acoperirea geografică a conținutului resursei <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_geographicCoverage"><i class="fas fa-link"></i></a></span>.
+                    </small>                    
+                </div>
+
+                <div id="geographicCoverage" class="collapse" aria-labelledby="geographicCoverageHeading" data-parent="#geographicCoverageElement">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="geographicCoverageField" class="col-form-label">Unde se întâmplă</label>
+                            <div class="col-sm-10">
+                                <input id="geographicCoverageField" name="geographicCoverage" type="text" aria-label="geographicCoverageField" class="form-control" value="" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{!-- ACOPERIREA GEOGRAFICĂ -> geographicCoverage END --}}
+
+            {{!-- ACOPERIREA ÎN TIMP -> temporalCoverage --}}
+            <div class="accordion" id="temporalCoverageElement">
+                <div class="card-header" id="temporalCoverageHeading">
+                    <h2 class="mb-0">
+                        <button 
+                            class="btn btn-link btn-block text-left" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#temporalCoverage" 
+                            aria-expanded="false" 
+                            aria-controls="collapseOne">
+                            <img src="/img/OriginDate.svg" style="height: 2.5rem;" alt="By Vladimir Belochkin, US, CC-BY, https://thenounproject.com/term/time/3104327/">
+                            Perioada de timp acoperită
+                        </button>
+                    </h2>
+                    <small class="">
+                        Perioada de timp acoperită de conținutul resursei <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_temporalCoverage"><i class="fas fa-link"></i></a></span>.
+                    </small>                    
+                </div>
+
+                <div id="temporalCoverage" class="collapse" aria-labelledby="temporalCoverageHeading" data-parent="#temporalCoverageElement">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="temporalCoverageField" class="col-form-label">În ce perioadă se petrece</label>
+                            <div class="col-sm-10">
+                                <input id="temporalCoverageField" name="temporalCoverage" type="text" aria-label="temporalCoverageField" class="form-control" value="" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{!-- ACOPERIREA ÎN TIMP -> temporalCoverage END --}}
+
+            {{!-- PUBLIC ȚINTĂ -> intendedAudience --}}
+            <div class="accordion" id="intendedAudienceElement">
+                <div class="card-header" id="intendedAudienceHeading">
+                    <h2 class="mb-0">
+                        <button 
+                            class="btn btn-link btn-block text-left" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#intendedAudience" 
+                            aria-expanded="false" 
+                            aria-controls="collapseOne">
+                            <img src="/img/public.svg" style="height: 2.5rem;" alt="public by Adrien Coquet from the Noun Project, CC-BY, https://thenounproject.com/search/?q=public&i=2556806">
+                            Publicul țintă
+                        </button>
+                    </h2>
+                    <small class="">
+                        Informație care identifică audiența țintă sau pe cea specifică, ori nivelul intelectual în care se încadrează conținutul descris. Este folosită și pentru a consemna nivelul de interes și motivare, precum și caracteristicile speciale ale unei persoane care învață <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_intendedAudience"><i class="fas fa-link"></i></a></span>.
+                    </small>                    
+                </div>
+
+                <div id="intendedAudience" class="collapse" aria-labelledby="intendedAudienceHeading" data-parent="#intendedAudienceElement">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="intendedAudienceField" class="col-form-label">Cui se adresează</label>
+                            <div class="col-sm-10">
+                                <input id="intendedAudienceField" name="intendedAudience" type="text" aria-label="intendedAudienceField" class="form-control" value="" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{!-- PUBLIC ȚINTĂ -> intendedAudience END --}}
+
+            {{!-- CONTRIBUȚII -> contribution --}}
+            <div class="accordion" id="contributionElement">
+                <div class="card-header" id="contributionHeading">
+                    <h2 class="mb-0">
+                        <button 
+                            class="btn btn-link btn-block text-left" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#contribution" 
+                            aria-expanded="false" 
+                            aria-controls="collapseOne">
+                            <img src="/img/contribution.svg" style="height: 2.5rem;" alt="cooperation by Turkkub from the Noun Project, CC-BY, https://thenounproject.com/term/cooperation/1920752/">
+                            Alți contributori
+                        </button>
+                    </h2>
+                    <small class="">
+                        Agentul și rolul său în ceea ce privește resursa care este descrisă <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_contribution"><i class="fas fa-link"></i></a></span>.
+                    </small>                    
+                </div>
+
+                <div id="contribution" class="collapse" aria-labelledby="contributionHeading" data-parent="#contributionElement">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="contributionField" class="col-form-label">Alți agenți care au contribuit la operă</label>
+                            <div class="col-sm-10">
+                                <input id="contributionField" name="contribution" type="text" aria-label="contributionField" class="form-control" value="" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{!-- CONTRIBUȚII -> contribution END --}}
+
+            {{!-- NOTE -> note --}}
+            <div class="accordion" id="noteElement">
+                <div class="card-header" id="contributionHeading">
+                    <h2 class="mb-0">
+                        <button 
+                            class="btn btn-link btn-block text-left" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#note" 
+                            aria-expanded="false" 
+                            aria-controls="collapseOne">
+                            <img src="/img/note.svg" style="height: 2.5rem;" alt="note by Gregor Cresnar from the Noun Project, CC-BY, https://thenounproject.com/search/?q=note&i=256145">
+                            Note privind opera
+                        </button>
+                    </h2>
+                    <small class="">
+                        Informație textuală de nivel general legată de o resursă, cum ar fi informații despre un anumit exemplar al unei resurse sau informație despre o anumită caracteristică a unei resurse <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_note"><i class="fas fa-link"></i></a></span>.
+                    </small>                    
+                </div>
+
+                <div id="note" class="collapse" aria-labelledby="noteHeading" data-parent="#noteElement">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <textarea id="noteField" name="note" maxlength="3000" class="form-control" aria-label="note" rows="5" placeholder=""></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{!-- NOTE -> note END --}}
+
+            {{!-- DISSERTATION -> dissertation --}}
+            <div class="accordion" id="disertationElement">
+                <div class="card-header" id="disertationHeading">
+                    <h2 class="mb-0">
+                        <button 
+                            class="btn btn-link btn-block text-left" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#disertation" 
+                            aria-expanded="false" 
+                            aria-controls="collapseOne">
+                            <img src="/img/academic.svg" style="height: 2.5rem;" alt="academic by pam pyke from the Noun Project, CC-BY, https://thenounproject.com/search/?q=academic&i=2515456">
+                            Dizertație/Teză
+                        </button>
+                    </h2>                 
+                </div>
+
+                <div id="disertation" class="collapse" aria-labelledby="disertationHeading" data-parent="#disertationElement">
+                    <div class="card-body">
+
+                        <div class="form-group row">
+                            <label for="dissertationGrantingInstitutionField" class="col-sm-4 col-form-label">Instituția emitentă:</label>
+                            <div class="col-sm-8">
+                                <input id="dissertationGrantingInstitutionField" name="grantinginstitution" type="text" class="form-control" value="">
+                                <small class="form-text text-muted font-italic">
+                                    Numele instituției care acordă titlul <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_grantingInstitution"><i class="fas fa-link"></i></a></span>.
+                                </small>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="dissertationDateField" class="col-sm-4 col-form-label">Data susținerii:</label>
+                            <div class="col-sm-8">
+                                <input id="dissertationDateField" name="datadissertation" type="text"class="form-control" value="">
+                                <small class="form-text text-muted font-italic">
+                                    Desemnarea datei asociate cu o resursă sau cu un element al descrierii, cum ar fi data sau varianta de titlu; anul când a fost acordat un titlu; data asociată cu publicarea, tipărirea, distribuirea, numărul, apariția sau producția unei resurse. Poate să fie tip de dată <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_date"><i class="fas fa-link"></i></a></span>.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="noteDissertationField" class="col-sm-4 col-form-label">Notă privind disertația:</label>
+                            <div class="col-sm-8">
+                                <textarea id="noteDissertationField" name="noteDissertation" maxlength="1000" class="form-control" rows="5" placeholder=""></textarea>
+                                <small class="form-text text-muted font-italic">
+                                    Informație textuală de nivel general legată de o resursă, cum ar fi informații despre un anumit exemplar al unei resurse sau informație despre o anumită caracteristică a unei resurse <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_note"><i class="fas fa-link"></i></a></span>.
+                                </small>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {{!-- DISSERTATION -> dissertation END --}}
+
+            {{!-- TABLE OF CONTENTS -> tableOfContents --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Cuprins</legend>
+              <div class="form-group row">
+                <label for="toc" class="col-sm-4 col-form-label">Structura conținului</label>
+                <div class="col-sm-8">
+                    <textarea id="toc" name="toc" maxlength="1000" class="form-control" aria-label="toc" rows="5" placeholder=""></textarea>
+                    <small class="form-text text-muted font-italic">
+                      Cuprinsul resursei descrise. <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_tableOfContents"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- TABLE OF CONTENTS -> tableOfContents END --}}
+
+            {{!-- SUMMARY -> summary --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Sumar</legend>
+              <div class="form-group row">
+                <label for="summary" class="col-sm-4 col-form-label">Rezumatul operei</label>
+                <div class="col-sm-8">
+                    <textarea id="summary" name="summary" maxlength="3000" class="form-control" aria-label="summary" rows="5" placeholder=""></textarea>
+                    <small class="form-text text-muted font-italic">
+                      Descrierea conținutului unei resurse, cum ar fi un abstract, sumar, etc. <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_summary"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- SUMMARY -> summary END --}}
+
+            {{!-- SUBJECT -> subject --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Subiecte tratate</legend>
+              <div class="form-group row">
+                <label for="subject" class="col-sm-4 col-form-label">Termeni</label>
+                <div class="col-sm-8">
+                    <input id="subject" name="subject" type="text" aria-label="subject" class="form-control" value="">
+                    <small class="form-text text-muted font-italic">
+                      Termen(i) subiect care descriu o resursă <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_summary"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- SUBJECT -> subject END --}}
+
+            {{!-- CLASSIFICATION -> classification --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Clasificare</legend>
+              <div class="form-group row">
+                <label for="classification" class="col-sm-4 col-form-label">Introdu indicii</label>
+                <div class="col-sm-8">
+                    <input id="classification" name="classification" type="text" aria-label="classification" class="form-control" value="">
+                    <small class="form-text text-muted font-italic">
+                      Indice de clasificare în oricare schemă <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_classification"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- CLASSIFICATION -> classification END --}}
+
+            {{!-- CONTENT -> content --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Conținutul operei</legend>
+              <div class="form-group row">
+                <label for="content" class="col-sm-4 col-form-label">Tipul conținutului operei</label>
+                <div class="col-sm-8">
+                    <input id="content" name="content" type="text" aria-label="content" class="form-control" value="">
+                    <small class="form-text text-muted font-italic">
+                      Categorisire care reflectă forma fundamentală de comunicare prin care conținutul este exprimat și sensul uman prin care trebuie să fie perceput <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_content"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- CONTENT -> content END --}}
+
+            {{!-- LANGUAGE -> language --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Limba operei sau a părților</legend>
+                <div class="form-group row">
+                    <label for="language" class="col-sm-4 col-form-label">Indică limba documentului (dacă nu e română)</label>
+                    <div class="col-sm-8">
+                      <select id="language" class="custom-select" aria-describedby="langselect-label">
+                        <option value="rum" selected>română</option>
+                        <option value="ger">germană</option>
+                        <option value="hun">maghiară</option>
+                        <option value="srp">sârbă</option>
+                        <option value="rom">rromani</option>
+                        <option value="slo">slovenă</option>
+                        <option value="cze">cehă</option>
+                        <option value="ukr">ucraineană</option>
+                        <option value="bul">bulgară</option>
+                        <option value="hrv">croată</option>
+                        <option value="ita">italiană</option>
+                        <option value="gre">greacă</option>
+                        <option value="rus">rusă</option>
+                        <option value="tur">engleză</option>
+                        <option value="fra">franceză</option>
+                      </select>
+                      <small class="form-text text-muted font-italic">Indică limba conținutului resursei.</small>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                  <button id="titluLangAdd" class="btn btn-outline-secondary m-2" type="button" onclick="creeazaTitluAlternativ()">
+                      <i class="fas fa-plus-circle"></i> în altă limbă
+                  </button>
+                </div>
+                <div id="langAlternative" class="justify-content-center col-sm-8">
+                    {{!-- AICI SUNT INTRODUSE TITLURILE ALTERNATIVE (dynamic) --}}
+                </div>
+            </fieldset>
+            {{!-- LANGUAGE -> language END --}}
+
+            {{!-- ILLUSTRATIVE CONTENT -> illustrativeContent --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Ilustrarea conținutului</legend>
+              <div class="form-group row">
+                <label for="illustrativeContent" class="col-sm-4 col-form-label">Ilustrare</label>
+                <div class="col-sm-8">
+                    <input id="illustrativeContent" name="illustrativecontent" type="text" aria-label="illustrativeContent" class="form-control" value="">
+                    <small class="form-text text-muted font-italic">
+                      Informație despre conținutul cu care se dorește ilustrarea unei resurse <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_illustrativeContent"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- ILLUSTRATIVE CONTENT -> illustrativeContent END --}}
+
+            {{!-- COLOR CONTENT -> colorContent --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Culoarea operei</legend>
+              <div class="form-group row">
+                <label for="colorContent" class="col-sm-4 col-form-label">Culoarea:</label>
+                <div class="col-sm-8">
+                    <input id="colorContent" name="colorcontent" type="text" aria-label="colorContent" class="form-control" value="">
+                    <small class="form-text text-muted font-italic">
+                      Caracteristici privind culoarea, de exemplu, alb și negru, multiculoare <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_colorContent"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- COLOR CONTENT -> colorContent END --}}
+
+            {{!-- SUPPLEMENTARY CONTENT -> supplementaryContent --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Materiale suplimentare</legend>
+              <div class="form-group row">
+                <label for="supplementaryContent" class="col-sm-4 col-form-label">Suplimentele:</label>
+                <div class="col-sm-8">
+                    <input id="supplementaryContent" name="supplementarycontent" type="text" aria-label="supplementaryContent" class="form-control" value="">
+                    <small class="form-text text-muted font-italic">
+                      Material precum un index, o bibliografie, apendix cu intenția de a suplimenta conținutul privat a unei resurse <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_supplementaryContent"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- SUPPLEMENTARY CONTENT -> supplementaryContent END --}}
+
+            {{!-- Related works -> relation --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Relația</legend>
+              <div class="form-group row">
+                <label for="realtion" class="col-sm-4 col-form-label">În relație cu următoarele opere</label>
+                <div class="col-sm-8">
+                    <input id="relation" name="relation" type="text" aria-label="relation" class="form-control" value="">
+                    <small class="form-text text-muted font-italic">
+                      Relația pe care o stabilește resursa cu altele <span><a href="http://id.loc.gov/ontologies/bflc/relationship"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- SUPPLEMENTARY CONTENT -> relation END --}}
+
+            {{!-- EXPRESSIONOF -> expressionOf --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Expresie a unei alte opere</legend>
+              <div class="form-group row">
+                <label for="expressionof" class="col-sm-4 col-form-label">Opere pentru care este expresie:</label>
+                <div class="col-sm-8">
+                    <input id="expressionof" name="expressionof" type="text" aria-label="expressionof" class="form-control" value="">
+                    <small class="form-text text-muted font-italic">
+                      Operă pentru care opera descrisă este expresia. Pentru utilizarea în realizarea conectării Operelor aplicând regulile FRBR/RDA <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_expressionOf"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- EXPRESSIONOF -> expressionOf END --}}
+
+            {{!-- IDENTIFIES -> identifies --}}
+            <fieldset>
+              <legend class="field-legend text-muted text-uppercase monograph01field p-3">Identificarea resursei</legend>
+              <div class="form-group row">
+                <label for="origin-place" class="col-sm-4 col-form-label">Identificatori:</label>
+                <div class="col-sm-8">
+                    <input id="origin-place" name="originplace" type="text" aria-label="originPlace" class="form-control" value="">
+                    <small class="form-text text-muted font-italic">
+                      Resursă care este asociată cu un șir de caractere care servește diferențierii uneia de alta <span><a href="https://id.loc.gov/ontologies/bibframe.html#p_identifies"><i class="fas fa-link"></i></a></span>.
+                    </small>
+                </div>
+              </div>                  
+            </fieldset>
+            {{!-- IDENTIFIES -> identifies END --}}
+
+            {{!-- LICENȚIEREA RESURSEI --}}
+            <fieldset>
+              <div class="form-group row">
+                <label for="licente" class="col-sm-4 col-form-label">Licențe disponibile</label>
+                <div class="col-sm-8">
+                    <select id="licente" class="custom-select">
+                        <option selected value="C">Protejat prin drepturi de autor</option>
+                        <optgroup label="Creative Commons 4.0">
+                            <option value="CC0" data-link="https://creativecommons.org/publicdomain/zero/1.0/deed.ro">Fără drepturi de autor (Dedicat Domeniului Public)</option>
+                            <option value="CC BY">Atribuire CC BY 4.0</option>
+                            <option value="CC BY-SA">Atribuire - Distribuire în condiţii identice CC BY-SA 4.0</option>
+                            <option value="CC BY-ND">Atribuire-FărăModificări CC BY-ND 4.0</option>
+                            <option value="CC BY-NC">Atribuire-Necomercial CC BY-NC 4.0</option>
+                            <option value="CC BY-NC-SA">Atribuire-Necomercial-Distribuire în Condiţii Identice CC BY-NC-SA 4.0</option>
+                            <option value="CC BY-NC-ND">Atribuire-Necomercial-FărăModificări CC BY-NC-ND 4.0</option>
+                        </optgroup>
+                        <option value="GPLv3">GNU General Public License</option>
+                    </select>
+                </div>
+              </div>
+            </fieldset>
+            {{!-- LICENȚIEREA RESURSEI END --}}
+          </div>
+
+          {{!-- Avans către pasul 2 [form-group] --}}
+          <div class="form-group align-self-center p-4 add-res-nav">
+            <a href="#" id="next-1" class="btn btn-success add-res-nav-next">Mergi la pasul 2 <i class="fas fa-arrow-right"></i></a>
+          </div>
+          {{!-- Avans către pasul 2 [form-group] END --}}
+        </div>
+        {{!-- SECȚIUNEA - #1. WORK END --}}
+
+        {{!-- SECȚIUNEA - #2. INSTANCE --}}
+        <div id="doi">
+          {{!-- Acționarea grupului de controale pentru #1 --}}
+          <div class="starting-heading" id="heading02">
+              <p>Pasul 2</p>
+              <h4>Descrierea instanței operei</h4>
+              <small class="alert alert-info form-text text-muted font-italic">
+                Resursă care reflectă întruparea individuală, materială a unei Opere (Work) <span><a href="http://id.loc.gov/ontologies/bibframe/Instance"><i class="fas fa-link"></i></a></span>.
+              </small>
+          </div>
+          {{!-- Acționarea grupului de controale pentru #1 END--}}
+
+          {{!-- Descrierea Instanței unei opere [form-group] --}}
+          <div id="sec02" class="" aria-labelledby="heading02" data-parent="#accordionFrm">
+
+              {{!-- TITLU OPERĂ [form-group] --}}
+              <fieldset>
+                <legend class="field-legend text-muted text-uppercase monograph01field p-3">Informații privind titlul operei</legend>
+                {{!-- TITLUL --}}
+                <div class="form-group row">
+
+                  {{!-- TITLU OPERĂ -> Title --}}
+                  <label for="title-work" class="col-sm-4 col-form-label">Titlul operei</label>
+                  <div class="col-sm-8">
+                      <input id="title-work" class="form-control" type="text" name="titlul"
+                              aria-label="Titlul operei" aria-describedby="titlu-opera" maxlength="150"
+                              placeholder="ex: Aventurile lui Alice în Ţara Minunilor" required>
+                      <small class="form-text text-muted font-italic w-75 mx-auto">Resursă ce reflectă esența conceptuală a uneia de catalogare.</small>
+                  </div>
+                  {{!-- TITLU OPERĂ -> Title END --}}
+
+                  {{!-- Informații la titlu -> VariantTitle --}}
+                  <div class="col-sm-8">
+                      <a class="btn btn-warning" data-toggle="collapse" href="#variant-title" role="button" aria-expanded="false" aria-controls="variant-title">Informații la titlu</a>
+
+                      {{!-- Variant title --}}
+                      <div id="variant-title" class="collapse">
+                        <small class="form-text text-muted font-italic">
+                          Titlul asociat cu resursa care este diferit de titlul Operei sau al Instanței <span><a href="https://id.loc.gov/ontologies/bibframe.html#c_VariantTitle"><i class="fas fa-link"></i></a></span>.
+                        </small>
+
+                        <ul class="nav nav-tabs" id="tabvariants" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link active" id="keytitle-tab" data-toggle="tab" aria-controls="key-title" aria-selected="true" href="#key-title">Titlul cheie</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="abrtitle-tab" data-toggle="tab" aria-controls="abbr-title" aria-selected="false"  href="#abbr-title">Abreviere</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="paralel-title-tab" data-toggle="tab" aria-controls="paralel-title" aria-selected="false" href="#paralel-title">Titlul paralel</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="collective-title-tab" data-toggle="tab" aria-controls="collective-title" aria-selected="false" href="#collective-title">Titlul colectiv</a>
+                          </li>                                                    
+                        </ul>
+
+                        <div class="tab-content tabsetting" id="tabTitleVariant">
+                          <div id="key-title" class="tab-pane fade show active" role="tabpanel" aria-labelledby="keytitle-tab">
+                            <input id="key-title-value" class="form-control" type="text" name="key_title"
+                                  aria-label="Titlul cheie" maxlength="500"
+                                  placeholder="ex: Aventurile lui Alice în Ţara Minunilor">
+                            <small class="form-text text-muted font-italic">
+                              Titlu unic pentru o resursă în continuare care este emisă de Centrul Internațional ISSN în conjuncție cu un ISSN <span><a href="https://id.loc.gov/ontologies/bibframe.html#c_KeyTitle"><i class="fas fa-link"></i></a></span>.
+                            </small>                         
+                          </div>
+                          <div id="abbr-title" class="tab-pane fade show" role="tabpanel" aria-labelledby="abbrtitle-tab">
+                            <input id="abbr-title-value" class="form-control" type="text" name="abbr_title"
+                                  aria-label="Titlul abreviat" maxlength="100"
+                                  placeholder="ex: Analele sistemelor de calcul -> Anale Sist. Calc.">
+                            <small class="form-text text-muted font-italic">
+                              Titlul abreviat în scopul citării, indexării și/sau al identificării <span><a href="https://id.loc.gov/ontologies/bibframe.html#c_AbbreviatedTitle"><i class="fas fa-link"></i></a></span>.
+                            </small>                           
+                          </div>
+                          <div id="paralel-title" class="tab-pane fade show" role="tabpanel" aria-labelledby="paralel-title-tab">
+                            <input id="abbr-title-value" class="form-control" type="text" name="abbr_title"
+                                  aria-label="Titlu paralel" maxlength="100">
+                            <small class="form-text text-muted font-italic">
+                              Titlul în altă limbă și/sau scriere <span><a href="https://id.loc.gov/ontologies/bibframe.html#c_ParallelTitle"><i class="fas fa-link"></i></a></span>.
+                            </small>                      
+                          </div>
+                          <div id="collective-title" class="tab-pane fade show" role="tabpanel" aria-labelledby="collective-title-tab">
+                            <input id="abbr-title-value" class="form-control" type="text" name="abbr_title"
+                                  aria-label="Titlu paralel" maxlength="100">
+                            <small class="form-text text-muted font-italic">
+                              Titlul pentru o compilație de resurse. <span><a href="https://id.loc.gov/ontologies/bibframe.html#c_CollectiveTitle"><i class="fas fa-link"></i></a></span>.
+                            </small>                      
+                          </div>                                                               
+                        </div>
+                      </div>
+
+
+                  </div>
+                </div>
+              </fieldset>
+
+          {{!-- Încadrarea resursei conform Planului Național [form-group] END --}}
+
+          {{!-- Avans către pasul 3 / Înapoi la pasul 1 [form-group]--}}
+          <div class="form-group align-self-center p-4 add-res-nav">
+            <a href="#" id="next-2" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 1</a>
+            <a href="#" id="next-3" class="btn btn-success add-res-nav-next">Mergi la pasul 3 <i class="fas fa-arrow-right"></i></a>
+          </div>
+          {{!-- Avans către pasul 3 / Înapoi la pasul 1 [form-group] END --}}
+        </div>
+        {{!-- SECȚIUNEA - #2. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI END--}}
+
+        {{!-- SECȚIUNEA - #3 Încarcă materialele --}}
+        <div id="trei">
+          {{!-- Acționarea grupului de controale pentru #3 --}}
+          <div class="starting-heading" id="heading03">
+              <p>Pasul 3</p>
+              <h4>Detalii despre resursa propusă</h4>
+          </div>
+          {{!-- Acționarea grupului de controale pentru #1 END--}}
+
+          {{!-- Încărcarea fișierelor sau a fragmentului [form-group] --}}
+          <div id="sec03" aria-labelledby="heading03" data-parent="#accordionFrm">
+            {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI --}}
+
+              <fieldset>
+                  <legend class="field-legend text-muted">Competențe digitale necesare pentru RED (Resursa EDucațională).</legend>
+
+                  {{!-- NIVELURI --}}
+                  <div class="form-group row">
+                      <label for="valid-abil" class="col-sm-4 col-form-label">RED-ul necesită competențe digitale de nivelul</label>
+                      <div class="col-sm-8">
+                          <select class="form-control" id="valid-abil">
+                              <option value="minim">minim</option>
+                              <option value="mediu">mediu</option>
+                              <option value="avansat">avansat</option>
+                          </select>
+                      </div>
+                  </div>
+                  {{!-- NIVELURI END--}}
+
+                  {{!-- GRUPURILE ȚINTĂ --}}
+                  <div class="form-group row">
+                      <label for="valid-grup" class="col-sm-4 col-form-label">RED-ul se adresează în mod direct</label>
+                      <div class="col-sm-8">
+                          <select multiple class="form-control" id="valid-grup">
+                              <option value="elev">elev</option>
+                              <option value="profesor">profesor</option>
+                              <option value="altii">altă categorie</option>
+                          </select>
+                          <small class="form-text text-muted font-italic">Pentru a selecta mai multe opțiuni, apasă CTRL și click pe cel pe care dorești să-l adaugi sau să-l elimini din selecție</small>
+                      </div>
+                  </div>
+                  {{!-- GRUPURILE ȚINTĂ END--}}
+
+                  {{!-- NECESARE --}}
+                  <div class="form-group row">
+                      <label for="materiale" class="col-sm-4 col-form-label">Resursele necesare pentru utilizarea RED-ului la clasă</label>
+                      <div class="col-sm-8">
+                          <select multiple class="form-control" id="materiale">
+                              <option value="computer">computer</option>
+                              <option value="videoproiector">videoproiector</option>
+                              <option value="internet">Internet</option>
+                              <option value="audio">echipamente audio</option>
+                              <option value="consumabile">consumabile</option>
+                              <option value="haptice">haptice (senzori tactili, căști VR. dispozitive citire date biometrice / mediu)</option>
+                              <option value="mediu">mediu</option>
+                          </select>
+                          <small class="form-text text-muted font-italic">Pentru a selecta mai multe opțiuni, apasă CTRL și click pe cel pe care dorești să-l adaugi sau să-l elimini din selecție</small>
+                      </div>
+                  </div>
+                  {{!-- NECESARE END--}}
+              </fieldset>
+              {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI END --}}
+              {{!-- DEPENDINȚELE Resursei END --}}
+
+              <fieldset>
+                  <legend class="field-legend text-muted">Alte resurse necesare:</legend>
+                  {{!-- DEPENDINȚELE Resursei --}}
+                  <div class="form-group row">
+                      <label for="dependinte" class="col-sm-4 col-form-label">Alte dependințe ale RED-ului</label>
+                      <div class="col-sm-8">
+                          <textarea id="dependinte" class="form-control" aria-label="dependinte" rows="5"></textarea>
+
+                          <div class="alert alert-info form-text text-muted font-italic">
+                              <p>Se vor introduce toate detaliile privind necesitățile sau condiționalitățile pentru a deschide, citi, interpreta sau rula conținutul resursei.</p>
+                              <p>Se vor enumera materialele de care are nevoie elevul / profesorul / aparținătorul pentru a putea parcurge / înțelege/ asimila informațiile cuprinse în resursă.</p>
+                          </div>
+                      </div>
+                  </div>
+              </fieldset>
+              {{!-- DEPENDINȚELE Resursei END --}}
+              {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI END --}}
+
+              {{!-- RED componente --}}
+              <fieldset>
+                  <div class="form-group row">
+                      <label for="componente" class="col-sm-4 col-form-label">Resurse utilizate în elaborarea RED-ului</label>
+                      <div class="col-sm-8">
+                          <textarea id="componente" class="form-control" aria-label="Componente" rows="5"></textarea>
+                          <small class="form-text text-muted text-italic">
+                              Fiecare link va fi trecut pe câte un rând.
+                          </small>
+                      </div>
+                  </div>
+              </fieldset>
+              {{!-- RED componente END --}}
+
+          </div>
+          {{!-- Încărcarea fișierelor sau a fragmentului [form-group] END--}}
+
+          {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group]--}}
+          <div class="form-group align-self-center p-4 add-res-nav">
+            <a href="#" id="next-4" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 2</a>
+            <a href="#" id="next-5" class="btn btn-success add-res-nav-next">Mergi la pasul 4 <i class="fas fa-arrow-right"></i></a>
+          </div>
+          {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group] END --}}
+        </div>
+        {{!-- SECȚIUNEA - #3 Încarcă materialele END --}}
+      </div>
+      {{!-- FORM END --}}
+    </form>
+
+    <div class="p-4 accordion-frame">
+      {{!-- SECȚIUNEA - #4 Încarcă adiționale; această secțiune este în afara formului --}}
+      <div id="patru">
+          {{!-- Acționarea grupului de controale pentru #4 --}}
+          <div class="starting-heading" id="heading04">
+              <p>Pasul 4</p>
+              <h4>Introducere de conținut și încărcăre de fișiere</h4>
+          </div>
+          {{!-- Acționarea grupului de controale pentru #4 END--}}
+
+        {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
+        <div id="sec04" aria-labelledby="heading04" data-parent="#accordionFrm">
+          {{!-- RESURSELE care au stat la bază --}}
+            {{!-- EDITOR pentru introducerea letrică --}}
+            <fieldset>
+                <div class="form-group row">
+                    {{!-- <legend>Introdu mai jos în editor părțile componente ale RED-ului și o descriere, dacă este nevoie:</legend> --}}
+                    {{!-- Integrarea editorului de text --}}
+
+                    <div class="col-sm-12">
+                        <div>
+                          <label class="col-form-label">Folosește editorul de mai jos pentru creare de conținut sau poti creea și atașa conținut cu ajutorul platformei LIVRESQ (exportat ca fișier .zip)</label>
+                        </div>
+
+                        <div class="livresq-buttons">
+                            <div>
+                                <button class="btn btn-outline-secondary m-2" onclick="callLivresqGuideModal()"><i class="fa fa-play-circle" aria-hidden="true"></i> Cum folosesc LIVRESQ?</button>
+                            </div>
+                            <div>
+                              <a href="{{livresqProjectRequest}}" class="btn btn-success m-2" target="_blank">Editează cu LIVRESQ</a>
+                            </div>
+                            <div>
+                                <button onclick="livqUpload()" id="continutLivRes" class="btn btn-success m-2">Atașează conținutul LIVRESQ</button>
+                            </div>
+                        </div>
+
+                        <div class="editor-wrapper" id="editor-default">
+                            <label class="col-form-label">Editor</label>
+                            <div id="codex-editor"></div>
+                            <small class="form-text text-muted font-italic">Click pe zona editorului standard pentru a scrie / atașa conținut.</small>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            {{!-- EDITOR pentru introducerea letrică END --}}
+
+            {{!-- Selector de imagine pentru coperta resursei --}}
+            <fieldset>
+              <div class="form-group row">
+                <label for="imgSelector" class="col-sm-4 col-form-label">Selectează imaginea care va fi coperta resursei</label>
+                <div id="imgSelector" class="col-sm-8"></div>
+              </div>
+            </fieldset>
+            {{!-- Selector de imagine pentru coperta resursei END--}}
+
+            {{!-- RESURSELE care au stat la bază --}}
+            <fieldset>
+              <div class="form-group row">
+                  <label for="relatedRes" class="col-sm-4 col-form-label">Instrumente folosite în elaborarea RED-ului</label>
+                  <div id="relatedRes" class="col-sm-8">
+                      <textarea id="tools" class="form-control" aria-label="Componentele RED-ului"
+                                placeholder="ex: www.edmodo.com, https://kahoot.com/, http://openboard.ch/, etc." rows="5"></textarea>
+
+                      <small class="form-text text-muted font-italic">Completează menționând fiecare link separat prin virgule</small>
+                  </div>
+              </div>
+            </fieldset>
+            {{!-- RESURSELE care au stat la bază END --}}
+          
+            {{!-- ETICHETE --}}
+            <fieldset>
+              <p id="tags"></p>
+              <div id="etichete" class="form-group row">
+                  <label for="redTags" class="col-sm-4 col-form-label">Atribuie alte etichete RED-ului</label>
+                  
+                  <div id="redTags" class="col-sm-8">
+                      <textarea id="eticheteRed" class="form-control" aria-label="Componentele RED-ului"
+                          placeholder="ex: palindrom, funcție matematică, CevaPersonalizat01" rows="5"></textarea>
+                      <div class="alert alert-info form-text text-muted font-italic" role="alert">
+                          <p>Primele etichete sunt introduse automat în funcție de informațiile introduse sau selectate.</p>
+                          <p>Se vor completa etichetele dorite delimitate de virgule.</p>
+                          <p>Etichetele pot fi formate dintr-unul singur sau o sintagmă formată din maxim trei cuvinte alăturate care formează un sens unitar indivizibil.</p>
+                          <p>De exemplu, o formulă chimică precum „acidul dezoxiribonucleic” este acceptată.</p>
+                      </div>
+                  </div>
+              </div>
+            </fieldset>
+            {{!-- ETICHETE END --}}
+
+          {{!-- Bibliografie --}}
+          <fieldset>
+            <div class="form-group row">
+                <label for="bibliografieCtn" class="col-sm-4 col-form-label">Bibliografia utilizată</label>
+                <div id="bibliografieCtn" class="col-sm-8">
+                    <textarea id="bibliografie" class="form-control" aria-label="Bibliografia" rows="5">Încurajăm redactarea referințelor respectând APA 6.</textarea>
+                    <small class="form-text text-muted font-italic">Fiecare referință bibliografică va ocupa un singur rând.</small>
+                </div>
+            </div>
+          </fieldset>
+          {{!-- Bibliografie END --}}
+
+        </div>
+        {{!-- Verificarea fișei și constituirea înregistrării [form-group] END --}}
+
+        <div id="submitWrap" class="form-group add-res-nav p-4" data-parent="#accordionFrm">
+
+            {{!-- Înapoi la pasul 3 [form-group]--}}
+              <a href="#" id="next-6" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 3</a>
+            {{!-- Înapoi la pasul 4 [form-group] END --}}
+            <div class="add-res-nav-ending">
+              <button id="submit" type="button" class="btn btn-success">Adaugă resursa</button>
+              <button id="delete" type="button" class="btn btn-danger">Renunță</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  {{!-- SECȚIUNEA - #4 Verifică fișa și trimite resursa END --}}
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="genericModal" tabindex="-1" role="dialog" aria-labelledby="genericModaTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="genericModaTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="genericModalContent"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+  /**
+  * Funcția are rolul de a adăuga un titlu într-o listă de control
+  * De fapt, creează un nou element input și ul nou selector de limbă pentru elementul input:text nou creat
+  * @param {String} idSource este elementul input:text în care a fost introdus un titlu
+  * @param {String} idTraget este elementul ul în care apar titlurile
+  */
+  function addToList (idSource, idTarget) {
+    document.querySelector(idSource).addEventListener('blur', (event) => {
+      let insertion = document.querySelector(idTarget);
+      let liElem = document.createElement('li');
+      const cls = ["list-group-item","d-flex","justify-content-between","align-items-center"];
+      liElem.classList.add(...cls);
+    });
+  }
+</script>
+

@@ -1,7 +1,8 @@
 require('dotenv').config();
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const Mgmtgeneral = require('../../models/MANAGEMENT/general'); // Adu modelul management
 
-module.exports = (passport) => {
+module.exports = async function (passport) {
     // Pentru a putea susține sesiuni de login persistent, 
     // Passport trebuie să serializeze și deserializeze 
     // obiectul user din sesiune
@@ -11,8 +12,9 @@ module.exports = (passport) => {
     passport.deserializeUser(function(obj, cb) {
         cb(null, obj);
     });
-    // CONSTANTE
-    let logoimg = "img/" + process.env.LOGO;
+    
+    // LOGO
+    let LOGO_IMG = "img/" + process.env.LOGO;
 
     /* === STRATEGIA GOOGLE === */
     let cbGoogleStrategy = require('./google-oauth20.clbk'); // Încarcă funcția care tratează autentificarea cu Google pentru strategia dedicată
@@ -29,9 +31,9 @@ module.exports = (passport) => {
     // returnează un obiect ale cărui metode vor fi tot atâtea middleware-uri
     return {
         auth(req, res){
-            res.render('auth', {
+            res.render(`auth_${gensettings.template}`, {
                 title:    "auth",
-                logoimg
+                logoimg:   `${gensettings.template}/${LOGO_IMG}`,
             });
         },
         ensureAuthenticated(req, res, next){

@@ -1,22 +1,42 @@
 require('dotenv').config();
-const mongoose = require('mongoose');
-// const passportLocalMongoose = require('passport-local-mongoose'); // https://www.npmjs.com/package/passport-local-mongoose
-const esClient = require('../elasticsearch.config');
-const schema  = require('./user-es7');
-const ES7Helper= require('./model-helpers/es7-helper');
+const mongoose              = require('mongoose');
+const passportLocalMongoose = require('passport-local-mongoose');
+const bcrypt                = require('bcrypt');
+const jwt                   = require('jsonwebtoken');
+const esClient              = require('../elasticsearch.config');
+const schema                = require('./user-es7');
+// const ES7Helper             = require('./model-helpers/es7-helper');
+const logger                = require('../util/logger');
+
+/* INDECȘII ES7 */
+let {getStructure} = require('../util/es7');
+let RES_IDX_ES7 = '';
+let RES_IDX_ALS = '';
+let USR_IDX_ES7 = ''; 
+let USR_IDX_ALS = '';
+
+// console.log("AVEM", getStructure());
+getStructure().then((val) => {
+    // creează valori default pentru nume   le indecșilor ES7 necesari în cazul în care indexul și alias-ul său nu au fost create încă
+    USR_IDX_ALS = val.USR_IDX_ALS ?? 'users';
+    USR_IDX_ES7 = val.USR_IDX_ES7 ?? 'users0';
+    RES_IDX_ALS = val.RES_IDX_ALS ?? 'resursedus';
+    RES_IDX_ES7 = val.RES_IDX_ES7 ?? 'resursedus0';
+}).catch((error) => {
+    console.log(`Schema mongoose pentru resurse`, error);
+    logger.error(error);
+});
 
 // Definirea unei scheme necesare verificării existenței utilizatorului.
-var Schema = mongoose.Schema;
-var User = new Schema({
-    _id: Schema.Types.ObjectId,
+let User = new mongoose.Schema({
     created:  Date,
     avatar: String,
     email: {
         type: String,
+        required: true,
+        unique: true,
         index: true
     },
-    hash: String,
-    salt: String, /* pentru formul de creare cont, sunt introduse automat de `passport-local-mongoose` */
     googleID: String,
     googleProfile: {
         name:          {type: String},
@@ -41,11 +61,9 @@ var User = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'comment'
     },
-    /* Primii pași pentru legarea conturilor */
-    localAccounts: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }
+    token: String,
+    salt: String,
+    hash: String
 },{
     toJSON: {
         virtuals: true
@@ -76,73 +94,74 @@ User.post('save', function clbkUsrSave (doc, next) {
             family_name: doc.googleProfile.family_name
         }
     };
-    ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.USR_IDX_ES7, process.env.USR_IDX_ALS);
+    // ES7Helper.searchIdxAndCreateDoc(schema, data, process.env.USR_IDX_ES7, process.env.USR_IDX_ALS);
     next(); 
 });
 
 // Adăugare middleware pe `post` pentru toate operațiunile `find`
-User.post(/^find/, async function clbkUsrFind (doc, next) {
-    // Când se face căutarea unui utilizator folosindu-se metodele`find`, `findOne`, `findOneAndUpdate`, vezi dacă a fost indexat. Dacă nu, indexează-l!
-    try {
-        // cazul `find` când rezultatele sunt multiple.
-        if (Array.isArray(doc)){
-            doc.map(async (user) => {
-                const {body} = await esClient.exists({
-                    index: process.env.USR_IDX_ALS,
-                    id: user._id
-                });
-                // console.log("Userul este indexat în ES? ", body);            
-                if (body == false) {
-                    // indexează documentul
-                    const data = {
-                        id:              user._id,
-                        created:         user.created,
-                        email:           user.email,
-                        roles: {
-                            admin:       user.roles.admin,
-                            public:      user.roles.public,
-                            rolInCRED:   user.roles.rolInCRED,
-                            unit:        user.roles.unit
-                        },
-                        ecusoane:        user.ecusoane,
-                        constributions:  user.contributions,
-                        googleID:        user.googleID,
-                        googleProfile: {
-                            name:        user.googleProfile.name,
-                            family_name: user.googleProfile.family_name
-                        }
-                    };
-                    ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.USR_IDX_ES7, process.env.USR_IDX_ALS);
-                }
-            });
-        } else {
-            const data = {
-                id:              doc._id,
-                created:         doc.created,
-                email:           doc.email,
-                roles: {
-                    admin:       doc.roles.admin,
-                    public:      doc.roles.public,
-                    rolInCRED:   doc.roles.rolInCRED,
-                    unit:        doc.roles.unit
-                },
-                ecusoane:        doc.ecusoane,
-                constributions:  doc.contributions,
-                googleID:        doc.googleID,
-                googleProfile: {
-                    name:        doc.googleProfile.name,
-                    family_name: doc.googleProfile.family_name
-                }
-            };
-            ES7Helper.searchIdxAlCreateDoc(schema, data, process.env.USR_IDX_ES7, process.env.USR_IDX_ALS);
-        }
-    } catch (error) {
-        console.error(JSON.stringify(error, null, 2));
-    }
-    next();
-});
+// User.post(/^find/, async function clbkUsrFind (doc, next) {
+//     // Când se face căutarea unui utilizator folosindu-se metodele`find`, `findOne`, `findOneAndUpdate`, vezi dacă a fost indexat. Dacă nu, indexează-l!
+//     try {
+//         // cazul `find` când rezultatele sunt multiple.
+//         if (Array.isArray(doc)){
+//             doc.map(async function mapperClbkUsr (user) {
+//                 const {body} = await esClient.exists({
+//                     index: USR_IDX_ALS,
+//                     id: user._id
+//                 });
+//                 // console.log("Userul este indexat în ES? ", body);            
+//                 if (body == false) {
+//                     // indexează documentul
+//                     const data = {
+//                         id:              user._id,
+//                         created:         user.created,
+//                         email:           user.email,
+//                         roles: {
+//                             admin:       user.roles.admin,
+//                             public:      user.roles.public,
+//                             rolInCRED:   user.roles.rolInCRED,
+//                             unit:        user.roles.unit
+//                         },
+//                         ecusoane:        user.ecusoane,
+//                         constributions:  user.contributions,
+//                         googleID:        user.googleID,
+//                         googleProfile: {
+//                             name:        user.googleProfile.name,
+//                             family_name: user.googleProfile.family_name
+//                         }
+//                     };
+//                     ES7Helper.searchIdxAlCreateDoc(schema, data, USR_IDX_ES7, USR_IDX_ALS);
+//                 }
+//             });
+//         } else {
+//             const data = {
+//                 id:              doc._id,
+//                 created:         doc.created,
+//                 email:           doc.email,
+//                 roles: {
+//                     admin:       doc.roles.admin,
+//                     public:      doc.roles.public,
+//                     rolInCRED:   doc.roles.rolInCRED,
+//                     unit:        doc.roles.unit
+//                 },
+//                 ecusoane:        doc.ecusoane,
+//                 constributions:  doc.contributions,
+//                 googleID:        doc.googleID,
+//                 googleProfile: {
+//                     name:        doc.googleProfile.name,
+//                     family_name: doc.googleProfile.family_name
+//                 }
+//             };
+//             ES7Helper.searchIdxAlCreateDoc(schema, data, USR_IDX_ES7, USR_IDX_ALS);
+//         }
+//     } catch (error) {
+//         console.error(JSON.stringify(error, null, 2));
+//         logger.error('[models::user::POST-find-hook]', error.message);
+//     }
+//     next();
+// });
 
-// TODO: Atunci când ștergi un utilizator, generează o mare arhivă cu propriile conținuturi
+// _TODO: Atunci când ștergi un utilizator, generează o mare arhivă cu propriile conținuturi
 // Înainte să ștergi un utilizator, șterge-i toate comentariile dacă există vreunul.
 User.pre('remove', async function (next) {
     // în cazul în care vrem să-i ștergem comentariile
@@ -161,6 +180,22 @@ User.virtual('resurse', {
 });
 //https://mongoosejs.com/docs/populate.html#populate-virtuals
 
-// User.plugin(passportLocalMongoose);
+// Verificarea credențialeleor în cazul folosirii jsontoken
+// Metoda statică poate fi accesată din model (static -> metodele modelului creat)
+User.static.findByCredentials = async (email, password) => {
+    const user = await User.findOne({email});
+    if (!user) {
+        throw new Error('Logare eșuată!');
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        throw new Error('Logare eșuată!');
+    }
+    return user;
+};
 
-module.exports = User;
+// module.exports = User;
+/**
+ * Modelul mongoose pentru un User
+ */
+module.exports = new mongoose.model('user', User);

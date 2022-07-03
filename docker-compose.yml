@@ -1,50 +1,166 @@
-version: '2.4'
+version: '3.9'
 services:
-
-  # nginx-proxy:
-  #   image: jwilder/nginx-proxy
-  #   ports:
-  #     - "80:80"
-  #   volumes:
-  #     - /var/run/docker.sock:/tmp/docker.sock
-
-  # nginx:
-  #   image: nginx
-  #   environment:
-  #     - VIRTUAL_HOST=serviciul1.localhost
-
-  # https://www.digitalocean.com/community/tutorials/containerizing-a-node-js-application-for-development-with-docker-compose
-  infrastructura:
+  redis:
+    image: 'redis:latest'
+    container_name: redis-repo
+    volumes:
+      - 'redisdata:/data:rw'
+    ports:
+      - '6379:6379'
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      dockernet: null
+  es01:
+    build:
+      context: ./assets/elasticsearch/
+      args:
+        ELK_VERSION: '${ELK_VERSION:-7.12.0}'
+    container_name: es01
+    volumes:
+      - 'data01:/usr/share/elasticsearch/data'
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02
+      - 'cluster.initial_master_nodes=es01,es02'
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms${ES_HEAP_SIZE:-2g} -Xmx${ES_HEAP_SIZE:-2g}'
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: 'curl --silent --fail -X GET "localhost:9200/_cluster/health?wait_for_status=green&timeout=1s" || exit 1'
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    networks:
+      dockernet: null
+  es02:
+    build:
+      context: ./assets/elasticsearch/
+      args:
+        ELK_VERSION: '${ELK_VERSION:-7.12.0}'
+    container_name: es02
+    volumes:
+      - 'data02:/usr/share/elasticsearch/data'
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01
+      - 'cluster.initial_master_nodes=es01,es02'
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms${ES_HEAP_SIZE:-2g} -Xmx${ES_HEAP_SIZE:-2g}'
+    ports:
+      - '9201:9200'
+      - '9301:9300'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: 'curl --silent --fail -X GET "localhost:9200/_cluster/health?wait_for_status=green&timeout=1s" || exit 1'
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    networks:
+      dockernet: null
+  kibana:
+    build:
+      context: ./assets/kibana/
+      args:
+        ELK_VERSION: '${ELK_VERSION:-7.12.0}'
+    container_name: kibana
+    volumes:
+      - type: bind
+        source: ./assets/kibana/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    ports:
+      - '5601:5601'
+    healthcheck:
+      test: 'curl --silent --fail http://0.0.0.0:5601/login'
+      retries: 6
+    depends_on:
+      - es01
+      - es02
+    networks:
+      dockernet: null
+  mongo:
+    image: 'mongo:4.4.5-bionic'
+    container_name: mongo
+    env_file:
+      - ./.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - 'MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}'
+      - 'MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWD}'
+      - 'MONGO_INITDB_DATABASE=${MONGO_DB}'
+    volumes:
+      - 'mongodata:/data/db'
+    command:
+      - '--auth'
+    ports:
+      - '27017:27017'
+    healthcheck:
+      test: 'echo ''db.runCommand("ping").ok'' | mongo localhost:27017/test --quiet'
+    networks:
+      dockernet: null
+  nginx:
+    image: 'nginx:stable-alpine'
+    container_name: nginx
+    restart: always
+    ports:
+      - '80:80'
+    volumes:
+      - './assets/nginx/logs:/var/log/nginx'
+      - './assets/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro'
+      - /var/log/nginx/log
+    healthcheck:
+      test: 'curl --fail -s http://127.0.0.1:3000 || exit 1'
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      dockernet: null
+  nodeapp:
     build:
       context: .
       dockerfile: Dockerfile
-      target: prod
-    image: nodejs
-    container_name: nodejs
-    env_file: .env
-    environment:
-      - MONGO_USERNAME=$MONGO_USER
-      - MONGO_PASSWORD=$MONGO_PASSWD
-    ports:
-      - '80:8080'
+      target: devel
+      args:
+        FRONT_END_PORT: 8080
+    image: 'redcolector-dev:${APP_VER}'
+    container_name: redcolectordevel
+    stdin_open: true
+    env_file:
+      - ./.env
     volumes:
-      - .:/var/www/kolector
-    command: ./wait-for.sh db:27017 -- /home/node/app/node_modules/.bin/nodemon app.js
-    depends_on: 
-      servicenode:
-        condition: service_healthy
-
-  servicenode:
-    image: node:14.4.0
-    command: nodemon --inspect=0.0.0.0:9229 app.js
-    environment: 
-      - NODE_ENV=development
+      - './repo:/usr/src/redcolector/repo'
+      - './:/usr/src/redcolector'
+      - /usr/src/redcolector/node_modules
     ports:
-      - '8080:80'
-      - '9229:9229'
+      - '8080:8080'
+    restart: always
+    command:
+      - dumb-init
+      - nodemon
+      - app.js
     healthcheck:
-      # asigură-te că imaginea de node are curl preinstalat
-      test: curl -f http://127.0.0.1
+      test: 'curl --silent --fail localhost:8080 || exit 1'
+      interval: 10s
+      timeout: 30s
+      retries: 3
     depends_on:
       mongo:
         condition: service_healthy
@@ -52,90 +168,15 @@ services:
         condition: service_healthy
       es01:
         condition: service_healthy
-      es02:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-
-  mongo:
-    image: mongo:4.2.8-bionic
-    env_file: .env
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWD
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
-  
-  redis:
-      image: redis:alpine
-      healthcheck:
-        test: ["CMD", "redis-cli", "ping"]
-        interval: 1s
-        timeout: 3s
-        retries: 30
-  
-  es01:
-    image: elasticsearch:7.8.0
-    container_name: es01
-    environment:
-      - node.name=elasticsearch
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es02
-      - cluster.initial_master_nodes=es01,es02
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      # Mărește la 2G: -Xmx2g -Xms2g
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data01:/usr/share/elasticsearch/data
-    healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
-
-  es02:
-    image: elasticsearch:7.8.0
-    container_name: es02
-    environment:
-      - node.name=elasticsearch
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es02
-      - cluster.initial_master_nodes=es01,es02
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data02:/usr/share/elasticsearch/data
-    healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
-  # sudo nano /etc/sysctl.conf unde adaugi vm.max_map_count=262144
-  # aplică setarea cu sysctl -w vm.max_map_count=262144
-  kibana:
-    image: kibana:7.8.0
-    container_name: kibana
-    depends_on:
-      es01:
-        condition: service_healthy
-      es02:
-        condition: service_healthy
-    ports:
-      - "5601:5601"
-    environment:
-      - ELASTICSEARCH_URL=http://localhost:9200
-      - XPACK_MONITORING_ENABLED=false
-
+    networks:
+      dockernet: null
 volumes:
+  redisdata: null
+  mongodata: null
   data01:
     driver: local
   data02:
     driver: local
+networks:
+  dockernet:
+    driver: bridge

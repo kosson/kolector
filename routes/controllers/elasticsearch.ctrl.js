@@ -29,8 +29,10 @@ exports.findInIdx = async function findInIdx (idxname, queryString, TrFaFields) 
             // from: frompg,
             // to: topg
         };
+
         // introdu termenii de căutare la nivel individual în `must` din `must_match_all`
-        for (let fragment of parts) {
+        let fragment;
+        for (fragment of parts) {
             let obi_must = {
                 multi_match: {
                     query: fragment,
@@ -44,7 +46,8 @@ exports.findInIdx = async function findInIdx (idxname, queryString, TrFaFields) 
         // console.log(TrFaFields);
         
         if (TrFaFields.length >= 1) {
-            for (let tfts of TrFaFields) {
+            let tfts;
+            for (tfts of TrFaFields) {
                 let filter_must = {
                     term: {
                         [tfts[0]]: tfts[1]
@@ -60,7 +63,7 @@ exports.findInIdx = async function findInIdx (idxname, queryString, TrFaFields) 
         });
         return rezultate;
     } catch (error) {
-        console.log(error);
+        console.log(`[elasticsearch.ctrl]::findInIdx()->Eroarea: `, error);
     }
 };
 

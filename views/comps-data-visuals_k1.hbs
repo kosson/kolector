@@ -1,0 +1,40 @@
+{{!< k1/layout}}
+{{> nav-administrator}}
+{{!-- {{> messages}} --}}
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
+<div id="content">
+    <div class="title"><h1>Competențe specifice</h1></div>
+    <section class="container p-4 col-sm-11 d-flex">
+        <div>
+            <a href="/administrator/compets/new" type="button" class="btn btn-primary">Creează competență nouă</a>
+        </div>
+        <div class="ml-4">
+            <form>
+                <div class="form-row align-items-center">
+                    <div class="form-group col-auto">
+                        {{!-- <label for="fileloadercs">Încarcă</label> --}}
+                        <input type="file" class="form-control-file" id="fileloadercs">
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary mb-2" onclick="sendCsv()">Încarcă fișier</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section class="container-fluid" id="comps-visuals">
+        {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
+        <div id="visuals" class="tableDisplay">
+        </div>
+    </section>
+</div>
+
+{{!-- Tabelul competențelor existente --}}
+<template id="compsTbl" data-sort='[[ 0, "asc" ]]'>
+    <div id="compsTab" class=""></div>
+</template>
+
+{{#each scripts}}
+    <script type="application/javascript" src="/{{template}}{{script}}"></script>
+{{/each}}

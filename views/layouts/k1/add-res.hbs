@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ro-RO">
+    <head prefix="dc: http://purl.org/dc/elements/1.1 dcterms: http://purl.org/dc/terms">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <meta name="keywords"    content="{{brandname}}">
+        <meta name="description" content="{{description}}">
+        <meta name="generator"   content="{{brandname}}">
+        <meta name="creator"     content="{{creator}}">
+        <meta name="author"      content="{{author}}">
+        <meta name="publisher"   content="{{publisher}}">
+        
+        <meta property="dc:title"       content="{{brandname}}">
+        <meta property="dc:description" content="{{description}}">
+        <meta property="dc:identifier"  content="{{data.uuid}}">
+        <meta property="dc:publisher"   content="{{data.publisher}}">
+        
+        <meta itemprop="name"           content="{{brandname}}">
+        <meta itemprop="description"    content="{{description}}">
+
+        <meta property="uuid"           content="{{data.uuid}}">
+        
+        {{!-- SOCKET --}}
+        <script type="application/javascript" src="/{{template}}/lib/npm/socket.io.min.js"></script>
+
+        {{!-- ES6 SHIM --}}
+        <script type="application/javascript" src="/{{template}}/lib/es6-shim/es6-shim.min.js"></script>
+
+        {{!-- MAIN --}}
+        <link rel="stylesheet" type="text/css" href="/{{template}}/css/main.css">
+
+        {{!-- FONTAWESOME --}}
+        <script type="application/javascript" src="/{{template}}/lib/npm/all.min.js"></script>
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/all.min.css">
+
+        {{!-- TIMELINE --}}
+        <script type="application/javascript" src="/{{template}}/lib/timeline3/js/timeline.js"></script>
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/{{template}}/lib/timeline3/css/timeline.css">
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/{{template}}/lib/timeline3/css/fonts/font.roboto-megrim.css">
+
+        {{!-- JQUERY TOAST --}}
+        <link rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/jquery.toast.min.css">
+
+        {{!-- BOOTSTRAP 4  CSS--}}        
+        <link rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/bootstrap.min.css">
+
+        {{!-- HANDLEBARS --}}
+        <script type="application/javascript" src="/{{template}}/lib/npm/handlebars.min.js"></script>
+
+        {{!-- Preîncărcarea modulelor --}}
+        {{#each modules}}
+            <link rel="modulepreload" href="/{{template}}{{module}}"></script>
+        {{/each}}
+
+        {{!-- Încărcarea modulelor --}}
+        {{#each modules}}
+            <script type="module" src="/{{template}}{{module}}"></script>
+        {{/each}}
+
+        {{!-- Încărcarea scripturilor --}}
+        {{#each scripts}}
+            <script defer type="application/javascript" src="/{{template}}{{script}}"></script>
+        {{/each}}
+
+        <title>{{title}}</title>
+    </head>
+    <body>
+
+        {{{body}}}
+
+        <footer class="footer">
+            {{> footer_k1}}
+        </footer>
+        
+        <script type="application/javascript" src="/{{template}}/js/custom.js"></script>
+    </body>
+</html>

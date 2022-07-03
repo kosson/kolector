@@ -1,108 +1,96 @@
-// Funcție de paginare
-
+/**
+ * Funcție de paginare a rezultatelor obținute din MongoDB
+ * @param {Object} req 
+ * @param {Object} model 
+ * @returns 
+ */
 exports.pagination = async function pagination (req, model) {
     try {
+        // https://cloudnweb.dev/2021/04/pagination-nodejs-mongoose/
         // req trebuie să fie un obiect care să aibă următoarea semnătură
         /*
         {
-            query: {
-                projection: {},
-                select: <string>,
-                exclude: <array>,
-                sortby: <array>,    
-                sortDefaultField: <string>
+            "query": {
+                "projection": {
+                "expertCheck": true,
+                "level": {
+                    "$in": [
+                    "Clasa a IV-a",
+                    "Clasa a V-a",
+                    "Clasa a VI-a"
+                    ]
+                },
+                "discipline": {
+                    "$in": [
+                    "Istorie",
+                    "Biologie"
+                    ]
+                }
+                },
+                "select": "date level title autori description etichete",
+                "exclude": [],
+                "sortby": [],
+                "sortDefaultField": "date"
             },
-            pageNr: <number>,
-            limitNr: <number>,
-            skipNr: <number>
+            "pageNr": 1,
+            "limitNr": 10,
+            "skipNr": 20
         }
         */
 
-        let query; // construiește obiectul de interogare pentru Mongoose
-        // serializează obiectul cerere
-        let queryStr = JSON.stringify(req.query.projection);
-        // creează operatorii dacă aceștia apar în obiectul cerere -> `$gt`, `$gte`, etc.
-        queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)/g, match => `$${match}`);
+        console.log(`Am primit următoarea cerere: `, JSON.stringify(req, null, 2));
 
-        // reatribuirea obiectului după prelucrare
-        req.query.projection = JSON.parse(queryStr);
+        /* === TRATAREA OBIECTULUI CERERII === */
+        let queryStr = JSON.stringify(req.query.projection);    // serializează obiectul cerere
+        req.query.projection = JSON.parse(queryStr);            // reatribuirea obiectului după prelucrare
+        let obi = req.query.projection ?? {};                   // pentru fiecare cheie valoare din projection, adaugă într-un find
+        // console.log('[pagination.ctrl] obiectul criteriilor de selectie ptr Mongoose ', JSON.stringify(obi, null, 2));
 
-        // pentru fiecare cheie valoare din projection, adaugă într-un find
-        let k, v, obi = {};
-        for ([k, v] of Object.entries(req.query.projection)) {
-            if (Array.isArray(v)) {
-                obi[`${k}`] = {$in: v}; // https://stackoverflow.com/questions/18148166/find-document-with-array-that-contains-a-specific-value FRACK $all!!!
-            } else {
-                obi[`${k}`] = v; // dacă nu e array, ai o singură valoare string
-            }
-        }
-        // console.log('[pagination.ctrl] obiectul criteriilor de selectie ptr Mongoose ', obi);
-
-        query = model.find(obi); // FIXME: Vezi cum se poate face căutare în cazul în care un câmp are drept valoare un array
-        // https://mongoosejs.com/docs/tutorials/query_casting.html -> Implicit $in
-        
-        let total; 
-        model.where(obi).countDocuments((err, nr) => {
-            if (err) {
-                console.error(err);
-            }
-            total = nr;
-        });
-        // console.log("Numarul datelor este: ", model.where(obi).countDocuments()); 
-
-        // Adu-mi doar următorul subset:
-        query.select(req.query.select);
-
-        // Șterge câmpurile care nu vrei să aterizeze în obiectul `Query`
-        if (req.query.exclude) {
-            req.query.exclude.forEach(field => delete query[field]);
+        /* === INSTANȚIEREA OBIECTULUI QUERY === */
+        let query = model.find(obi);    // https://mongoosejs.com/docs/tutorials/query_casting.html -> Implicit $in
+        query.select(req.query.select); // Adu-mi doar câmpurile dorite din înregistrare
+        if (req.query.exclude.length > 0) {
+            req.query.exclude.forEach(field => delete query[field]);    // Șterge câmpurile menționate de client din obiectul `Query`
         }
         
-        // query.countDocuments(function clbkCount (err, count) {
-        //     if (err) {
-        //         console.error(err);
-        //         console.log("Numărul documentelor găsite este ", count);
-        //         total = count;
-        //     }
-        // }); // numărul total de documente găsite
+        /* === NUMARUL TOTAL DE ÎNREGISTRĂRI GĂSITE === */
+        let total = await model.where(obi).countDocuments();
+        // console.log("[pagination.ctrl] Numarul datelor este: ", total);
 
         /* === PAGINAREA === */
-        const page     = parseInt(req.pageNr, 10) || 1;   // pagina 1 va fi din oficiu, dacă nu avem valoare precizată pentru pagină
-        const limit    = parseInt(req.limitNr, 10) || 10; // dacă nu este precizat numărul de rezultate afișat de pagină, trimite din oficiu 10
-        const startIdx = (page -1 ) * limit;              // calculează câte rezultate trebuie sărite pentru a ajunge la fereastra de date necesare
-        const endIdx   = page * limit;
-        const allDocs  = await model.countDocuments();
-        // console.log("[pagination] indexul de start este ", startIdx, " iar limita este ", limit);
+        let pagination = {
+            next: {},
+            prev: {}
+        };  // obiect de gestiune al paginării
+        let page     = Math.max(0, req.pageNr) === 0 ? 1  : Math.max(0, req.pageNr);     // pagina 1 va fi din oficiu, dacă nu avem valoare precizată pentru pagină; `Math.max(0, req.pageNr)` acoperă cazul `null` din client
+        let limit    = Math.max(0, req.limitNr) === 0 ? 10 : Math.max(0, req.limitNr);   // dacă nu este precizat numărul de rezultate afișat de pagină, trimite din oficiu 10
+        console.log(`Valoarea lui page este `, page, ` iar valoarea limit este `, limit);
 
-        // Setează indexul de la care culegi setul de date și care este limita de înregistrări
+        let startIdx = (page - 1) * limit;  // calculează câte rezultate trebuie sărite pentru a ajunge la fereastra de date necesare
+        let endIdx   = page * limit;
+        console.log("[pagination.ctrl] indexul de start este ", startIdx, " iar indexul de final este ", endIdx);
+
+        // dacă ești pe prima pagină, nu vrei să apară `previous`, iar dacă ești pe ultima, nu vrei să apară `next`.
+        /* ==== NEXT page ==== */
+        if (endIdx < total) {
+            pagination.next['page'] = page++;
+            pagination.next['limit'] = limit;
+        }
+
+        /* ==== PREVIOUS page ==== */
+        if (startIdx > 0) {
+            pagination.prev['page'] = page--;
+            pagination.prev['limit'] = limit;
+        }
+
+        /* === SETARE SKIP și LIMIT pe obiectul QUERY === */
         query.skip(startIdx).limit(limit);
 
-        // execută interogarea bazei și adu rezultatele (se creează și cursorul cu această ocazie)
+        /* === EXTAGE DOCUMENTELE ===*/
         let date = await query.exec();
-        // console.log("[pagination.ctrl] datele aduse din Mongo sunt: ", date.length, " dintr-un total de ", total);
-    
-        // rezultatul paginării
-        const pagination = {};
-    
-        // dacă ești pe prima pagină, nu vrei să apară `previous`, iar dacă ești pe ultima, nu vrei să apară `next`.
-        /* === NEXT page === */
-        if (endIdx < total) {
-            pagination.next = {
-                page: page + 1,
-                limit
-            };
-        }
-        /* === PREVIOUS page === */
-        if (startIdx > 0) {
-            pagination.prev = {
-                page: page - 1,
-                limit
-            };
-        }
-    
-        // console.log("Număr total documente găsite: ", total, " din ", allDocs);
-        // constituie pachetul de date necesar clientului
-        return {date, total, allDocs, pagination}; 
+
+        // datele necesare clientului
+        return {date, total, pagination}; 
     } catch (error) {
         console.log(error);
     }

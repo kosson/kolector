@@ -57,8 +57,11 @@ typings/
 # next.js build output
 .next
 
-# nu salva toate bibliotecile de cod transferate din npm
-public/lib
+# nu salva bibliotecile de cod transferate din npm
+# public/lib/npm
+
+# nu salva bundle-ul creat de Webpack
+public/bundle
 
 # nu salva resursele de test din repo
 repo
@@ -78,6 +81,17 @@ ecosystem.config.js
 # ignoră logul
 log.md
 
-# ignoră cheile
-id_rsa_priv.pem
-id_rsa_pub.pem
+# ignoră directorul backup
+backup
+
+# ignoră directorul initdata
+initdata
+
+# ignoră regulile de linting
+.eslintrc.json
+
+# ignoră tururile ghidate
+.tours
+
+# ignoră cheile de securitate create local
+assets/ssl_keys

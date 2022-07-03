@@ -16,12 +16,14 @@ function content2html (resursa) {
                     </div>\n`;
                     break;
                 case 'image':
+                    obj.data.file.url !== undefined ? obj.data.file.url : '/img/sigmund-TnEe6BdBC2M-unsplash.jpg';
+                    obj.data.caption ? obj.data.caption : '';
                     articleHTML += `<div class="ce-block">
                     <div class="ce-block__content">
                         <div class="ce-paragraph cdx-block">
-                            <figure>
+                            <figure class="text-center">
                                 <img src="${obj.data.file.url}" alt="${obj.data.caption}" width="300"/>
-                                <figcaption class="text-center">
+                                <figcaption>
                                     ${obj.data.caption}
                                 </figcaption>
                             </figure>
@@ -90,6 +92,24 @@ function content2html (resursa) {
                     </div>\n`;
                     break;
                 case 'attaches':
+                    /*
+                        {
+                            type: 'attaches',
+                            data: {
+                                file: {
+                                url: 'http://localhost:8080/repo/5ebaf1ae32061d3fa4b7f0ae/a18d6328-25a6-4e93-8a0b-2f3feb8a74b6/data/Alcatuirea_atomului-1595857287267.zip',
+                                name: 'Alcatuirea_atomului-1595857287267.zip',
+                                extension: 'zip'
+                                },
+                                title: 'Alcatuirea_atomului-1595857287267.zip'
+                            }
+                        }
+                    */
+                    // rezolvă cazul în care nu există fișiere atașate
+                    if (!obj.data.file) {
+                        break;
+                    }
+
                     articleHTML += `<div class="ce-block">
                         <div class="ce-block__content">
                             <a href="${obj.data.file.url}">${obj.data.file.name}</a>

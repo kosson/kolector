@@ -1,0 +1,79 @@
+{{!< k1/layout}}
+{{> nav-resurse}}
+{{!-- {{> messages}} --}}
+
+    <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
+    {{!-- {{#each styles}}
+        <link rel="stylesheet" type="text/css" href="/{{template}}{{style}}">
+    {{/each}} --}}
+
+    <div class="container">
+        <div>
+            <h3>Contribuții</h3>
+        </div>
+        <div id="resurseincred" class="units">
+            {{!-- Randează ultimele 9 resurse create --}}
+            {{#each resurse}}        
+                <div class="unit4log">
+                    <div class="unit-header">
+                        <h3 class="unit4log-title">
+                            {{#if this.alias}}
+                                <a href="/log/{{this.alias}}" maxlength="4">{{this.title}}</a>
+                            {{else}}
+                                <a href="/log/{{this._id}}" maxlength="4">{{this.title}}</a>
+                            {{/if}}
+                            <button type="button" class="btn btn-link log-trash-btn">
+                                <span class="unit4log-trash"><i class="bi bi-trash"></i></span>
+                            </button>
+                        </h3>
+                        <div class="unit4log-info">
+                            {{#if this.autor}}
+                                <p class="unit4log-subtitle">{{this.autor}}</p>
+                            {{else}}
+                                <p class="unit4log-subtitle">{{this.idContributor}}</p>
+                            {{/if}}
+                            <p class="unit4log-subtitle">{{this.dataRo}}</p>
+                        </div>
+                    </div>
+                    {{!-- <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}"> --}}
+                    <div class="unit4log-body">
+                        <main class="unit4log-description">
+                            <aside class="unit4log-descr-img">
+                                {{!-- Dacă există copertă, afișeaz-o --}}
+                                {{#if this.firstImg}}
+                                    <div>{{{this.firstImg}}}</div>
+                                {{/if}}
+                            </aside>
+                            <p>{{this.content}}</p>
+                        </main>  
+                    </div>
+                    <div class="unit4log-footer">
+                        {{#each this.tags}}
+                            <a class="smalltag" href="/tag/{{this}}">
+                                <span>{{this}}</span>
+                            </a>
+                        {{/each}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    {{!-- Adu-mi toate contribuțiile utilizatorului --}}
+    <div id="content">
+        <h1>Toate contribuțiile:</h1>
+        <section class="container-fluid" id="res-visuals">
+            {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
+            <div id="visuals" class="tableDisplay" data-usrid="{{this.user.id}}"></div>
+        </section>
+    </div>
+    
+    {{!-- Tabelul contribuțiilor personale --}}
+    <template id="userResTbl" data-sort='[[ 0, "asc" ]]'>
+        <div id="resurseTab" class=""></div>
+    </template>
+
+    {{!-- {{#each scripts}}
+        <script type="application/javascript" src="/{{template}}{{script}}"></script>
+    {{/each}} --}}

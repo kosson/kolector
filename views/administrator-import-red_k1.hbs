@@ -1,0 +1,38 @@
+{{!< k1/layout}}
+{{> nav-administrator_doru}}
+
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
+<div class="container">
+    <div class="title">
+        <h1>Import resurse și tabelul unclaimed</h1>
+    </div>
+    <section class="container p-4 col-sm-11 d-flex">
+        <div class="ml-4">
+            <form>
+                <div class="form-row align-items-center">
+                    <div class="form-group col-auto">
+                        {{!-- <label for="fileloadercs">Încarcă</label> --}}
+                        <input type="file" class="form-control-file" id="fileloadercs">
+                    </div>
+                    <div class="col-auto">
+                        <button id="importreds" type="button" class="btn btn-primary mb-2" onclick="sendRedCsv()">Încarcă date CSV</button>
+                    </div>
+                    {{!-- <div class="col-auto">
+                        <button id="tryme" type="button" class="btn btn-primary mb-2">TRYME</button>
+                    </div> --}}
+                </div>
+            </form>
+        </div>
+    </section>
+    <section class="container-fluid" id="import-red-visuals">
+        {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
+        <div id="visuals" class="tableDisplay">
+        </div>
+    </section>
+</div>
+
+{{!-- Tabelul competențelor existente --}}
+<template id="redClaimTbl" data-sort='[[ 0, "asc" ]]'>
+    <div id="redClaimTab" class=""></div>
+</template>

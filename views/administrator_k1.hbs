@@ -1,0 +1,279 @@
+{{!< k1/layout}}
+{{> nav-administrator_doru}}
+
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
+{{!-- {{#each styles}}
+    <link rel="stylesheet" type="text/css" href="/{{style}}">
+{{/each}} --}}
+
+<div id="content">
+    <h1>Zona de administrare</h1>
+    
+    <section class="container-fluid" id="adm-nav">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="userres-tab" data-bs-toggle="tab" data-bs-target="#userres" role="tab" aria-controls="userres" aria-selected="true">Utilizatori</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="elk-tab" data-bs-toggle="tab" data-bs-target="#system-elk" role="tab" aria-controls="system-elk" aria-selected="false">Stare ELK</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="mgdb-tab" data-bs-toggle="tab" data-bs-target="#system-mgdb" role="tab" aria-controls="system-mgdb" aria-selected="false">Stare MongoDB</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="system-tab" data-bs-toggle="tab" data-bs-target="#system" role="tab" aria-controls="system" aria-selected="false">Setări depozit</a>
+            </li>
+        </ul>
+    </section>
+
+    <div class="tab-content" id="adm-nav-content">
+        <section class="container-fluid tab-pane fade show active" id="userres" role="tabpanel" aria-labelledby="userres-tab">
+            {{!-- Statisticile care conduc la rezultate --}}
+            <div id="restats">
+                {{!-- Rezultatul compilării template-ului cu date statistice va fi introdus aici --}}
+
+                {{!-- Adăugarea unui link către o zonă de import --}}
+                <article class="stats__article">
+                    <h5 class="stat__title">Import</h5>
+                    <a href="/administrator/import" class="stat__figure">Importă</a>
+                </article>
+            </div>
+
+            {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
+            <div id="contributii">
+                {{!-- Formularul câmpului de căutare --}}
+                <form id="searchU" onsubmit="return false">
+                    <div id="findUser" class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="useremail">@nume_domeniu.ro</span>
+                        </div>
+                        <input type="text" id="findUserField" class="form-control" placeholder="Caută un utilizator, fie după email, fie după nume" aria-label="useremail" aria-describedby="useremail">
+                        <div class="input-group-append">
+                            <button id="findUserBtn" class="btn btn-outline-secondary" type="button">Caută</button>
+                        </div>
+                    </div>
+                </form>
+
+                {{!-- UTILIZATORII GĂSIȚI ÎN ELASTICSEARCH --}}
+                <div id="showusers" class="">                
+                    {{!-- Va fi inserat rezultatul compilării aici! --}}
+                </div>
+
+                {{!-- DETALIILE PENTRU UN UTILIZATOR SELECTAT --}}
+                <div id="showusrdetails" class="">
+                    {{!-- Va fi inserat rezultatul compilării aici! --}}
+                </div>
+            </div>
+        </section>
+        <section class="container-fluid tab-pane fade" id="system-elk" role="tabpanel" aria-labelledby="elk-tab"></section>
+        <section class="container-fluid tab-pane fade" id="system-mgdb" role="tabpanel" aria-labelledby="mgdb-tab"></section>
+        <section class="container-fluid tab-pane fade" id="system" role="tabpanel" aria-labelledby="system-tab">
+            <form id="frmMgmt" name="frmMgmt" action="#" class="mt-4">
+                <div class="input-group p-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Brand</span>
+                    </div>
+                    <input type="text" id="brand" name="brand" aria-label="brand" class="form-control" aria-describedby="button-brand">
+                    {{!-- <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-brand">Salvează</button>
+                    </div> --}}
+                </div>
+                <div class="input-group p-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Publisher</span>
+                    </div>
+                    <input type="text" id="publisher" name="publisher" aria-label="publisher" class="form-control" aria-describedby="button-publisher">
+                    {{!-- <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-publisher">Salvează</button>
+                    </div> --}}
+                </div>
+                <div class="input-group p-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Creator</span>
+                    </div>
+                    <input type="text" id="creator" name="creator" aria-label="creator" class="form-control" aria-describedby="button-creator">
+                    {{!-- <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-creator">Salvează</button>
+                    </div> --}}
+                </div>
+                <div class="input-group p-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Description</span>
+                    </div>
+                    <input type="text" id="description" name="description" aria-label="description" class="form-control" aria-describedby="button-description">
+                    {{!-- <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-description">Salvează</button>
+                    </div> --}}
+                </div>
+                <div class="input-group p-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Contact</span>
+                    </div>
+                    <input type="text" id="contact" name="contact" aria-label="contact" class="form-control" aria-describedby="button-contact">
+                    {{!-- <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-contact">Salvează</button>
+                    </div> --}}
+                </div>
+                <div class="input-group p-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Template</span>
+                    </div>
+                    <input type="text" id="template" name="template" aria-label="template" class="form-control" aria-describedby="button-template">
+                    {{!-- <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-template">Salvează</button>
+                    </div> --}}
+                </div>
+            </form>
+        </section>
+    </div>
+
+    {{!-- TEMPLATE STATISTIC --}}
+    <template id="statstpl">
+        <article class="stats__article">
+            <h5 class="stat__title"></h5>
+            <a href="" class="stat__figure"></a>
+        </article>
+    </template>
+    
+    {{!-- TEMPLATE_UL UTILIZATORILOR DIN ELASTICSEARCH --}}
+    <template id="usertpl">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"></h5>
+                <p class="card-text">
+                    <button type="button" name="" class="btn btn-light userProfileBtn" onclick="exposeUser()"></button>
+                </p>    
+            </div>          
+        </div>
+    </template>
+
+    {{!-- TEMPLATE_UL DETALIILOR PENTRU UTILIZATORUL SELECTAT --}}
+    <template id="userdetailtpl">
+        {{!-- SECȚIUNE DETALII --}}
+        <section class="admUview container">
+            {{!-- Detaliile primare ale utilizatorului --}}
+            <div class="admUview__admUdesc">
+                {{!-- Imaginea utilizatorului --}}
+                <img class="admUdesc__avatar" src="" alt="">
+                {{!-- ID-ul din baza de date --}}
+                <strong class="admUdesc__admUid"></strong>
+                <p class="admUsesc__admUroles">
+                    Roluri în sistem: 
+                    {{!-- Sunt injectate elemente span --}}                    
+                </p>
+
+                <p class="admUsesc__admUunits">
+                    Unit-urile în care participă: 
+                </p>
+                {{!-- Părți ale mecanismului de abilitare a unui user --}}
+                <div id="form03" class="container">
+                    <form>
+                        {{!-- Setează administrator!!! --}}
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    Admin: 
+                                    <input id="adminSet" type="checkbox" aria-label="Setează administrator" onchange="mkAdmin()">
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- Afișarea detaliilor privind rolurile în sistem; Adăugarea de roluri și eliminarea de roluri --}}
+                        <div class="form-group">
+                            <label for="exitingRoles">Selectarea posibilelor roluri suplimentare</label>
+                            <select multiple name="roles" class="form-control" id="existingRoles" onchange="colectRoles()">
+                                <option value="validator">validator</option>
+                                <option value="cred">cred</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="addNewRole()">Adaugă rol</button>
+                        {{!-- Adăugarea de units --}}
+                        <div class="form-group">
+                            <label for="units">Adăugarea unităților (cursuri, activități, etc.)</label>
+                            <textarea class="form-control" id="units" rows="3"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="colectUnits()">Adaugă unități noi</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        {{!-- SECȚIUNE RESURSE ALE UTILIZATORULUI --}}
+        <section>
+            {{!-- TIMELINE AL RESURSELOR --}}
+            <div id="timeline-embed" class="tline"></div>
+
+            {{!-- ULTIMELE 5 resurse --}}
+            <div class="resurseUser">
+                {{!-- Vor fi inserate resursele utilizatorului - ultimele 5 --}}
+            </div>
+        </section>
+    </template>
+
+    {{!-- Tabelul resurselor personale --}}
+    <template id="userResTbl">
+        <div id="resurseTab" class="tableDisplay"></div>
+    </template>
+
+    {{!-- Template afișare statistici Elasticsearch 7 --}}
+    <template id="es7tpl">
+        <div id="es7healthdetails" class="container m-3">
+        </div>
+        <div class="container">
+            <table id= "es7idxstbl" class="table table-hover m-4">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Acțiuni</th>
+                        <th>index</th>
+                        <th>uuid</th>
+                        <th>Nr. doc.</th>
+                        <th>Doc. șterse</th>
+                        <th>Dimensiune</th>
+                    </tr>
+                </thead>
+                <tbody id="idxcol"></tbody>
+            </table>
+        </div>
+    </template>
+
+    {{!-- Template afișare statistici MongoDB --}}
+    <template id="mongo4tpl">
+        <div class="container">
+            <table id= "mongo4idxstbl" class="table table-hover m-4">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Acțiuni</th>
+                        <th>colecție</th>
+                        <th>nr. doc.</th>
+                        <th>Nume index ES7</th>
+                        <th>nr. doc. index/deleted</th>
+                    </tr>
+                </thead>
+                <tbody id="idxcol">
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+    {{!-- Template pentru afișarea unui modal --}}
+    <template id="mdl">
+        <div class="modal fade" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn btn-primary"></button>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </template>
+
+    {{#each scripts}}
+        <script type="application/javascript" src="/{{template}}{{script}}"></script>
+    {{/each}}
+</div>

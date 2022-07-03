@@ -1,0 +1,36 @@
+{{!< k1/log}}
+{{> nav-resurse}}
+{{> messages}}
+
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+    
+    <div class="container">
+        {{!-- Afișarea articolelor --}}
+        <article class="p-1 mt-1">
+            <div class="logtitle">
+                <h3>
+                    <a id="{{newObi._id}}" href="{{#if newObi.alias}}/log/{{newObi.alias}}{{else}}/log/{{newObi._id}}{{/if}}">{{newObi.title}}</a>
+                </h3>
+                <p>Autor: {{newObi.idContributor}}, din {{newObi.dataRo}}</p>
+            </div>
+            <div id="editorcrate" class="container p-2">
+                <form>
+                    <div class="justify-content-center mt-4">
+                        <div id="codex" data-content="{{json newObi.content}}"></div>
+                    </div>
+                </form>
+            </div>
+            {{!-- Afișarea etichetelor atașate resursei --}}
+            <div class="tagsrespub p-2">
+                {{!-- <h5>Etichete</h5> --}}
+                {{#each newObi.tags}}
+                    <h5 id="dsa" class="tag">
+                        <span class="fa fa-tag text-warning mr-2"></span>
+                        <span class="text-secondary">
+                            <a itemprop="keywords" class="{{this}}" href="/tag/{{this}}">{{this}}</a>
+                        </span>
+                    </h5>
+                {{/each}}
+            </div>
+        </article>
+    </div>

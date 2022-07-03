@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-// const mongoose = require('../mongoose.config');
-// const mexp     = require('mongoose-elasticsearch-xp').v7;
+const Schema = mongoose.Schema;
 
-let CompetentaS = new mongoose.Schema({
+let CompetentaS = Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     nume: {             // este chiar numele competenței specifice. Ex: 1.1. Identificarea semnificaţiei unui mesaj oral, pe teme accesibile, rostit cu claritate
         type: String,
         validate: {
@@ -14,8 +14,8 @@ let CompetentaS = new mongoose.Schema({
         required: [true, 'Fără numele resursei, nu se poate face înregistrarea']
     },
     idRED:      [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'resursedu'
+        type: Schema.Types.ObjectId,
+        ref: "resursedu"
     }],
     ids:        [],     // În programă este codat cu 1.1. Aici se poate trece orice secvență alfanumerică care să ofere o adresă rapidă către competența specifică
     cod:        String, // cod intern agreat (parte a vocabularului controlat)
@@ -26,14 +26,20 @@ let CompetentaS = new mongoose.Schema({
     ref:        [],     // De ex: „Ordin al ministrului Nr. 3418/19.03.2013” sau poate fi link către ordin sau orice URI care poate identifica sursa informației sau orice asemenea
     parteA:     String, // Se introduce numele grupei de competențe specifice. De ex: „Receptarea de mesaje orale în contexte de comunicare cunoscute” 
     REDuri:     [],     // Este setul de identificatori. Fiecare identificator este o resursă care este în setul modelului resursei ca element în setul `target.value`. Dacă în `target.value` este adăugat id-ul unei competențe, id-ul respectivei resurse va fi adăugat acestui set.
-    contor:     Number  // ATENȚIE!!! Este un număr folosit doar în bateria de teste, dar poate fi utilizat în posibile scenarii.
+},
+{
+    toJSON:   { virtuals: true }, // So `res.json()` and other `JSON.stringify()` functions include virtuals
+    toObject: { virtuals: true } // So `toObject()` output includes virtuals
 });
 
 // definim un virtual care va calcula automat numărul de RED-uri care menționează o anumită competență.
-CompetentaS.virtual('nrREDuri').get(function () {
-    return this.REDuri.length;
+// https://mongoosejs.com/docs/populate.html#populate-virtuals
+CompetentaS.virtual('nrREDuri', {
+    ref: 'resursedu',
+    localField: '_id',
+    foreignField: 'competenteS',
+    count: true
+    // justOne: true // for many-to-1 relationships
 });
 
-// CompetentaS.plugin(mexp);
-
-module.exports = new mongoose.model('competentaspecifica', CompetentaS);
+module.exports = mongoose.model('competentaspecifica', CompetentaS);

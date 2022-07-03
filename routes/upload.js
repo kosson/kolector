@@ -3,20 +3,15 @@ const fs           = require('fs-extra');
 var BagIt          = require('bagit-fs');
 const express      = require('express');
 const router       = express.Router();
+var multer         = require('multer');
 var crypto         = require('crypto');
 var mkdirp         = require('mkdirp');
 const {pipeline}   = require('stream');
-
-// pentru a accesa variabilele setate de socket-ul care creează bag-ul.
-// const sockets      = require('./sockets');
-
+const logger       = require('../util/logger');
 const passport     = require('passport');
-// Încarcă controlerul necesar tratării rutelor de autentificare
-const UserPassport = require('./authGoogle/google-oauth20.ctrl')(passport);
+const UserPassport = require('./controllers/user.ctrl')(passport); // controlerul necesar tratării rutelor de autentificare
 
 /* === ÎNCĂRCAREA UNUI fișier cu `multer` === */
-var multer = require('multer');
-
 module.exports = function uploader (io) {
     var pubComm = io.of('/redcol'),
         lastUuid = '';
@@ -37,7 +32,6 @@ module.exports = function uploader (io) {
     // https://github.com/expressjs/multer/blob/6b5fff5feaf740f249b1b2858e5d06009cbd245c/storage/disk.js#L13
     function Multer2Bag (opts) {
         // console.log("Obiectul opts care intră în custom engine este ", opts);
-        // this.getFilename = (opts.filename || getFilename);
         this.getFilename = opts.filename;
         this.getDestination = (opts.destination || destroyFile);
     }
@@ -47,7 +41,9 @@ module.exports = function uploader (io) {
         if (req.header('uuid')) {
             lastUuid = req.header('uuid');
         } else {
-            console.error("Nu am primit uuid din header: ", req.header('uuid'));
+            const errOb = new Error('[upload.js] Nu am primit uuid din header pentru fișierul primit!');
+            logger.error(errOb);
+            throw errOb;
         }
         // console.log("Valorile din headers sunt: ", req.headers, " și am setat și lastUuid la valoarea ", lastUuid);
 
@@ -58,20 +54,22 @@ module.exports = function uploader (io) {
             // console.log('[routes::upload.js::that.getDestination] #1 Am să scriu fișierul în calea: ', destination);
 
             if (err) {
+                logger.error(err);
                 cb(err);
-                return next(err);
             }
 
             that.getFilename(req, file, function clbkGetFilename (err, fileName) {
                 // console.log("[routes::upload.js::that.getDestination] #2 Am filename: ", fileName);
 
                 if (err) {
+                    logger.error(err);
                     cb(err);
-                    return next(err);
                 }
 
                 // Extrage informația necesară BAG-ului pentru `Contact-Name`
                 let contactName, profile = req.user;
+                
+                // Tratează cazul în care nu ai `googleProfile` 
                 if (profile.hasOwnProperty('googleProfile')) {
                     contactName = profile.googleProfile.name;
                 } else {
@@ -91,24 +89,24 @@ module.exports = function uploader (io) {
                 // file.stream.pipe(sink);
 
                 // https://stackoverflow.com/questions/9768444/possible-eventemitter-memory-leak-detected
-                pipeline(file.stream, sink, (error) => {
-                    if (error) {
+                pipeline(file.stream, sink, (err) => {
+                    if (err) {
                         // console.error("[upload.js::pipeline] #3-erroare Nu s-a reușit scrierea fișierului în Bag cu următoarele detalii: ", error);
-                        return next(error);
+                        logger.error(err);
                     }
 
                     /* === VERIFICĂ DACĂ FIȘIERUL CHIAR A FOST SCRIS === */
                     fs.access(`${destination}/data/${file.originalname}`, fs.F_OK, (err) => {
                         if (err) {
                             // console.log("[upload.js] #3-eroare-acces-file Nu am găsit fișierul tocmai scris: ",err);
-                            return next(err);
+                            logger.error(err);
                         }
                         const {size} = fs.statSync(`${destination}/data/${file.originalname}`);
                         /* The information you provide in the callback will be merged with multer's file object, and then presented to the user via req.files */
                         cb(null, {
                             destination: destination,
-                            filename: fileName,
-                            path: destination,
+                            filename:    fileName,
+                            path:        destination,
                             size: size
                         });
                         // console.log("[upload.js] #4 Am scris pe disc ", size," bytes la: ", destination);
@@ -137,46 +135,74 @@ module.exports = function uploader (io) {
 
     let desiredMode = 0o2775;
     // setează destinația fișierului
+
+    /**
+     *Funcția asigură faptul că există directorul în care va fi scris fișierul și spune lui multer că are o destinație
+     *Este folosită ca valoare a proprietății `destination` a obiectului de configurare a obiectului `storage`
+     * @param {Object} req Obiectul cerere
+     * @param {Object} file Obiectul fișier
+     * @param {Function} cb Funcție apelată imediat ce destinația a fost setată
+     */
     function getDestination (req, file, cb) {
         let calea = `${process.env.REPO_REL_PATH}${req.user.id}/${lastUuid}/`;
         // console.log('[upload.js] calea formată în destination pe care se vor scrie fișierele este ', calea);
         
-        /* === VERIFICĂ DIRECTORUL USERULUI === */
-        fs.access(calea, function clbkfsAccess (error) {
+        /* === VERIFICĂ EXISTENȚA DIRECTORUL USERULUI ȘI CONTINUĂ SCRIEREA ALTOR FIȘIERE DACĂ ACESTA EXISTĂ DEJA === */
+        fs.access(calea, function clbkfsAccess (err) {
             /* === DIRECTORUL UUID-ULUI VENIT DIN HEADER NU EXISTĂ === */
-            if (error) {
+            if (err) {
                 // console.log("[upload.js] #A La verificarea posibilității de a scrie în directorul userului am dat de eroare: ", error);
                 /* === CREEAZĂ DIRECTORUL DACĂ NU EXISTĂ === */
-                fs.ensureDir(calea, desiredMode, err => {
+                fs.ensureDir(calea, desiredMode, (err) => {
                     if(err === null){
                         // console.log("[upload.js] #A-dir-creeat Încă nu am directorul în care să scriu fișierul. Urmează!!!");
-                        cb(null, calea); // scrie fișierul aici!                   
+                        cb(null, calea); // scrie fișierul aici!
+                        /* Fii foarte atent la `null` pentru că anunți multer că nu ai erori și este OK să-l stocheze pe disc */             
                     } else {
                         // console.error("[upload.js] #A-eroare-toata-linia Nu am putut scrie fișierul cu următoarele detalii ale erorii", err);
-                        return next(err);
+                        logger.error(err);
                     }
                 });
             } else {
                 /* === SCRIE DEJA ÎN DIRECTORUL EXISTENT === */
                 // console.log("[upload.js] #B Directorul există și poți scrie liniștit în el!!!");
-                // păstrează spațiile fișierului original dacă acestea le avea. La întoarcere în client, va fi un path rupt de spații.
                 cb(null, calea);
             }
         });
+    };
+
+    /**
+     *Funcția asigură multer că are un nume de fișier viabil cu care să denumească fișierul scris pe disc
+     *Este folosită ca valoare a proprietății `filename` a obiectului de configurare a obiectului `storage`
+     * @param {Object} req Obiectul cerere
+     * @param {Object} file Obiectul fișier
+     * @param {Function} cb Funcție apelată imediat ce destinația a fost setată
+     */
+    function giveMeFileName (req, file, cb) {
+        // păstrează spațiile fișierului original dacă acestea le avea. La întoarcere în client, va fi un path rupt de spații.
+        cb(null, file.originalname);
+        // REVIEW: Nu este tratat cazul în care cineva încarcă fișiere din diferite surse care poartă același nume...
+        // o alternativă ar fi cb(null, new Date().toISOString() + '-' + file.originalname)
     }
 
+    // obiectul care parametrizează obiectul `storage`.
     var objConf = {
         destination: getDestination,
-        filename: function giveMeFileName (req, file, cb) {
-            cb(null, file.originalname);
-        }        
+        filename:    giveMeFileName       
     };
 
     /* === CREEAZĂ STORAGE-ul === */
     var storage = new Multer2Bag(objConf);
 
-    // Funcție helper pentru filtrarea extensiilor acceptate
+    /**
+     * Funcție helper pentru filtrarea extensiilor acceptate
+     * Este folosită ca valoare în obiectul de configurare a instanței multer()
+     * @param {Object} req Obiectul request
+     * @param {Object} file conține informații despre fișierul care este încărcat
+     * @param {Function} cb o funcție care indică faptul că s-a încheiat filtrarea fișierului după criteriile alese
+     */
     let fileFilter = function fileFltr (req, file, cb) {
+        //mimetype-uri acceptate pentru fișier
         var fileObj = {
             "image/png": ".png",
             "image/jpeg": ".jpeg",
@@ -190,9 +216,12 @@ module.exports = function uploader (io) {
             "application/x-zip-compressed": ".zip",
             "multipart/x-zip": ".zip",
             "application/vnd.oasis.opendocument.text": ".odt",
-            "application/vnd.oasis.opendocument.presentation": ".odp"
+            "application/vnd.oasis.opendocument.presentation": ".odp",
+            "video/mp4": ".mp4",
+            "video/m4v": ".m4v"
         };
-
+        
+        // caută dacă există o cheie cu mimetype-ul acceptat
         if (fileObj[file.mimetype] == undefined) {
             cb(new Error("Formatul de fișier nu este acceptat"), false); // nu stoca fișierul și trimite eroarea
             pubComm.emit('message', 'Formatul de fișier nu este acceptat');
@@ -212,6 +241,7 @@ module.exports = function uploader (io) {
             fileSize: process.env.FILE_LIMIT_UPL_RES
         }        
     });
+
     /* === GESTIONAREA rutei /upload === */
     router.post('/',  UserPassport.ensureAuthenticated, upload.any(), function (req, res) {        
         // console.log('Detaliile lui files: ', req.files);

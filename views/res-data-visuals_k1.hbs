@@ -1,0 +1,22 @@
+{{!< k1/layout}}
+{{> nav-administrator}}
+{{!-- {{> messages}} --}}
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
+<div id="content">
+    <div class="title"><h1>Resurse create</h1></div>
+    <section class="container-fluid" id="res-visuals">
+        {{!-- Va încărca resursele compilate cu ajutorul template-ului --}}
+        <div id="visuals" class="tableDisplay">
+        </div>
+    </section>
+</div>
+
+{{!-- Tabelul resurselor personale --}}
+<template id="userResTbl" data-sort='[[ 0, "asc" ]]'>
+    <div id="resurseTab" class=""></div>
+</template>
+
+{{#each scripts}}
+    <script type="application/javascript" src="/{{template}}{{script}}"></script>
+{{/each}}

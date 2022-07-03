@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ro-RO">
+    <head prefix="dc: http://purl.org/dc/elements/1.1 dcterms: http://purl.org/dc/terms">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <meta name="keywords"    content="{{brandname}}">
+        <meta name="description" content="{{description}}">
+        <meta name="generator"   content="{{brandname}}">
+        <meta name="creator"     content="{{creator}}">
+        <meta name="author"      content="{{author}}">
+        <meta name="publisher"   content="{{publisher}}">
+        
+        <meta property="dc:title"       content="{{brandname}}">
+        <meta property="dc:description" content="{{description}}">
+        
+        <meta itemprop="name" content="{{brandname}}">
+        <meta itemprop="description" content="{{description}}">
+        
+        {{!-- SOCKET --}}
+        <script type="application/javascript" src="/{{template}}/lib/npm/socket.io.min.js"></script>
+
+        {{!-- JQUERY --}}
+        <script type="application/javascript" src="/jquery/dist/jquery.min.js"></script>
+        {{!-- JQUERY TOAST --}}
+        <script type="application/javascript" src="/{{template}}/lib/npm/jquery.toast.min.js"></script>
+
+        {{!-- FONTAWESOME --}}
+        <script type="application/javascript" src="/{{template}}/lib/npm/all.min.js"></script>
+
+        {{!-- BOOTSTRAP 5 --}}
+        <script type="application/javascript" src="/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap-utilities.min.css">
+        <link rel="stylesheet" type="text/css" href="/bootstrap-icons/font/bootstrap-icons.css">
+        
+        {{!-- MAIN --}}
+        <link rel="stylesheet" type="text/css" href="/{{template}}/css/main.css">
+
+        {{!-- FONTAWESOME --}}
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/all.min.css"
+
+        {{!-- JQUERY TOAST --}}
+        <link rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/jquery.toast.min.css">
+
+        {{!-- Încărcarea foilor de stil din module --}}
+        {{#each styles}}
+            <link rel="stylesheet" href="/{{style}}" charset="utf-8">
+        {{/each}}
+
+        {{!-- Încărcarea scripturilor --}}
+        {{#each scripts}}
+            <script type="application/javascript" src="/{{script}}"></script>
+        {{/each}}
+
+        {{!-- Preîncărcarea modulelor --}}
+        {{#each modules}}
+            <script rel="modulepreload" href="/{{module}}"></script>
+        {{/each}}
+
+        {{!-- Încărcarea modulelor --}}
+        {{#each modules}}
+            <script type="module" src="/{{module}}"></script>
+        {{/each}}
+
+        <title>{{title}}</title>
+    </head>
+    <body>
+        {{{body}}}
+
+        <footer class="footer">
+            {{> footer_k1}}
+        </footer>
+        
+        <script type="application/javascript" src="/{{template}}/js/custom.js"></script>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+{{!< k1/layout}}
+{{> nav-resurse}}
+{{!-- {{> messages}} --}}
+
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+    <div id="container" class="container">
+        {{#each logentries}}
+
+            {{!-- Afișarea articolelor --}}
+            <article class="logentry p-1 mt-1">
+                <div class="logtitle">
+                    <h3>
+                        <a id="{{this._id}}" href="{{#if this.alias}}/log/{{this.alias}}{{else}}/log/{{this._id}}{{/if}}">{{this.title}}</a>
+                    </h3>
+                    <p>Autor: {{this.idContributor}}, din {{this.dataRo}}</p>
+                </div>
+                <div class="logcontent">
+                    {{{this.content}}}
+                </div>
+                {{!-- Afișarea etichetelor atașate resursei --}}
+                <div class="tagsrespub p-2">
+                    {{!-- <h5>Etichete</h5> --}}
+                    {{#each this.tags}}
+                        <h5 id="dsa" class="tag">
+                            <span class="fa fa-tag text-warning mr-2"></span>
+                            <span class="text-secondary">
+                                <a itemprop="keywords" class="{{this}}" href="/tag/{{this}}">{{this}}</a>
+                            </span>
+                        </h5>
+                    {{/each}}
+                </div>
+            </article>
+
+        {{/each}}
+    </div>
