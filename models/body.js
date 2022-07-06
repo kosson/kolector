@@ -1,7 +1,12 @@
 require('dotenv').config();
-const mongoose              = require('mongoose');
-const bcrypt                = require('bcrypt');
-const logger                = require('../util/logger');
+const mongoose = require('mongoose');
+const Schema   = mongoose.Schema;
+const bcrypt   = require('bcrypt');
+const logger   = require('../util/logger');
+
+// Thing
+const ThingSchema = require('./thing');
+const Thing = mongoose.model('Thing', ThingSchema);
 
 /* INDECȘII ES7 */
 let {getStructure} = require('../util/es7');
@@ -23,22 +28,22 @@ getStructure().then((val) => {
 });
 
 // Definirea unei scheme necesare verificării existenței utilizatorului.
-let Body = new mongoose.Schema({
+let Body = new Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     created:  Date,
-    name: String,
-    acronym: String,
-    identifier: [],
+    name:     String,
+    acronym:  String,
+    identifier: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Thing'
+      }],
     email: {
-        type: String,
+        type:     String,
         required: true,
-        unique: true,
-        index: true
+        unique:   true,
+        index:    true
     },
-    partof: [],
-    comments: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'comment'
-    }
+    partof: []
 },{
     toJSON: {
         virtuals: true
@@ -62,4 +67,4 @@ Body.post('save', function clbkUsrSave (doc, next) {
     next(); 
 });
 
-module.exports = new mongoose.model('bodie', Body);
+module.exports = Body;

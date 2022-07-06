@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Schema   = mongoose.Schema;
-// const mexp     = require('mongoose-elasticsearch-xp').v7;
+
+// Body
+const BodySchema = require('./body');
+const Body = mongoose.model('Body', BodySchema);
 
 var LogentrySchema = new mongoose.Schema({
     _id: Schema.Types.ObjectId,
@@ -8,10 +11,9 @@ var LogentrySchema = new mongoose.Schema({
     idContributor: {type: String, es_indexed: true},
     autor: {type: String, es_indexed: true},
     creator: [{
-        name: String,
-        email: String,
-        id: []
-    }],
+        type: Schema.Types.ObjectId,
+        ref: 'Body'
+      }],
     title: {        
         type: String,
         index: true,

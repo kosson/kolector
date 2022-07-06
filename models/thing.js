@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
 
 // https://omeka.org/classic/docs/Content/Working_with_Dublin_Core/
 // https://www.digitalnc.org/partners/describing-your-materials/
