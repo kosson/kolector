@@ -10,16 +10,14 @@ var LogentrySchema = new mongoose.Schema({
     date: Date,
     idContributor: {type: String, es_indexed: true},
     autor: {type: String, es_indexed: true},
-    creator: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Body'
-      }],
+    creator: [],
     title: {        
         type: String,
         index: true,
         trim: true,
         es_indexed: true
     },
+    ispartof: [],
     alias: {
         type: String,
         trim: true

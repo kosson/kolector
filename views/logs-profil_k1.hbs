@@ -28,12 +28,16 @@
                             </button>
                         </h3>
                         <div class="unit4log-info">
-                            {{#if this.autor}}
-                                <p class="unit4log-subtitle">{{this.autor}}</p>
-                            {{else}}
-                                <p class="unit4log-subtitle">{{this.idContributor}}</p>
+                            {{#if this.creator}}
+                                <ul class="list-group list-group-flush">
+                                    {{#each this.creator}}
+                                        <li class="unit4log-subtitle">
+                                            <span>{{this.name}}</span> 
+                                            <span class="smalltag">{{this.email}}</span>
+                                        </li>
+                                    {{/each}}
+                                </ul>
                             {{/if}}
-                            <p class="unit4log-subtitle">{{this.dataRo}}</p>
                         </div>
                     </div>
                     {{!-- <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}"> --}}
@@ -47,6 +51,14 @@
                             </aside>
                             <p>{{this.content}}</p>
                         </main>  
+                    </div>
+                    <div class="unit4log-info">
+                        {{#if this.autor}}
+                            <p class="unit4log-subtitle">Autor: {{this.autor}}</p>
+                        {{else}}
+                            <p class="unit4log-subtitle">Autor: {{this.idContributor}}</p>
+                        {{/if}}
+                        <p class="unit4log-subtitle">{{this.dataRo}}</p>
                     </div>
                     <div class="unit4log-footer">
                         {{#each this.tags}}

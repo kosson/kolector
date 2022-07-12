@@ -436,7 +436,10 @@ newTags.addEventListener('keypress', (evt) => {
 
 globalThis.creeazaBody = creeazaBody; // trimite în global funcția
 
+// structura de 
 const personMapper = new Map();
+
+
 /**
  * funcție callback pentru creeazaBody ()
  * @param {Object} event 

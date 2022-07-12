@@ -660,6 +660,8 @@ function sockets (io) {
 
         // === LOG === :: Crearea unei noi înregistrări în blog
         socket.on('log', (entry) => {
+            // console.log(`Am primit de la client în campul creator `, entry.creator);
+
             // creează documentul
             var log = new Log({
                 _id:           new mongoose.Types.ObjectId(),
@@ -667,14 +669,17 @@ function sockets (io) {
                 title:         entry.title,
                 idContributor: entry.idContributor,
                 autor:         entry.autor,
+                creator:       entry.creator,
                 content:       entry.content,
                 contorAcces:   entry.contorAcces,
                 tags:          entry.tags,
                 alias:         entry.alias
             });
+
             // salvează documentul
             log.save().then((result) => {
                 socket.emit('log', result);
+                // console.log(`Rezultatul băgat în bază este `, result);
             }).catch(err => {
                 if (err) {
                     logger.error(err);
