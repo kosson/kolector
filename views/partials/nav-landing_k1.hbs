@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-landing-k1">
     <div class="container px-5"> 
         <a class="navbar-brand" href="/">
             <img id="logo-small" src="{{{logoimg}}}" alt="logo" title="CRED"> RED Colector
@@ -10,8 +10,11 @@
         </button>
         
         <div class="collapse navbar-collapse" id="navbarResponsive">
-            {{#if user}}
-                <span class="salut">Salut, {{user.googleProfile.name}} <img class="avatar rounded-circle" data-email="{{user.email}}" data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" src="{{user.googleProfile.picture}}" alt="Imagine cont" /></span>
+            {{#if user.googleProfile}}
+                <span class="salut">Salut, {{user.googleProfile.name}}</span>
+            {{/if}}
+            {{#if user.username}}
+                <span class="salut">Salut, {{user.username}}</span>
             {{/if}}
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
@@ -23,7 +26,7 @@
                             <a class="nav-link" href="/administrator">Administrare</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/log/new">Eveniment nou</a>
+                            <a class="nav-link" href="/log/new">Conținut nou</a>
                         </li>                                         
                     {{/if}}
                     <li class="nav-item">
@@ -47,7 +50,10 @@
                 {{else}}                                    
                     <li class="nav-item">
                         <a class="nav-link" href="/login">Loghează-te</a>
-                    </li>                  
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/signup">Cont nou</a>
+                    </li>                   
                 {{/if}}
             </ul>
             {{!-- <form class="form-inline my-2 my-lg-0">

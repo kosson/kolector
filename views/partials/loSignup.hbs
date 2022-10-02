@@ -1,9 +1,9 @@
-        <div class="">
+{{> nav-landing}}
+<div id="localsignup" class="container">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-8 justify-content-center">
             <form id="signupfrm" class="form-signup" action="signup" method="POST" data-frm="{{json}}" novalidate>
                 <input type="hidden" name="_csrf" value="{{csrfToken}}">
-                {{#if errorMessage}}
-                    <p class="errfrm">{{errorMessage}}</p>
-                {{/if}}
                 <h3 class="h3 mb-3 font-weight-normal">Creează un cont local</h1>
                 {{!-- email --}}
                 <div class="form-group">
@@ -34,3 +34,5 @@
                 </div>
             </form>
         </div>
+    </div>
+</div>

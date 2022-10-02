@@ -93,6 +93,77 @@ class createElement {
     }
 }
 
+let modelBS5toast = {
+    "div": {
+      "@class": "position-fixed bottom-0 end-0 p-3",
+      "@style": "z-index: 11",
+      "div": {
+        "@id": "liveToast",
+        "@class": "toast hide",
+        "@role": "alert",
+        "@aria-live": "assertive",
+        "@aria-atomic": "true",
+        "div": [
+          {
+            "@class": "toast-header",
+            "img": {
+              "@src": "...",
+              "@class": "rounded me-2",
+              "@alt": "..."
+            },
+            "strong": {
+              "@class": "me-auto",
+              "#text": "Bootstrap"
+            },
+            "small": "11 mins ago",
+            "button": {
+              "@type": "button",
+              "@class": "btn-close",
+              "@data-bs-dismiss": "toast",
+              "@aria-label": "Close"
+            }
+          },
+          {
+            "@class": "toast-body",
+            "#text": "Hello, world! This is a toast message."
+          }
+        ]
+      }
+    }
+  };
+
+function createBS5toast (config) {
+    // console.log(`Obiectul care configureaza toastul este `, config);
+    //_ FIXME: Mai întâi de orice, șterge orice alt toast care există în dom. Selectează orice div care are id-ul începând cu secvența `tbs5_`
+
+
+    let toastTmpl = config?.tmpl.cloneNode(true); // clonează întreg nodul template-ului
+    let idtoast = "tbs5_" + Math.random().toString(36).slice(2); // creează id unic toast-ului
+    toastTmpl.querySelector('.toast').id = idtoast; // atribuie id-ul
+
+    let bs5toast = toastTmpl.querySelector(`#${idtoast}`); // referință la div-ul toast-ului
+    bs5toast.classList.add(...config?.bs5toastcontainer?.classes); // setez clasele primite la apelul funcției
+    bs5toast.style.zIndex = config?.bs5toastcontainer?.css?.zIndex; // setez x-index-ul la apelul funcției
+
+    toastTmpl.querySelector('.toast-body').innerText = config?.message;
+    toastTmpl.querySelector('.me-auto').innerText = config?.header;
+
+    config?.insertion.appendChild(toastTmpl); // atașează în DOM toast-ul
+
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    var toastList = toastElList.map(function (toastEl) {
+        return new bootstrap.Toast(toastEl, {
+            animation: true,
+            autohide: true,
+            delay: 10000
+        })
+    });
+    let elem;
+    for(elem of toastList) {
+        elem.show();
+    }
+};
+
 /**
  * Convertește un characterSet html în caracterul original.
  * @param {String} str htmlSet entities
@@ -484,6 +555,7 @@ class EventedElementsMgmt {
 export {socket, 
     pubComm, 
     EventedElementsMgmt, 
+    createBS5toast, 
     setWithExpiry, 
     getWithExpiry, 
     check4url, 

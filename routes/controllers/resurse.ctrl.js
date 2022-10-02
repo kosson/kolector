@@ -53,9 +53,9 @@ exports.loadRootResources = async function loadRootResources (req, res, next) {
     // ===> SCRIPTURI
     let scripts = [       
         // MOMENT.JS
-        {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-        // HOLDER.JS
-        {script: `${gensettings.template}/lib/npm/holder.min.js`}
+        {script: `moment/min/moment-with-locales.min.js`},
+        // HOLDERJS
+        {script: `holderjs/holder.min.js`}
     ];
     // ===> MODULE
     let modules = [
@@ -223,7 +223,7 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
 
     let scripts = [
         // MOMENT.JS
-        {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
+        {script: `moment/min/moment-with-locales.min.js`},
         // HOLDER.JS
         // {script: `${gensettings.template}/lib/npm/holder.min.js`},
         // HELPER DETECT URLS or PATHS
@@ -249,10 +249,7 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
         {module: `${gensettings.template}/lib/editorjs/table.js`},
         {module: `${gensettings.template}/lib/editorjs/attaches.js`},
         {module: `${gensettings.template}/lib/editorjs/ajax.js`},
-        // JQuery
-        {module: `${gensettings.template}/lib/npm/jquery.min.js`},
-        // Toast
-        {module: `${gensettings.template}/lib/npm/jquery.toast.min.js`},
+
         // MOTORUL FORM-ULUI
         {module: `${gensettings.template}/js/custom.js`},
         {module: `${gensettings.template}/js/uploader.mjs`},
@@ -359,20 +356,12 @@ exports.resourcesPool = async function resourcesPool (req, res, next) {
     // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
     let scripts = [
         // MOMENT.JS
-        {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`}, 
-        // FONTAWESOME
-        {script: `${gensettings.template}/lib/npm/all.min.js`},
-        // Bootstrap 4
-        {script: `${gensettings.template}/lib/npm/bootstrap.bundle.min.js`},     
+        {script: `moment/min/moment-with-locales.min.js`},     
         // HELPER DETECT URLS or PATHS
         {script: `${gensettings.template}/js/check4url.js`}
     ];
 
     let modules = [
-        // JQuery
-        {module: `${gensettings.template}/lib/npm/jquery.min.js`},
-        // Toast
-        {module: `${gensettings.template}/lib/npm/jquery.toast.min.js`},
         // MOTORUL FORM-ULUI
         {module: `${gensettings.template}/js/custom.js`}      
     ];
@@ -441,16 +430,12 @@ exports.describeRED = async function describeRED (req, res, next) {
     // console.log("Sesiunea de la /resurse/adaugă arată așa: ", req.session);
     // pentru evitarea dependințelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
     let scripts = [
-        // Toast
-        // {script: `${gensettings.template}/lib/npm/jquery.toast.min.js`},
-        // Bootstrap 4
-        {script: `${gensettings.template}/lib/npm/bootstrap.bundle.min.js`},  
-        // Datatables
-        {script: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-        {script: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-        {script: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-        {script: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-        {script: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},        
+        // DATATABLES
+        {script: `datatables.net/js/jquery.dataTables.min.js`},
+        {script: `datatables.net-dt/js/dataTables.dataTables.min.js`},
+        {script: `datatables.net-select-dt/js/select.dataTables.min.js`},
+        {script: `datatables.net-buttons-dt/js/buttons.dataTables.min.js`},
+        {script: `datatables.net-responsive-dt/js/responsive.dataTables.min.js`},      
         // HELPER DETECT URLS or PATHS
         {script: `${gensettings.template}/js/check4url.js`}
     ];
@@ -470,10 +455,7 @@ exports.describeRED = async function describeRED (req, res, next) {
         {module: `${gensettings.template}/lib/editorjs/table.js`},
         {module: `${gensettings.template}/lib/editorjs/attaches.js`},
         {module: `${gensettings.template}/lib/editorjs/ajax.js`},
-        // JQuery
-        {module: `${gensettings.template}/lib/npm/jquery.min.js`},
-        // Toast
-        {module: `${gensettings.template}/lib/npm/jquery.toast.min.js`},
+
         // MOTORUL FORM-ULUI
         {module: `${gensettings.template}/js/custom.js`},
         {module: `${gensettings.template}/js/uploader.mjs`},
@@ -508,8 +490,9 @@ exports.describeRED = async function describeRED (req, res, next) {
     /* === VERIFICAREA CREDENȚIALELOR === */
     if(req.session.passport.user.roles.admin){
         let user = req.session.passport.user;
-        let given_name =  '' || user.googleProfile.given_name;
-        let family_name = ''  || user.googleProfile.family_name;
+
+        let given_name =  '' || user.googleProfile?.given_name;
+        let family_name = ''  || user.googleProfile?.family_name;
         
         /* === LIVRESQ CONNECTOR === */
         let url = new LivresqConnect().prepareProjectRequest(user.email, given_name, family_name);
@@ -533,8 +516,8 @@ exports.describeRED = async function describeRED (req, res, next) {
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
         
         let user = req.session.passport.user;
-        let given_name = '' || user.googleProfile.given_name;
-        let family_name = '' || user.googleProfile.family_name;
+        let given_name = '' || user.googleProfile?.given_name;
+        let family_name = '' || user.googleProfile?.family_name;
         
         /* === LIVRESQ CONNECTOR === */
         let url = new LivresqConnect().prepareProjectRequest(user.email, given_name, family_name);
@@ -555,7 +538,7 @@ exports.describeRED = async function describeRED (req, res, next) {
             livresqProjectRequest: url /* === LIVRESQ CONNECTOR === */
         });
     } else {
-        res.redirect('/401');
+        res.redirect('/errors/403');
     }
 };
 
@@ -570,8 +553,6 @@ exports.describeBFMonograph = async function describeBFMonograph (req, res, next
     // console.log("Sesiunea de la /resurse/adaugă arată așa: ", req.session);
     // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
     let scripts = [
-        //JQUERY
-        {script: `${gensettings.template}/lib/npm/jquery.min.js`},
         // MOMENT.JS
         {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`}, 
         // FONTAWESOME
@@ -603,10 +584,7 @@ exports.describeBFMonograph = async function describeBFMonograph (req, res, next
         {module: `${gensettings.template}/lib/editorjs/table.js`},
         {module: `${gensettings.template}/lib/editorjs/attaches.js`},
         {module: `${gensettings.template}/lib/editorjs/ajax.js`},
-        // JQuery
-        {module: `${gensettings.template}/lib/npm/jquery.min.js`},
-        // Toast
-        {module: `${gensettings.template}/lib/npm/jquery.toast.min.js`},
+
         // MOTORUL FORM-ULUI
         {module: `${gensettings.template}/js/custom.js`},
         {module: `${gensettings.template}/js/uploader.mjs`},
@@ -641,9 +619,9 @@ exports.describeBFMonograph = async function describeBFMonograph (req, res, next
     /* === VERIFICAREA CREDENȚIALELOR === */
     if(req.session.passport.user.roles.admin){
         let user = req.session.passport.user;
-        //- FIXME: Renunță la acest artificiu pentru conturile locale de îndată ce unifici localele cu profilurile Google.
-        let given_name =  "Jane" || user.googleProfile.given_name;
-        let family_name = "Doe"  || user.googleProfile.family_name;
+
+        let given_name =  "" || user.googleProfile?.given_name;
+        let family_name = ""  || user.googleProfile?.family_name;
 
         // Dacă avem un admin, atunci oferă acces neîngrădit
         res.render(`add-bf-monograph_${gensettings.template}`, {            
@@ -661,9 +639,9 @@ exports.describeBFMonograph = async function describeBFMonograph (req, res, next
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere al resursei.
         
         let user = req.session.passport.user;
-        //- FIXME: Introdu în formularul de creare cont câmpurile name și surname pentru a elimina artificiul făcut pentru integrarea cu Livresq
-        let given_name = 'Jane' || user.googleProfile.given_name;
-        let family_name = 'Doe' || user.googleProfile.family_name;
+
+        let given_name = '' || user.googleProfile?.given_name;
+        let family_name = '' || user.googleProfile?.family_name;
 
         res.render(`add-bf-monograph_${gensettings.template}`, {
             template: `${gensettings.template}`,        
@@ -677,7 +655,7 @@ exports.describeBFMonograph = async function describeBFMonograph (req, res, next
             data
         });
     } else {
-        res.redirect('/401');
+        res.redirect('/errors/403');
     }
 };
 
@@ -717,6 +695,6 @@ exports.uploadResource = function uploadResource (req, res, next) {
         // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
 
     } else {
-        res.redirect('/401');
+        res.redirect('/errors/403');
     }
 };

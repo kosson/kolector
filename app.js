@@ -262,7 +262,7 @@ function shouldCompress (req, res) {
 }
 app.use(compression({ filter: shouldCompress }));
 
-// ÎNCĂRCAREA DEPENDINȚELOR FĂRĂ A MAI DUBLA ÎN PUBLIC
+// === ÎNCĂRCAREA DEPENDINȚELOR FĂRĂ A MAI DUBLA ÎN PUBLIC ===
 const deps = [
     'jquery', 'jquery-toast-plugin', 'bootstrap', 'bootstrap-icons',
     'datatables.net', 'datatables.net-dt', 'datatables.net-buttons', 'datatables.net-buttons-dt', 'datatables.net-responsive', 'datatables.net-responsive-dt', 'datatables.net-select-dt',
@@ -270,8 +270,6 @@ const deps = [
 deps.forEach(dep => {
     app.use(`/${dep}`, express.static(path.resolve(`node_modules/${dep}`)));
 });
-
-
 
 /* === ÎNCĂRCAREA RUTELOR === */
 let index          = require('./routes/index');
@@ -286,6 +284,8 @@ let publice        = require('./routes/public');
 let profile        = require('./routes/profile');
 let tags           = require('./routes/tags');
 let help           = require('./routes/help');
+let errors         = require('./routes/errors');
+let devnull        = require('./routes/devnull/devnull');
 
 // === MIDDLEWARE-ul RUTELOR ===
 app.use('/auth',           authG);
@@ -300,45 +300,21 @@ app.use('/resurse',        csurfProtection, UserPassport.ensureAuthenticated, re
 app.use('/log',            csurfProtection, UserPassport.ensureAuthenticated, log);
 app.use('/profile',        csurfProtection, profile);
 app.use('/tag',            csurfProtection, tags);
+app.use('/errors',         csurfProtection, errors);
+app.use('/devnull',        csurfProtection, devnull);
 
 // CONSTANTE
 const LOGO_IMG = "img/" + process.env.LOGO;
 
-// === 401 - NEPERMIS ===
-app.get('/401', function(req, res){
-    res.status(401);
-    res.render('nepermis', {
-        title:    "401",
-        logoimg:  LOGO_IMG,
-        mesaj:    "Încă nu ești autorizat pentru această zonă"
-    });
-});
-
-// === 500 - Internal Server Error ===
-app.get('/500', function(req, res){
-    res.status(500);
-    res.render('500', {
-        title:    "500",
-        logoimg:  LOGO_IMG,
-        mesaj:    "Probleme legate de funcționare internă a serverului. Mergi la secțiunea de interes în câteva secunde."
-    });
-});
-
-//=== 404 - NEGĂSIT ===
-app.use('*', function (req, res, next) {
-    res.render('negasit', {
-        title:         "404",
-        logoimg:       LOGO_IMG,
-        imaginesplash: "/img/theseAreNotTheDroids.jpg",
-        mesaj:         "Nu-i! Verifică linkul!"
-    });
-});
-
 // colectarea erorilor de pe toate middleware-urile
-app.use(function catchAllMiddleware (err, req, res, next) {
+app.use( async function catchAllMiddleware (err, req, res, next) {
+    // Setări în funcție de template
+    let filterMgmt = {focus: 'general'};
+    let gensettings = await Mgmtgeneral.findOne(filterMgmt);
+
     console.error('Aplicația a crăpat cu următoarele detalii: ', err.stack);
     logger.error(err);
-    res.redirect('/500');
+    res.redirect(`/errors/500`);
 });
 
 /**

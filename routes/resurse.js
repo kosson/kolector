@@ -43,7 +43,8 @@ router.get('/adauga/monografie', (req, res, next) => {
 router.get('/adauga/red', (req, res, next) => {
     resurseCtrl.describeRED(req, res, next).catch((error) => {
         console.log(error);
-        logger(error);
+        console.log(typeof(logger));
+        // logger(error);
         next(error);
     })
 });

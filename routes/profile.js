@@ -235,6 +235,8 @@ router.get('/logs', makeSureLoggedIn.ensureLoggedIn(), (req, res, next) => {
         /**
          * Funcție cu rol de callback
          * Transformă obiectul primit într-un POJO cu date formatate cu moment
+         * Reduce primul paragraf la o dimensiune de maxim 238 de caractere
+         * Extrage prima imagine dacă aceasta există 
          * @param {Object} obi 
          */
         function clbkMapResult (obi) {
@@ -253,8 +255,10 @@ router.get('/logs', makeSureLoggedIn.ensureLoggedIn(), (req, res, next) => {
             } else {
                 newObi.content = para;
             }
+
+            // Extrage și prima imagine din conținut
             let imgsarr = editorJs2imgs(obi.content.blocks);
-            newObi.firstImg= imgsarr[0];
+            newObi.firstImg = imgsarr.length ? imgsarr[0] : '';
 
             return newObi;
         };

@@ -1,0 +1,15 @@
+{{!< k1/layout}}
+{{> nav-profile}}
+{{!-- {{> messages}} --}}
+
+<input type="hidden" name="_csrf" value="{{this.csrfToken}}">
+
+<div id="profile">
+    <fieldset>
+        <legend>Dev Null Path</legend>       
+        <div id="profile-landing" class="container">          
+            <a href="/profile/resurse" class="btn btn-warning btn-lg active" role="button" aria-pressed="true">Resursele mele</a>
+            <a href="/profile/logs" class="btn btn-warning btn-lg active" role="button" aria-pressed="true">Articole</a>
+        </div>
+    </fieldset>
+</div>

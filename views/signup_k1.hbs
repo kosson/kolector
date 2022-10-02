@@ -1,11 +1,6 @@
 {{!< k1/landing}}
-{{> nav-landing}}
 
 <div class="container">
-    {{> messages}}
+    <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
     {{> loSignup}}
 </div>
-
-{{#each scripts}}
-    <script type="application/javascript" src="{{script}}"></script>
-{{/each}}

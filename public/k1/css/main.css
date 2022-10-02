@@ -1303,58 +1303,6 @@ a[class$="8"], label[class$="8"] {
     background:none;
 }
 
-.p-4.accordion-frame {
-    padding: 0 !important;
-}
-.accordion-frame .form-group {
-    margin-bottom: 2rem;
-}
-.accordion-frame > div > *{
-    background-color: #fafafa;
-    border:1px solid #e3e3e3;
-}
-.accordion-frame div.add-res-nav{
-    /*background: none;*/
-    /*border:0;*/
-    border-top:0;
-    -webkit-border-bottom-left-radius: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    -moz-border-radius-bottomleft: 5px;
-    -moz-border-radius-bottomright: 5px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-.accordion-frame div.add-res-nav .add-res-nav-next, .add-res-nav-ending{
-    float:right;
-}
-.accordion-frame div.add-res-nav:after{
-    clear:both;
-    content:"";
-    display: block;
-}
-.accordion-frame div.add-res-nav .svg-inline--fa.fa-w-14{
-    font-size: 15px;
-}
-.accordion-frame fieldset{
-    border-bottom: 1px solid #f0f0f0;
-}
-.accordion-frame fieldset > div:first-child{
-    margin-top:1rem;
-}
-.accordion-frame fieldset > legend{
-    padding-top:1rem;
-}
-.accordion-frame div.starting-heading{
-    background-color: #fff;
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
-
 .starting-heading{
     padding: 1.5rem;
 }
@@ -1568,8 +1516,8 @@ fieldset #nivel .form-check{
     padding-bottom:2rem;
 }
 
-/* Gestionarea login-ului */
-#localogin {
+/* Gestionarea login-ului și a signup-ului*/
+#localogin, #localsignup {
     padding-top: 3rem;
     padding-bottom: 3rem;
     margin-top: 4rem;

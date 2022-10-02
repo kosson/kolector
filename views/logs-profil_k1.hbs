@@ -16,7 +16,8 @@
             {{!-- Randează ultimele 9 resurse create --}}
             {{#each resurse}}        
                 <div class="unit4log">
-                    <div class="unit-header">
+                    <section class="unit-header">
+
                         <h3 class="unit4log-title">
                             {{#if this.alias}}
                                 <a href="/log/{{this.alias}}" maxlength="4">{{this.title}}</a>
@@ -27,21 +28,36 @@
                                 <span class="unit4log-trash"><i class="bi bi-trash"></i></span>
                             </button>
                         </h3>
+
+                        <div class="unit4log-info">
+                            {{#if this.autor}}
+                                <p class="unit4log-subtitle">{{this.autor}}</p>
+                            {{else}}
+                                <p class="unit4log-subtitle">{{this.idContributor}}</p>
+                            {{/if}}
+                            <p class="unit4log-subtitle">{{this.dataRo}}</p>
+                        </div>
+
+
+
                         <div class="unit4log-info">
                             {{#if this.creator}}
-                                <ul class="list-group list-group-flush">
+                                <div id="{{this._id}}" class="d-flex">
                                     {{#each this.creator}}
-                                        <li class="unit4log-subtitle">
-                                            <span>{{this.name}}</span> 
-                                            <span class="smalltag">{{this.email}}</span>
-                                        </li>
+                                        <p class="unit4log-subtitle">
+                                            <span>
+                                                <i class="bi bi-person-circle"></i>
+                                            </span>
+                                            <span>{{this.name}}</span>
+                                            <span hidden>{{this.email}}</span>
+                                        </p>
                                     {{/each}}
-                                </ul>
+                                </div>
                             {{/if}}
                         </div>
-                    </div>
-                    {{!-- <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}"> --}}
-                    <div class="unit4log-body">
+                    </section>
+                    
+                    <section class="unit4log-body">
                         <main class="unit4log-description">
                             <aside class="unit4log-descr-img">
                                 {{!-- Dacă există copertă, afișeaz-o --}}
@@ -51,22 +67,15 @@
                             </aside>
                             <p>{{this.content}}</p>
                         </main>  
-                    </div>
-                    <div class="unit4log-info">
-                        {{#if this.autor}}
-                            <p class="unit4log-subtitle">Autor: {{this.autor}}</p>
-                        {{else}}
-                            <p class="unit4log-subtitle">Autor: {{this.idContributor}}</p>
-                        {{/if}}
-                        <p class="unit4log-subtitle">{{this.dataRo}}</p>
-                    </div>
-                    <div class="unit4log-footer">
+                    </section>
+
+                    <section class="unit4log-footer">
                         {{#each this.tags}}
                             <a class="smalltag" href="/tag/{{this}}">
                                 <span>{{this}}</span>
                             </a>
                         {{/each}}
-                    </div>
+                    </section>
                 </div>
             {{/each}}
         </div>

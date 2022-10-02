@@ -1,4 +1,4 @@
-import {socket, pubComm, createElement, check4url, decodeCharEntities, datasetToObject} from './main.mjs';
+import {socket, pubComm, createBS5toast, createElement, check4url, decodeCharEntities, datasetToObject} from './main.mjs';
 import {AttachesToolPlus} from './uploader.mjs';
 
 // document.addEventListener("DOMContentLoaded", function clbkDOMContentLoaded () {});
@@ -3121,14 +3121,229 @@ import {AttachesToolPlus} from './uploader.mjs';
         disciplineBifate();
     });
 
+    /* === MECANISMUL DE AVANS AL FORMULARULUI === */
+    let progressTxt1 = document.querySelector('#progressText1');
+    let progressTxt2 = document.querySelector('#progressText2');
+    let progressTxt3 = document.querySelector('#progressText3');
+    let progressTxt4 = document.querySelector('#progressText4');
+    let clsTxt1 = progressTxt1.classList;
+    let clsTxt2 = progressTxt2.classList;
+    let clsTxt3 = progressTxt3.classList;
+    let clsTxt4 = progressTxt4.classList;
+
+    let toast_tmpl = document.querySelector("#bs5toast").content; // creează o referință la template-ul pentru toast-uri (mesaje date utilizatorului <Boostrap 5 toast>)
+    let toast_cont = document.querySelector("#bs5toastcontainer");// punctul de inserție pentru toast-uri
+            
+    /* === PAS 1 <hide> -> Avans PAS 2 <show> :: Colectare date din PAS 1 === */
+    function clbk_next_1 (evt) {
+        evt.preventDefault();
+
+        // Validare pe titlul resursei
+        if (document.querySelector('#titlu-res').value == '') {
+            // trecere pe Boostrap 5 Toast
+            createBS5toast({
+                tmpl: toast_tmpl,
+                insertion: toast_cont,
+                bs5toastcontainer: {
+                    classes: [],
+                    css: {
+                        // zIndex: 11
+                    }
+                },
+                header: "Lipsește titlul",
+                message: "Titlul resursei trebuie introdus"
+            });
+            return false;
+        } else if (document.querySelector('#descriereRed').value == '') {
+            // validare descriere
+            createBS5toast({
+                tmpl: toast_tmpl,
+                insertion: toast_cont,
+                bs5toastcontainer: {
+                    classes: [],
+                    css: {
+                        //zIndex: 11
+                    }
+                },
+                header: "Lipsește descrierea",
+                message: "Introdu descrierea resursei."
+            });
+        } else {
+            pas1(); // funcție care culege datele introduse la pasul 1 (definită în form01adres.js)
+
+            $('#doi').show(); // metodă ale lui jQuery - https://api.jquery.com/hide/
+            $('#unu').hide(); // metodă ale lui jQuery - https://api.jquery.com/hide/
+
+            // setarea avansului indicatorului vizual [progress bar->pas2]
+            let resTxt1 = clsTxt1.toggle('active'); // avansul la pasul 2 scoate clasa => `resTxt1` = `false`
+            // dacă a fost scoasă clasa, activeaz-o în pasul doi
+            if (!resTxt1) {
+                clsTxt2.toggle('active');
+            }
+        }
+    };
+    document.querySelector('#next-1').addEventListener('click', clbk_next_1);
+
+    /* === PAS 2 <hide> -> Întoarcere PAS 1 <show> :: Colectare date din PAS 2 === */
+    function clbk_next_2 () {
+        pas2(); // funcție care culege datele introduse la pasul 2
+
+        $('#doi').hide();
+        $('#unu').show(); // Mergi înapoi la pasul unu al formularului
+
+        // setarea avansului indicatorului vizual [pas1 <-]
+        let resTxt1 = clsTxt1.toggle('active');
+        if (resTxt1) {
+            clsTxt2.toggle('active');
+        }
+    }
+    document.querySelector('#next-2').addEventListener('click', clbk_next_2);
+
+    /* === PAS 2 <hide> -> Avans PAS 3 <show> :: Colectare date din PAS 2 === */
+    function clbk_next_3 () {
+        // testează dacă a fost selectată vreo opțiune din selectul ariilor curriculare
+        pas2(); // colectează datele de la pasul 2 al formularului.
+
+        // console.log(`[form01adres.mjs::line 3228] Obiectul populat la acest moment `, RED);
+        $('#doi').hide();
+        $('#trei').show();
+
+        // setarea avansului indicatorului vizual [-> pas3]
+        let resTxt3 = clsTxt3.toggle('active');
+        if (resTxt3) {
+            clsTxt2.toggle('active');
+        }
+    }
+    document.querySelector('#next-3').addEventListener('click', clbk_next_3);
+
+    /* === PAS 3 <hide> -> Întoarcere PAS 2 <show> === */
+    function clbk_next_4 () {
+
+        $('#trei').hide();
+        $('#doi').show(); // Mergi înapoi la pasul doi al formularului
+
+        // setarea avansului indicatorului vizual [pas2 <-]
+        let clsTxt2 = progressTxt2.classList;
+        let resTxt2 = clsTxt2.toggle('active');
+
+        let clsTxt3 = progressTxt3.classList;
+        if (resTxt2) {
+            clsTxt3.toggle('active');
+        }
+    }
+    document.querySelector('#next-4').addEventListener('click', clbk_next_4);
+
+    /* === PAS 4 <show> -> PAS 3 <hide> :: Colectare date din PAS 3 === */
+    function clbk_next_5 () {
+        pas3(); // colectează datele de la pasul 3 al formularului.
+
+        $('#trei').hide();
+        $('#patru').show(); //Mergi la pasul patru al formularului
+
+        // setarea avansului indicatorului vizual [-> pas4]
+        let clsTxt3 = progressTxt3.classList;
+        let clsTxt4 = progressTxt4.classList;
+        let resTxt4 = clsTxt4.toggle('active');
+        if (resTxt4) {
+            clsTxt3.toggle('active');
+        }
+    }
+    document.querySelector('#next-5').addEventListener('click', clbk_next_5);
+
+    /* === PAS 4 <hide> -> Întoarcere la PAS 3 <show> === */
+    function clbk_next_6 () {
+        
+        $('#patru').hide();
+        $('#trei').show();
+
+        // setarea avansului indicatorului vizual [pas3 <-]
+        let clsTxt3 = progressTxt3.classList;
+        let resTxt3 = clsTxt3.toggle('active');
+
+        let clsTxt4 = progressTxt4.classList;
+        if (resTxt3) {
+            clsTxt4.toggle('active');
+        }        
+    }
+    document.querySelector('#next-6').addEventListener('click', clbk_next_6);
+
+    /* === COLECTAREA DATELOR DIN FORM === */
+
+    /**
+     * === PAS 1 :: Colectare date ===
+     * Funcția are rolul de a popula obiectul `RED` cu datele din formular de la `Pas 1`.
+     */
+    function pas1 () {
+        /* === RED.title [Gestionarea titlului și ale celor în alte limbi] === */
+        var title = document.querySelector('#titlu-res').value; // titlul în limba română <input>
+        RED.title = title;
+        
+        /* === RED.langRED [Stabilirea limbii RED-ului] === */
+        var limbaRed = document.querySelector('#langRED'); // <select>
+        var langRED = limbaRed.options[limbaRed.selectedIndex].value;
+        RED.langRED = langRED;
+        // verifică dacă nu cumva au fost adăugate titluri alternative. Dacă da, constituie datele necesare
+        var titluriAltele = document.querySelector('#langAlternative'); // conținutul div-ului este generat dinamic de `creeazaTitluAlternativ()`
+
+        /* === RED.titleI18n [Colectarea titlurilor care sunt în altă limbă] === */
+        if (titluriAltele) {
+            
+            var inputs  = titluriAltele.querySelectorAll('input'); // Creează un NodeList cu toate elementele input
+            var selects = titluriAltele.querySelectorAll('select'); // Creează un NodeList cu toate elementele select
+            
+            let index;
+            for (index = 0; index < inputs.length; ++index) {
+                // console.log(inputs[index]);
+                var obi = {}; // obiect care să colecteze datele
+                var nameInput = inputs[index].name; // Obține id-ul
+
+                // Pentru fiecare input colectat, trebuie adusă și limba corespunzătoare din select-ul alăturat.
+                selects.forEach((selectElem) => {
+                    // verifică dacă id-ul elementul select este egal cu id-ul elementului input plus `-select`
+                    if (selectElem.id === `${nameInput}-select`) {
+                        // constituie înregistrarea în obi
+                        obi[`${selectElem.options[selectElem.selectedIndex].value}`] = inputs[index].value;
+                    }
+                });
+                RED.titleI18n.push(obi); // adaugă obiectul care conține titlul alternativ.
+            }
+        }
+
+        /* === RED.emailContrib  [Adaugă emailul] === */
+        var emailContrib  = document.querySelector('#emailContrib').value;
+        RED.emailContrib  = emailContrib;
+
+        /* === RED.idContributor [Adaugă id-ul utilizatorului care face propunerea] === */
+        var idUser        = document.querySelector('#idUser').value;    
+        RED.idContributor = idUser;
+
+        /* === RED.nameUser      [Adaugă numele și prenumele utilizatorului] === */
+        let autor         = document.querySelector('#autor').value;
+        RED.nameUser      = autor;
+
+        /* === RED.description   [Adaugă descrierea] === */
+        RED.description   = descriere.value;
+
+        /* === RED.rol           [Adaugă rolul pe care îl îndeplinește] === */
+        var rol           = document.querySelector('#roluri');
+        var rolOpt        = rol.options[rol.selectedIndex].value;
+        RED.rol           = rolOpt;
+
+        /* === RED.licenta       [Adaugă licența pentru care s-a optat] === */
+        var licenta       = document.querySelector('#licente');
+        var licOpt        = licenta.options[licenta.selectedIndex].value;
+        RED.licenta       = licOpt;
+    };
+
+
     /**
      * Funcția `existaAria` are rolul de a completa RED.arieCurriculară cu selecția făcută
      * În cazul în care nu există niciun element selectat, va afișa o eroare.
      */
     function existaAria () {
-            /* === RED.arieCurriculara === */
+        /* === RED.arieCurriculara <Array> === */
         // introducerea arie curiculare selectare din options
-        var arie = document.getElementById('arii-curr');
+        var arie = document.getElementById('arii-curr'); // ref la <select>
         // RED.arieCurriculara = arie.options[arie.selectedIndex].value; // aduce doar ultima care a fost selectată
 
         // introdu un nivel de verificare compatibilitate. Dacă browserul nu are suport pentru .selectedOptions, optează pentru un nivel suplimentar de asigurare a compatibilității
@@ -3145,228 +3360,22 @@ import {AttachesToolPlus} from './uploader.mjs';
 
         // Afișează eroare în cazul în care nu s-a făcut încadrarea curriculară.
         if (RED.arieCurriculara.length === 0) {
-            $.toast({
-                heading: 'Curricula',
-                text: "Alege aria curriculară. Este un element absolut necesar!!!",
-                position: 'top-center',
-                // showHideTransition: 'fade',
-                icon: 'error'
-            });
-        }
-    };
-
-    /* === MECANISMUL DE AVANS AL FORMULARULUI === */
-    let progressTxt1 = document.querySelector('#progressText1');
-    let progressTxt2 = document.querySelector('#progressText2');
-    let progressTxt3 = document.querySelector('#progressText3');
-    let progressTxt4 = document.querySelector('#progressText4');
-    let clsTxt1 = progressTxt1.classList;
-    let clsTxt2 = progressTxt2.classList;
-    let clsTxt3 = progressTxt3.classList;
-    let clsTxt4 = progressTxt4.classList;
-
-    // Avans către pasul doi al formularului
-    $('#next-1').click(function (e) {
-        e.preventDefault();
-
-        /* === PAS 1 Formular === */
-        // Validare pe titlul resursei
-        if ($('#titlu-res').val() == '') {
-            // $('#titluErr').text('Trebuie neapărat să denumești resursa!!!'); // Folosește dacă revii la texte afișate
-            // $('#titluErr').toast({
-            $.toast({
-                heading:'Lipsă nume',
-                text: "Trebuie neapărat să denumești resursa!!!",
-                position: 'top-center',
-                showHideTransition: 'fade',
-                icon: 'error'
-            });
-            return false;
-        } else if ($('#descriereRed').val() == '') {
-            $.toast({
-                text: "Introdu descrierea resursei. Este un pas necesar",
-                position: 'top-center',
-                showHideTransition: 'fade',
-                icon: 'error'
-            });
-        } else {
-            pas1(); // funcție care culege datele introduse la pasul 1 (definită în form01adres.js)
-            // console.log(RED);
-            // arată divul cu id-ul `doi` și ascunde div-ul primului pas din formular `unu`
-            $('#doi').show();
-            $('#unu').hide();
-
-            // setarea avansului indicatorului vizual [->pas2]
-            let resTxt1 = clsTxt1.toggle('active'); // avansul la pasul 2 scoate clasa => `resTxt1` = `false`
-            // dacă a fost scoasă clasa, activeaz-o în pasul doi
-            if (!resTxt1) {
-                let resTxt2 = clsTxt2.toggle('active');
-            }
-        }
-    });
-
-    /* === PAS 2 Formular === */
-    // Mergi înapoi la pasul unu al formularului
-    $('#next-2').click(function () {
-        pas2(); // funcție care culege datele introduse la pasul 2
-        // console.log(RED);
-        // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `unu`
-        $('#doi').hide();
-        $('#unu').show();
-
-        // setarea avansului indicatorului vizual [pas1 <-]
-        let resTxt1 = clsTxt1.toggle('active');
-        if (resTxt1) {
-            clsTxt2.toggle('active');
-        }
-    });
-
-    // Avansează la pasul trei al formularului -> Validarea selectului cu arii curiculare l-am trecut direct în form01adres.js
-    $('#next-3').click(function () {
-        // testează dacă a fost selectată vreo opțiune din selectul ariilor curriculare
-        pas2(); // colectează datele de la pasul 2 al formularului.
-        console.log(`[form01adres.mjs::line 3228] Obiectul populat la acest moment `, RED);
-        // ascunde divul cu id-ul `doi și arată-l pe cel cu id-ul `trei`
-        $('#doi').hide();
-        $('#trei').show();
-
-        // setarea avansului indicatorului vizual [-> pas3]
-        let resTxt3 = clsTxt3.toggle('active');
-        if (resTxt3) {
-            clsTxt2.toggle('active');
-        }
-    });
-
-    /* ===PAS 3 Formular === */
-    //Mergi înapoi la pasul doi al formularului
-    $('#next-4').click(function () {
-        // ascunde divul cu id-ul `trei și arată-l pe cel cu id-ul `doi`
-        $('#trei').hide();
-        $('#doi').show();
-
-        // setarea avansului indicatorului vizual [pas2 <-]
-        let clsTxt2 = progressTxt2.classList;
-        let resTxt2 = clsTxt2.toggle('active');
-
-        let clsTxt3 = progressTxt3.classList;
-        if (resTxt2) {
-            clsTxt3.toggle('active');
-        }
-    });
-
-    //Mergi la pasul patru al formularului
-    $('#next-5').click(function () {
-        pas3(); // colectează datele de la pasul 3 al formularului.
-        // console.log(RED);
-        // ascunde divul cu id-ul `trei și arată-l pe cel cu id-ul `patru`
-        $('#trei').hide();
-        $('#patru').show();
-
-        // setarea avansului indicatorului vizual [-> pas4]
-        let clsTxt3 = progressTxt3.classList;
-        let clsTxt4 = progressTxt4.classList;
-        let resTxt4 = clsTxt4.toggle('active');
-        if (resTxt4) {
-            clsTxt3.toggle('active');
-        }
-    });
-
-    //Mergi înapoi la pasul trei al formularului
-    $('#next-6').click(function () {
-        // ascunde divul cu id-ul `patru și arată-l pe cel cu id-ul `trei`
-        $('#patru').hide();
-        $('#trei').show();
-
-        // setarea avansului indicatorului vizual [pas3 <-]
-        let clsTxt3 = progressTxt3.classList;
-        let resTxt3 = clsTxt3.toggle('active');
-
-        let clsTxt4 = progressTxt4.classList;
-        if (resTxt3) {
-            clsTxt4.toggle('active');
-        }        
-    });
-
-    /* === COLECTAREA DATELOR DIN FORM === */
-
-    /* === Pasul 1  [Necesar mecanismulu de avans al formularului] === */
-    /**
-     * Funcția are rolul de a popula obiectul `RED` cu datele din formular de la `Pas 1`.
-     */
-    function pas1 () {
-        /* === RED.title === */
-        // Gestionarea titlului și ale celor în alte limbi
-        var title = document.querySelector('#titlu-res').value; // titlul în limba română
-        RED.title = title; // adaugă valoarea titlului în obiect
-        
-        /* === RED.langRED === */
-        // Stabilirea limbii RED-ului
-        var limbaRed = document.querySelector('#langRED');
-        var langRED = limbaRed.options[limbaRed.selectedIndex].value;
-        RED.langRED = langRED;
-        // verifică dacă nu cumva au fost adăugate titluri alternative. Dacă da, constituie datele necesare
-        var titluriAltele = document.querySelector('#langAlternative');
-
-        /* === RED.titleI18n === */
-        if (titluriAltele) {
-            // Creează un NodeList cu toate elementele input
-            var inputs = titluriAltele.querySelectorAll('input');
-            // Creează un NodeList cu toate elementele select
-            var selects = titluriAltele.querySelectorAll('select');
-            
-            let index;
-            for (index = 0; index < inputs.length; ++index) {
-                // console.log(inputs[index]);
-                var obi = {}; // obiect care să colecteze datele
-                // Obține id-ul
-                var nameInput = inputs[index].name;
-
-                // Pentru fiecare input colectat, trebuie adusă și limba corespunzătoare din select.
-                selects.forEach((selectElem) => {
-                    // verifică dacă id-ul elementul select este egal cu id-ul elementului input plus `-select`
-                    if (selectElem.id === `${nameInput}-select`) {
-                        // constituie înregistrarea în obi
-                        obi[`${selectElem.options[selectElem.selectedIndex].value}`] = inputs[index].value;
+            createBS5toast({
+                tmpl: toast_tmpl,
+                insertion: toast_cont,
+                bs5toastcontainer: {
+                    classes: [],
+                    css: {
+                        // zIndex: 11
                     }
-                });
-                RED.titleI18n.push(obi); // adaugă obiectul care conține titlul alternativ.
-            }
+                },
+                header: "Fără curriculă",
+                message: "Alege aria curriculară."
+            });
         }
-
-        /* === RED.emailContrib === */
-        // Adaugă emailul 
-        var emailContrib  = document.querySelector('#emailContrib').value;
-        RED.emailContrib  = emailContrib;
-
-        /* === RED.idContributor === */
-        // Adaugă id-ul utilizatorului care face propunerea
-        var idUser        = document.querySelector('#idUser').value;    
-        RED.idContributor = idUser;
-
-        /* === RED.nameUser === */
-        // Adaugă numele și prenumele utilizatorului
-        let autor         = document.querySelector('#autor').value;
-        RED.nameUser      = autor;
-
-        /* === RED.description === */
-        // Adaugă descrierea
-        RED.description   = descriere.value;
-
-        /* === RED.rol === */
-        // Adaugă rolul pe care îl îndeplinește
-        var rol           = document.querySelector('#roluri');
-        var rolOpt        = rol.options[rol.selectedIndex].value;
-        RED.rol           = rolOpt;
-
-        /* === RED.licenta === */
-        // Adaugă licența pentru care s-a optat
-        var licenta       = document.querySelector('#licente');
-        var licOpt        = licenta.options[licenta.selectedIndex].value;
-        RED.licenta       = licOpt;
     };
-
-    /* === Pasul 2 === */
     /**
+     * === Pasul 2 :: Colectare date===
      * Funcția are rolul de a completa cu date obiectul `RED` cu datele de la `Pas2`.
      */
     function pas2 () {
@@ -3454,20 +3463,22 @@ import {AttachesToolPlus} from './uploader.mjs';
         }
     };
 
-    /* === ETICHETE === */
-    var tagsUnq = new Set(RED.etichete); // construiește un set cu care să gestionezi etichetele constituite din tot ce a colectat `RED.etichete`
-    var newTags = document.getElementById('eticheteRed'); // ref la textarea de introducere a etichetelor
+    /* === ETICHETE :: Colectarea etichetelor === */
+    var tagsUnq   = new Set(RED.etichete); // construiește un set cu care să gestionezi etichetele constituite din tot ce a colectat `RED.etichete`
+    var newTags   = document.getElementById('eticheteRed'); // ref la textarea de introducere a etichetelor
     var tagsElems = document.getElementById('tags');
+
     /**
      * Funcția are rolul de a crea un element vizual de tip etichetă
+     * @param {String} tag Numele tagului
      */
     function createTag (tag) {
         // https://stackoverflow.com/questions/22390272/how-to-create-a-label-with-close-icon-in-bootstrap
         var spanWrapper = new createElement('h5', `${tag}`, ['tag'], null).creeazaElem();
-        var tagIcon = new createElement('span', '', ['fa', 'fa-tag', 'text-warning', 'mr-2'], null).creeazaElem();
-        var spanText = new createElement('span', '', ['text-secondary'], null).creeazaElem(`${tag}`);
-        var aClose = new createElement('a', '', null, null).creeazaElem();
-        var aGlyph = new createElement('i', '', ['remove', 'fa', 'fa-times', 'ml-1'], null).creeazaElem();
+        var tagIcon     = new createElement('span', '', ['fa', 'fa-tag', 'text-warning', 'mr-2'], null).creeazaElem();
+        var spanText    = new createElement('span', '', ['text-secondary'], null).creeazaElem(`${tag}`);
+        var aClose      = new createElement('a', '', null, null).creeazaElem();
+        var aGlyph      = new createElement('i', '', ['remove', 'fa', 'fa-times', 'ml-1'], null).creeazaElem();
 
         aClose.appendChild(aGlyph);
         spanWrapper.appendChild(tagIcon);

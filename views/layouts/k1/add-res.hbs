@@ -28,26 +28,36 @@
         {{!-- ES6 SHIM --}}
         <script type="application/javascript" src="/{{template}}/lib/es6-shim/es6-shim.min.js"></script>
 
-        {{!-- MAIN --}}
-        <link rel="stylesheet" type="text/css" href="/{{template}}/css/main.css">
-
         {{!-- FONTAWESOME --}}
         <script type="application/javascript" src="/{{template}}/lib/npm/all.min.js"></script>
-        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/all.min.css">
 
         {{!-- TIMELINE --}}
         <script type="application/javascript" src="/{{template}}/lib/timeline3/js/timeline.js"></script>
         <link title="timeline-styles" rel="stylesheet" type="text/css" href="/{{template}}/lib/timeline3/css/timeline.css">
         <link title="timeline-styles" rel="stylesheet" type="text/css" href="/{{template}}/lib/timeline3/css/fonts/font.roboto-megrim.css">
-
+        
+        {{!-- JQUERY --}}
+        <script type="application/javascript" src="/jquery/dist/jquery.min.js"></script>
         {{!-- JQUERY TOAST --}}
-        <link rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/jquery.toast.min.css">
+        <script type="application/javascript" src="/{{template}}/lib/npm/jquery.toast.min.js"></script>
 
-        {{!-- BOOTSTRAP 4  CSS--}}        
-        <link rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/bootstrap.min.css">
+        {{!-- BOOTSTRAP 5 --}}
+        <script type="application/javascript" src="/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap-utilities.min.css">
+        <link rel="stylesheet" type="text/css" href="/bootstrap-icons/font/bootstrap-icons.css">
+
+        {{!-- MAIN --}}
+        <link rel="stylesheet" type="text/css" href="/{{template}}/css/main.css">
 
         {{!-- HANDLEBARS --}}
         <script type="application/javascript" src="/{{template}}/lib/npm/handlebars.min.js"></script>
+
+        {{!-- FONTAWESOME --}}
+        <link title="timeline-styles" rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/all.min.css"
+
+        {{!-- JQUERY TOAST --}}
+        <link rel="stylesheet" type="text/css" href="/{{template}}/lib/npm/jquery.toast.min.css">
 
         {{!-- Preîncărcarea modulelor --}}
         {{#each modules}}

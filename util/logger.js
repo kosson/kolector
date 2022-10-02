@@ -2,7 +2,7 @@ const winston         = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 
 /* CONFIGURARE WINSTON */
-var config = {
+let config = {
   "port": 3001,
   "logConfig": {
       "logFolder": ".//logs//"

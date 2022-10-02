@@ -21,15 +21,17 @@ async function clbkSignUpGet (req, res, next) {
     let filterMgmt = {focus: 'general'};
     let gensettings = await Mgmtgeneral.findOne(filterMgmt);
 
-    let scripts = [
-        // LOCALE
-        {script: `${gensettings.template}/js/signup.js`} 
+    let scripts = [];
+    let styles = [
+        {style: `${gensettings.template}/lib/npm/all.min.css`}
     ];
+
     res.render(`signup_${gensettings.template}`, {
+        template: `${gensettings.template}`,
         title:   "Signup",
-        style:   `${gensettings.template}/lib/fontawesome/css/fontawesome.min.css`,
         logoimg: `${gensettings.template}/${LOGO_IMG}`,
-        scripts
+        scripts,
+        styles
     });
 };
 router.get('/', (req, res, next) => {

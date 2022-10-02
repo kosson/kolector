@@ -1,4 +1,4 @@
-<div class="container p-2">
+<div class="container">
   <div class="justify-content-center mt-4">
     {{!-- Progress bar --}}
     <div class="progress progress-custom" style="height: 3rem;">
@@ -19,30 +19,31 @@
     </div>
     {{!-- Progress bar END --}}
 
-    {{!-- Inițiere FORM --}}
+    {{!-- Inițiere FORM :: Pașii 1, 2 și 3--}}
     <form id="form01adres" class="" method="post" enctype="multipart/form-data">
+      {{!-- CSRF --}}
       <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
-      {{!-- ÎNCEPUT FORM --}}
-      <div class="p-4 rounded accordion-frame">
-        {{!-- SECȚIUNEA - #1. TITLU ȘI RESPONSABILITATE (vezi modelul de date resursa-red.js) --}}
-        <div id="unu">
-          {{!-- Acționarea grupului de controale pentru #1 --}}
-          <div class="starting-heading" id="heading01">
-              <p>Pasul 1</p>
-              <h4>Definire titlu și responsabilitate</h4>
+
+      {{!-- ÎNCEPUT FORM Div care ține form-ul --}}
+      <div class="p-4 border rounded">
+        {{!-- PAS #1. TITLU ȘI RESPONSABILITATE (vezi modelul de date resursa-red.js) --}}
+        <section id="unu" class="row mb-3">
+          {{!-- Pas #1 scurtă descriere --}}
+          <div id="heading01" class="starting-heading">
+              <h3>Pasul 1</h3>
+              <h4>Titlu, responsabilitate, descriere</h4>
           </div>
-          {{!-- Acționarea grupului de controale pentru #1 END--}}
+          {{!-- Pas #1 scurtă descriere END --}}
 
-          {{!-- Grupul controale - Titlu și responsabilitate [form-group] --}}
+          {{!-- Pas #1 - Titlul, responsabilitate, limbă --}}
           <div id="sec01" aria-labelledby="heading01">
-
             {{!-- TITLUL și LIMBA --}}
             <fieldset>
-
               {{!-- TITLUL RESURSEI --}}
-              <div class="form-group d-flex">
+              <div class="input-group">
                 {{!-- Info la câmp --}}
-                <aside data-toggle="tooltip" 
+                <aside class="p-1" 
+                    data-toggle="tooltip" 
                     data-container="body" 
                     data-placement="top" 
                     data-html="true" 
@@ -50,21 +51,20 @@
                     <i class="fas fa-info-circle fa-2x text-info"></i>
                 </aside>                
                 
-                <label for="titlu-res" class="col-sm-4 col-form-label">
-                  Titlul resursei
-                </label>
+                <label for="titlu-res" class="col-sm-4 col-form-label">Titlul resursei</label>
 
-                <div class="col-sm-8">
-                    <input id="titlu-res" class="form-control" type="text" name="titlu"
-                            aria-label="Titlul resursei" aria-describedby="titlu-label" maxlength="150"
-                            placeholder="ex: Drepturile și obligațiile copilului" required>
+                <div class="col-sm-6">
+                  <input id="titlu-res" class="form-control" type="text" name="titlu"
+                          aria-label="Titlul resursei" maxlength="150"
+                          placeholder="ex: Drepturile și obligațiile copilului" required>
                 </div>
               </div>
 
               {{!-- LIMBĂ --}}
-              <div class="form-group d-flex">
+              <div class="d-flex mt-2">
                   {{!-- Info la câmp --}}
-                  <aside data-toggle="tooltip" 
+                  <aside class="p-1"
+                      data-toggle="tooltip" 
                       data-container="body" 
                       data-placement="top" 
                       data-html="true" 
@@ -72,49 +72,47 @@
                       <i class="fas fa-info-circle fa-2x text-info"></i>
                   </aside>
 
-                  <label for="langRED" class="col-sm-4 col-form-label">
-                    Indică limba
-                  </label>
+                  <label for="langRED" class="col-sm-4 col-form-label">Indică limba</label>
 
-                  <div class="col-sm-8">
-                    <select id="langRED" class="custom-select" aria-describedby="langselect-label">
-                      <option value="rum" selected>română</option>
-                      <option value="ger">germană</option>
-                      <option value="hun">maghiară</option>
-                      <option value="srp">sârbă</option>
-                      <option value="rom">rromani</option>
-                      <option value="slo">slovenă</option>
-                      <option value="cze">cehă</option>
-                      <option value="ukr">ucraineană</option>
-                      <option value="bul">bulgară</option>
-                      <option value="hrv">croată</option>
-                      <option value="ita">italiană</option>
-                      <option value="gre">greacă</option>
-                      <option value="rus">rusă</option>
-                      <option value="tur">engleză</option>
-                      <option value="fra">franceză</option>
-                    </select>
-                  </div>
+                  <select id="langRED" class="form-select" aria-label="limbile conținutului">
+                    <option value="rum" selected>română</option>
+                    <option value="ger">germană</option>
+                    <option value="hun">maghiară</option>
+                    <option value="srp">sârbă</option>
+                    <option value="rom">rromani</option>
+                    <option value="slo">slovenă</option>
+                    <option value="cze">cehă</option>
+                    <option value="ukr">ucraineană</option>
+                    <option value="bul">bulgară</option>
+                    <option value="hrv">croată</option>
+                    <option value="ita">italiană</option>
+                    <option value="gre">greacă</option>
+                    <option value="rus">rusă</option>
+                    <option value="tur">engleză</option>
+                    <option value="fra">franceză</option>
+                  </select>
               </div>
 
-              {{!-- LIMBĂ - OPȚIUNI --}}
-              <div class="frm01-lang-opt form-group d-flex">
+              {{!-- LIMBA CONȚINUTULUI - OPȚIUNI --}}
+              <div class="frm01-lang-opt d-flex mt-2 border rounded">
                   {{!-- Info la câmp --}}
-                  <aside data-toggle="tooltip" 
+                  <aside class="p-1" 
+                      data-toggle="tooltip" 
                       data-container="body" 
                       data-placement="top" 
                       data-html="true" 
                       title="În cazul în care resursa are titluri și în alte limbi, aceste titluri vor putea fi adăugate aici. Apasă pe „în altă limbă”.">
                       <i class="fas fa-info-circle fa-2x text-info"></i>
                   </aside>
+
+                  <label for="titluLangAdd" class="col-sm-4 col-form-label">Introdu titlul </label>
+
                   <button id="titluLangAdd" class="btn btn-outline-secondary m-2" type="button" onclick="creeazaTitluAlternativ()">
                       <i class="fas fa-plus-circle"></i> în altă limbă
                   </button>
               </div>
-              <div id="langAlternative">
-                  {{!-- AICI SUNT INTRODUSE TITLURILE ALTERNATIVE (dynamic) --}}
-              </div>
-
+              {{!-- AICI SUNT INTRODUSE TITLURILE ALTERNATIVE (dinamic prin `creeazaTitluAlternativ()`) --}}
+              <div id="langAlternative" class="mt-2"></div>
             </fieldset>
 
             {{!-- MENȚIUNEA DE RESPONSABILITATE --}}
@@ -130,14 +128,15 @@
                     <i class="fas fa-info-circle fa-2x text-info"></i>
                 </aside>
 
-                <label for="autor" class="col-sm-4 col-form-label">
-                  Autori
-                </label>
+                <label for="autor" class="col-sm-4 col-form-label">Autori</label>
 
                 <div class="col-sm-8">
                     {{!-- INPUT Persoana responsabilă --}}
-                    <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.googleProfile.name}}" required>
-                    {{!-- <small class="form-text text-muted font-italic">Autorii vor fi trecuți în continuarea numelui contribuitorului menționând nume și prenume. Aceștia vor fi delimitați prin virgule</small> --}}
+                    {{#if user.googleProfile}}
+                        <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.googleProfile.name}}" required>
+                    {{else}}
+                        <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.username}}" required>
+                    {{/if}}
 
                     {{!-- Câmpuri ascunse --}}
                     <input id="idUser"       name="idUser"       type="hidden" value="{{user._id}}">
@@ -185,9 +184,8 @@
               </div>
                 {{!-- GRUPURILE ȚINTĂ END --}}                
             </fieldset>
-            {{!-- MENȚIUNEA DE RESPONSABILITATE END --}}
 
-            {{!-- LICENȚIEREA RESURSEI --}}
+            {{!-- LICENȚA RESURSEI --}}
             <fieldset>
               <div class="form-group d-flex">
                 {{!-- Info la câmp --}}
@@ -219,32 +217,29 @@
                 </div>
               </div>
             </fieldset>
-            {{!-- LICENȚIEREA RESURSEI END --}}
           </div>
-          {{!-- Grupul controale - Titlu și responsabilitate [form-group] END --}}
+          {{!-- Pas #1 - Titlul, responsabilitate, limbă END --}}
 
-          {{!-- Avans către pasul 2 [form-group] --}}
-          <div class="form-group align-self-center p-4 add-res-nav">
-            <a href="#" id="next-1" class="btn btn-success add-res-nav-next">Mergi la pasul 2 <i class="fas fa-arrow-right"></i></a>
+          {{!-- Avans către pasul 2 --}}
+          <div class="align-self-center p-4">
+            <a href="#" id="next-1" class="btn btn-success">Mergi la pasul 2 <i class="fas fa-arrow-right"></i></a>
           </div>
-          {{!-- Avans către pasul 2 [form-group] END --}}
-        </div>
+          {{!-- Avans către pasul 2 END --}}
+        </section>
         {{!-- SECȚIUNEA - #1. TITLU ȘI RESPONSABILITATE END --}}
 
         {{!-- SECȚIUNEA - #2. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI --}}
-        <div id="doi">
+        <section id="doi" class="row mb-3">
           {{!-- Acționarea grupului de controale pentru #1 --}}
           <div class="starting-heading" id="heading02">
-              <p>Pasul 2</p>
+              <h3>Pasul 2</h3>
               <h4>Încadrarea resursei</h4>
           </div>
           {{!-- Acționarea grupului de controale pentru #1 END--}}
 
           {{!-- Încadrarea resursei conform Planului Național [form-group] --}}
-          <div id="sec02" class="" aria-labelledby="heading02" data-parent="#accordionFrm">
+          <div id="sec02" aria-labelledby="heading02">
             {{!-- Selectări de arie --}}
-              {{!-- ARIE - Selector În caz de selecție multiplă, avem un caz de transdisciplinaritate--}}
-
             <fieldset>
                 <div class="form-group d-flex" id="arrileC">
                     {{!-- Info la câmp --}}
@@ -252,10 +247,10 @@
                         data-container="body" 
                         data-placement="top" 
                         data-html="true" 
-                        title="Selectarea ariei este primul criteriu de încadrare a resursei. Se poate opta pentru mai multe arii curriculare atunci când resursa are un caracter transversal.">
+                        title="Selectarea ariei este primul criteriu de încadrare a resursei. Se poate opta pentru mai multe arii curriculare atunci când resursa are un caracter transversal. Pentru a selecta mai multe opțiuni, apasă CTRL și click pe cel pe care dorești să-l adaugi sau să-l elimini din selecție">
                         <i class="fas fa-info-circle fa-2x text-info"></i>
                     </aside>
-                    <label for="arii-curr" class="col-sm-4 col-form-label">Alege una sau mai multe arii curriculare relevante pentru resursa propusă</label>
+                    <label for="arii-curr" class="col-sm-4 col-form-label">Arii curriculare</label>
                     <div class="col-sm-8" id="ariiCurr">
                         <select id="arii-curr" class="form-control custom-select" size="8" multiple>
                             <option data-lbcom   ="lbcom"    value="Limbă și comunicare">Limbă și comunicare</option>
@@ -268,7 +263,47 @@
                             <option data-currsc  ="currsc"   value="Curriculum la decizia școlii">Curriculum la decizia școlii</option>
                         </select>
 
-                        <small class="form-text text-muted font-italic">Pentru a selecta mai multe opțiuni, apasă CTRL și click pe cel pe care dorești să-l adaugi sau să-l elimini din selecție</small>
+                        {{!-- <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="lbcom">
+                          <label class="form-check-label" for="lbcom">Limbă și comunicare</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="matstnat">
+                          <label class="form-check-label" for="matstnat">Matematică și științe ale naturii</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="omsoc">
+                          <label class="form-check-label" for="omsoc">Om și societate</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="edfizsp">
+                          <label class="form-check-label" for="edfizsp">Educație fizică și sport</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="arte">
+                          <label class="form-check-label" for="arte">Arte</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="teh">
+                          <label class="form-check-label" for="teh">Tehnologii</label>
+                        </div>
+
+
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="consor">
+                          <label class="form-check-label" for="consor">Consiliere și orientare</label>
+                        </div>
+
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="currsc">
+                          <label class="form-check-label" for="currsc">Curriculum la decizia școlii</label>
+                        </div>                                                                                                                   --}}
+
                     </div>
                 </div>
                 {{!-- Validare arie curriculară --}}
@@ -1284,7 +1319,6 @@
                   {{!-- Încărcarea DISCIPLINELOR END --}}
                 </div>
             </fieldset>
-
             {{!-- Alegerea dinamică a disciplinelor în funcție de selectarea nivelului școlar END--}}
 
             <fieldset>
@@ -1305,16 +1339,16 @@
           {{!-- Încadrarea resursei conform Planului Național [form-group] END --}}
 
           {{!-- Avans către pasul 3 / Înapoi la pasul 1 [form-group]--}}
-          <div class="form-group align-self-center p-4 add-res-nav">
-            <a href="#" id="next-2" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 1</a>
-            <a href="#" id="next-3" class="btn btn-success add-res-nav-next">Mergi la pasul 3 <i class="fas fa-arrow-right"></i></a>
+          <div class="form-group align-self-center p-4">
+            <a href="#" id="next-2" class="btn btn-success"><i class="fas fa-arrow-left"></i> Înapoi la pasul 1</a>
+            <a href="#" id="next-3" class="btn btn-success">Mergi la pasul 3 <i class="fas fa-arrow-right"></i></a>
           </div>
           {{!-- Avans către pasul 3 / Înapoi la pasul 1 [form-group] END --}}
-        </div>
+        </section>
         {{!-- SECȚIUNEA - #2. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI END--}}
 
         {{!-- SECȚIUNEA - #3 Încarcă materialele --}}
-        <div id="trei">
+        <section id="trei" class="row mb-3">
           {{!-- Acționarea grupului de controale pentru #3 --}}
           <div class="starting-heading" id="heading03">
               <p>Pasul 3</p>
@@ -1323,7 +1357,7 @@
           {{!-- Acționarea grupului de controale pentru #1 END--}}
 
           {{!-- Încărcarea fișierelor sau a fragmentului [form-group] --}}
-          <div id="sec03" aria-labelledby="heading03" data-parent="#accordionFrm">
+          <div id="sec03" aria-labelledby="heading03">
             {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI --}}
 
               <fieldset>
@@ -1420,29 +1454,30 @@
           {{!-- Încărcarea fișierelor sau a fragmentului [form-group] END--}}
 
           {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group]--}}
-          <div class="form-group align-self-center p-4 add-res-nav">
-            <a href="#" id="next-4" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 2</a>
-            <a href="#" id="next-5" class="btn btn-success add-res-nav-next">Mergi la pasul 4 <i class="fas fa-arrow-right"></i></a>
+          <div class="form-group align-self-center p-4">
+            <a href="#" id="next-4" class="btn btn-success"><i class="fas fa-arrow-left"></i> Înapoi la pasul 2</a>
+            <a href="#" id="next-5" class="btn btn-success">Mergi la pasul 4 <i class="fas fa-arrow-right"></i></a>
           </div>
           {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group] END --}}
-        </div>
+        </section>
         {{!-- SECȚIUNEA - #3 Încarcă materialele END --}}
       </div>
-      {{!-- FORM END --}}
     </form>
+    {{!-- FORM END --}}
 
-    <div class="p-4 accordion-frame">
+    {{!-- Pasul 4 :: Editor --}}
+    <div class="p-4 ">
       {{!-- SECȚIUNEA - #4 Încarcă adiționale; această secțiune este în afara formului --}}
       <div id="patru">
-          {{!-- Acționarea grupului de controale pentru #4 --}}
-          <div class="starting-heading" id="heading04">
-              <p>Pasul 4</p>
-              <h4>Introducere de conținut și încărcare fișiere</h4>
-          </div>
-          {{!-- Acționarea grupului de controale pentru #4 END--}}
+        {{!-- Acționarea grupului de controale pentru #4 --}}
+        <div class="starting-heading" id="heading04">
+            <p>Pasul 4</p>
+            <h4>Introducere de conținut și încărcare fișiere</h4>
+        </div>
+        {{!-- Acționarea grupului de controale pentru #4 END--}}
 
         {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
-        <div id="sec04" aria-labelledby="heading04" data-parent="#accordionFrm">
+        <div id="sec04" aria-labelledby="heading04">
           {{!-- RESURSELE care au stat la bază --}}
             {{!-- EDITOR pentru introducerea letrică --}}
             <fieldset>
@@ -1538,19 +1573,17 @@
         </div>
         {{!-- Verificarea fișei și constituirea înregistrării [form-group] END --}}
 
-        <div id="submitWrap" class="form-group add-res-nav p-4" data-parent="#accordionFrm">
-
+        <div id="submitWrap" class="form-group add-res-nav p-4">
             {{!-- Înapoi la pasul 3 [form-group]--}}
-              <a href="#" id="next-6" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 3</a>
+            <a href="#" id="next-6" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 3</a>
             {{!-- Înapoi la pasul 4 [form-group] END --}}
             <div class="add-res-nav-ending">
               <button id="submit" type="button" class="btn btn-success">Adaugă resursa</button>
               <button id="delete" type="button" class="btn btn-danger">Renunță</button>
             </div>
         </div>
+      </div>
     </div>
-  </div>
-  {{!-- SECȚIUNEA - #4 Verifică fișa și trimite resursa END --}}
   </div>
 </div>
 

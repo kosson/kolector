@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-resurse-publice">
     <a class="navbar-brand" href="/">
         <img id="logo-small" src="{{{logoimg}}}" alt="logo">
     </a>
@@ -7,8 +7,10 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        {{#if user}}
-            <span class="salut">Salut, {{user.googleProfile.name}} <img class="avatar rounded-circle" data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" src="{{user.googleProfile.picture}}" alt="Imagine cont"/></span>
+        {{#if user.googleProfile}}
+            <span class="salut">Salut, {{user.googleProfile.name}} <img class="avatar rounded-circle" data-email="{{user.email}}" data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" src="{{user.googleProfile.picture}}" alt="Imagine cont"/></span>
+        {{else}}
+            <span class="salut">Salut, {{user.username}}</span>
         {{/if}}
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
