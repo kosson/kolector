@@ -93,49 +93,31 @@ class createElement {
     }
 }
 
-let modelBS5toast = {
-    "div": {
-      "@class": "position-fixed bottom-0 end-0 p-3",
-      "@style": "z-index: 11",
-      "div": {
-        "@id": "liveToast",
-        "@class": "toast hide",
-        "@role": "alert",
-        "@aria-live": "assertive",
-        "@aria-atomic": "true",
-        "div": [
-          {
-            "@class": "toast-header",
-            "img": {
-              "@src": "...",
-              "@class": "rounded me-2",
-              "@alt": "..."
-            },
-            "strong": {
-              "@class": "me-auto",
-              "#text": "Bootstrap"
-            },
-            "small": "11 mins ago",
-            "button": {
-              "@type": "button",
-              "@class": "btn-close",
-              "@data-bs-dismiss": "toast",
-              "@aria-label": "Close"
-            }
-          },
-          {
-            "@class": "toast-body",
-            "#text": "Hello, world! This is a toast message."
-          }
-        ]
-      }
-    }
-  };
+/**
+ * Funcția are rolul de a șterge toate div-urile care au clasa .toast
+ * Folosit de createBS5toast()
+ * @param {Object} data 
+ */
+function deleteAllBS5toasts (data = {}) {
+        // dacă există element copil, șterge-l
+        const siblings = data?.insertion.querySelectorAll(".toast");
+        let sibling;
+        for (sibling of siblings) {
+            data?.insertion.removeChild(sibling);
+        }
+}
 
+/**
+ * Funcția are rolul de a crea un toast specific Boostrap 5
+ * @param {Object} config 
+ */
 function createBS5toast (config) {
     // console.log(`Obiectul care configureaza toastul este `, config);
     //_ FIXME: Mai întâi de orice, șterge orice alt toast care există în dom. Selectează orice div care are id-ul începând cu secvența `tbs5_`
+    let insertion = config?.insertion; // selectează div-ul container
 
+    // șterge toți copii care au clasa .toast
+    deleteAllBS5toasts({insertion});
 
     let toastTmpl = config?.tmpl.cloneNode(true); // clonează întreg nodul template-ului
     let idtoast = "tbs5_" + Math.random().toString(36).slice(2); // creează id unic toast-ului
@@ -148,7 +130,7 @@ function createBS5toast (config) {
     toastTmpl.querySelector('.toast-body').innerText = config?.message;
     toastTmpl.querySelector('.me-auto').innerText = config?.header;
 
-    config?.insertion.appendChild(toastTmpl); // atașează în DOM toast-ul
+   insertion.appendChild(toastTmpl); // atașează în DOM toast-ul
 
     var toastElList = [].slice.call(document.querySelectorAll('.toast'))
     var toastList = toastElList.map(function (toastEl) {
@@ -556,6 +538,7 @@ export {socket,
     pubComm, 
     EventedElementsMgmt, 
     createBS5toast, 
+    deleteAllBS5toasts, 
     setWithExpiry, 
     getWithExpiry, 
     check4url, 

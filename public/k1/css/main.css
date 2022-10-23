@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:400,700');
 
+/* LINKURI */
+a:link { text-decoration: none; }
+a:visited { text-decoration: none; }
+a:hover { text-decoration: none; }
+a:active { text-decoration: none; }
+
+
+/* == ELEMENTE COMUNE FORMULARE == */
+.form-control::placeholder {
+    color:rgb(87, 203, 249, 0.6);
+    font-style: italic;
+}
+
+/* Necesar pentru a ține câmpurile în dic tip container */
 
 /* HEADER */
 #header-landing {
@@ -463,53 +477,12 @@ tr.shown td.details-control {
     margin-bottom: .4rem;
 }
 
-/* FORMAREA BUTOANELOR DISCIPLINELOR */
-/* .btn-success { background-color: red; } */
+/* FORM01 :: PAS 2 :: FORMAREA BUTOANELOR DISCIPLINELOR */
 
 .disciplina {
     margin: .2rem;
 }
-
-/* Butoanele disciplinelor */
-.discinput {
-    padding: 0 1rem;
-    width: 1.5rem;
-    height: 1.35rem;
-    border-radius: 1rem;
-    box-shadow: 0 0 .4rem rgba(0, 0, 0, 0.2);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    outline: none;
-    transition: 0.5s;
-}
-
-.disclabel {
-    position: relative;
-    padding: .4rem 2rem;
-}
-
-.discinput:checked {
-    background-color: darkgreen;
-}
-
-.discinput::before {
-    content: '';
-    position: absolute;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 1rem;
-    top: 0;
-    left: 0;
-    background-color: #EEE;
-    transform: scale(1.1);
-    box-shadow: 0 0 .4rem rgba(0, 0, 0, 0.2);
-    transition: 0.5s;
-}
-
-.discinput:checked::before {
-    left: 1rem;
-}
-
+    
 /* FORMAREA OPȚIUNILOR LA MOMENTUL ALEGERII DISCIPLINELOR */
 #multilevdisc {
     display: flex;
@@ -527,51 +500,51 @@ tr.shown td.details-control {
     margin-left: 2rem;
 }
 
-/* ELEMENTELE DE SECȚIE PENTRU DISCIPLINE */
+/* FORM01 :: ELEMENTELE DE SECȚIE PENTRU DISCIPLINE */
 
-a[class$="0"], label[class$="0"] {
-    background-color: rgba(76, 243, 34, 0.623) !important;
-    margin: 0.1rem;
+/* div[class^="cl"] {
+    
+} */
+
+/* linkurile care apar ca elemente de nav */
+a.nav-link {
+    margin: .2rem .3rem .2rem;
+}
+/* === CULORI DISCIPLINE::BADGES === */
+.cl0, a.nav-link.cl0 {
+    background-color: rgba(76, 243, 34, 0.623);
 }
 
-a[class$="1"], label[class$="1"] {
+.cl1, a.nav-link.cl1  {
     background-color: rgba(91, 189, 202, 0.65);
-    margin: 0.1rem;
 }
 
-a[class$="2"], label[class$="2"] {
+.cl2, a.nav-link.cl2  {
     background-color: rgba(155, 64, 167, 0.562);
-    margin: 0.1rem;
 }
 
-a[class$="3"], label[class$="3"] {
+.cl3, a.nav-link.cl3  {
     background-color: rgba(216, 96, 59, 0.548);
-    margin: 0.1rem;
 }
 
-a[class$="4"], label[class$="4"] {
-    background-color: rgba(69, 224, 165, 0.7) !important;
-    margin: 0.1rem;
+.cl4, a.nav-link.cl4  {
+    background-color: rgba(69, 224, 165, 0.7);
 }
 
-a[class$="5"], label[class$="5"] {
+.cl5, a.nav-link.cl5  {
     background-color: rgba(222, 224, 71, 0.7);
-    margin: 0.1rem;
 }
 
-a[class$="6"], label[class$="6"] {
+.cl6, a.nav-link.cl6  {
     background-color: rgba(85, 156, 18, 0.527);
-    margin: 0.1rem;
 }
 
-a[class$="7"], label[class$="7"] {
+.cl7, a.nav-link.cl7  {
     background-color: rgba(129, 12, 12, 0.397);
-    margin: 0.1rem;
 }
 
-a[class$="8"], label[class$="8"] {
+.cl8, a.nav-link.cl8  {
     background-color: rgba(207, 43, 133, 0.486);
-    margin: 0.1rem;
 }
 
 /* GESTIONAREA SELECTORULUI DE IMAGINE COPERTĂ - FORM 01 */
@@ -582,7 +555,8 @@ a[class$="8"], label[class$="8"] {
 	padding-left: 0 !important;
     padding-right: 0 !important;
 }
-/* GALERIA DE IMAGINI - FORMULAR */
+
+/* FORM01 :: GALERIA DE IMAGINI */
 .image-checkbox {
 	cursor: pointer;
     height: 8rem;
@@ -729,7 +703,6 @@ a[class$="8"], label[class$="8"] {
 }
 
 /* === CĂUTARE FAȚETATĂ [END] === */
-
 /* EDITOR TEXT */
 #codex-editor {
     border: .1rem;
@@ -745,14 +718,7 @@ a[class$="8"], label[class$="8"] {
     border-style: solid;
 }
 
-/* === GESTIONAREA FORMULARULUI === */
-#form01adres {
-    background-color: antiquewhite;
-    height: 100%;
-}
-
 /* GESTIONAREA EDITORULUI */
-
 .codex-editor {
     background-color: #EEE;
 }
@@ -770,7 +736,6 @@ a[class$="8"], label[class$="8"] {
 }
 
 /* === ZONA DE ADMINISTRARE === */
-
 #searchU {
     max-width: 40%;
     text-align: center;
@@ -972,7 +937,6 @@ a[class$="8"], label[class$="8"] {
 }
 
 /* Modul restats */
-
 #restats {
     display: flex;
     padding: 0.5rem;
@@ -984,7 +948,6 @@ a[class$="8"], label[class$="8"] {
     border: #707684 solid;
     margin: 0 0.2rem;
     padding: 0.3rem;
-    
 }
 
 .stat__figure {
@@ -1065,7 +1028,6 @@ a[class$="8"], label[class$="8"] {
 }
 
 /* === SEARCH în RESURSE === */
-
 .searchFrm {
     max-width: 40%;
     text-align: center;
@@ -1073,9 +1035,7 @@ a[class$="8"], label[class$="8"] {
     padding: 1rem;
 }
 
-
 /* === STAREA RESURSELOR LA ADMINISTRARE === */
-
 .resvalid, .resinvalid, .redpublic {
     font-size: larger;
 }
@@ -1143,9 +1103,7 @@ a[class$="8"], label[class$="8"] {
     margin: 3rem;
 }
 
-
-/* CĂUTARE */
-
+/* CĂUTARE :: SEARCH*/
 #searchinternal {
     background-color: #c2c2c2;
     display: flex;
@@ -1277,7 +1235,6 @@ a[class$="8"], label[class$="8"] {
 }
 
 /* Rezultate aduse din Elasticsearch (template `searchresult`)*/
-
 #primare {
     padding: .5rem;
 }
@@ -1298,30 +1255,25 @@ a[class$="8"], label[class$="8"] {
     text-decoration: none !important;
 }
 
+/* === FORM01 :: Adaugă resursă (RED) === */
 #form01adres {
     margin-top:50px;
     background:none;
+    height: 100%;
+    text-decoration: none;
 }
 
-.starting-heading{
+.starting-heading {
     padding: 1.5rem;
 }
-.form-group{
-    padding: 0 1.5rem;
-}
-.starting-heading p{
+
+.starting-heading p {
     margin-bottom: 0;
 }
-.form-group label{
-    font-weight: 500;
-}
-.field-legend{
-    padding-left: 25px;
-    padding-right: 25px;
-    font-size: 16px;
-}
 
-#progressBar{
+
+/* == PROGRESSBAR :: Adăugare RED */
+#progressBar {
     width: 100%;
 }
 
@@ -1330,6 +1282,7 @@ a[class$="8"], label[class$="8"] {
     clear:both;
     display:block;
 }
+
 #progressBar > div{
     width: 24.2%;
     display: inline-block;
@@ -1361,20 +1314,6 @@ a[class$="8"], label[class$="8"] {
     display: block;
     overflow: visible;
     height:100% !important;
-}
-
-.jq-icon-error{
-    background-color: #275382 !important;
-    border:3px solid #fff;
-}
-
-fieldset #nivel{
-    display: block;
-}
-
-fieldset #nivel .form-check{
-    display: inline-block;
-    padding: 5px;
 }
 
 #csuri{
@@ -1430,8 +1369,6 @@ fieldset #nivel .form-check{
 #searchResIntBtn{
     margin-left:10px;
 }
-
-
 
 #txthead{
     background: none;
@@ -1525,7 +1462,6 @@ fieldset #nivel .form-check{
     background-color: rgb(233, 232, 232);
 }
 
-
 /* BS4 MODALS FIX!!! */
 .modal { 
     background: rgba(0, 0, 0, 0.8);
@@ -1540,9 +1476,6 @@ fieldset #nivel .form-check{
 .salut {
     color: white;
 }
-
-
-
 
 /* Aprecierea unei resurse */
 .apreciere {
@@ -1576,9 +1509,9 @@ fieldset #nivel .form-check{
     width: 100%;
     height: 100% ;
 }
-
+/* 
 .jq-star:hover .fs-star-svg path {
-}
+} */
 
 .jq-star-svg path {
     /* stroke: #000; */
