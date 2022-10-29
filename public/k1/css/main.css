@@ -430,7 +430,7 @@ footer.bg-light {
     cursor: pointer;
 }
 
-/* MODELAREA TABELULUI de afișare a resurselor*/
+/* === MODELAREA TABELULUI pentru afișarea competențelor === */
 .helperIcon {
     background: url('../img/details_open.png') no-repeat center center;
 }
@@ -438,6 +438,7 @@ footer.bg-light {
 td.details-control {
     background: url('../img/details_open.png') no-repeat center center;
     cursor: pointer;
+    width: 2rem;
 }
 
 tr.shown td.details-control {

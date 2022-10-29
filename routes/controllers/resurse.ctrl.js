@@ -419,7 +419,6 @@ exports.resourcesPool = async function resourcesPool (req, res, next) {
 };
 
 /* FORM DESCRIERE RESURSE (ADAUGĂ) */
-// exports.describeResource = function describeResource (req, res, next) {
 exports.describeRED = async function describeRED (req, res, next) {
     // Setări în funcție de template
     let filterMgmt = {focus: 'general'};
@@ -464,18 +463,22 @@ exports.describeRED = async function describeRED (req, res, next) {
 
     let styles = [
         // FONTAWESOME
-        {style: `${gensettings.template}/lib/npm/all.min.css`},
+        // {style: `${gensettings.template}/lib/npm/all.min.css`},
         // JQUERY TOAST
-        {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`},
+        // {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`},
         // BOOTSTRAP
-        {style: `${gensettings.template}/lib/npm/bootstrap.min.css`},
+        // {style: `${gensettings.template}/lib/npm/bootstrap.min.css`},
         // DATATABLES
-        {style: `${gensettings.template}/lib/npm/jquery.dataTables.min.css`},
-        {style: `${gensettings.template}/lib/npm/buttons.dataTables.min.css`},
-        {style: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.css`},
-        {style: `${gensettings.template}/lib/npm/responsive.dataTables.min.css`},
-        {style: `${gensettings.template}/lib/npm/select.dataTables.min.css`}
+        {style: `/datatables.net-dt/css/jquery.dataTables.min.css`},
+        {style: `/datatables.net-buttons-dt/css/buttons.dataTables.min.css`},
+        {style: `/datatables.net-responsive-dt/css/responsive.dataTables.min.css`},
+        {style: `/datatables.net-select-dt/css/select.dataTables.min.css`}
     ];
+
+    let tests = [
+        'acest este un text',
+        'alt text imediat'
+    ]
 
     let data = {
         uuid: uuid,
@@ -499,7 +502,6 @@ exports.describeRED = async function describeRED (req, res, next) {
         if(!url.startsWith("http")) url = "#";
 
         // Dacă avem un admin, atunci oferă acces neîngrădit
-        // res.render('adauga-res', {   
         res.render(`add-red_${gensettings.template}`, {   
             template: `${gensettings.template}`,      
             title:     "RED nou",

@@ -2808,51 +2808,79 @@ var competenteGen   = new Set(); // este un set necesar colectării competențel
 var competenteS     = new Set(); // este setul competențelor specifice care au avut câte o activitate bifată sau completată.
 
 /**
- * Funcție helper pentru prezentarea informațiilor privind activitățile în row separat.
+ * Rolul funcției este să creeze elementul care afișează o activitate, adică un `li`.
+ * Este utilizat de `tabelFormater()` odată pentru a genera activitățile fiecărei Competențe și apoi pentru a adăuga activități noi
+ */
+function activitateLiCreator (id, textcontent, checked) {
+    // pentru fiecare activitate, generează câte un `<li>` care să aibă corespondent un input check a cărui valoare este chiar textul activității
+    let liElem    = new createElement('li', '', ['list-group-item'], '').creeazaElem();
+    let divElem   = new createElement('div', '', ['form-check'], '').creeazaElem();
+    let inputElem = new createElement('input', `${id}`, ['activitate', 'form-check-input', 'position-static'], {type: "checkbox", value: `${textcontent}`, onclick: 'manageInputClick()'}).creeazaElem();
+    let labelElem = new createElement('label', '', ['form-check-label'], {for: `${id}`}).creeazaElem(`${textcontent}`);
+
+    divElem.appendChild(inputElem);
+    divElem.appendChild(labelElem);
+    liElem.appendChild(divElem);
+
+    if(checked == true) {
+        inputElem.checked = true;
+        manageInputClick();
+    }
+
+    return liElem;
+}
+
+/**
+ * Funcție helper pentru prezentarea informațiilor privind activitățile într-un row separat.
  * De funcția aceasta are nevoie `disciplineBifate()`.
  * singura formulă de a adăuga interactivtate input-urilor este prin atașarea unui listener `manageInputClick()` pe `onclick`.
- * @param {Object} data sunt datele unei Competențe Specifice. Acestea au fost aduse din baza de date
+ * @param {Object} data sunt datele unei singure Competențe Specifice. Acestea au fost aduse din baza de date
  */
 function tabelFormater (data) {
     // constituie o secțiune în care vor sta activitățile
-    var sectionW   = $('<section></section>');
-    var activitati = $(`<ul id="${data._id}"></ul>`);
+    let sectionW   = new createElement('section', '', ['activitati-row'], '').creeazaElem();
+    let activitati = new createElement('ul', `${data._id}`, ['list-group'], '').creeazaElem(); // id-ul este cel al înregistrării din bază
 
-    // constituie un array al tuturor activităților arondate unei competențe specifice pentru a genera elementele `<li>` din acestea
-    data.activitati.forEach((elem) => {
-        // pentru fiecare activitate, generează câte un `<li>` care să aibă corespondent un input check a cărui valoare este chiar textul activității
-        let divElem = $('<div class="form-check"></div>').wrap('<li class="list-group-item"><li>');
-        divElem.append(`<input class="activitate form-check-input position-static" type="checkbox" value="${elem}" onclick="manageInputClick()"> ${elem}`);
-        // am introdus clasa activitate pentru ușura mecanismul de selecție ulterior în funcția manageInputClick()
-        activitati.append(divElem);
-    });
+    // TR cu ACTIVITĂȚI::constituie un array al tuturor activităților arondate unei competențe specifice pentru a genera elementele `<li>` din acestea
+    let actidx;
+    for (actidx = 0; actidx < data.activitati.length; actidx++) {
+        activitati.append(activitateLiCreator(`act-${actidx}-${data._id}`, data.activitati[actidx]));
+    }
+    // data.activitati.forEach((elem) => {
+    //     activitati.append(activitateLiCreator(`act-${data._id}`, elem));
+    // });
 
-    // generarea formului folosit la adăugarea de activități arbitrare
-    var wrapper   = $(`<div class="input-group mb-3">`);
-    var frmAddAct = $(`<input type="text" aria-label="descrierea noii activități propuse" class="form-control ${data.cod}-add" placeholder="Aici vei introduce descrierea noii activități propuse" aria-describedby="basic-addon2"></input>`);
-    // adăugarea butonul necesar introducerii de activități arbitrare
-    var btnWrap   = $('<div class="input-group-append">');
-    var btnAdd    = $(`<buton type="button" id="${data.cod}-add" class="btn btn-warning">Adaugă o nouă activitate de învățare</div>`).wrap(`<div class="input-group-append">`);
-    btnWrap.append(btnAdd); // adaugă elementul buton
-    wrapper.append(frmAddAct);
-    wrapper.append(btnWrap);
+    let noinputs = Array.from(activitati.querySelectorAll('input')).length;// necesar pentru a obține un id unic pentru checkboxul noii activități create. 
 
-    // aici se creează butonul care permite adăugarea de elemente noi la lista de activități și se atașează și listener-ul
-    $(btnAdd).on('click', function (evt) {
-        // la apăsarea butonului „Adaugă o nouă activitate”, se va genera un element nou input checkbox, deja bifat
-        let divElem = $('<div class="form-check"></div>').wrap('<li class="list-group-item"><li>');
-        divElem.append(`<input class="activitate form-check-input position-static" type="checkbox" value="${$(frmAddAct).val()}" checked onclick="manageInputClick()"> ${$(frmAddAct).val()}`);
-        // am introdus clasa activitate pentru ușura mecanismul de selecție ulterior în funcția manageInputClick()
+    // === ADAUGĂ ACTIVITĂȚI NOI INEXISTENTE (<TR>) === generarea formului folosit la adăugarea de activități arbitrare (Bootstrap 5)
+    let divWrapper = new createElement('div', '', ['input-group', 'mb-3'], '').creeazaElem();
+    let inputElem  = new createElement('input', `input-${data._id}`, ['form-control', `${data.cod}-add`], {
+        type: "text", 
+        'aria-label': 'descrierea noii activități propuse', 
+        placeholder: 'Aici vei introduce descrierea noii activități propuse'
+    }).creeazaElem();
+    let buttonElem = new createElement('button', `add-${data._id}`, ['btn', 'btn-warning'], {}).creeazaElem('Adaugă activitate inexistentă');
 
-        // Introdu de la momentul în care se constituie elementul input checkbox valoarea în activitatiFinal
-        // console.log(data);
-        activitatiFinal.set(`${$(frmAddAct).val()}`, `${data.cod}`);
-        activitati.append(divElem);
-    });
-
+    divWrapper.appendChild(inputElem);
+    divWrapper.appendChild(buttonElem);
     // Adaugă în wrapper cele două zone: activitati și formul de introducere activități
     sectionW.append(activitati);
-    sectionW.append(wrapper);
+    sectionW.append(divWrapper);
+
+    // aici se creează butonul care permite adăugarea de elemente noi la lista de activități, atașându-se și listener-ul
+    let customAddBtn = divWrapper.querySelector(`#add-${data._id}`);
+    customAddBtn.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        // colectează valoarea din inputul nou creat
+        let contentActivitate = document.querySelector(`#input-${data._id}`).value;
+
+        // la apăsarea butonului Adaugă activitate inexistentă, se va genera un element nou input checkbox
+        if (contentActivitate !== '') {
+            // activitatiFinal.set(contentActivitate, `${data.cod}-new-${noinputs}`); // adaugă activitatea în Map.
+            activitatiFinal.set(contentActivitate, `${data.cod}`); // adaugă activitatea în Map.
+            activitati.append(activitateLiCreator(`act-${++noinputs}-${data._id}`, contentActivitate, true));
+        }
+    });
 
     // Inițializează cu date instanța clasei Act --> scoate datele caracteristice zonei populate!!!
     watchRow(data);
@@ -2887,54 +2915,50 @@ function watchRow (data) {
 
 /** 
  * Funcția are rolul de a restabili starea de dinainte de a scoate din DOM activitățile unei competențe
- * Este apelată din `disciplineBifate()`
+ * Este apelată din `clbkTabelGenerator()` ori de câte ori butonul verde este apăsat pentru a accesa lista activităților
+ * Datele de lucru sunt la nivel de un singur rând corespondent unei singure competențe specifice. Când apeși pe butonu verde, trebuie restaurat starea de la prima apăsare
  */
 function activitatiRepopulareChecks () {
     let rowData = XY.getData();
+    console.log(`activitatiRepopulareChecks()::Datele rândului sunt: `, rowData);
+    
+    var arr = Array.from(document.getElementsByClassName('activitate')); // array-ul tuturor activităților din toate competențele specifice încărcate în tabel
 
-    // array-ul activităților
-    var arr = Array.from(document.getElementsByClassName('activitate'));
-    // pentru fiecare element care găsit cu clasa `activitate`, caută în Map, dacă are un obiect corespondent. Dacă da, setează atributul la checked
-
-    // selectează doar elementele care au valoarea codului competenței și fă-le să apară bifate.
+    // pentru fiecare element având clasa `activitate` din array-ul `arr`, caută în Map, dacă are există obiect corespondent. Dacă da, setează atributul la checked
     const existing = arr.map((element) => {
         if ((activitatiFinal.has(element.value))) {
             element.checked = true;
         }
     });
 
-    /* ====== Popularea cu activitățile create de user ======*/
+    /* ====== Re-popularea cu activitățile create de user ======*/
     var contentMap = activitatiFinal.entries();
-    // creează punctul de inserție pentru activitățile care au fost dorite opțional
-    var ancora = document.getElementById(XY.getData()._id); // FIXME:
+    var ancora = document.getElementById(rowData._id); // creează punctul de inserție pentru activitățile noi introduse de user mai devreme
+    
+    var activitati = [], el, val, noactivitati = rowData.activitati.length;
 
-    // constituie un array al tuturor activităților (valoarea inputului) care se încarcă din bază
-    var activitati = [];
-    for (let el of arr) {
-        activitati.push(el.value);
-    }
+    // constituie un array al tuturor activităților (valoarea inputului) care se încarcă din bază fără cele adăugate de user care se află suplimentar doar în Map-ul `activitatiFinal`.
+    // for (el of arr) {
+    //     activitati.push(el.value);
+    // }
 
     // parcurge înregistrările din Map și caută dacă valoarea activității există în array-ul activităților generate de bază.
-    for (let val of contentMap) {
+    for (val of contentMap) {
+        // console.log(`contentmap are `, contentMap, ` val are valoarea `, val);
+
         // dacă în activități nu ai niciun index cu valoarea activității care există în Map, înseamnă că-i în plus și trebuie generat element cu acea valoare.
-        if (activitati.indexOf(val[0]) === -1) {
-            var nouDiv   = new createElement('div', '', ['form-check'], {}).creeazaElem();
-            var nouInput = new createElement('input', '', ['activitate', 'form-check-input', 'position-static'], {
-                type: 'checkbox',
-                value: val[0],
-                onclick: 'manageInputClick()',
-                checked: true
-            }).creeazaElem();
-            var textVal = document.createTextNode(`${val[0]}`);
-            nouDiv.appendChild(nouInput);
-            nouDiv.appendChild(textVal);
-            ancora.appendChild(nouDiv);
+        if (rowData.activitati.indexOf(val[0]) === -1) {
+            let newactivitate = activitateLiCreator(`act-${++noactivitati}-${rowData._id}`, val[0], true);
+            // adaugă doar dacă valoarea cheii din Map este egală cu `rowData.cod`
+            if (rowData.cod === activitatiFinal.get(val[0])) {
+                ancora.appendChild(newactivitate);
+            }
         }
     }
 };
 
 /**
- *  Funcția este event handler pentru click-urile de pe input checkbox-urile create dinamic pentru fiecare activitate.
+ *  Funcția este event handler pentru click-urile de pe input checkbox-urile create dinamic pentru fiecare activitate arondată unei Competențe specifice.
  *  Gestionează ce se întâmplă cu datele din `activitatiFinal`
  *  Are acces la obiectul `XY`, care oferă datele rândului.
  *  Aici se verifică bifele și se creează un `Map` cu datele care trebuie introduse în obiectul `RED`
@@ -2943,8 +2967,8 @@ function manageInputClick () {
     let rowData = XY.getData(); // referință către datele rândului de tabel pentru o anumită competență specifică
     // $(`#arteviz3\\-1\\.1`).show(); MEMENTO!!!! Bittes like fuckin sheet!
 
-    var ancoraID = document.getElementById(rowData._id);
-    var activitChildren = Array.from(ancoraID.querySelectorAll('.activitate'));
+    var ancoraID = document.getElementById(rowData._id); // selectează elementul competenței specifice
+    var activitChildren = Array.from(ancoraID.querySelectorAll('.activitate')); // creează un array cu elementele input pentru activități
 
     // pentru fiecare dintre elementele din array, verifică dacă a fost bifat. Dacă a fost bifat, adaugă-l în Map
     var existing = activitChildren.filter((elem) => {
@@ -3018,7 +3042,7 @@ function clbkTabelGenerator (csuri) {
                     "orderable":      false,
                     "data":           "cod",
                     "render": function (data, type, row, meta) {
-                        return '<input type="checkbox" value="' + data + '"></input>';
+                        return '<input type="checkbox" value="' + data + '" disabled></input>';
                     }
                 },
                 {title: "cod", data: "cod"},
@@ -3072,7 +3096,7 @@ function clbkTabelGenerator (csuri) {
                 tr.addClass('shown');
                 // tr.find('svg').attr('data-icon', 'minus-circle'); // FontAwesome 5
 
-                activitatiRepopulareChecks(); // restabilirea stării de dinaintea închiderii rândului cu lista de activități
+                activitatiRepopulareChecks(); // restabilirea stării de dinaintea închiderii rândului cu lista de activități și completarea cu cele introduse de user
             }
         });
     // });
@@ -3092,7 +3116,6 @@ function disciplineBifate () {
     document.getElementById("discsSel").style.display   = "none";
 
     // un array necesar pentru a captura valorile input checkbox-urilor bifate
-    // let values = [];
     let values = Array.from(disciplineSelectate);
     values.forEach((elem) => {
         // === RED.discipline ===

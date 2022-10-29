@@ -14,9 +14,13 @@
         
         <meta property="dc:title"       content="{{brandname}}">
         <meta property="dc:description" content="{{description}}">
+        <meta property="dc:identifier"  content="{{data.uuid}}">
+        <meta property="dc:publisher"   content="{{data.publisher}}">
         
-        <meta itemprop="name" content="{{brandname}}">
-        <meta itemprop="description" content="{{description}}">
+        <meta itemprop="name"           content="{{brandname}}">
+        <meta itemprop="description"    content="{{description}}">
+
+        <meta property="uuid"           content="{{data.uuid}}">
 
         <meta name="csrf-token" content="{{csrfToken}}">
         
@@ -48,18 +52,18 @@
         <link rel="stylesheet" type="text/css" href="/{{template}}/css/main.css">
 
         {{!-- Încărcarea foilor de stil din module --}}
-        {{#each styles}}
-            <link rel="stylesheet" href="{{style}}" charset="utf-8">
+        {{#each styles}}  
+            <link rel="stylesheet" type="text/css" href="{{this.style}}">
         {{/each}}
 
         {{!-- Preîncărcarea modulelor --}}
         {{#each modules}}
-            <link rel="modulepreload" href="{{module}}"></script>
+            <link rel="modulepreload" href="/{{this.module}}"></script>
         {{/each}}
 
         {{!-- Încărcarea modulelor --}}
         {{#each modules}}
-            <script type="module" src="{{module}}"></script>
+            <script type="module" src="/{{this.module}}"></script>
         {{/each}}
 
         <title>{{title}}</title>
