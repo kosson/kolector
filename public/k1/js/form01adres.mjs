@@ -2935,21 +2935,15 @@ function activitatiRepopulareChecks () {
     var contentMap = activitatiFinal.entries();
     var ancora = document.getElementById(rowData._id); // creează punctul de inserție pentru activitățile noi introduse de user mai devreme
     
-    var activitati = [], el, val, noactivitati = rowData.activitati.length;
-
-    // constituie un array al tuturor activităților (valoarea inputului) care se încarcă din bază fără cele adăugate de user care se află suplimentar doar în Map-ul `activitatiFinal`.
-    // for (el of arr) {
-    //     activitati.push(el.value);
-    // }
+    var val, noactivitati = rowData.activitati.length;
 
     // parcurge înregistrările din Map și caută dacă valoarea activității există în array-ul activităților generate de bază.
     for (val of contentMap) {
         // console.log(`contentmap are `, contentMap, ` val are valoarea `, val);
-
         // dacă în activități nu ai niciun index cu valoarea activității care există în Map, înseamnă că-i în plus și trebuie generat element cu acea valoare.
         if (rowData.activitati.indexOf(val[0]) === -1) {
             let newactivitate = activitateLiCreator(`act-${++noactivitati}-${rowData._id}`, val[0], true);
-            // adaugă doar dacă valoarea cheii din Map este egală cu `rowData.cod`
+            // adaugă doar dacă valoarea cheii din Map este egală cu `rowData.cod`. Asta va poziționa fiecare activitate suplimentară sub competența specifică unde a fost creată inițial
             if (rowData.cod === activitatiFinal.get(val[0])) {
                 ancora.appendChild(newactivitate);
             }
@@ -2965,7 +2959,6 @@ function activitatiRepopulareChecks () {
  */
 function manageInputClick () {
     let rowData = XY.getData(); // referință către datele rândului de tabel pentru o anumită competență specifică
-    // $(`#arteviz3\\-1\\.1`).show(); MEMENTO!!!! Bittes like fuckin sheet!
 
     var ancoraID = document.getElementById(rowData._id); // selectează elementul competenței specifice
     var activitChildren = Array.from(ancoraID.querySelectorAll('.activitate')); // creează un array cu elementele input pentru activități
