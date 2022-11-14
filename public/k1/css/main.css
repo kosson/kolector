@@ -704,14 +704,6 @@ a.nav-link {
 }
 
 /* === CĂUTARE FAȚETATĂ [END] === */
-/* EDITOR TEXT */
-#codex-editor {
-    border: .1rem;
-}
-
-.codex-editor__redactor {
-    padding-bottom: 1rem !important;
-}
 
 /* TRATAREA LOGURILOR */
 .logentry {
@@ -719,10 +711,26 @@ a.nav-link {
     border-style: solid;
 }
 
-/* GESTIONAREA EDITORULUI */
+/* ==== GESTIONAREA EDITORULUI ==== */
+#codex-editor {
+    border: .1rem;
+    min-height: 5rem;
+}
+
+.codex-editor--empty {
+    min-height: 15rem;
+    border-color: #c2c2c2;
+}
+
+.codex-editor__redactor {
+    padding-bottom: 1rem !important;
+}
+
 .codex-editor {
     background-color: #EEE;
 }
+
+/* ==== GESTIONAREA EDITORULUI [END] ==== */
 
 #form03 {
     margin: 0 auto;
@@ -1523,4 +1531,10 @@ a.nav-link {
 .jq-shadow {
     -webkit-filter: drop-shadow( -2px -2px 2px #888 );
     filter: drop-shadow( -2px -2px 2px #888 );
+}
+
+/* TOOLTIP */
+.text-info {
+    font-size: 2rem; 
+    color: cornflowerblue;
 }

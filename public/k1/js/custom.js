@@ -1,27 +1,37 @@
-/*========== SMOOTH SCROLLING TO LINKS ==========*/
-$(document).ready(function(){ //document is loaded
-  // Add smooth scrolling to all links
-  $("a").on('click', function(event) {//click on any link;anchor tag;
-
-    // Make sure this.hash has a value before overriding default behavior
-    if (this.hash !== "") { //for e.g. website.com#home - #home
-      // Prevent default anchor click behavior
-      event.preventDefault();
-
-      // Store hash
-      var hash = this.hash;
-      //console.log('hash:',hash)
-
-      // Using jQuery's animate() method to add smooth page scroll
-      // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
-      $('html, body').animate({ //animate whole html and body elements
-        scrollTop: $(hash).offset().top //scroll to the element with that hash
-      }, 800, function(){
-
-        // Add hash (#) to URL when done scrolling (default click behavior)
-        window.location.hash = hash; //website.com - website.com#home
-        //Optional remove "window.location.hash = hash;" to prevent transparent navbar on load
-      });
-    } // End if
-  });
-});
+// document.addEventListener("DOMContentLoaded", function clbkDOMContentLoaded () {
+//     if (bootstrap) {
+//         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+//         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+//           // tooltipTriggerEl.addEventListener('show.bs.tooltip', function () {
+//           //   alert('Am fost activat');
+//           // })
+//           // tooltipTriggerEl.addEventListener('shown.bs.tooltip', function () {
+//           //   alert('Am fost afișat');
+//           // })
+//           // tooltipTriggerEl.addEventListener('hide.bs.tooltip', function () {
+//           //   alert('Sunt pe cale sa fiu pitit');
+//           // })
+//           // tooltipTriggerEl.addEventListener('hidden.bs.tooltip', function () {
+//           //   alert('Am fost ascuns');
+//           // })
+//           // tooltipTriggerEl.addEventListener('inserted.bs.tooltip', function () {
+//           //   alert('Am fost introdus în DOM');
+//           // })
+//           let t = new bootstrap.Tooltip(tooltipTriggerEl, {
+//             container: 'body', 
+//             animation: true, 
+//             html: true, 
+//             placement: "left", 
+//             trigger: 'hover focus',
+//             delay: { "show": 500, "hide": 100 }
+//           });
+//           tooltipTriggerEl.addEventListener('mouseover', function () {
+//             t.show();
+//           });
+//           tooltipTriggerEl.addEventListener('mouseleave', function () {
+//             t.hide();
+//           })
+//           return t;   
+//         });
+//     }
+// });

@@ -1,8 +1,6 @@
 import {socket, pubComm, createBS5toast, deleteAllBS5toasts, createElement, check4url, decodeCharEntities, datasetToObject} from './main.mjs';
 import {AttachesToolPlus} from './uploader.mjs';
 
-// document.addEventListener("DOMContentLoaded", function clbkDOMContentLoaded () {});
-
 /* === VARIABILE NECESARE LA NIVEL DE MODUL ȘI MAI DEPARTE === */
 var uuid      = document.querySelector("meta[property='uuid']").getAttribute("content") || '',
     RED       = {},

@@ -47,6 +47,46 @@ if (document.getElementsByName('_csrf')[0].value) {
 //     //https://kamranahmed.info/toast
 // });
 
+/** ACTIVAREA TUTUROR TOOLTIP-urilor */
+document.addEventListener("DOMContentLoaded", function clbkDOMContentLoaded () {
+    if (bootstrap) {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          // tooltipTriggerEl.addEventListener('show.bs.tooltip', function () {
+          //   alert('Am fost activat');
+          // })
+          // tooltipTriggerEl.addEventListener('shown.bs.tooltip', function () {
+          //   alert('Am fost afișat');
+          // })
+          // tooltipTriggerEl.addEventListener('hide.bs.tooltip', function () {
+          //   alert('Sunt pe cale sa fiu pitit');
+          // })
+          // tooltipTriggerEl.addEventListener('hidden.bs.tooltip', function () {
+          //   alert('Am fost ascuns');
+          // })
+          // tooltipTriggerEl.addEventListener('inserted.bs.tooltip', function () {
+          //   alert('Am fost introdus în DOM');
+          // })
+          let t = new bootstrap.Tooltip(tooltipTriggerEl, {
+            container: 'body', 
+            animation: true, 
+            html: true, 
+            placement: "left", 
+            trigger: 'hover focus',
+            delay: { "show": 500, "hide": 100 }
+          });
+          tooltipTriggerEl.addEventListener('mouseover', function () {
+            t.show();
+          });
+          tooltipTriggerEl.addEventListener('mouseleave', function () {
+            t.hide();
+          })
+          return t;   
+        });
+    }
+});
+
+
 /**
  * Clasa `createElement` va crea elemente HTML
  * @param {string} tag este un șir de caractere care indică ce tip de element va fi creat

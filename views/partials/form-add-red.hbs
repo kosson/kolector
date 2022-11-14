@@ -26,6 +26,7 @@
 
       {{!-- ÎNCEPUT FORM Div care ține form-ul --}}
       <div class="p-4 border rounded">
+
         {{!-- PAS #1. TITLU ȘI RESPONSABILITATE (vezi modelul de date resursa-red.js) --}}
         <section id="unu" class="row mb-3">
           {{!-- Pas #1 scurtă descriere --}}
@@ -35,25 +36,23 @@
 
           {{!-- Pas #1 - Titlul, responsabilitate, descriere, limbă --}}
           <div id="sec01" aria-labelledby="heading01">
+
             {{!-- TITLUL și LIMBA --}}
             <fieldset>
               {{!-- TITLUL RESURSEI --}}
               <div class="input-group mb-md-2">
                 {{!-- Info la câmp --}}
-                <aside class="p-1" 
-                    data-toggle="tooltip" 
-                    data-container="body" 
-                    data-placement="top" 
-                    data-html="true" 
-                    title="Titlul trebuie să cuprindă un maxim de 150 de caractere, să fie clar și să evidențieze conținutul resursei.">
-                    <i class="fas fa-info-circle fa-2x text-info"></i>
-                </aside>                
+                <aside class="p-1">
+                    {{!-- <i class="fas fa-info-circle fa-2x text-info"></i> --}}
+                    <i class="bi bi-info-circle-fill text-info" role="img" aria-label="Info" 
+                        data-bs-toggle="tooltip" title="Titlul trebuie să cuprindă un maxim de 150 de caractere, să fie clar și să evidențieze conținutul resursei."></i>
+                </aside>        
                 
                 <label for="titlu-res" class="col-sm-4 col-form-label">Titlul resursei</label>
 
                 <div class="col-sm-6">
                   <input id="titlu-res" class="form-control" type="text" name="titlu"
-                          aria-label="Titlul resursei" maxlength="150"
+                          aria-label="Titlul resursei" maxlength="150" form="form01adres" 
                           placeholder="ex: Drepturile și obligațiile copilului" required>
                 </div>
               </div>
@@ -61,18 +60,14 @@
               {{!-- LIMBĂ --}}
               <div class="d-flex mb-md-2">
                   {{!-- Info la câmp --}}
-                  <aside class="p-1"
-                      data-toggle="tooltip" 
-                      data-container="body" 
-                      data-placement="top" 
-                      data-html="true" 
-                      title="Indică limba conținutului resursei.">
-                      <i class="fas fa-info-circle fa-2x text-info"></i>
+                  <aside class="p-1">
+                      <i class="bi bi-info-circle-fill text-info" role="img" aria-label="Info" 
+                        data-bs-toggle="tooltip" title="Indică limba conținutului resursei."></i>
                   </aside>
 
                   <label for="langRED" class="col-sm-4 col-form-label">Indică limba</label>
 
-                  <select id="langRED" class="form-select" aria-label="limbile conținutului">
+                  <select id="langRED" class="form-select" form="form01adres" aria-label="limbile conținutului">
                     <option value="rum" selected>română</option>
                     <option value="ger">germană</option>
                     <option value="hun">maghiară</option>
@@ -94,13 +89,9 @@
               {{!-- LIMBA CONȚINUTULUI - OPȚIUNI --}}
               <div class="frm01-lang-opt d-flex mb-md-2 border rounded">
                   {{!-- Info la câmp --}}
-                  <aside class="p-1" 
-                      data-toggle="tooltip" 
-                      data-container="body" 
-                      data-placement="top" 
-                      data-html="true" 
-                      title="În cazul în care resursa are titluri și în alte limbi, aceste titluri vor putea fi adăugate aici. Apasă pe „în altă limbă”.">
-                      <i class="fas fa-info-circle fa-2x text-info"></i>
+                  <aside class="p-1">
+                      <i class="bi bi-info-circle-fill text-info" role="img" aria-label="Info" 
+                        data-bs-toggle="tooltip" title="În cazul în care resursa are titluri și în alte limbi, aceste titluri vor putea fi adăugate aici. Apasă pe „în altă limbă”."></i>
                   </aside>
 
                   <label for="titluLangAdd" class="col-sm-4 col-form-label">Introdu titlul</label>
@@ -118,12 +109,9 @@
               {{!-- Adăugarea userului care propune resursa --}}
               <div class="form-group d-flex mb-md-2">
                 {{!-- Info la câmp --}}
-                <aside class="p-1" data-toggle="tooltip" 
-                    data-container="body" 
-                    data-placement="top" 
-                    data-html="true" 
-                    title="Autorii vor fi trecuți în continuarea numelui contribuitorului menționând nume și prenume fără virgule între acestea două. Dacă sunt mai mulți, aceștia vor fi delimitați prin virgule.">
-                    <i class="fas fa-info-circle fa-2x text-info"></i>
+                <aside class="p-1">
+                    <i class="bi bi-info-circle-fill text-info" role="img" aria-label="Info" 
+                        data-bs-toggle="tooltip" title="Autorii vor fi trecuți în continuarea numelui contribuitorului menționând nume și prenume fără virgule între acestea două. Dacă sunt mai mulți, aceștia vor fi delimitați prin virgule."></i>
                 </aside>
 
                 <label for="autor" class="col-sm-4 col-form-label">Autori</label>
@@ -131,9 +119,9 @@
                 <div class="col-sm-6 mb-md-2">
                     {{!-- INPUT Persoana responsabilă --}}
                     {{#if user.googleProfile}}
-                        <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.googleProfile.name}}" required>
+                        <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.googleProfile.name}}" form="form01adres"  required>
                     {{else}}
-                        <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.username}}" required>
+                        <input id="autor" type="text" aria-label="Nume și prenume" class="form-control" value="{{user.username}}" form="form01adres"  required>
                     {{/if}}
 
                     {{!-- Câmpuri ascunse --}}
@@ -146,18 +134,15 @@
               {{!-- Adăugarea descrierii --}}
               <div class="form-group d-flex">
                 {{!-- Info la câmp --}}
-                <aside class="p-1" data-toggle="tooltip" 
-                    data-container="body" 
-                    data-placement="top" 
-                    data-html="true" 
-                    title="În maxim 1000 caractere autorul face o descriere sintetică a conținutului resursei și a contextelor concrete de învățare pentru care acesta este relevantă. Recomandăm să fie evidențiate pe scurt elementele de noutate și avantajele din perspectiva învățării/elevului.">
-                    <i class="fas fa-info-circle fa-2x text-info"></i>
+                <aside class="p-1">
+                    <i class="bi bi-info-circle-fill text-info" role="img" aria-label="Info" 
+                        data-bs-toggle="tooltip" title="În maxim 1000 caractere autorul face o descriere sintetică a conținutului resursei și a contextelor concrete de învățare pentru care acesta este relevantă. Recomandăm să fie evidențiate pe scurt elementele de noutate și avantajele din perspectiva învățării/elevului."></i>
                 </aside>
 
                 <label for="descriereRed" class="col-sm-4 col-form-label">Scurtă descriere a resursei</label>
 
                 <div class="col-sm-6 mb-md-2">
-                    <textarea id="descriereRed" maxlength="1000" class="form-control" aria-label="Descrierea resursei" rows="5"
+                    <textarea id="descriereRed" maxlength="1000" class="form-control" aria-label="Descrierea resursei" rows="5" form="form01adres" 
                               placeholder="ex: Această resursă este un material video animat care facilitează înțelegerea drepturilor copilului și a obligațiilor asociate. Copiii se regăsesc în personajele din film și răspund la întrebările formulate de acestea. Materialul este interactiv și sprijină profesorul atât în activitatea de predare, cât și în cea de evaluare formativă."></textarea>
                 </div>
               </div>
@@ -165,54 +150,44 @@
               {{!-- GRUPURILE ȚINTĂ --}}
               <div class="form-group d-flex">
                 {{!-- Info la câmp --}}
-                <aside class="p-1" data-toggle="tooltip" 
-                    data-container="body" 
-                    data-placement="top" 
-                    data-html="true" 
-                    title="În cazul în care resursa promovează o nouă activitare de învățare complemtară celor deja existe în programă, se alege a doua opțiuni din selecție.">
-                    <i class="fas fa-info-circle fa-2x text-info"></i>
+                <aside class="p-1">
+                  <i class="bi bi-info-circle-fill text-info" role="img" aria-label="Info" 
+                        data-bs-toggle="tooltip" title="În cazul în care resursa promovează o nouă activitare de învățare complemetară celor deja existe în programă, se alege a doua opțiune din selecție."></i>
                 </aside>
-
                 <label for="roluri" class="col-sm-4 col-form-label">Activități de învățare susținute</label>
-
                 <div class="col-sm-6 mb-md-2">
-                    <select class="form-control" id="roluri">
-                        <option value="resursa susține o activitate de învățare indicată în programa școlară" selected>Resursa susține o activitate de învățare indicată în programa școlară</option>
-                        <option value="promovează o nouă activitate de învățare complementară celor din programa școlară">Promovează o nouă activitate de învățare complementară celor din programa școlară</option>
-                    </select>
+                  <select class="form-control" id="roluri" form="form01adres">
+                    <option value="resursa susține o activitate de învățare indicată în programa școlară" selected>Resursa susține o activitate de învățare indicată în programa școlară</option>
+                    <option value="promovează o nouă activitate de învățare complementară celor din programa școlară">Promovează o nouă activitate de învățare complementară celor din programa școlară</option>
+                  </select>
                 </div>
               </div>
 
               {{!-- LICENȚA RESURSEI --}}
               <div class="form-group d-flex">
                 {{!-- Info la câmp --}}
-                <aside class="p-1" data-toggle="tooltip" 
-                    data-container="body" 
-                    data-placement="top" 
-                    data-html="true" 
-                    title="Pentru a crește nivelul de implicare și gradul de refolosire a materialelor, se recomandă licența preselectată">
-                    <i class="fas fa-info-circle fa-2x text-info"></i>
+                <aside class="p-1">
+                  <i class="bi bi-info-circle-fill text-info" role="img" aria-label="Info" 
+                        data-bs-toggle="tooltip" title="Pentru a crește nivelul de implicare și gradul de refolosire a materialelor, se recomandă licența preselectată"></i>
                 </aside>
-
                 <label for="licente" class="col-sm-4 col-form-label">Licențe disponibile</label>
-
                 <div class="col-sm-6">
-                    <select id="licente" class="custom-select">
-                        <optgroup label="Creative Commons">
-                            <option selected value="CC BY">Atribuire CC BY 4.0</option>
-                            <option value="CC BY-SA">Atribuire - Distribuire în condiţii identice CC BY-SA 4.0</option>
-                            <option value="CC BY-ND">Atribuire-FărăModificări CC BY-ND 4.0</option>
-                            <option value="CC BY-NC">Atribuire-Necomercial CC BY-NC 4.0</option>
-                            <option value="CC BY-NC-SA">Atribuire-Necomercial-Distribuire în Condiţii Identice CC BY-NC-SA 4.0</option>
-                            <option value="CC BY-NC-ND">Atribuire-Necomercial-FărăModificări CC BY-NC-ND 4.0</option>
-                        </optgroup>
-                        <option value="GPLv3">GNU General Public License</option>
-                    </select>
-                    <div class="alert alert-info form-text text-muted font-italic" role="alert">
-                        <p>Despre licențele Creative Commons puteți citi mai multe la <a href="https://creativecommons.org/licenses/?lang=ro">„Despre licențe”</a>.</p>
-                        <p>Despre efectele și aria de protecție pentru fiecare licență în parte consultă și <a href="https://creativecommons.org/choose/?lang=ro">„Distribuie-ți opera”</a></p>
+                  <select id="licente" class="custom-select" form="form01adres">
+                      <optgroup label="Creative Commons">
+                          <option selected value="CC BY">Atribuire CC BY 4.0</option>
+                          <option value="CC BY-SA">Atribuire - Distribuire în condiţii identice CC BY-SA 4.0</option>
+                          <option value="CC BY-ND">Atribuire-FărăModificări CC BY-ND 4.0</option>
+                          <option value="CC BY-NC">Atribuire-Necomercial CC BY-NC 4.0</option>
+                          <option value="CC BY-NC-SA">Atribuire-Necomercial-Distribuire în Condiţii Identice CC BY-NC-SA 4.0</option>
+                          <option value="CC BY-NC-ND">Atribuire-Necomercial-FărăModificări CC BY-NC-ND 4.0</option>
+                      </optgroup>
+                      <option value="GPLv3">GNU General Public License</option>
+                  </select>
+                  <div class="alert alert-info form-text text-muted font-italic" role="alert">
+                      <p>Despre licențele Creative Commons puteți citi mai multe la <a href="https://creativecommons.org/licenses/?lang=ro">„Despre licențe”</a>.</p>
+                      <p>Despre efectele și aria de protecție pentru fiecare licență în parte consultă și <a href="https://creativecommons.org/choose/?lang=ro">„Distribuie-ți opera”</a></p>
                       <p>Despre licența <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License</a> puteți să aflați mai multe de la <a href="https://ro.wikipedia.org/wiki/Licen%C8%9Ba_Public%C4%83_General%C4%83_GNU">articolul Wikipedia dedicat</a></p>
-                    </div>
+                  </div>
                 </div>
               </div>
             </fieldset>
@@ -226,14 +201,13 @@
 
         {{!-- SECȚIUNEA - #2. ÎNCADRAREA RESURSEI ÎN CONTEXTUL CURRICULEI --}}
         <section id="doi" class="row mb-3">
-          {{!-- Acționarea grupului de controale pentru #1 --}}
+          {{!-- Acționarea grupului de controale pentru #2 --}}
           <div class="starting-heading" id="heading02">
               <h3>Pasul 2: Încadrarea resursei</h3>
           </div>
 
           {{!-- Încadrarea resursei conform Planului Național [form-group] --}}
           <div id="sec02" aria-labelledby="heading02">
-            
             {{!-- Selectarea ARIEI CURRICULARE --}}
             <fieldset>
                 <div class="form-group d-flex" id="arrileC">
@@ -249,7 +223,7 @@
                     <label for="arii-curr" class="col-sm-4 col-form-label">Arii curriculare</label>
 
                     <div class="col-sm-6" id="ariiCurr">
-                        <select id="arii-curr" class="form-control custom-select" size="8" multiple>
+                        <select id="arii-curr" class="form-control custom-select" form="form01adres" size="8" multiple>
                             <option data-lbcom   ="lbcom"    value="Limbă și comunicare">Limbă și comunicare</option>
                             <option data-matstnat="matstnat" value="Matematică și științe ale naturii">Matematică și științe ale naturii</option>
                             <option data-omsoc   ="omsoc"    value="Om și societate">Om și societate</option>
@@ -259,48 +233,6 @@
                             <option data-consor  ="consor"   value="Consiliere și orientare">Consiliere și orientare</option>
                             <option data-currsc  ="currsc"   value="Curriculum la decizia școlii">Curriculum la decizia școlii</option>
                         </select>
-
-                        {{!-- <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="lbcom">
-                          <label class="form-check-label" for="lbcom">Limbă și comunicare</label>
-                        </div>
-
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="matstnat">
-                          <label class="form-check-label" for="matstnat">Matematică și științe ale naturii</label>
-                        </div>
-
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="omsoc">
-                          <label class="form-check-label" for="omsoc">Om și societate</label>
-                        </div>
-
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="edfizsp">
-                          <label class="form-check-label" for="edfizsp">Educație fizică și sport</label>
-                        </div>
-
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="arte">
-                          <label class="form-check-label" for="arte">Arte</label>
-                        </div>
-
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="teh">
-                          <label class="form-check-label" for="teh">Tehnologii</label>
-                        </div>
-
-
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="consor">
-                          <label class="form-check-label" for="consor">Consiliere și orientare</label>
-                        </div>
-
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="currsc">
-                          <label class="form-check-label" for="currsc">Curriculum la decizia școlii</label>
-                        </div>                                                                                                                   --}}
-
                     </div>
                 </div>
                 {{!-- Validare arie curriculară --}}
@@ -310,7 +242,7 @@
             <hr>
 
             {{!-- ALEGE CLASA --}}
-            <fieldset id="claseleSel">
+            <fieldset id="claseleSel" >
               <legend class="field-legend text-muted"><em>Alege clasa</em></legend>
               {{!-- Orice modificare aduci, ține sincronizat și resursepublice.js -> vezi Map-ul; Acesta este nomenclatorul codurilor pe discipline. Mai este necesară și actualizarea Map-ului `pamCodDisc2Arie` --}}
               <div id="nivel" class="container">
@@ -322,7 +254,7 @@
                       <div class="row g-2">
                         
                         <div class="cl0 form-check form-switch col-2 mx-2">
-                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox0" value="cl0" autocomplete="off"
+                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox0" value="cl0" form="form01adres" autocomplete="off"
                             data-lbcom-rom0      ="Comunicare în limba română"
                             data-lbcom-germana0  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba germană"
                             data-lbcom-maghiara0 ="Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară"
@@ -391,7 +323,7 @@
                         </div>
 
                         <div class="cl1 form-check form-switch col-2 mx-2">
-                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1" autocomplete="off"
+                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox1" value="cl1" form="form01adres" autocomplete="off"
                             data-lbcom-rom1      ="Comunicare în limba română"
                             data-lbcom-germana1  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba germană"
                             data-lbcom-maghiara1 ="Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară"
@@ -466,7 +398,7 @@
                         </div>
 
                         <div class="cl2 form-check form-switch col-2 mx-2">
-                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox2" value="cl2" autocomplete="off"
+                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox2" value="cl2" form="form01adres" autocomplete="off"
                             data-lbcom-rom2      ="Comunicare în limba română"
                             data-lbcom-germana2  ="Comunicare în limba română pentru școlile și secțiile cu predare în limba germană"
                             data-lbcom-maghiara2 ="Comunicare în limba română pentru școlile și secțiile cu predare în limba maghiară"
@@ -540,7 +472,7 @@
                         </div>
 
                         <div class="cl3 form-check form-switch col-2 mx-2">
-                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox3" value="cl3" autocomplete="off"
+                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox3" value="cl3" form="form01adres" autocomplete="off"
                             data-lbcom-rom3      ="Limba și literatura română"
                             data-lbcom-germana3  ="Limba și literatura română pentru școlile și secțiile cu predare în limba germană"
                             data-lbcom-maghiara3 ="Limba și literatura română pentru școlile și secțiile cu predare în limba maghiară"
@@ -610,7 +542,7 @@
                         </div>
 
                         <div class="cl4 form-check form-switch col-2 mx-2">
-                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox4" value="cl4" autocomplete="off"
+                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox4" value="cl4" form="form01adres" autocomplete="off"
                             data-lbcom-rom4      ="Limba și literatura română"
                             data-lbcom-germana4  ="Limba și literatura română pentru școlile și secțiile cu predare în limba germană"
                             data-lbcom-maghiara4 ="Limba și literatura română pentru școlile și secțiile cu predare în limba maghiară"
@@ -688,14 +620,14 @@
 
                   <hr class="col-8">
 
-                  {{!-- GIMANZIU --}}
+                  {{!-- GIMNAZIU --}}
                   <div class="form-group">
                       <label class="col-sm-4 col-form-label">Gimnaziu</label>
 
                       <div class="row g-2">
                         
                         <div class="cl5 form-check form-switch col-2 mx-2">
-                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox5" value="cl5" autocomplete="off"
+                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox5" value="cl5" form="form01adres" autocomplete="off"
                             data-lbcom-rom5      ="Limba și literatura română"
                             data-lbcom-rom-mag5  ="Limba și literatura română secții maghiare"
                             data-lbmat-bulgara5  ="Limba şi literatura maternă bulgară"
@@ -847,7 +779,7 @@
                         </div>
 
                         <div class="cl6 form-check form-switch col-2 mx-2">
-                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox6" value="cl6" autocomplete="off"
+                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox6" value="cl6" form="form01adres" autocomplete="off"
                             data-lbcom-rom6      ="Limba și literatura română"
                             data-lbcom-rom-mag6  ="Limba și literatura română secții maghiare"
                             data-lbmat-bulgara6  ="Limba şi literatura maternă bulgară"
@@ -1003,7 +935,7 @@
                         </div>
 
                         <div class="cl7 form-check form-switch col-2 mx-2">
-                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox7" value="cl7" autocomplete="off"
+                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox7" value="cl7" form="form01adres" autocomplete="off"
                             data-lbcom-rom7      ="Limba și literatura română"
                             data-lbcom-rom-mag7  ="Limba și literatura română secții maghiare"
                             data-lbmat-bulgara7  ="Limba şi literatura maternă bulgară"
@@ -1157,7 +1089,7 @@
                         </div>
 
                         <div class="cl8 form-check form-switch col-2 mx-2">
-                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox8" value="cl8" autocomplete="off"
+                          <input class="form-check-input nivel" type="checkbox" id="inlineCheckbox8" value="cl8" form="form01adres" autocomplete="off"
                             data-lbcom-rom8      ="Limba și literatura română"
                             data-lbcom-rom-mag8  ="Limba și literatura română secții maghiare"
                             data-lbmat-bulgara8  ="Limba şi literatura maternă bulgară"
@@ -1358,8 +1290,7 @@
         <section id="trei" class="row mb-3">
           {{!-- Acționarea grupului de controale pentru #3 --}}
           <div class="starting-heading" id="heading03">
-              <p>Pasul 3</p>
-              <h4>Detalii despre resursa propusă</h4>
+              <h3>Pasul 3: Detalii despre resursa propusă</h3>
           </div>
           {{!-- Acționarea grupului de controale pentru #1 END--}}
 
@@ -1368,40 +1299,56 @@
             {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI --}}
 
               <fieldset>
-                  <legend class="field-legend text-muted">Competențe digitale, adresare și ce este necesar.</legend>
+                  <legend class="field-legend text-muted mb-lg-2">Competențe digitale, adresare și ce este necesar.</legend>
 
                   {{!-- NIVELURI --}}
-                  <div class="form-group row">
-                      <label for="valid-abil" class="col-sm-4 col-form-label">RED-ul necesită competențe digitale de nivelul</label>
-                      <div class="col-sm-8">
-                          <select class="form-control" id="valid-abil">
-                              <option value="minim">minim</option>
-                              <option value="mediu">mediu</option>
-                              <option value="avansat">avansat</option>
-                          </select>
-                      </div>
+                  <div class="form-group d-flex">
+                    <aside class="p-1">
+                      <i class="bi bi-info-circle-fill text-info" 
+                          role="img" aria-label="Info" 
+                          data-bs-toggle="tooltip" 
+                          title="Estimați dificultatea privind competențele digitale necesare lucrului cu resursa"></i>
+                    </aside>
+
+                    <label for="valid-abil" class="col-sm-4 col-form-label">RED-ul necesită competențe digitale de nivelul</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" id="valid-abil">
+                            <option value="minim">minim</option>
+                            <option value="mediu">mediu</option>
+                            <option value="avansat">avansat</option>
+                        </select>
+                    </div>
                   </div>
-                  {{!-- NIVELURI END--}}
 
                   {{!-- GRUPURILE ȚINTĂ --}}
-                  <div class="form-group row">
-                      <label for="valid-grup" class="col-sm-4 col-form-label">RED-ul se adresează în mod direct</label>
-                      <div class="col-sm-8">
-                          <select multiple class="form-control" id="valid-grup">
-                              <option value="elev">elev</option>
-                              <option value="profesor">profesor</option>
-                              <option value="altii">altă categorie</option>
-                          </select>
-                          <small class="form-text text-muted font-italic">Pentru a selecta mai multe opțiuni, apasă CTRL și click pe cel pe care dorești să-l adaugi sau să-l elimini din selecție</small>
-                      </div>
+                  <div class="form-group d-flex">
+                    <aside class="p-1">
+                      <i class="bi bi-info-circle-fill text-info" 
+                          role="img" aria-label="Info" 
+                          data-bs-toggle="tooltip" 
+                          title="Pentru a selecta mai multe opțiuni, apasă CTRL și click pe cel pe care dorești să-l adaugi sau să-l elimini din selecție."></i>
+                    </aside>                    
+                    <label for="valid-grup" class="col-sm-4 col-form-label">RED-ul se adresează în mod direct</label>
+                    <div class="col-sm-6 mb-md-2">
+                        <select multiple class="form-control" form="form01adres" id="valid-grup">
+                            <option value="elev">elev</option>
+                            <option value="profesor">profesor</option>
+                            <option value="altii">altă categorie</option>
+                        </select>
+                    </div>
                   </div>
-                  {{!-- GRUPURILE ȚINTĂ END--}}
 
                   {{!-- NECESARE --}}
-                  <div class="form-group row">
+                  <div class="form-group d-flex">
+                      <aside class="p-1">
+                        <i class="bi bi-info-circle-fill text-info" 
+                            role="img" aria-label="Info" 
+                            data-bs-toggle="tooltip" 
+                            title="Pentru a selecta mai multe opțiuni, apasă CTRL și click pe cel pe care dorești să-l adaugi sau să-l elimini din selecție."></i>
+                      </aside>   
                       <label for="materiale" class="col-sm-4 col-form-label">Resursele necesare pentru utilizarea RED-ului la clasă</label>
-                      <div class="col-sm-8">
-                          <select multiple class="form-control" id="materiale">
+                      <div class="col-sm-6 mb-md-2">
+                          <select multiple class="form-control" form="form01adres" id="materiale">
                               <option value="computer">computer</option>
                               <option value="videoproiector">videoproiector</option>
                               <option value="internet">Internet</option>
@@ -1410,49 +1357,43 @@
                               <option value="haptice">haptice (senzori tactili, căști VR. dispozitive citire date biometrice / mediu)</option>
                               <option value="mediu">mediu</option>
                           </select>
-                          <small class="form-text text-muted font-italic">Pentru a selecta mai multe opțiuni, apasă CTRL și click pe cel pe care dorești să-l adaugi sau să-l elimini din selecție</small>
                       </div>
                   </div>
-                  {{!-- NECESARE END--}}
               </fieldset>
-              {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI END --}}
-              {{!-- DEPENDINȚELE Resursei END --}}
 
+              <hr>
+
+              {{!-- DEPENDINȚELE Resursei --}}
               <fieldset>
-                  <legend class="field-legend text-muted">Alte resurse necesare:</legend>
-                  {{!-- DEPENDINȚELE Resursei --}}
+                  <legend class="field-legend text-muted">Alte resurse necesare:</legend>   
                   <div class="form-group d-flex">
                       {{!-- Info la câmp --}}
-                      <aside data-toggle="tooltip" 
-                          data-container="body" 
-                          data-placement="top" 
-                          data-html="true" 
-                          title="Se vor introduce toate detaliile privind necesitățile sau condiționalitățile pentru a deschide, citi, interpreta sau rula conținutul resursei. Se vor enumera materialele de care are nevoie elevul / profesorul / aparținătorul pentru a putea parcurge / înțelege/ asimila informațiile cuprinse în resursă.">
-                          <i class="fas fa-info-circle fa-2x text-info"></i>
+                      <aside class="p-1">
+                          <i class="bi bi-info-circle-fill text-info" 
+                            role="img" aria-label="Info" 
+                            data-bs-toggle="tooltip" 
+                            title="Se vor introduce toate detaliile privind necesitățile sau condiționalitățile pentru a deschide, citi, interpreta sau rula conținutul resursei. Se vor enumera materialele de care are nevoie elevul / profesorul / aparținătorul pentru a putea parcurge / înțelege/ asimila informațiile cuprinse în resursă."></i>
                       </aside>
                       <label for="dependinte" class="col-sm-4 col-form-label">Alte dependințe ale RED-ului</label>
-                      <div class="col-sm-8">
-                          <textarea id="dependinte" class="form-control" aria-label="dependinte" rows="5"></textarea>
+                      <div class="col-sm-6 mb-md-2">
+                          <textarea id="dependinte" class="form-control" aria-label="dependinte" form="form01adres" rows="5"></textarea>
                       </div>
                   </div>
               </fieldset>
-              {{!-- DEPENDINȚELE Resursei END --}}
-              {{!-- ELEMENTE NECESARE PENTRU VALIDAREA RESURSEI END --}}
 
               {{!-- RED componente --}}
               <fieldset>
                   <div class="form-group d-flex">
                       {{!-- Info la câmp --}}
-                      <aside data-toggle="tooltip" 
-                          data-container="body" 
-                          data-placement="top" 
-                          data-html="true" 
-                          title="Se vor introduce referințele/linkurile către toate resursele folosite în realizarea RED-ului. Menționarea surselor de unde au fost luate părți care au intrat în componența resursei este un pas necesar pentru recunoașterea meritelor creatorilor acestora. Fiecare referință/link va fi trecut pe câte un rând.">
-                          <i class="fas fa-info-circle fa-2x text-info"></i>
+                      <aside class="p-1">
+                          <i class="bi bi-info-circle-fill text-info" 
+                            role="img" aria-label="Info" 
+                            data-bs-toggle="tooltip" 
+                            title="Se vor introduce referințele/linkurile către toate resursele folosite în realizarea RED-ului. Menționarea surselor de unde au fost luate părți care au intrat în componența resursei este un pas necesar pentru recunoașterea meritelor creatorilor acestora. Fiecare referință/link va fi trecut pe câte un rând."></i>
                       </aside>
                       <label for="componente" class="col-sm-4 col-form-label">Resurse utilizate în elaborarea RED-ului</label>
-                      <div class="col-sm-8">
-                          <textarea id="componente" class="form-control" aria-label="Componente" rows="5"></textarea>
+                      <div class="col-sm-6 mb-md-2">
+                          <textarea id="componente" class="form-control" aria-label="Componente" form="form01adres" rows="5"></textarea>
                       </div>
                   </div>
               </fieldset>
@@ -1467,129 +1408,125 @@
           </div>
           {{!-- Avans către pasul 5 / Înapoi la pasul 4 [form-group] END --}}
         </section>
-      </div>
-    </form>
-    {{!-- FORM END --}}
 
-    {{!-- Pasul 4 :: Editor --}}
-    <div class="p-4 ">
-      {{!-- SECȚIUNEA - #4 Încarcă adiționale; această secțiune este în afara formului --}}
-      <div id="patru">
-        {{!-- Acționarea grupului de controale pentru #4 --}}
-        <div class="starting-heading" id="heading04">
-            <p>Pasul 4</p>
-            <h4>Introducere de conținut și încărcare fișiere</h4>
-        </div>
-        {{!-- Acționarea grupului de controale pentru #4 END--}}
+        {{!-- SECȚIUNEA - #4 Încarcă adiționale; această secțiune este în afara formului --}}
+        <section id="patru">
+          {{!-- Acționarea grupului de controale pentru #4 --}}
+          <div class="starting-heading" id="heading04">
+            <h3>Pasul 4: Introducere de conținut și încărcare fișiere</h3>
+          </div>
+          {{!-- Acționarea grupului de controale pentru #4 END--}}
 
-        {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
-        <div id="sec04" aria-labelledby="heading04">
-          {{!-- RESURSELE care au stat la bază --}}
+          {{!-- Verificarea fișei și constituirea înregistrării [form-group] --}}
+          <div id="sec04" aria-labelledby="heading04">
+
             {{!-- EDITOR pentru introducerea letrică --}}
             <fieldset>
-                <div class="form-group row">
+                <div class="form-group d-flex">
                     {{!-- <legend>Introdu mai jos în editor părțile componente ale RED-ului și o descriere, dacă este nevoie:</legend> --}}
                     {{!-- Integrarea editorului de text --}}
-
-                    <div class="col-sm-12">
-                        <div>
-                          <label class="col-form-label">Folosește editorul de mai jos pentru creare de conținut.</label>
-                        </div>
-
-                        <div class="editor-wrapper" id="editor-default">
-                            <label class="col-form-label"><em>Editor</em></label>
-                            <div id="codex-editor"></div>
-                            <small class="form-text text-muted font-italic">Click pe zona editorului standard pentru a scrie / atașa conținut.</small>
-                        </div>
+                    <aside class="p-1">
+                        <i class="bi bi-info-circle-fill text-info" 
+                              role="img" aria-label="Info" 
+                              data-bs-toggle="tooltip" 
+                              title="Folosește editorul de mai jos pentru creare de conținut. Dă click pe zona editorului standard pentru a scrie / atașa conținut."></i>
+                    </aside>
+                    <label class="col-form-label"><em>Editor</em></label>
+                </div>
+                {{!-- EDITOR.JS --}}
+                <div class="form-group row">
+                    <div class="col-sm-12 mb-md-2">
+                      <div class="editor-wrapper" id="editor-default">
+                          <div id="codex-editor"></div>
+                      </div>
                     </div>
                 </div>
             </fieldset>
-            {{!-- EDITOR pentru introducerea letrică END --}}
+
+            <hr>
 
             {{!-- Selector de imagine pentru coperta resursei --}}
             <fieldset>
               <div class="form-group row">
                 <label for="imgSelector" class="col-sm-4 col-form-label">Selectează imaginea care va fi coperta resursei</label>
-                <div id="imgSelector" class="col-sm-8"></div>
+                <div id="imgSelector" class="col-sm-6"></div>
               </div>
             </fieldset>
-            {{!-- Selector de imagine pentru coperta resursei END--}}
 
             {{!-- RESURSELE care au stat la bază --}}
             <fieldset>
               <div class="form-group d-flex">
                   {{!-- Info la câmp --}}
-                  <aside data-toggle="tooltip" 
-                      data-container="body" 
-                      data-placement="top" 
-                      data-html="true" 
-                      title="Completează menționând fiecare link separat prin virgule">
-                      <i class="fas fa-info-circle fa-2x text-info"></i>
+                  <aside class="p-1">
+                      <i class="bi bi-info-circle-fill text-info" 
+                            role="img" aria-label="Info" 
+                            data-bs-toggle="tooltip" 
+                            title="Completează menționând fiecare link separat prin virgule."></i>
                   </aside>
+
                   <label for="relatedRes" class="col-sm-4 col-form-label">Instrumente folosite în elaborarea RED-ului</label>
-                  <div id="relatedRes" class="col-sm-8">
-                      <textarea id="tools" class="form-control" aria-label="Componentele RED-ului"
-                                placeholder="ex: www.edmodo.com, https://kahoot.com/, http://openboard.ch/, etc." rows="5"></textarea>
+                  <div id="relatedRes" class="col-sm-6 mb-md-2">
+                    <textarea id="tools" class="form-control" aria-label="Componentele RED-ului"
+                                placeholder="ex: www.edmodo.com, https://kahoot.com/, http://openboard.ch/, etc." form="form01adres" rows="5"></textarea>
                   </div>
               </div>
             </fieldset>
-            {{!-- RESURSELE care au stat la bază END --}}
-          
+            
             {{!-- ETICHETE --}}
             <fieldset>
               <div id="tags"></div>
               <div id="etichete" class="form-group d-flex">
                   {{!-- Info la câmp --}}
-                  <aside data-toggle="tooltip" 
-                      data-container="body" 
-                      data-placement="top" 
-                      data-html="true" 
-                      title="Primele etichete sunt introduse automat în funcție de informațiile introduse sau selectate. Se vor completa etichetele dorite delimitate de virgule.Etichetele pot fi formate dintr-unul singur sau o sintagmă formată din maxim trei cuvinte alăturate care formează un sens unitar indivizibil. De exemplu, o formulă chimică precum acidul dezoxiribonucleic este acceptată.">
-                      <i class="fas fa-info-circle fa-2x text-info"></i>
+                  <aside class="p-1">
+                      <i class="bi bi-info-circle-fill text-info" 
+                            role="img" aria-label="Info" 
+                            data-bs-toggle="tooltip" 
+                            title="Primele etichete sunt introduse automat în funcție de informațiile introduse sau selectate. Se vor completa etichetele dorite delimitate de virgule.Etichetele pot fi formate dintr-unul singur sau o sintagmă formată din maxim trei cuvinte alăturate care formează un sens unitar indivizibil. De exemplu, o formulă chimică precum acidul dezoxiribonucleic este acceptată."></i>
                   </aside>
+
                   <label for="redTags" class="col-sm-4 col-form-label">Atribuie alte etichete RED-ului</label>
                   
-                  <div id="redTags" class="col-sm-8">
+                  <div id="redTags" class="col-sm-6 mb-md-2">
                       <input type="text" id="eticheteRed" class="form-control" aria-label="Componentele RED-ului"
-                          placeholder="ex: palindrom, funcție matematică, CevaPersonalizat01">
+                          placeholder="ex: palindrom, funcție matematică, CevaPersonalizat01" form="form01adres">
                   </div>
               </div>
             </fieldset>
-            {{!-- ETICHETE END --}}
 
-          {{!-- Bibliografie --}}
-          <fieldset>
-            <div class="form-group d-flex">
+            {{!-- Bibliografie --}}
+            <fieldset>
+              <div class="form-group d-flex">
                 {{!-- Info la câmp --}}
-                <aside data-toggle="tooltip" 
-                    data-container="body" 
-                    data-placement="top" 
-                    data-html="true" 
-                    title="Fiecare referință bibliografică va ocupa un singur rând.">
-                    <i class="fas fa-info-circle fa-2x text-info"></i>
+                <aside class="p-1">
+                    <i class="bi bi-info-circle-fill text-info" 
+                          role="img" aria-label="Info" 
+                          data-bs-toggle="tooltip" 
+                          title="Folosește standardul pentru date bibliografice APA 6 sau 7."></i>
                 </aside>
+
                 <label for="bibliografieCtn" class="col-sm-4 col-form-label">Bibliografia utilizată</label>
-                <div id="bibliografieCtn" class="col-sm-8">
-                    <textarea id="bibliografie" class="form-control" aria-label="Bibliografia" rows="5">Încurajăm redactarea referințelor respectând APA 6.</textarea>
+                <div id="bibliografieCtn" class="col-sm-6 mb-md-2">
+                    <textarea id="bibliografie" class="form-control" aria-label="Bibliografia" form="form01adres" rows="5">Încurajăm redactarea referințelor respectând APA 6.</textarea>
                 </div>
-            </div>
-          </fieldset>
-          {{!-- Bibliografie END --}}
+              </div>
+            </fieldset>
+          </div>
+          {{!-- Verificarea fișei și constituirea înregistrării [form-group] END --}}
 
-        </div>
-        {{!-- Verificarea fișei și constituirea înregistrării [form-group] END --}}
-
-        <div id="submitWrap" class="form-group add-res-nav p-4">
-            {{!-- Înapoi la pasul 3 [form-group]--}}
-            <a href="#" id="next-6" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 3</a>
-            {{!-- Înapoi la pasul 4 [form-group] END --}}
-            <div class="add-res-nav-ending">
-              <button id="submit" type="button" class="btn btn-success">Adaugă resursa</button>
-              <button id="delete" type="button" class="btn btn-danger">Renunță</button>
-            </div>
-        </div>
+          <div id="submitWrap" class="form-group add-res-nav p-4 d-flex">
+              {{!-- Înapoi la pasul 3 [form-group]--}}
+              <a href="#" id="next-6" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 3</a>
+              {{!-- Înapoi la pasul 4 [form-group] END --}}
+              <div class="add-res-nav-ending">
+                <button id="submit" type="button" class="btn btn-success" form="form01adres">Adaugă resursa</button>
+                <button id="delete" type="button" class="btn btn-danger">Renunță</button>
+              </div>
+          </div>
+        </section>
       </div>
-    </div>
+
+    {{!-- FORM END --}}
+    </form>
   </div>
 </div>
 
