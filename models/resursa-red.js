@@ -9,18 +9,18 @@ const ES7Helper     = require('./model-helpers/es7-helper');
 const logger        = require('../util/logger');
 
 /* INDECȘII ES7 */
-// let {getStructure}  = require('../util/es7');
-// let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';
-// getStructure().then((val) => {
-//     // creează valori default pentru numele indecșilor ES7 necesari în cazul în care indexul și alias-ul său nu au fost create încă
-//     USR_IDX_ALS = val.USR_IDX_ALS ?? 'users';
-//     USR_IDX_ES7 = val.USR_IDX_ES7 ?? 'users0';
-//     RES_IDX_ALS = val.RES_IDX_ALS ?? 'resursedus';
-//     RES_IDX_ES7 = val.RES_IDX_ES7 ?? 'resursedus0';
-// }).catch((error) => {
-//     console.log(`Schema mongoose pentru resurse`, error);
-//     logger.error(error);
-// });
+let {getStructure}  = require('../util/es7');
+let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';
+getStructure().then((val) => {
+    // creează valori default pentru numele indecșilor ES7 necesari în cazul în care indexul și alias-ul său nu au fost create încă
+    USR_IDX_ALS = val.USR_IDX_ALS ?? 'users';
+    USR_IDX_ES7 = val.USR_IDX_ES7 ?? 'users0';
+    RES_IDX_ALS = val.RES_IDX_ALS ?? 'resursedus';
+    RES_IDX_ES7 = val.RES_IDX_ES7 ?? 'resursedus0';
+}).catch((error) => {
+    console.log(`Schema mongoose pentru resurse`, error);
+    logger.error(error);
+});
 
 var softwareSchema = new mongoose.Schema({
     nume:     {

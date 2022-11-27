@@ -2080,7 +2080,7 @@ function sockets (io) {
 
         // === UPDATE PE CÂMPURI UNICE ALE UNUI RED ===
         socket.on('redfieldup', (data) => {
-            console.log(`Pe redfieldup am primit`, data);
+            // console.log(`Pe redfieldup am primit`, data);
             // _NOTE: Trebuie actualizată înregistrarea din MongoDB dar și cea din Elasticsearch
 
             // TODO: Verifică ca userul să aibă drepturile să facă modificarea (câmpul `idContributor`)

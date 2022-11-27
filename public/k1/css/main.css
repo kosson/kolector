@@ -548,35 +548,20 @@ a.nav-link {
     background-color: rgba(207, 43, 133, 0.486);
 }
 
-/* GESTIONAREA SELECTORULUI DE IMAGINE COPERTĂ - FORM 01 */
+/* 
+* GESTIONAREA SELECTORULUI DE IMAGINE COPERTĂ - FORM 01 
+*/
 .nopad {
     float: left;
-    position: relative;
-    /* border-radius: 50%; */
-	padding-left: 0 !important;
-    padding-right: 0 !important;
+    margin: 0 0.8rem;
 }
 
 /* FORM01 :: GALERIA DE IMAGINI */
 .image-checkbox {
+    position: relative;
 	cursor: pointer;
     height: 8rem;
     width: 8rem;
-	/* box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	border: .3rem solid transparent;
-	margin-bottom: 0;
-	outline: 0; */
-}
-
-.fa-check-circle {
-    position: absolute;
-    top: 5%;
-    left: 5%;
-    color: #28a745;
-    border-radius: 50%;
-    background-color: white;
 }
 
 /* Fiecare element din galeria de imagini */
@@ -587,27 +572,39 @@ a.nav-link {
     height: 8rem;
     width: 8rem;
 }
-/*Ascunde checkboxul original*/
+
+/* Ascunde checkboxul original */
 .image-checkbox input[type="checkbox"] {
 	display: none;
 }
 
 /*Evidențiază selecția imaginii printr-un chenar*/
 /* .image-checkbox-checked .fa-check .fa-camera{ */
-.image-checkbox .fa {
+.image-checkbox .bi-check-circle-fill {
     position: absolute;
-    color: #4A79A3;
-    background-color: #fff;
-    padding: .8rem;
     top: 0;
     right: 0;
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+    color: #4A79A3;
+    background-color: #fff;
+    border-radius: 50%;
 }
 
-.image-checkbox-checked .fa {
+.image-checkbox-checked .bi {
     display: block !important;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    color: #28a745;
+    border-radius: 50%;
+    background-color: white;
 }
 
-/* ETICHETELE - FORM 01 */
+/* 
+* ETICHETELE - FORM 01 
+*/
 #tags {
     padding: 0.3rem;
 }

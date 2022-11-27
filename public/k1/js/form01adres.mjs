@@ -2533,7 +2533,7 @@ function extragNumeDisciplina (obidisc) {
 var niveluri   = document.querySelectorAll('.nivel'); // array de clase selectate
 var discipline = document.querySelector('#discipline');
 
-// Constituirea FRAGMENTULUI de DOM [Bootstrap 4 Vertical pills](https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)
+// Constituirea FRAGMENTULUI de DOM [Bootstrap 5]
 let multilevdisc = new createElement('section', 'multilevdisc', ['flex-column'], '').creeazaElem();
 // let tablist      = new createElement('div', 'v-pills-tab', ['nav', 'flex-column', 'nav-pills'], {role: "tablist", 'aria-orientation': "vertical"}).creeazaElem(); // BS4
 let tablist      = new createElement('nav', 'v-pills-tab', ['nav', 'nav-tabs', 'nav-fill'], {role: "tablist", 'aria-orientation': "vertical"}).creeazaElem(); // BS5
@@ -3601,14 +3601,13 @@ function closeBag (evt) {
     });
 };
 
-// Afișează selectorul de imagini - https://codepen.io/kskhr/pen/pRwKjg
 /**
  * Funcția este receptor pentru containerele imaginilor timbru
  * Funcția are rolul de a bifa și debifa imaginile din galeria celor expuse selecției.
  */
 function clickImgGal (evt) {
     // selectează toate elementele care au clasa `.image-checkbox`
-    let elementContainer = document.querySelectorAll('.image-checkbox'); // e o HTMLColection de div-uri care conțin fiecare următorii copii: img, input, svg
+    let elementContainer = document.querySelectorAll('.image-checkbox'); // e o HTMLColection de div-uri care conțin fiecare următorii copii: img, input, i
 
     elementContainer.forEach( (liveNode) => {
         // verifică dacă copilul img are clasa `image-checkbox-checked` și șterge-o
@@ -3618,7 +3617,7 @@ function clickImgGal (evt) {
         }
 
         // verifică dacă copilul svg are clasa `d-block` și șterge-o
-        let svgelem = liveNode.querySelector('svg');
+        let svgelem = liveNode.querySelector('i');
         if (svgelem.classList.contains('d-block')) {
             svgelem.classList.toggle('d-block');
         }
@@ -3636,10 +3635,10 @@ function clickImgGal (evt) {
     if (checkbox.checked === false) {
         checkbox.checked = true;
         // verifică dacă mai sunt alte elemente input cu checked true
-        this.querySelector('svg').classList.toggle('d-block');
+        this.querySelector('i').classList.toggle('d-block');
     } else {
-        this.querySelector('svg').classList.add('d-none');
-        this.querySelector('svg').classList.toggle('d-block');
+        this.querySelector('i').classList.add('d-none');
+        this.querySelector('i').classList.toggle('d-block');
     }
 };
 
@@ -3654,12 +3653,14 @@ function pickCover () {
         // console.log('imaginea selectată pentru copertă este: ', img);
         
         let container = new createElement('div', '', [`col-xs-4`, `col-sm-3`, `col-md-2`, `nopad`, `text-center`], null).creeazaElem();
-        container.addEventListener('click', clickImgGal);
+        container.addEventListener('click', clickImgGal); // adaugă event listener-ul
         let imgCheck  = new createElement('div', '', [`image-checkbox`], null).creeazaElem();
         
         let imgElem   = new createElement('img', '', [`img-responsive`], {src: `${img}`}).creeazaElem();
         let inputElem = new createElement('input', '', [`inputCheckGal`], {type: 'checkbox', value: `${img}`}).creeazaElem();
-        let inputI    = new createElement('i', '', [`fas`, 'fa-check-circle', 'fa-3x', 'd-none'], null).creeazaElem();
+        // let inputI    = new createElement('i', '', [`fas`, 'fa-check-circle', 'fa-3x', 'd-none'], null).creeazaElem();
+        let inputI    = new createElement('i', '', [`bi`, 'bi-check-circle-fill'], {role: "img", "aria-label": "check"}).creeazaElem();
+        // <i class="bi bi-check-circle-fill"></i>
 
         imgCheck.appendChild(imgElem);
         imgCheck.appendChild(inputElem);

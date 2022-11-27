@@ -429,9 +429,6 @@ exports.describeRED = async function describeRED (req, res, next) {
     // console.log("Sesiunea de la /resurse/adaugă arată așa: ", req.session);
     // pentru evitarea dependințelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
     let scripts = [
-        // POPPER
-        // {script: `popper.js/dist/popper.min.js`},
-        // {script: `popper.js/dist/popper-utils.min.js`},
         // DATATABLES
         {script: `datatables.net/js/jquery.dataTables.min.js`},
         {script: `datatables.net-dt/js/dataTables.dataTables.min.js`},

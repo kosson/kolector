@@ -26,7 +26,6 @@
 
       {{!-- ÎNCEPUT FORM Div care ține form-ul --}}
       <div class="p-4 border rounded">
-
         {{!-- PAS #1. TITLU ȘI RESPONSABILITATE (vezi modelul de date resursa-red.js) --}}
         <section id="unu" class="row mb-3">
           {{!-- Pas #1 scurtă descriere --}}
@@ -1434,7 +1433,7 @@
                     <label class="col-form-label"><em>Editor</em></label>
                 </div>
                 {{!-- EDITOR.JS --}}
-                <div class="form-group row">
+                <div class="form-group row mb-3">
                     <div class="col-sm-12 mb-md-2">
                       <div class="editor-wrapper" id="editor-default">
                           <div id="codex-editor"></div>
@@ -1447,7 +1446,7 @@
 
             {{!-- Selector de imagine pentru coperta resursei --}}
             <fieldset>
-              <div class="form-group row">
+              <div class="form-group row mb-3">
                 <label for="imgSelector" class="col-sm-4 col-form-label">Selectează imaginea care va fi coperta resursei</label>
                 <div id="imgSelector" class="col-sm-6"></div>
               </div>
@@ -1455,7 +1454,7 @@
 
             {{!-- RESURSELE care au stat la bază --}}
             <fieldset>
-              <div class="form-group d-flex">
+              <div class="form-group mb-3 d-flex">
                   {{!-- Info la câmp --}}
                   <aside class="p-1">
                       <i class="bi bi-info-circle-fill text-info" 
@@ -1475,7 +1474,7 @@
             {{!-- ETICHETE --}}
             <fieldset>
               <div id="tags"></div>
-              <div id="etichete" class="form-group d-flex">
+              <div id="etichete" class="form-group mb-3 d-flex">
                   {{!-- Info la câmp --}}
                   <aside class="p-1">
                       <i class="bi bi-info-circle-fill text-info" 
@@ -1495,7 +1494,7 @@
 
             {{!-- Bibliografie --}}
             <fieldset>
-              <div class="form-group d-flex">
+              <div class="form-group mb-3 d-flex">
                 {{!-- Info la câmp --}}
                 <aside class="p-1">
                     <i class="bi bi-info-circle-fill text-info" 
@@ -1513,7 +1512,7 @@
           </div>
           {{!-- Verificarea fișei și constituirea înregistrării [form-group] END --}}
 
-          <div id="submitWrap" class="form-group add-res-nav p-4 d-flex">
+          <div id="submitWrap" class="form-group mb-3 add-res-nav p-4 d-flex">
               {{!-- Înapoi la pasul 3 [form-group]--}}
               <a href="#" id="next-6" class="btn btn-success add-res-nav-prev"><i class="fas fa-arrow-left"></i> Înapoi la pasul 3</a>
               {{!-- Înapoi la pasul 4 [form-group] END --}}
