@@ -592,14 +592,17 @@ a.nav-link {
     border-radius: 50%;
 }
 
-.image-checkbox-checked .bi {
+.image-checkbox-checked {
     display: block !important;
     position: absolute;
-    top: 5%;
-    left: 5%;
-    color: #28a745;
+    top: 1%;
+    left: 1%;
     border-radius: 50%;
-    background-color: white;
+    background-color: #28a745;
+}
+
+.image-checkbox-checked ~ .bi-check-circle-fill {
+    color: #28a745;
 }
 
 /* 

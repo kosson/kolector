@@ -574,8 +574,21 @@ class EventedElementsMgmt {
     })
  */
 
-export {socket, 
-    pubComm, 
+/**
+ * Funcția are rolul de a genera un element template pe care îl vom folosi în construcția paginilor
+ * @param {String} html Un template literal de Javascript cu structura componentei 
+ * @returns 
+ */
+function generateTemplateElement (html) {
+    const template = document.createElement("template");
+    template.innerHTML = html.trim();
+    return template.content.firstElementChild;
+}
+
+export {
+    socket, 
+    pubComm,
+    generateTemplateElement,
     EventedElementsMgmt, 
     createBS5toast, 
     deleteAllBS5toasts, 
@@ -586,4 +599,5 @@ export {socket,
     decodeCharEntities, 
     datasetToObject, 
     frm2obj, 
-    cleanEmptyPropsInObj};
+    cleanEmptyPropsInObj
+};

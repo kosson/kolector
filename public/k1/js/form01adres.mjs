@@ -380,12 +380,11 @@ function changeContent () {
                         break;
                     default:
                         return;
-                        // break;
                 }
             }
         });  
 
-        let fileResArr = Array.from(fileRes);
+        let fileResArr = Array.from(fileRes); // creeează un Array de lucru
 
         let differenceArr = fileResArr.filter((elem) => {
             if (!contentResArr.includes(elem)) return elem;
@@ -2535,7 +2534,6 @@ var discipline = document.querySelector('#discipline');
 
 // Constituirea FRAGMENTULUI de DOM [Bootstrap 5]
 let multilevdisc = new createElement('section', 'multilevdisc', ['flex-column'], '').creeazaElem();
-// let tablist      = new createElement('div', 'v-pills-tab', ['nav', 'flex-column', 'nav-pills'], {role: "tablist", 'aria-orientation': "vertical"}).creeazaElem(); // BS4
 let tablist      = new createElement('nav', 'v-pills-tab', ['nav', 'nav-tabs', 'nav-fill'], {role: "tablist", 'aria-orientation': "vertical"}).creeazaElem(); // BS5
 let tabcontent   = new createElement('div', 'v-pills-tabContent', ['tab-content'], '').creeazaElem(); // Aici apar disciplinele de nivel doi - calificările principalei
 multilevdisc.appendChild(tablist);      // #v-pills-tab
@@ -3609,6 +3607,12 @@ function clickImgGal (evt) {
     // selectează toate elementele care au clasa `.image-checkbox`
     let elementContainer = document.querySelectorAll('.image-checkbox'); // e o HTMLColection de div-uri care conțin fiecare următorii copii: img, input, i
 
+     /*
+     Scenariul este următorul:
+     - prima imagine introdusă, creeză un prim element în galeria timbrelor; aceasta va avea și bifă verde, indicând faptul că este cea implict aleasă drept copertă
+     - la introducerea celei de-a doua nu va mai fi bifată.
+     */
+
     elementContainer.forEach( (liveNode) => {
         // verifică dacă copilul img are clasa `image-checkbox-checked` și șterge-o
         let imgelem = liveNode.querySelector('img');
@@ -3616,7 +3620,7 @@ function clickImgGal (evt) {
             imgelem.classList.toggle(`image-checkbox-checked`);
         }
 
-        // verifică dacă copilul svg are clasa `d-block` și șterge-o
+        // verifică dacă copilul img are clasa `d-block` și șterge-o
         let svgelem = liveNode.querySelector('i');
         if (svgelem.classList.contains('d-block')) {
             svgelem.classList.toggle('d-block');
@@ -3645,22 +3649,22 @@ function clickImgGal (evt) {
 var insertGal = document.getElementById('imgSelector');
 /**
  * Funcția generează toate elementele ce poartă imagini pentru a putea fi bifată cea care devine coperta resursei.
+ * Funcția este apelată de `changeContent()` ori de câte ori conținutul din editor se modifică
  */
 function pickCover () {
-    insertGal.innerHTML = '';
+    insertGal.innerHTML = ''; // curăță elementul container de orice element preexistent
     let img;
     for (img of imagini) {
+        // `imagini` este un `Set` cu toate imaginile încărcate curent în editor.
         // console.log('imaginea selectată pentru copertă este: ', img);
         
-        let container = new createElement('div', '', [`col-xs-4`, `col-sm-3`, `col-md-2`, `nopad`, `text-center`], null).creeazaElem();
+        let container = new createElement('div', '', [`nopad`, `text-center`], null).creeazaElem();
         container.addEventListener('click', clickImgGal); // adaugă event listener-ul
         let imgCheck  = new createElement('div', '', [`image-checkbox`], null).creeazaElem();
         
         let imgElem   = new createElement('img', '', [`img-responsive`], {src: `${img}`}).creeazaElem();
         let inputElem = new createElement('input', '', [`inputCheckGal`], {type: 'checkbox', value: `${img}`}).creeazaElem();
-        // let inputI    = new createElement('i', '', [`fas`, 'fa-check-circle', 'fa-3x', 'd-none'], null).creeazaElem();
         let inputI    = new createElement('i', '', [`bi`, 'bi-check-circle-fill'], {role: "img", "aria-label": "check"}).creeazaElem();
-        // <i class="bi bi-check-circle-fill"></i>
 
         imgCheck.appendChild(imgElem);
         imgCheck.appendChild(inputElem);
