@@ -3600,7 +3600,7 @@ function closeBag (evt) {
 };
 
 /**
- * Funcția este receptor pentru containerele imaginilor timbru
+ * Funcția este receptor pentru containerele imaginilor timbru din galeria formată ad-hoc
  * Funcția are rolul de a bifa și debifa imaginile din galeria celor expuse selecției.
  */
 function clickImgGal (evt) {
@@ -3621,9 +3621,9 @@ function clickImgGal (evt) {
         }
 
         // verifică dacă copilul img are clasa `d-block` și șterge-o
-        let svgelem = liveNode.querySelector('i');
-        if (svgelem.classList.contains('d-block')) {
-            svgelem.classList.toggle('d-block');
+        let ielem = liveNode.querySelector('i');
+        if (ielem.classList.contains('d-block')) {
+            ielem.classList.toggle('d-block');
         }
 
         // caută elementul input și setează-i `checked` la `false`
@@ -3654,26 +3654,45 @@ var insertGal = document.getElementById('imgSelector');
 function pickCover () {
     insertGal.innerHTML = ''; // curăță elementul container de orice element preexistent
     let img;
-    for (img of imagini) {
-        // `imagini` este un `Set` cu toate imaginile încărcate curent în editor.
-        // console.log('imaginea selectată pentru copertă este: ', img);
-        
-        let container = new createElement('div', '', [`nopad`, `text-center`], null).creeazaElem();
-        container.addEventListener('click', clickImgGal); // adaugă event listener-ul
-        let imgCheck  = new createElement('div', '', [`image-checkbox`], null).creeazaElem();
-        
-        let imgElem   = new createElement('img', '', [`img-responsive`], {src: `${img}`}).creeazaElem();
-        let inputElem = new createElement('input', '', [`inputCheckGal`], {type: 'checkbox', value: `${img}`}).creeazaElem();
-        let inputI    = new createElement('i', '', [`bi`, 'bi-check-circle-fill'], {role: "img", "aria-label": "check"}).creeazaElem();
 
-        imgCheck.appendChild(imgElem);
-        imgCheck.appendChild(inputElem);
-        imgCheck.appendChild(inputI);
-        container.appendChild(imgCheck);
-        insertGal.appendChild(container);
+    if (imagini.size === 1) {
+        let uniqElem = Array.from(imagini)[0];
+        let elem = generateGalleryImg(insertGal, `${uniqElem}`, true);
+        RED.coperta = `${uniqElem}`;
+        // TODO: Neapărat setează starea bifată pentru prima imagine încărcată. Setează clasele din `clickImgGal()`;
+        // console.log(`[pickCover()] Setul images una care este `, imagini, `dar ar putea fi `, Array.from(imagini)[0]);
+    } else if (imagini.size > 1) {
+        // console.log(`[pickCover()] Setul images are mai mult de una și este `, imagini);
+        for (img of imagini) {
+            // `imagini` este un `Set` cu toate imaginile încărcate curent în editor.
+            // console.log('imaginea selectată pentru copertă este: ', img);
+            generateGalleryImg(insertGal, `${img}`, false);
+        }
     }
+    console.log(`[pickCover()] RED.coperta are valoarea `, RED.coperta);
     return insertGal;
 };
+
+/**
+ * Funcția are rolul de a genera câte o imagine timbru pentru fiecare imagine încărcată.
+ * Funcția este apelată de `pickCover()`.
+ * @param {Element} insertGal 
+ * @param {String} img 
+ * @param {Boolean} onlyone 
+ */
+function generateGalleryImg (insertGal, img, onlyone, ) {
+    let template = document.querySelector('#imagegallerytmp').content;
+    let galleryImg = template.cloneNode(true); // clonezi nodurile
+    galleryImg.querySelector('.nopad').addEventListener('click', clickImgGal);
+    galleryImg.querySelector('.img-responsive').src = `${img}`;
+    galleryImg.querySelector('.inputCheckGal').value= `${img}`;
+    if (onlyone) {
+        galleryImg.querySelector('.inputCheckGal').setAttribute('checked', 'checked');
+        galleryImg.querySelector('.inputCheckGal').checked = true;
+    }    
+    insertGal.appendChild(galleryImg);
+    return galleryImg;
+}
 
 /**
  * Funcția are rolul de a colecta care dintre imagini va fi coperta și de a colecta etichetele completate de contribuitor.
