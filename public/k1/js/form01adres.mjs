@@ -3604,47 +3604,109 @@ function closeBag (evt) {
  * Funcția are rolul de a bifa și debifa imaginile din galeria celor expuse selecției.
  */
 function clickImgGal (evt) {
+    console.log(`Obiectul eveniment este `, evt);
+
+
+    // TODO: Obține ref la primul element img 
+    let imgElement = evt.currentTarget.querySelector('img');
+
+    // console.log(`Elementul target este `, evt.target, ` currentTarget este`, evt.currentTarget, ` iar parintele este `, evt.target.parentNode , `iar img `, imgElement);
+    // console.log(`Elementul img este `, imgElement);
+
+    // testează dacă nu cumva s-a dat click pe altă imagine din galerie; alta decât cea care era deja selectată
+    if (RED.coperta !== imgElement.value) {
+
+        RED.coperta = imgElement.value; // setează noua valoare a lui RED.coperta
+
+        // dacă elementul nu are clasa `image-checkbox-checked` o vom adăuga
+        if (!imgElement.classList.contains(`image-checkbox-checked`)) {
+            imgElement.classList.add(`image-checkbox-checked`);
+        }
+
+        // caută sibling-ul `i` și setează-i clasa la `d-block` iar dacă era `d-none` șterge
+        let iElem = evt.currentTarget.querySelector('i');
+        if (iElem.classList.contains('d-none')) {
+            iElem.classList.toggle('d-none');
+            iElem.classList.add('d-block');
+        }
+    }
+    
     // selectează toate elementele care au clasa `.image-checkbox`
-    let elementContainer = document.querySelectorAll('.image-checkbox'); // e o HTMLColection de div-uri care conțin fiecare următorii copii: img, input, i
+    let elementContainers = document.querySelectorAll('.image-checkbox'); // e o HTMLColection de div-uri care conțin fiecare următorii copii: img, input, i
 
      /*
      Scenariul este următorul:
-     - prima imagine introdusă, creeză un prim element în galeria timbrelor; aceasta va avea și bifă verde, indicând faptul că este cea implict aleasă drept copertă
+     - prima imagine introdusă, creeză un prim element în galeria timbrelor; aceasta va avea și bifă verde, indicând faptul că este cea implicit aleasă drept copertă
      - la introducerea celei de-a doua nu va mai fi bifată.
      */
+    elementContainers.forEach(resetOtherGalImgs);
 
-    elementContainer.forEach( (liveNode) => {
+    let idx;
+    for (idx = 0;  elementContainers > idx; idx++) {
+        // pentru toate șterge `img.image-checkbox-checked` și `i.d-block` cu singura excepție: `img.value` == `RED.coperta`
+        let imgelem = elementContainers[idx].querySelector('img');
+        let ielem = elementContainers[idx].querySelector('i');
+        let inputCollection = elementContainers[idx].querySelector('input[type=checkbox]');
+        
+        // if (liveNode !== evt.currentTarget) {
+
+        // }
+        // console.log(`SRC este `, imgelem.src, ` iar RED.coperta are valoarea `, RED.coperta);
+        // dacă elementul nu este cel care a fost desemnat drept copertă
+        if (imgelem.src !== RED.coperta) {
+            // verifică dacă copilul img are clasa `image-checkbox-checked` și șterge-o
+            if (imgelem.classList.contains(`image-checkbox-checked`)) {
+                imgelem.classList.toggle(`image-checkbox-checked`);
+            }
+
+            // verifică dacă copilul img are clasa `d-block` și șterge-o
+            if (ielem.classList.contains('d-block')) {
+                ielem.classList.toggle('d-block');
+            }
+
+            // caută elementul input și setează-i `checked` la `false`
+            inputCollection.checked = false;
+        }        
+    }
+
+    // evt.target.classList.toggle('image-checkbox-checked');
+    // var checkbox = this.querySelector('input[type=checkbox]');
+    // if (checkbox.checked === false) {
+    //     checkbox.checked = true;
+    //     // verifică dacă mai sunt alte elemente input cu checked true
+    //     this.querySelector('i').classList.toggle('d-block');
+    // } else {
+    //     this.querySelector('i').classList.add('d-none');
+    //     this.querySelector('i').classList.toggle('d-block');
+    // }
+};
+
+function resetOtherGalImgs (liveNode) {
+    // pentru toate șterge `img.image-checkbox-checked` și `i.d-block` cu singura excepție: `img.value` == `RED.coperta`
+    let imgelem = liveNode.querySelector('img');
+    let ielem = liveNode.querySelector('i');
+    let inputCollection = liveNode.querySelector('input[type=checkbox]');
+    
+    // if (liveNode !== evt.currentTarget) {
+
+    // }
+    console.log(`SRC este `, imgelem.src, ` iar RED.coperta are valoarea `, RED.coperta);
+    // dacă elementul nu este cel care a fost desemnat drept copertă
+    if (imgelem.src !== RED.coperta) {
         // verifică dacă copilul img are clasa `image-checkbox-checked` și șterge-o
-        let imgelem = liveNode.querySelector('img');
         if (imgelem.classList.contains(`image-checkbox-checked`)) {
             imgelem.classList.toggle(`image-checkbox-checked`);
         }
 
         // verifică dacă copilul img are clasa `d-block` și șterge-o
-        let ielem = liveNode.querySelector('i');
         if (ielem.classList.contains('d-block')) {
             ielem.classList.toggle('d-block');
         }
 
         // caută elementul input și setează-i `checked` la `false`
-        let inputCollection = liveNode.querySelector('input[type=checkbox]');
         inputCollection.checked = false;
-    });
-
-    // this.classList.toggle('image-checkbox-checked');
-    evt.target.classList.toggle('image-checkbox-checked');
-    var checkbox = this.querySelector('input[type=checkbox]');
-    // console.log(checkbox, checkbox.checked);
-
-    if (checkbox.checked === false) {
-        checkbox.checked = true;
-        // verifică dacă mai sunt alte elemente input cu checked true
-        this.querySelector('i').classList.toggle('d-block');
-    } else {
-        this.querySelector('i').classList.add('d-none');
-        this.querySelector('i').classList.toggle('d-block');
     }
-};
+}
 
 var insertGal = document.getElementById('imgSelector');
 /**
@@ -3657,9 +3719,8 @@ function pickCover () {
 
     if (imagini.size === 1) {
         let uniqElem = Array.from(imagini)[0];
-        let elem = generateGalleryImg(insertGal, `${uniqElem}`, true);
+        generateGalleryImg(insertGal, `${uniqElem}`, true);
         RED.coperta = `${uniqElem}`;
-        // TODO: Neapărat setează starea bifată pentru prima imagine încărcată. Setează clasele din `clickImgGal()`;
         // console.log(`[pickCover()] Setul images una care este `, imagini, `dar ar putea fi `, Array.from(imagini)[0]);
     } else if (imagini.size > 1) {
         // console.log(`[pickCover()] Setul images are mai mult de una și este `, imagini);
@@ -3669,7 +3730,7 @@ function pickCover () {
             generateGalleryImg(insertGal, `${img}`, false);
         }
     }
-    console.log(`[pickCover()] RED.coperta are valoarea `, RED.coperta);
+    // console.log(`[pickCover()] RED.coperta are valoarea `, RED.coperta);
     return insertGal;
 };
 
@@ -3680,16 +3741,45 @@ function pickCover () {
  * @param {String} img 
  * @param {Boolean} onlyone 
  */
-function generateGalleryImg (insertGal, img, onlyone, ) {
+function generateGalleryImg (insertGal, img, onlyone) {
     let template = document.querySelector('#imagegallerytmp').content;
     let galleryImg = template.cloneNode(true); // clonezi nodurile
+
+    // dotează elementele din template
     galleryImg.querySelector('.nopad').addEventListener('click', clickImgGal);
-    galleryImg.querySelector('.img-responsive').src = `${img}`;
-    galleryImg.querySelector('.inputCheckGal').value= `${img}`;
+    
+    let iElement = galleryImg.querySelector('i');
+
+    let imageElem = galleryImg.querySelector('.img-responsive');
+    imageElem.src = `${img}`;
+
+    let inputElem = galleryImg.querySelector('.inputCheckGal');
+    inputElem.value= `${img}`;
+    
+    let urlImgElem = check4url(`${img}`);
+    let redCoperta = check4url(RED.coperta);
+
+    // console.log(`[generateGalleryImg()] urlImgElem este `, urlImgElem.path2file, `iar RED.coperta file este `, redCoperta.path2file);
+
+    /* Cazul singurului element de imagine din galerie, urmat de restul care nu trebuie să afișeze bifa*/
     if (onlyone) {
         galleryImg.querySelector('.inputCheckGal').setAttribute('checked', 'checked');
         galleryImg.querySelector('.inputCheckGal').checked = true;
-    }    
+        // Adaugă tot ce este necesar ca atunci când este o singură imagine în galerie, aceasta să fie bifată
+        imageElem.classList.toggle(`image-checkbox-checked`);
+        iElement.classList.toggle('d-block');
+    } else if (urlImgElem.path2file === redCoperta.path2file) {
+        galleryImg.querySelector('.inputCheckGal').setAttribute('checked', 'checked');
+        galleryImg.querySelector('.inputCheckGal').checked = true;
+        imageElem.classList.toggle(`image-checkbox-checked`);
+        iElement.classList.toggle('d-block');
+    } else {
+        if (iElement.classList.contains('d-block')) {
+            iElement.classList.toggle('d-block');
+            iElement.classList.add('d-none'); // nu afișa elementul `i` (bifa) -> display: none
+        }
+        iElement.classList.add('d-none');
+    }
     insertGal.appendChild(galleryImg);
     return galleryImg;
 }
