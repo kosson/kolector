@@ -8,7 +8,6 @@ server:
   basePath: /kibana
   # Onorează basePath-ul modificat
   rewriteBasePath: true
-elasticsearch.hosts: '["http://es01:9200","http://es02:9200"]'
 # Necesar pentru că folosești Kibana cu un sistem containerizat Elasticsearch (https://www.elastic.co/guide/en/kibana/current/monitoring-settings-kb.html#monitoring-ui-cgroup-settingss)
 xpack.monitoring.ui.container.elasticsearch.enabled: true
 # https://www.elastic.co/guide/en/kibana/7.10/production.html#csp-strict-mode

@@ -1,0 +1,13 @@
+[{
+  "_id": {
+    "$oid": "616fd846d40ca748011c12b4"
+  },
+  "focus": "general",
+  "template": "k1",
+  "__v": 0,
+  "brand": "Depozit digital în dezvoltare",
+  "publisher": "Kosson",
+  "creator": "Nicolaie Constantinescu",
+  "description": "Acesta este un depozit digital în construcție",
+  "contact": "kosson@gmail.com"
+}]

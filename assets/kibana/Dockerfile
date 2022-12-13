@@ -1,2 +1,2 @@
 ARG ELK_VERSION
-FROM docker.elastic.co/kibana/kibana:${ELK_VERSION}
+FROM docker.elastic.co/kibana/kibana:${ELK_VERSION}@sha256:23bdf3a5a2b26e24ced0a4fb287994186ae9640eba7bec6cb005279e74e754f2

@@ -1,0 +1,2194 @@
+[{
+  "_id": {
+    "$oid": "624c7b4f0ed9666602fe9513"
+  },
+  "res": "The Dublin Core Metadata Element Set",
+  "arca": [
+    "https://www.ietf.org/rfc/rfc5013.txt",
+    "https://www.iso.org/standard/52142.html",
+    "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/",
+    "2012-06-14"
+  ],
+  "nota": "This document provides ready reference for the Dublin Core Metadata Element Set, Version 1"
+},{
+  "_id": {
+    "$oid": "624c8d030ed9666602fe9523"
+  },
+  "res": "DCMI Metadata Terms",
+  "arca": [
+    "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/",
+    "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/2020-01-20/",
+    "2020-01-20"
+  ],
+  "nota": "This document is an up-to-date specification of all metadata terms maintained by the Dublin Core Metadata Initiative, including properties, vocabulary encoding schemes, syntax encoding schemes, and classes."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe9524"
+  },
+  "res": "identifier",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/identifier"
+  ],
+  "nota": "An unambiguous reference to the resource within a given context."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe9525"
+  },
+  "res": "contributor",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/contributor"
+  ],
+  "nota": "An entity responsible for making contributions to the resource."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe9526"
+  },
+  "res": "coverage",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/coverage"
+  ],
+  "nota": "The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe9527"
+  },
+  "res": "creator",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/creator"
+  ],
+  "nota": "An entity primarily responsible for making the resource."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe9528"
+  },
+  "res": "date",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/date"
+  ],
+  "nota": "A point or period of time associated with an event in the lifecycle of the resource."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe9529"
+  },
+  "res": "description",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/description"
+  ],
+  "nota": "An account of the resource."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe952a"
+  },
+  "res": "format",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/format"
+  ],
+  "nota": "The file format, physical medium, or dimensions of the resource."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe952b"
+  },
+  "res": "language",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/language"
+  ],
+  "nota": "Recommended best practice is to use a controlled vocabulary such as RFC 4646 [RFC4646]."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe952c"
+  },
+  "res": "publisher",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/publisher"
+  ],
+  "nota": "An entity responsible for making the resource available."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe952d"
+  },
+  "res": "relation",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/relation"
+  ],
+  "nota": "A related resource."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe952e"
+  },
+  "res": "rights",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/rights"
+  ],
+  "nota": "Information about rights held in and over the resource."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe952f"
+  },
+  "res": "source",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/source"
+  ],
+  "nota": "A related resource from which the described resource is derived."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe9530"
+  },
+  "res": "subject",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/subject"
+  ],
+  "nota": "The topic of the resource."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe9531"
+  },
+  "res": "title",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/title"
+  ],
+  "nota": "A name given to the resource."
+},{
+  "_id": {
+    "$oid": "624c91b00ed9666602fe9532"
+  },
+  "res": "type",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/elements/1.1/type"
+  ],
+  "nota": "The nature or genre of the resource."
+},{
+  "_id": {
+    "$oid": "624d5a91091fb3c9aa9f38d2"
+  },
+  "res": "RDF Schema 1.1",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/",
+    "http://www.w3.org/TR/2014/REC-rdf-schema-20140225/"
+  ],
+  "nota": "RDF Schema provides a data-modelling vocabulary for RDF data. RDF Schema is an extension of the basic RDF vocabulary."
+},{
+  "_id": {
+    "$oid": "624d6203091fb3c9aa9f38d3"
+  },
+  "res": "rdfs:Resource",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_resource",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    }
+  ],
+  "nota": "All things described by RDF are called resources, and are instances of the class rdfs:Resource. This is the class of everything. All other classes are subclasses of this class. rdfs:Resource is an instance of rdfs:Class."
+},{
+  "_id": {
+    "$oid": "624d6203091fb3c9aa9f38d4"
+  },
+  "res": "rdfs:Class",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_class",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    }
+  ],
+  "nota": "This is the class of resources that are RDF classes. rdfs:Class is an instance of rdfs:Class."
+},{
+  "_id": {
+    "$oid": "624d6203091fb3c9aa9f38d5"
+  },
+  "res": "rdfs:Literal",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_class",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    }
+  ],
+  "nota": "The class rdfs:Literal is the class of literal values such as strings and integers. Property values such as textual strings are examples of RDF literals. rdfs:Literal is an instance of rdfs:Class. rdfs:Literal is a subclass of rdfs:Resource."
+},{
+  "_id": {
+    "$oid": "624d6203091fb3c9aa9f38d6"
+  },
+  "res": "rdfs:Datatype",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_datatype",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    }
+  ],
+  "nota": "rdfs:Datatype is the class of datatypes."
+},{
+  "_id": {
+    "$oid": "624d6203091fb3c9aa9f38d7"
+  },
+  "res": "rdf:Property",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_property",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    }
+  ],
+  "nota": "rdf:Property is the class of RDF properties. rdf:Property is an instance of rdfs:Class."
+},{
+  "_id": {
+    "$oid": "624d6203091fb3c9aa9f38d8"
+  },
+  "res": "rdf:langString",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_langstring",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    }
+  ],
+  "nota": "The class rdf:langString is the class of language-tagged string values. rdf:langString is an instance of rdfs:Datatype and a subclass of rdfs:Literal."
+},{
+  "_id": {
+    "$oid": "624d6203091fb3c9aa9f38d9"
+  },
+  "res": "rdf:langString",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_langstring",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    }
+  ],
+  "nota": "The class rdf:langString is the class of language-tagged string values. rdf:langString is an instance of rdfs:Datatype and a subclass of rdfs:Literal."
+},{
+  "_id": {
+    "$oid": "624d6703091fb3c9aa9f38da"
+  },
+  "res": "rdfs:range",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_range",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    },
+    {
+      "$oid": "624d6203091fb3c9aa9f38d7"
+    }
+  ],
+  "nota": "rdfs:range is an instance of rdf:Property that is used to state that the values of a property are instances of one or more classes."
+},{
+  "_id": {
+    "$oid": "624d6703091fb3c9aa9f38db"
+  },
+  "res": "rdfs:domain",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_domain",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    },
+    {
+      "$oid": "624d6203091fb3c9aa9f38d7"
+    }
+  ],
+  "nota": "rdfs:domain is an instance of rdf:Property that is used to state that any resource that has a given property is an instance of one or more classes."
+},{
+  "_id": {
+    "$oid": "624d6703091fb3c9aa9f38dc"
+  },
+  "res": "rdf:type",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_type",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    },
+    {
+      "$oid": "624d6203091fb3c9aa9f38d7"
+    }
+  ],
+  "nota": "rdf:type is an instance of rdf:Property that is used to state that a resource is an instance of a class."
+},{
+  "_id": {
+    "$oid": "624d6703091fb3c9aa9f38dd"
+  },
+  "res": "rdfs:subClassOf",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_subclassof",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    },
+    {
+      "$oid": "624d6203091fb3c9aa9f38d7"
+    }
+  ],
+  "nota": "The property rdfs:subClassOf is an instance of rdf:Property that is used to state that all the instances of one class are instances of another."
+},{
+  "_id": {
+    "$oid": "624d6703091fb3c9aa9f38de"
+  },
+  "res": "rdfs:subPropertyOf",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_subpropertyof",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    },
+    {
+      "$oid": "624d6203091fb3c9aa9f38d7"
+    }
+  ],
+  "nota": "The property rdfs:subPropertyOf is an instance of rdf:Property that is used to state that all resources related by one property are also related by another."
+},{
+  "_id": {
+    "$oid": "624d6703091fb3c9aa9f38df"
+  },
+  "res": "rdfs:label",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_label",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    },
+    {
+      "$oid": "624d6203091fb3c9aa9f38d7"
+    }
+  ],
+  "nota": "rdfs:label is an instance of rdf:Property that may be used to provide a human-readable version of a resource's name."
+},{
+  "_id": {
+    "$oid": "624d6703091fb3c9aa9f38e0"
+  },
+  "res": "rdfs:comment",
+  "arca": [
+    "https://www.w3.org/TR/rdf-schema/#ch_comment",
+    {
+      "$oid": "624d5a91091fb3c9aa9f38d2"
+    },
+    {
+      "$oid": "624d6203091fb3c9aa9f38d7"
+    }
+  ],
+  "nota": "rdfs:comment is an instance of rdf:Property that may be used to provide a human-readable description of a resource."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38e1"
+  },
+  "res": "Agent",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/Agent"
+  ],
+  "nota": "A resource that acts or has the power to act."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38e2"
+  },
+  "res": "AgentClass",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/AgentClass"
+  ],
+  "nota": "A group of agents."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38e3"
+  },
+  "res": "BibliographicResource",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/BibliographicResource"
+  ],
+  "nota": "A book, article, or other documentary resource."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38e4"
+  },
+  "res": "FileFormat",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/FileFormat"
+  ],
+  "nota": "A digital resource format."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38e5"
+  },
+  "res": "Frequency",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/Frequency"
+  ],
+  "nota": "A rate at which something recurs."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38e6"
+  },
+  "res": "Jurisdiction",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/Jurisdiction"
+  ],
+  "nota": "The extent or range of judicial, law enforcement, or other authority."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38e7"
+  },
+  "res": "LicenseDocument",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/LicenseDocument"
+  ],
+  "nota": "A legal document giving official permission to do something with a resource."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38e8"
+  },
+  "res": "LinguisticSystem",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/LinguisticSystem"
+  ],
+  "nota": "A system of signs, symbols, sounds, gestures, or rules used in communication."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38e9"
+  },
+  "res": "Location",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/Location"
+  ],
+  "nota": "A spatial region or named place."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38ea"
+  },
+  "res": "LocationPeriodOrJurisdiction",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/LocationPeriodOrJurisdiction"
+  ],
+  "nota": "A location, period of time, or jurisdiction."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38eb"
+  },
+  "res": "MediaType",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/MediaType"
+  ],
+  "nota": "A file format or physical medium."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38ec"
+  },
+  "res": "MediaTypeOrExtent",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/MediaTypeOrExtent"
+  ],
+  "nota": "A media type or extent."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38ed"
+  },
+  "res": "MethodOfAccrual",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/MethodOfAccrual"
+  ],
+  "nota": "A method by which resources are added to a collection."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38ee"
+  },
+  "res": "MethodOfInstruction",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/MethodOfInstruction"
+  ],
+  "nota": "A process that is used to engender knowledge, attitudes, and skills."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38ef"
+  },
+  "res": "PeriodOfTime",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/PeriodOfTime"
+  ],
+  "nota": "An interval of time that is named or defined by its start and end dates."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f0"
+  },
+  "res": "PhysicalMedium",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/PhysicalMedium"
+  ],
+  "nota": "A physical material or carrier."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f1"
+  },
+  "res": "PhysicalResource",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/PhysicalResource"
+  ],
+  "nota": "A material thing."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f2"
+  },
+  "res": "Policy",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/Policy"
+  ],
+  "nota": "A plan or course of action by an authority, intended to influence and determine decisions, actions, and other matters."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f3"
+  },
+  "res": "ProvenanceStatement",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/ProvenanceStatement"
+  ],
+  "nota": "Any changes in ownership and custody of a resource since its creation that are significant for its authenticity, integrity, and interpretation."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f4"
+  },
+  "res": "RightsStatement",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/RightsStatement"
+  ],
+  "nota": "A statement about the intellectual property rights (IPR) held in or over a resource, a legal document giving official permission to do something with a resource, or a statement about access rights."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f5"
+  },
+  "res": "SizeOrDuration",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/SizeOrDuration"
+  ],
+  "nota": "A dimension or extent, or a time taken to play or execute."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f6"
+  },
+  "res": "Standard",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/Standard"
+  ],
+  "nota": "A reference point against which other things can be evaluated or compared."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f7"
+  },
+  "res": "Collection",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/Collection"
+  ],
+  "nota": "An aggregation of resources."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f8"
+  },
+  "res": "Dataset",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/Dataset"
+  ],
+  "nota": "Data encoded in a defined structure."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38f9"
+  },
+  "res": "Event",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/Event"
+  ],
+  "nota": "Metadata for an event provides descriptive information that is the basis for discovery of the purpose, location, duration, and responsible agents associated with an event. Examples include an exhibition, webcast, conference, workshop, open day, performance, battle, trial, wedding, tea party, conflagration."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38fa"
+  },
+  "res": "Image",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/Image"
+  ],
+  "nota": "Examples include images and photographs of physical objects, paintings, prints, drawings, other images and graphics, animations and moving pictures, film, diagrams, maps, musical notation. Note that Image may include both electronic and physical representations."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38fb"
+  },
+  "res": "InteractiveResource",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/InteractiveResource"
+  ],
+  "nota": "A resource requiring interaction from the user to be understood, executed, or experienced."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38fc"
+  },
+  "res": "MovingImage",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/MovingImage"
+  ],
+  "nota": "A series of visual representations imparting an impression of motion when shown in succession."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38fd"
+  },
+  "res": "PhysicalObject",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/PhysicalObject"
+  ],
+  "nota": "An inanimate, three-dimensional object or substance."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38fe"
+  },
+  "res": "Service",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/Service"
+  ],
+  "nota": "A system that provides one or more functions."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f38ff"
+  },
+  "res": "Software",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/Software"
+  ],
+  "nota": "A computer program in source or compiled form."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f3900"
+  },
+  "res": "Sound",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/Sound"
+  ],
+  "nota": "A resource primarily intended to be heard."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f3901"
+  },
+  "res": "StillImage",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/StillImage"
+  ],
+  "nota": "A static visual representation."
+},{
+  "_id": {
+    "$oid": "624d7591091fb3c9aa9f3902"
+  },
+  "res": "Text",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/dcmitype/Text"
+  ],
+  "nota": "A resource consisting primarily of words for reading."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fd9"
+  },
+  "res": "abstract",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9529"
+    },
+    "http://purl.org/dc/terms/abstract"
+  ],
+  "nota": "A summary of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fda"
+  },
+  "res": "accessRights",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f4"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952e"
+    },
+    "http://purl.org/dc/terms/accessRights"
+  ],
+  "nota": "Information about who access the resource or an indication of its security status."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fdb"
+  },
+  "res": "accrualMethod",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38ed"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f7"
+    },
+    "http://purl.org/dc/terms/accrualMethod"
+  ],
+  "nota": "The method by which items are added to a collection."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fdc"
+  },
+  "res": "accrualPeriodicity",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e5"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f7"
+    },
+    "http://purl.org/dc/terms/accrualPeriodicity"
+  ],
+  "nota": "The frequency with which items are added to a collection."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fdd"
+  },
+  "res": "accrualPolicy",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f2"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f7"
+    },
+    "http://purl.org/dc/terms/accrualPolicy"
+  ],
+  "nota": "The policy governing the addition of items to a collection."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fde"
+  },
+  "res": "alternative",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9531"
+    },
+    "http://purl.org/dc/terms/alternative"
+  ],
+  "nota": "An alternative name for the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fdf"
+  },
+  "res": "audience",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e2"
+    },
+    "http://purl.org/dc/terms/audience"
+  ],
+  "nota": "A class of agents for whom the resource is intended or useful."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe0"
+  },
+  "res": "available",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9528"
+    },
+    "http://purl.org/dc/terms/available"
+  ],
+  "nota": "Date that the resource became or will become available."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe1"
+  },
+  "res": "bibliographicCitation",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9524"
+    },
+    "http://purl.org/dc/terms/bibliographicCitation"
+  ],
+  "nota": "A bibliographic reference for the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe2"
+  },
+  "res": "conformsTo",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f6"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/conformsTo"
+  ],
+  "nota": "An established standard to which the described resource conforms."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe3"
+  },
+  "res": "contributor",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e1"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9525"
+    },
+    "http://purl.org/dc/terms/contributor"
+  ],
+  "nota": "An entity responsible for making contributions to the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe4"
+  },
+  "res": "coverage",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9526"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e9"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e6"
+    },
+    "http://purl.org/dc/terms/coverage"
+  ],
+  "nota": "The spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe5"
+  },
+  "res": "created",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9528"
+    },
+    "http://purl.org/dc/terms/created"
+  ],
+  "nota": "Date of creation of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe6"
+  },
+  "res": "creator",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9527"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9525"
+    },
+    "http://purl.org/dc/terms/creator"
+  ],
+  "nota": "An entity responsible for making the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe7"
+  },
+  "res": "date",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9528"
+    },
+    "http://purl.org/dc/terms/date"
+  ],
+  "nota": "A point or period of time associated with an event in the lifecycle of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe8"
+  },
+  "res": "dateAccepted",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9528"
+    },
+    "http://purl.org/dc/terms/dateAccepted"
+  ],
+  "nota": "Date of acceptance of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fe9"
+  },
+  "res": "dateCopyrighted",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9528"
+    },
+    "http://purl.org/dc/terms/dateCopyrighted"
+  ],
+  "nota": "Date of copyright of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fea"
+  },
+  "res": "dateSubmitted",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9528"
+    },
+    "http://purl.org/dc/terms/dateSubmitted"
+  ],
+  "nota": "Date of submission of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484feb"
+  },
+  "res": "description",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9529"
+    },
+    "http://purl.org/dc/terms/description"
+  ],
+  "nota": "An account of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fec"
+  },
+  "res": "educationLevel",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e2"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e2"
+    },
+    "http://purl.org/dc/terms/educationLevel"
+  ],
+  "nota": "A class of agents, defined in terms of progression through an educational or training context, for which the described resource is intended."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fed"
+  },
+  "res": "extent",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f5"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952a"
+    },
+    "http://purl.org/dc/terms/extent"
+  ],
+  "nota": "The size or duration of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fee"
+  },
+  "res": "format",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38eb"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952a"
+    },
+    "http://purl.org/dc/terms/format"
+  ],
+  "nota": "The file format, physical medium, or dimensions of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fef"
+  },
+  "res": "hasFormat",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/hasFormat"
+  ],
+  "nota": "A related resource that is substantially the same as the pre-existing described resource, but in another format."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff0"
+  },
+  "res": "hasPart",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/hasPart"
+  ],
+  "nota": "A related resource that is included either physically or logically in the described resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff1"
+  },
+  "res": "hasVersion",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/hasVersion"
+  ],
+  "nota": "A related resource that is a version, edition, or adaptation of the described resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff2"
+  },
+  "res": "identifier",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9524"
+    },
+    "http://purl.org/dc/terms/identifier"
+  ],
+  "nota": "An unambiguous reference to the resource within a given context."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff3"
+  },
+  "res": "instructionalMethod",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38ee"
+    },
+    "http://purl.org/dc/terms/instructionalMethod"
+  ],
+  "nota": "A process, used to engender knowledge, attitudes and skills, that the described resource is designed to support."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff4"
+  },
+  "res": "isFormatOf",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/isFormatOf"
+  ],
+  "nota": "A pre-existing related resource that is substantially the same as the described resource, but in another format."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff5"
+  },
+  "res": "isPartOf",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/isPartOf"
+  ],
+  "nota": "A related resource in which the described resource is physically or logically included."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff6"
+  },
+  "res": "isReferencedBy",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/isReferencedBy"
+  ],
+  "nota": "A related resource that references, cites, or otherwise points to the described resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff7"
+  },
+  "res": "isReplacedBy",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/isReplacedBy"
+  ],
+  "nota": "A related resource that supplants, displaces, or supersedes the described resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff8"
+  },
+  "res": "isRequiredBy",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/isRequiredBy"
+  ],
+  "nota": "A related resource that requires the described resource to support its function, delivery, or coherence."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ff9"
+  },
+  "res": "issued",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9528"
+    },
+    "http://purl.org/dc/terms/issued"
+  ],
+  "nota": "Date of formal issuance of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ffa"
+  },
+  "res": "isVersionOf",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/isVersionOf"
+  ],
+  "nota": "A related resource of which the described resource is a version, edition, or adaptation."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ffb"
+  },
+  "res": "language",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e8"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952b"
+    },
+    "http://purl.org/dc/terms/language"
+  ],
+  "nota": "A language of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ffc"
+  },
+  "res": "license",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e7"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952e"
+    },
+    "http://purl.org/dc/terms/license"
+  ],
+  "nota": "A legal document giving official permission to do something with the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ffd"
+  },
+  "res": "mediator",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e2"
+    },
+    "http://purl.org/dc/terms/mediator"
+  ],
+  "nota": "An entity that mediates access to the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484ffe"
+  },
+  "res": "medium",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f0"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952a"
+    },
+    "http://purl.org/dc/terms/medium"
+  ],
+  "nota": "The material or physical carrier of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401484fff"
+  },
+  "res": "modified",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9528"
+    },
+    "http://purl.org/dc/terms/modified"
+  ],
+  "nota": "Date on which the resource was changed."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485000"
+  },
+  "res": "provenance",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f3"
+    },
+    "http://purl.org/dc/terms/provenance"
+  ],
+  "nota": "A statement of any changes in ownership and custody of the resource since its creation that are significant for its authenticity, integrity, and interpretation."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485001"
+  },
+  "res": "publisher",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e1"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952c"
+    },
+    "http://purl.org/dc/terms/publisher"
+  ],
+  "nota": "An entity responsible for making the resource available."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485002"
+  },
+  "res": "references",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/references"
+  ],
+  "nota": "A related resource that is referenced, cited, or otherwise pointed to by the described resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485003"
+  },
+  "res": "relation",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/relation"
+  ],
+  "nota": "A related resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485004"
+  },
+  "res": "replaces",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/replaces"
+  ],
+  "nota": "A related resource that is supplanted, displaced, or superseded by the described resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485005"
+  },
+  "res": "requires",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    "http://purl.org/dc/terms/requires"
+  ],
+  "nota": "A related resource that is required by the described resource to support its function, delivery, or coherence."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485006"
+  },
+  "res": "rights",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38f4"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952e"
+    },
+    "http://purl.org/dc/terms/rights"
+  ],
+  "nota": "Information about rights held in and over the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485007"
+  },
+  "res": "rightsHolder",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e1"
+    },
+    "http://purl.org/dc/terms/rightsHolder"
+  ],
+  "nota": "A person or organization owning or managing rights over the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485008"
+  },
+  "res": "source",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952d"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe952f"
+    },
+    "http://purl.org/dc/terms/source"
+  ],
+  "nota": "A related resource from which the described resource is derived."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d401485009"
+  },
+  "res": "spatial",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38e9"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9526"
+    },
+    "http://purl.org/dc/terms/spatial"
+  ],
+  "nota": "Spatial characteristics of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d40148500a"
+  },
+  "res": "subject",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9530"
+    },
+    "http://purl.org/dc/terms/subject"
+  ],
+  "nota": "A topic of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d40148500b"
+  },
+  "res": "tableOfContents",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9529"
+    },
+    "http://purl.org/dc/terms/tableOfContents"
+  ],
+  "nota": "A list of subunits of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d40148500c"
+  },
+  "res": "temporal",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624d7591091fb3c9aa9f38ef"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9526"
+    },
+    "http://purl.org/dc/terms/temporal"
+  ],
+  "nota": "Temporal characteristics of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d40148500d"
+  },
+  "res": "title",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9531"
+    },
+    "http://purl.org/dc/terms/title"
+  ],
+  "nota": "A name given to the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d40148500e"
+  },
+  "res": "type",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    "http://purl.org/dc/terms/type"
+  ],
+  "nota": "The nature or genre of the resource."
+},{
+  "_id": {
+    "$oid": "6252b2bcef9130d40148500f"
+  },
+  "res": "valid",
+  "arca": [
+    {
+      "$oid": "624c7b4f0ed9666602fe9513"
+    },
+    {
+      "$oid": "624c8d030ed9666602fe9523"
+    },
+    {
+      "$oid": "624c91b00ed9666602fe9528"
+    },
+    "http://purl.org/dc/terms/valid"
+  ],
+  "nota": "Date (often a range) of validity of a resource."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485010"
+  },
+  "res": "DCMIType",
+  "arca": [
+    "http://purl.org/dc/terms/DCMIType"
+  ],
+  "nota": "The set of classes specified by the DCMI Type Vocabulary, used to categorize the nature or genre of the resource."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485011"
+  },
+  "res": "DDC",
+  "arca": [
+    "http://purl.org/dc/terms/DDC"
+  ],
+  "nota": "The set of conceptual resources specified by the Dewey Decimal Classification."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485012"
+  },
+  "res": "IMT",
+  "arca": [
+    "http://purl.org/dc/terms/IMT"
+  ],
+  "nota": "The set of media types specified by the Internet Assigned Numbers Authority."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485013"
+  },
+  "res": "LCC",
+  "arca": [
+    "http://purl.org/dc/terms/LCC"
+  ],
+  "nota": "The set of conceptual resources specified by the Library of Congress Classification."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485014"
+  },
+  "res": " LCSH",
+  "arca": [
+    "http://purl.org/dc/terms/LCSH"
+  ],
+  "nota": "The set of labeled concepts specified by the Library of Congress Subject Headings."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485015"
+  },
+  "res": "MESH",
+  "arca": [
+    "http://purl.org/dc/terms/MESH"
+  ],
+  "nota": "The set of labeled concepts specified by the Medical Subject Headings."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485016"
+  },
+  "res": "NLM",
+  "arca": [
+    "http://purl.org/dc/terms/NLM"
+  ],
+  "nota": "The set of conceptual resources specified by the National Library of Medicine Classification."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485017"
+  },
+  "res": "TGN",
+  "arca": [
+    "http://purl.org/dc/terms/TGN"
+  ],
+  "nota": "The set of places specified by the Getty Thesaurus of Geographic Names."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485018"
+  },
+  "res": "UDC",
+  "arca": [
+    "http://purl.org/dc/terms/UDC"
+  ],
+  "nota": "The set of conceptual resources specified by the Universal Decimal Classification."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485019"
+  },
+  "res": "Box",
+  "arca": [
+    "http://purl.org/dc/terms/Box"
+  ],
+  "nota": "The set of regions in space defined by their geographic coordinates according to the DCMI Box Encoding Scheme."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d40148501a"
+  },
+  "res": "ISO3166",
+  "arca": [
+    "http://purl.org/dc/terms/ISO3166"
+  ],
+  "nota": "The set of codes listed in ISO 3166-1 for the representation of names of countries."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d40148501b"
+  },
+  "res": "ISO639-2",
+  "arca": [
+    "http://purl.org/dc/terms/ISO639-2"
+  ],
+  "nota": "The three-letter alphabetic codes listed in ISO639-2 for the representation of names of languages."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d40148501c"
+  },
+  "res": "ISO639-3",
+  "arca": [
+    "http://purl.org/dc/terms/ISO639-3"
+  ],
+  "nota": "The set of three-letter codes listed in ISO 639-3 for the representation of names of languages."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d40148501d"
+  },
+  "res": "Period",
+  "arca": [
+    "http://purl.org/dc/terms/Period"
+  ],
+  "nota": "The set of time intervals defined by their limits according to the DCMI Period Encoding Scheme."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d40148501e"
+  },
+  "res": "Point",
+  "arca": [
+    "http://purl.org/dc/terms/Point"
+  ],
+  "nota": "The set of points in space defined by their geographic coordinates according to the DCMI Point Encoding Scheme."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d40148501f"
+  },
+  "res": "RFC1766",
+  "arca": [
+    "http://purl.org/dc/terms/RFC1766"
+  ],
+  "nota": "The set of tags, constructed according to RFC 1766, for the identification of languages."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485020"
+  },
+  "res": "RFC3066",
+  "arca": [
+    "http://purl.org/dc/terms/RFC3066"
+  ],
+  "nota": "The set of tags constructed according to RFC 3066 for the identification of languages."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485021"
+  },
+  "res": "RFC4646",
+  "arca": [
+    "http://purl.org/dc/terms/RFC4646"
+  ],
+  "nota": "The set of tags constructed according to RFC 4646 for the identification of languages."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485022"
+  },
+  "res": "RFC5646",
+  "arca": [
+    "http://purl.org/dc/terms/RFC5646"
+  ],
+  "nota": "The set of tags constructed according to RFC 5646 for the identification of languages."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485023"
+  },
+  "res": "URI",
+  "arca": [
+    "http://purl.org/dc/terms/URI"
+  ],
+  "nota": "The set of identifiers constructed according to the generic syntax for Uniform Resource Identifiers as specified by the Internet Engineering Task Force."
+},{
+  "_id": {
+    "$oid": "6252b832ef9130d401485024"
+  },
+  "res": "W3CDTF",
+  "arca": [
+    "http://purl.org/dc/terms/W3CDTF"
+  ],
+  "nota": "The set of dates and times constructed according to the W3C Date and Time Formats Specification."
+}]

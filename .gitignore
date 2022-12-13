@@ -95,3 +95,14 @@ initdata
 
 # ignoră cheile de securitate create local
 assets/ssl_keys
+
+# ignoră tot ce este elasticsearch date locale pe care docker compose le creează
+assets/elasticsearch/data01/nodes
+assets/elasticsearch/data02/nodes
+assets/elasticsearch/data03/nodes
+
+assets/mongodb/data
+
+assets/nginx/logs
+
+assets/redis/redisdata

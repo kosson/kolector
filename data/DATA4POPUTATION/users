@@ -1,0 +1,139 @@
+[{
+  "_id": {
+    "$oid": "5e9832fcf052494338584d92"
+  },
+  "roles": {
+    "rolInCRED": [
+      "admin",
+      "cred"
+    ],
+    "unit": [
+      "global"
+    ],
+    "admin": true,
+    "public": false
+  },
+  "ecusoane": [],
+  "recomandari": [],
+  "contributions": [],
+  "email": "nicu.constantinescu@educred.ro",
+  "googleID": "103709393546585199870",
+  "googleProfile": {
+    "name": "Nicu Constantinescu",
+    "given_name": "Nicu",
+    "family_name": "Constantinescu",
+    "picture": "https://lh3.googleusercontent.com/a-/AOh14GiEFf7BinnnJLqy8mdnBtuyivtsnMsHjF_Z657V5g",
+    "token": "ya29.a0Ae4lvC2EtHAZd0HYqJSc4qaguUIs2VvwceWU4eoGJ_iqjESitCuWzJf0r1qpySwdau0oiPagXtMdsKae1y1zdTEA5obqZtbyYy0Jplhs2u6o0jA-YkgCKlRpwkNE_fhm-zxNcUKN-I7WXI9tFZ3CBuhCpAWwY5MBuwg",
+    "token_type": "Bearer",
+    "expires_in": "3599"
+  },
+  "created": {
+    "$date": "2020-04-16T10:27:08.685Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea9cc3f50406c65b31e21a5"
+  },
+  "roles": {
+    "rolInCRED": [
+      "cred",
+      "validator"
+    ],
+    "unit": [
+      "global"
+    ],
+    "admin": false,
+    "public": false
+  },
+  "ecusoane": [],
+  "recomandari": [],
+  "contributions": [],
+  "email": "nicolaie.constantinescu@educred.ro",
+  "googleID": "117547278790820523664",
+  "googleProfile": {
+    "name": "Nicolaie Constantinescu",
+    "given_name": "Nicolaie",
+    "family_name": "Constantinescu",
+    "picture": "https://lh5.googleusercontent.com/-_c0Glesi4R4/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJNPwW00so81Lk-EXT-P6bqo_LDeDg/photo.jpg",
+    "token": "ya29.a0Ae4lvC2yaW8KhDEydWU5wI3jbumvJPwDbMUTxtvM_d8dsiT_4QKCWkruV_817oDXKDzf9xfmNjHUDDN5DaWJEhQmwGnY4eWyJspvJJ_ckUmxY-gCXZOwFmbn9giWIsiG7YRzDZr1-rJ95Fg-OIgRNJmtV5_pT2yEBDA",
+    "token_type": "Bearer",
+    "expires_in": "3599"
+  },
+  "created": {
+    "$date": "2020-04-29T18:49:35.021Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5eb10e121891c80a029c42c0"
+  },
+  "roles": {
+    "rolInCRED": [
+      "cred"
+    ],
+    "unit": [
+      "global"
+    ],
+    "admin": false,
+    "public": false
+  },
+  "ecusoane": [],
+  "recomandari": [],
+  "contributions": [],
+  "email": "video@educred.ro",
+  "googleID": "100472177859739762810",
+  "googleProfile": {
+    "name": "video Educred",
+    "given_name": "video",
+    "family_name": "Educred",
+    "picture": "https://lh6.googleusercontent.com/-johAuhXJDtE/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJPX5vl7tv16s4eFrF-T6xjAykkdSg/photo.jpg",
+    "token": "ya29.a0Ae4lvC1qkc91g5DvWZv0IXw2syQLb05GkVS0X9r-YD3Qn_Azd0R0ixHnZxoQpeW4tmMww1jQekUgThfeOcRfWmX5C-DQbFaq56Penn5H2lL0RsE9gkNIsjTDqKmSWEqc8W_kgGb4qhIXOn5Cr5yfiwIEjgQDCTd_OJk",
+    "token_type": "Bearer",
+    "expires_in": "3599"
+  },
+  "created": {
+    "$date": "2020-05-05T06:56:18.724Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ebaf1ae32061d3fa4b7f0ae"
+  },
+  "roles": {
+    "rolInCRED": [
+      "general",
+      "cred"
+    ],
+    "unit": [],
+    "admin": true,
+    "public": false
+  },
+  "ecusoane": [],
+  "recomandari": [],
+  "contributions": [],
+  "username": "kosson@gmail.com",
+  "email": "kosson@gmail.com",
+  "salt": "396598ae8e84c50c16e6283109c988de0d0121d662f00f8fa455fa48ae1a6125",
+  "hash": "2bcd073573c9389043ad9c46e8b77a5fd25dece5b0a429cf2ee46c9c9b878ba8275dce84f6f2c19d55da61d1227bf4598be4992e1cb4b5254f66543a42c9c2a17ffc554f6d571778f3cf469327b6fce425ddf338ada82f3045d028d3a9ff88d794b3c8f0f43da882ee7186c4750a7fd0fc6f18251f0424a0a864b3679004d02d1906e5be93892ed011188a6ac0993a022d295515e92e1299097a1a2a7b0e08299429aa9585ad1413b532333c8df54b17dc695f1708a4f50ae5d977b105cd1a2a07141e6ff1d6e2ec8eb27468048c8537f312e7f10b2dfa44ebca4db40c532a45bbe2ee9f7bb5076c6334910c9baa421c701656f09b26ea4660bcc7a37402cfdde9497fffcb6a38730c929832e96d739e81b92c48715ca8bad6e792bfdf297966e7d426512dc3f82ee3dfeb269b0746e5bca4a530470c061e7c924048a8f29884915608498aa0f3d49b15de7a7b3a897b570d6ab16506f43afb6dd93e63c569076f01dc665f22030113e0e2db1cc0b2daffa9b4f2dffac73e7fc4386f593bbd6caf828b4593cf48a74c7a1c88998df91a18c29790a8e96c6afacd0cdd8bf9df5e26c042532ff80a7af7e2b627df7ba924d36ae03f6bbd775670b2c22438f8a3a7c92b4ea0069b5651254661139f6e138defce456c9c6dc16e8abf54186b83421bcb4ef6e82780abae90de002140d0d8de9488665be4adec87b2130d51c9c3b674",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "610941dbc3994d624c706d0a"
+  },
+  "roles": {
+    "rolInCRED": [
+      "general"
+    ],
+    "unit": [],
+    "admin": false,
+    "public": false
+  },
+  "ecusoane": [],
+  "recomandari": [],
+  "contributions": [],
+  "email": "onkorrona@gmail.com",
+  "salt": "89841389bc4590d3aa7c09db2682bfee846eb8c210156a0451d514faf81e1ded",
+  "hash": "c6906c69e3e1177fd0c590a440b6695b00e0aa2c2089281a7ec79bbf71468a0c10c699e1eeca21e6ab2140da5a44cb9c2cee7c5582ae58af7d27845c7fb5f5ea31323eca7abc48acdced69a9af49016b73484765986a1574fcf466e0e4f770cb104ede4b638ef0d703be5c2802acf2feb0e4137fe1d22465e19743141d7277517f94a5965feac0fa5ba63b2e601a1a1274036adecbbe1da0150cb6ecace4b667ed053c81fc7b8d3ab574ec03e6059752afb41f4c5dbb18def66fdbaee17c2a06168970e4c9fe35b7805e1f0b549342bad01209fd1351801f927b876ad57c3185f63eb6f8bbc8eaf4a7fe5a2d256b421b32275f471310b7de3f75ad54f112c90245a400dd2da104a30aa4f2772749a426ad31f000a29b6854393ed78e85ddc75b980959384f9b88b5b9073e3845e85c57cc0f2b59f606fd80d0da4bd72caff79f17806d03a8d7687bb56a66968edd99bacb098fddf85d23a25ede6b0a1c665011c446e1824d4e6c9520cdaa36411a822557957bf9ecf60db4bbd262ff698aa63aed19fa26b1cb80125d8ae2af6255cf428dbbd5b0a2230e1a0b0d4bd544c080ea82f0e139ba0e28ff9d6aeba901ce747b1304a81ff97ea5fc7aa5b1154e568efef117d7148dd680e636512f41225d5113c50dad4dca515ec92ddecdd2ac9a599a120a71b17a264740f4910bba9e067f3a77c7f0e487ea8bc48880222a1e13b7ac",
+  "__v": 0
+}]

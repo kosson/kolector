@@ -1,0 +1,433 @@
+[{
+  "_id": {
+    "$oid": "5ea05fd92652ab3200e96c1f"
+  },
+  "date": {
+    "$date": "2020-04-22T15:16:41.499Z"
+  },
+  "title": "Acesta este un post pentru verificare",
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "content": {
+    "time": 1587568601498,
+    "blocks": [
+      {
+        "type": "paragraph",
+        "data": {
+          "text": "Doar testăm dacă funcționează bine această secțiune!<br>"
+        }
+      }
+    ],
+    "version": "2.17.0"
+  },
+  "contorAcces": 0,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f3cbbc66f6c284a4e69934b"
+  },
+  "date": {
+    "$date": "2020-08-19T05:42:30.702Z"
+  },
+  "title": "Acesta este un post de test",
+  "idContributor": "kosson@gmail.com",
+  "autor": "Nicolaie Constantinescu",
+  "content": {
+    "time": 1597815750700,
+    "blocks": [
+      {
+        "type": "paragraph",
+        "data": {
+          "text": "Aplicație restaurată! Întregul proces de refactor s-a încheiat!<br>"
+        }
+      }
+    ],
+    "version": "2.18.0"
+  },
+  "contorAcces": 0,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f5d0813369b401c585f2134"
+  },
+  "date": {
+    "$date": "2020-09-12T17:40:35.393Z"
+  },
+  "title": "TEste de sambata seara",
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "content": {
+    "time": 1599932435390,
+    "blocks": [
+      {
+        "type": "paragraph",
+        "data": {
+          "text": "Acesta este un post nou de test"
+        }
+      }
+    ],
+    "version": "2.18.0"
+  },
+  "contorAcces": 0,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6096c191a2f6d0014d195fa2"
+  },
+  "date": {
+    "$date": "2021-05-08T16:51:29.872Z"
+  },
+  "title": "Test cu imagine",
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "content": {
+    "time": 1620492689870,
+    "blocks": [
+      {
+        "id": "oj1UYv4g3m",
+        "type": "image",
+        "data": {
+          "file": {
+            "url": "/repo/5e9832fcf052494338584d92/log/1620492642040/Arhur_dead.jpg",
+            "size": 428544
+          },
+          "caption": "Acesta este ursul Artur",
+          "withBorder": false,
+          "stretched": false,
+          "withBackground": false
+        }
+      }
+    ],
+    "version": "2.21.0"
+  },
+  "contorAcces": 0,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "60994ab8447ea3e05432abca"
+  },
+  "date": {
+    "$date": "2021-05-10T15:01:12.287Z"
+  },
+  "title": "rewrewrwe",
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "content": {
+    "time": 1620658872286,
+    "blocks": [
+      {
+        "id": "wLBtxKvZDB",
+        "type": "image",
+        "data": {
+          "file": {
+            "url": "/repo/5e9832fcf052494338584d92/log/1620658865736/johannes-plenio-CfKPPOgI-uI-unsplash_small.jpg",
+            "size": 17895
+          },
+          "caption": "rrw",
+          "withBorder": false,
+          "stretched": false,
+          "withBackground": false
+        }
+      },
+      {
+        "id": "UHrfdVuwet",
+        "type": "paragraph",
+        "data": {
+          "text": "Teste"
+        }
+      }
+    ],
+    "version": "2.21.0"
+  },
+  "contorAcces": 0,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61acb73cd57913ae78c9be35"
+  },
+  "date": {
+    "$date": "2021-12-05T12:57:32.765Z"
+  },
+  "idContributor": "kosson@gmail.com",
+  "autor": "Nicolaie",
+  "title": "test dec 2021",
+  "content": {
+    "time": 1638709052763,
+    "blocks": [
+      {
+        "id": "kYznBO8Si6",
+        "type": "paragraph",
+        "data": {
+          "text": "Ceva de test"
+        }
+      },
+      {
+        "id": "BgsldFOhoZ",
+        "type": "image",
+        "data": {
+          "file": {
+            "url": "/repo/5ebaf1ae32061d3fa4b7f0ae/log/1638709047753/bibliokulus.png",
+            "size": 16596
+          },
+          "caption": "Okulus",
+          "withBorder": false,
+          "stretched": false,
+          "withBackground": false
+        }
+      }
+    ],
+    "version": "2.21.0"
+  },
+  "contorAcces": 0,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "624585c5845bb48964e02339"
+  },
+  "date": {
+    "$date": "2022-03-31T10:43:17.672Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "content": {
+    "time": 1648723397670,
+    "blocks": [],
+    "version": "2.21.0"
+  },
+  "tags": [],
+  "contorAcces": 0,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "624588b6eea875bc712620c3"
+  },
+  "date": {
+    "$date": "2022-03-31T10:55:50.641Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "content": {
+    "time": 1648724150639,
+    "blocks": [],
+    "version": "2.21.0"
+  },
+  "tags": [],
+  "contorAcces": 0,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62540ba27a365a3d136126b2"
+  },
+  "date": {
+    "$date": "2022-04-11T11:06:10.062Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "content": {
+    "time": 1649675170060,
+    "blocks": [],
+    "version": "2.21.0"
+  },
+  "tags": [],
+  "contorAcces": 0,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "625418a63112d80238ddb86e"
+  },
+  "date": {
+    "$date": "2022-04-11T12:01:42.805Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "title": "test",
+  "content": {
+    "time": 1649678502802,
+    "blocks": [],
+    "version": "2.21.0"
+  },
+  "tags": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "625419643112d80238ddb874"
+  },
+  "date": {
+    "$date": "2022-04-11T12:04:52.778Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "title": "Alt test",
+  "content": {
+    "time": 1649678692776,
+    "blocks": [],
+    "version": "2.21.0"
+  },
+  "tags": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6254198e3112d80238ddb879"
+  },
+  "date": {
+    "$date": "2022-04-11T12:05:34.402Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "title": "Ceva diferit, sper",
+  "content": {
+    "time": 1649678734400,
+    "blocks": [
+      {
+        "id": "vpfIsxqaex",
+        "type": "paragraph",
+        "data": {
+          "text": "Ceva diferit"
+        }
+      }
+    ],
+    "version": "2.21.0"
+  },
+  "tags": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62541ab6269394283b75b2cc"
+  },
+  "date": {
+    "$date": "2022-04-11T12:10:30.738Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "title": "Încă o încercare",
+  "content": {
+    "time": 1649679030736,
+    "blocks": [
+      {
+        "id": "kCqpI-6FZN",
+        "type": "paragraph",
+        "data": {
+          "text": "\\Witta bang"
+        }
+      }
+    ],
+    "version": "2.21.0"
+  },
+  "tags": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62542e9d45ae64f03f938975"
+  },
+  "date": {
+    "$date": "2022-04-11T13:35:25.019Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "title": "Intrare nouă în jurnal",
+  "content": {
+    "time": 1649684125016,
+    "blocks": [
+      {
+        "id": "7f88SRh9kn",
+        "type": "paragraph",
+        "data": {
+          "text": "Textul care ar trebui să fie conținutul articolului."
+        }
+      },
+      {
+        "id": "4Ls8mmyFXR",
+        "type": "paragraph",
+        "data": {
+          "text": "Acest text ar trebui să aibă dimensiuni mai mare pentru a testa."
+        }
+      }
+    ],
+    "version": "2.21.0"
+  },
+  "tags": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "625436504f0700c841f3120b"
+  },
+  "date": {
+    "$date": "2022-04-11T14:08:16.214Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "title": "Țărâna îți face ĂÎȘȚ",
+  "alias": "tarana-iti-face-aist",
+  "content": {
+    "time": 1649686096212,
+    "blocks": [
+      {
+        "id": "1bF8pUa9l2",
+        "type": "paragraph",
+        "data": {
+          "text": "Ceva nou care trebuie afișat"
+        }
+      },
+      {
+        "id": "Zz4YYLGakG",
+        "type": "paragraph",
+        "data": {
+          "text": "Un text explicativ"
+        }
+      }
+    ],
+    "version": "2.21.0"
+  },
+  "tags": [
+    "noutate",
+    "ceva"
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "626bd27525d67e2078a7009b"
+  },
+  "date": {
+    "$date": "2022-04-29T11:56:37.428Z"
+  },
+  "idContributor": "nicu.constantinescu@educred.ro",
+  "title": "Un test pentru imagine și text",
+  "alias": "un-test-pentru-imagine-si-text",
+  "content": {
+    "time": 1651233397427,
+    "blocks": [
+      {
+        "id": "Gm_2xjATkf",
+        "type": "paragraph",
+        "data": {
+          "text": "Oastea Moldovei și puținele ajutoare care au sosit au ridicat taberele la Vaslui, alături de domn fiind comasați cca. 40.000 de luptători moldoveni, la care s-au adăugat cei 8.800 de oameni veniți în ajutor și beneficiind de cca. 20 de tunuri. Raportul de trupe era mult în favoarea otomanilor, astfel că Ștefan a adoptat o tactică de hărțuire și înfometare iar planurile de luptă a domnitorului foloseau toate avantajele terenului. El a dat poruncă să fie părăsite toate așezările omenești care puteau nimeri în calea dușmanilor, să fie tăinuite proviziile."
+        }
+      },
+      {
+        "id": "inWteJN0Ne",
+        "type": "paragraph",
+        "data": {
+          "text": "Ștefan a repezit în calea dușmanului călărime care să supravegheze deplasarea oștii otomane, să o hărțuiască și să nu îngăduie cetelor prădalnice să se desprindă de grosul oștirii ca să meargă după hrană și să jefuiască. Locul ales pentru bătălie se afla în preajma târgului Vaslui, pe valea Bârladului, la vărsarea&nbsp;<a href=\"https://ro.wikipedia.org/wiki/R%C3%A2ul_Racova,_B%C3%A2rlad\">râului Racova</a>, într-o zonă mlăștinoasă prinsă între păduri, care îngreuna desfășurarea forțelor dușmane și manevrările de armată. Există discuții în continuare în privința plasării acestui loc, considerat de cei mai mulți ca plasat în zona actualei comune&nbsp;<a href=\"https://ro.wikipedia.org/wiki/B%C4%83c%C4%83oani,_Vaslui\">Băcăoani</a>&nbsp;în sudul orașului&nbsp;<a href=\"https://ro.wikipedia.org/wiki/Vaslui\">Vaslui</a>, loc care a căpătat numele de Podul Înalt după conformația locului, iar celebra bătălie a rămas în istorie ca Bătălia de la Podul Înalt. O altă ipoteză plasează locul bătăliei pe raza actualei localități&nbsp;<a href=\"https://ro.wikipedia.org/wiki/%C8%98tefan_cel_Mare,_Vaslui\">Ștefan cel Mare</a>, în nordul actualului oraș Vaslui, bazându-se pe interpretarea unor documente."
+        }
+      },
+      {
+        "id": "YrTP5iiT21",
+        "type": "image",
+        "data": {
+          "file": {
+            "url": "/repo/5e9832fcf052494338584d92/log/1651233346355/367px-Vaslui_Battle_map.png",
+            "size": 112790
+          },
+          "caption": "Harta desfășurării bătăliei de la Podul Înalt",
+          "withBorder": false,
+          "stretched": false,
+          "withBackground": false
+        }
+      },
+      {
+        "id": "eav0KNAqQy",
+        "type": "paragraph",
+        "data": {
+          "text": "În dimineața zilei de 10 ianuarie 1475, oastea otomană înainta pe valea Bârladului pe o ceață care nu îngăduia să se vadă la mai mult de câțiva pași. Era moină și zăpada începuse să se topească, încât toată lunca Bârladului era plină de băltoace. Faptul că mii de oameni și cai treceau prin același loc, transforma valea într-o mocirlă prin care se înainta foarte greu. Vremea și terenul au constituit avantaje pentru Ștefan, de care domnitorul a știut să se folosească. Deoarece otomanii nu puteau să-și dea seama ce oaste au în față, Ștefan a așezat de-a curmezișul văii câteva mii de oameni. Aceștia trebuiau să-i oprească pe otomani și să înceapă lupta. Dușmanul era foarte numeros și putea să aducă mereu oameni odihniți în luptă. Ștefan calculase ca în momentul în care oamenii lui aveau să dea semne de oboseală, de pe malul drept al Bârladului, din marginea pădurii, mai mulți oșteni trebuiau să dea semnalul de luptă sunând din trâmbițe și surle. Lucrurile s-au întâmplat așa cum a prevăzut domnul și, când au auzit otomanii trâmbițele și surlele, ei au crezut că vor fi atacați din partea aceea, astfel ca marea parte s-au îndreptat în acea direcție, găsind aici doar câțiva oșteni. În schimb pe malul stâng al Bârladului se afla grosul oștii lui Ștefan. Când turcii au întors spatele, atacând spre marginea pădurii, au fost izbiți năprasnic de armata moldovenească. Până să se dezmeticească otomanii, până să înțeleagă cine-i atacă și din ce parte, mulți dintre ei au fost uciși, iar cei care au scăpat s-au pus pe fugă, cu toată încercarea disperată a lui&nbsp;<a href=\"https://ro.wikipedia.org/wiki/Suleiman_Pa%C8%99a\">Suleiman Pașa</a>&nbsp;de a-i opri. Până la&nbsp;<a href=\"https://ro.wikipedia.org/wiki/Dun%C4%83rea\">Dunăre</a>&nbsp;au fost urmăriți de moldoveni, hărțuiți și uciși o mare parte din ei."
+        }
+      }
+    ],
+    "version": "2.21.0"
+  },
+  "tags": [
+    "podul înalt",
+    "modova",
+    "ștefan cel mare",
+    "bătălie",
+    "suleiman pașa",
+    "1475"
+  ],
+  "__v": 0
+}]
