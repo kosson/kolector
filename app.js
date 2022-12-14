@@ -1,6 +1,57 @@
 require('dotenv').config();
 const process = require('process');
 
+/* === CLIENTS === */
+const redisClient    = require('./redis.config');
+const mongoose       = require('./mongoose.config');
+const elastClient    = require('./elasticsearch.config');
+/* === MODELE === */
+const Mgmtgeneral = require('./models/MANAGEMENT/general'); // Adu modelul management
+
+// elastClient.on('sniff', (err, req) => {
+//     console.log('ES7 sniff: ', err ? err.message : '', `${JSON.stringify(req.meta.sniff)}`);
+//     console.log('ES7 sniff: ', err ? logger.error('La inițializarea conexiunii ES7 a apărut eroarea: ', err.message) : 'Nicio problemă detectată la inițializare!!! All norminal 👌');
+// });
+// process.report.writeReport('./report.json');
+
+const connectors     = {
+    redis: {
+        address: redisClient.address,
+        // client: redisClient
+    },
+    mongo: mongoose.version,
+    elastic: {
+        clients: []
+        // stare: elastClient.connectionPool.connections
+        // client: elastClient
+    }
+}
+
+if (elastClient.connectionPool.connections.length > 0) {
+    let elem, no = 0;
+    for (elem of elastClient.connectionPool.connections) {
+        // connectors[`elastic`][`client-${no++}`] = `url: ${elem.url}, id: ${elem.id}, status: ${elem.status}, master: ${elem.roles.master}`;
+        connectors.elastic.clients.push({
+            url: `${elem.url}`, 
+            id: `${elem.id}`, 
+            status: `${elem.status}`, 
+            master: `${elem.roles.master}`
+        })
+    }
+}
+
+// Afișare date în consolă și introducerea reperelor în Redis
+elastClient.info().then((r) => {
+    console.log("Conectare reușită la Elasticsearch \x1b[32m", r.body.version.number, "\x1b[37m Stare:\x1b[32m", r.meta.connection.status, "\x1b[37m a clusterului:\x1b[32m", r.body.cluster_name, "\x1b[37m");
+    console.table(connectors.elastic.clients);
+    // TODO: Verifică dacă bazele de date există și dacă acestea lipsesc, creează-le
+    // #1 Testează dacă există conectare la MongoDB
+}).catch((error) => {
+    return new Error(`La conectarea cu Elasticsearch a apărut eroarea `, error);
+});
+
+// console.log(JSON.stringify(connectors));
+
 global.CronJob = require('./util/cron'); // CRON -> programarea side ops-urilor
 global.__basedir = __dirname;
 
@@ -16,7 +67,6 @@ const cookies        = require('cookie-parser');
 const session        = require('express-session');
 const csurf          = require('csurf');
 const flash          = require('connect-flash');
-const redisClient    = require('./redis.config');
 const helmet         = require('helmet');
 const passport       = require('passport');
 const LocalStrategy  = require('passport-local').Strategy;
@@ -45,19 +95,6 @@ app.use(responseTime());
 let login      = require('./routes/login');
 let signupLoco = require('./routes/signup');
 let api        = require('./routes/apiV1');
-
-/* === MONGOOSE === */
-const mongoose = require('./mongoose.config');
-const Mgmtgeneral = require('./models/MANAGEMENT/general'); // Adu modelul management
-
-/* === ELASTICSEARCH env === */
-const esClient = require('./elasticsearch.config');
-// esClient.on('sniff', (err, req) => {
-//     console.log('ES7 sniff: ', err ? err.message : '', `${JSON.stringify(req.meta.sniff)}`);
-//     console.log('ES7 sniff: ', err ? logger.error('La inițializarea conexiunii ES7 a apărut eroarea: ', err.message) : 'Nicio problemă detectată la inițializare!!! All norminal 👌');
-// });
-
-// process.report.writeReport('./report.json');
 
 /* === FIȘIERE și DIRECTOARE statice === */
 app.use(express.static(path.join(__dirname, '/public'), {
@@ -286,6 +323,7 @@ let tags           = require('./routes/tags');
 let help           = require('./routes/help');
 let errors         = require('./routes/errors');
 let devnull        = require('./routes/devnull/devnull');
+const { client } = require('./redis.config');
 
 // === MIDDLEWARE-ul RUTELOR ===
 app.use('/auth',           authG);
@@ -349,7 +387,7 @@ if( process.env.NODE_ENV === 'production') {
 let port = process.env.PORT || 8080;
 let hostname = os.hostname();
 var server = http.listen(port, '0.0.0.0', function cbConnection () {
-    console.log(`${process.env.APP_NAME }`, process.env.APP_VER);
+    console.log(`Nume app:\x1b[32m ${process.env.APP_NAME }\x1b[37m, versiunea: \x1b[32m`, process.env.APP_VER, '\x1b[37m');
     console.log(`Hostname: \x1b[32m ${hostname}\x1b[37m, \n port: \x1b[32m${process.env.PORT}\x1b[37m, \n proces no: \x1b[32m${process.pid}\x1b[37m, \n node: \x1b[32m${process.version}\x1b[37m, \n mongoose: \x1b[32m${mongoose.version}\x1b[37m.`);
 });
 server.on('error', onError);

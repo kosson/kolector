@@ -28,15 +28,6 @@ const userES7       = require('../user-es7');
 // utilități pentru Elasticsearch
 // let {getStructure}  = require('../../util/es7'); // `getStructure()` este o promisiune a cărui rezultat sunt setările indecșilor și ale alias-urilor (vezi `elasticsearch.config.js`, unde sunt setați)
 
-if (Resursa instanceof mongoose.Model) {
-    console.log(`Resursa este un obiect de tip Model`);
-}
-
-if (User instanceof mongoose.Model) {
-    console.log(`User este un obiect de tip Model`);
-}
-
-
 /*
 Această structură are scopul de a oferi informație pentru fiecare index ES7
 Cheile obiectului sunt numele de alias. Valoarea este un hash care pune în conexiune mappingul indexului ES7 cu modelul mongoose în baza căruia s-a creat colecția

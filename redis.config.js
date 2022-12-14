@@ -23,21 +23,17 @@ try {
     // let redisClient = createClient(CONFIG);
 
     function clbkRedReady () {
-        console.log('Conectare la REDIS', redisClient.server_info.redis_version, 'OK!');
-    }
-
-    function clbkRedReady () {
-        console.log('M-am reconectat la Redis!');
+        console.log('M-am reconectat la Redis:\x1b[32m', redisClient.address, "\x1b[37m", 'versiunea \x1b[32m', redisClient.server_info.redis_version, "\x1b[37m");
     };
 
     redisClient.on('ready', clbkRedReady);
     redisClient.on('reconnecting', clbkRedReady);
     redisClient.on('error', (error) => {
-        console.error('Conectarea la Redis nu s-a putut face!', CONFIG.host, redisClient.server_info.redis_version);
-        logger.error(error);
+        return new Error(`La conectarea cu Redis a apărut eroarea `, error);
     });
 
     module.exports = redisClient;
 } catch (error) {
     console.error('Conectarea la Redis nu s-a putut face!', CONFIG.host, redisClient.server_info.redis_version);
+    logger.error(error);
 }

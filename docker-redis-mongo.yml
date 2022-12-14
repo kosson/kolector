@@ -1,0 +1,55 @@
+services:  
+  redis:
+    # https://docs.docker.com/engine/reference/commandline/run/#configure-namespaced-kernel-parameters-sysctls-at-runtime
+    image: 'redis:latest'
+    restart: always
+    container_name: kolector_redis
+    volumes:
+      - './assets/redis/redisdata:/data:rw'
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - dockernet
+
+  mongo:
+    image: 'mongo:4.4.5-bionic'
+    container_name: kolector_mongo
+    env_file:
+      - ./.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - 'MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}'
+      - 'MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWD}'
+      - 'MONGO_INITDB_DATABASE=${MONGO_DB}'
+    volumes:
+      - 'mongodata:/data/db'
+    command:
+      - '--auth'
+    ports:
+      - '27017:27017'
+    healthcheck:
+      test: 'echo ''db.runCommand("ping").ok'' | mongo localhost:27017/test --quiet'
+    networks:
+      dockernet: null
+
+volumes:
+  redis:
+    driver: local
+  mongodata:
+    driver: local
+
+networks:
+  dockernet:
+    driver: bridge    
