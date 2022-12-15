@@ -3,7 +3,11 @@ const process = require('process');
 
 /* === CLIENTS === */
 const redisClient    = require('./redis.config');
-const mongoose       = require('./mongoose.config');
+
+/* === MONGODB::MONGOOSE === */ 
+const mongoose = require('mongoose');
+const {kolectordbconfig, kolectordbaddress} = require('./mongoose.config');
+const mongoConn = mongoose.createConnection(kolectordbaddress, kolectordbconfig);
 const elastClient    = require('./elasticsearch.config');
 /* === MODELE === */
 const Mgmtgeneral = require('./models/MANAGEMENT/general'); // Adu modelul management
@@ -14,12 +18,12 @@ const Mgmtgeneral = require('./models/MANAGEMENT/general'); // Adu modelul manag
 // });
 // process.report.writeReport('./report.json');
 
-const connectors     = {
+const connectors = {
     redis: {
         address: redisClient.address,
         // client: redisClient
     },
-    mongo: mongoose.version,
+    mongo: mongoConn.version,
     elastic: {
         clients: []
         // stare: elastClient.connectionPool.connections
@@ -388,7 +392,7 @@ let port = process.env.PORT || 8080;
 let hostname = os.hostname();
 var server = http.listen(port, '0.0.0.0', function cbConnection () {
     console.log(`Nume app:\x1b[32m ${process.env.APP_NAME }\x1b[37m, versiunea: \x1b[32m`, process.env.APP_VER, '\x1b[37m');
-    console.log(`Hostname: \x1b[32m ${hostname}\x1b[37m, \n port: \x1b[32m${process.env.PORT}\x1b[37m, \n proces no: \x1b[32m${process.pid}\x1b[37m, \n node: \x1b[32m${process.version}\x1b[37m, \n mongoose: \x1b[32m${mongoose.version}\x1b[37m.`);
+    console.log(`Hostname: \x1b[32m ${hostname}\x1b[37m, \n port: \x1b[32m${process.env.PORT}\x1b[37m, \n proces no: \x1b[32m${process.pid}\x1b[37m, \n node: \x1b[32m${process.version}\x1b[37m`);
 });
 server.on('error', onError);
 
@@ -428,9 +432,10 @@ process.on('uncaughtException', (err) => {
     logger.error(`${err.message} ${err.stack}`);
     // process.kill(process.pid, 'SIGTERM');
     process.nextTick( function exitProcess () {
-        mongoose.disconnect(() => {
-            console.log('Am închis conexiunea la MongoDb!');
-        });
+        // FIXME
+        // mongoConn.disconnect(() => {
+        //     console.log('Am închis conexiunea la MongoDb!');
+        // });
         process.exit(1);
     });
 });
@@ -440,23 +445,24 @@ process.on('unhandledRejection', (reason, promise) => {
     console.log('[app.js] O promisiune a fost respinsă fără a fi tratată respingerea', promise, ` având motivul ${reason}`);
     logger.error(`${promise} ${reason}`);
     process.nextTick( function exitProcess () {
-        mongoose.disconnect(() => {
-            console.log('Am închis conexiunea la MongoDb!');
-        });
+        // mongoConn.disconnect(() => {
+        //     console.log('Am închis conexiunea la MongoDb!');
+        // });
         process.exit(1);
     });
 });
 
 process.on('SIGINT', function onSiginit (signal) {
-    mongoose.disconnect(() => {
-        console.log('Am închis conexiunea la MongoDb!');
-    });
+    FIXME:
+    // mongoConn.disconnect(() => {
+    //     console.log('Am închis conexiunea la MongoDb!');
+    // });
     console.info(`Procesul a fost întrerupt (CTRL+C). Închid procesul ${process.pid}! Data: `, new Date().toISOString());
     process.exit(0);
 });
 
 process.on('SIGTERM', function onSiginit () {
-    mongoose.disconnect(() => {
+    mongoConn.disconnect(() => {
         console.log('Am închis conexiunea la MongoDb!');
     });
     console.info('Am prins un SIGTERM (stop). Închid procesul! Data: ', new Date().toISOString());

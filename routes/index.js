@@ -6,6 +6,10 @@ const Resursa  = require('../models/resursa-red');              // Adu modelul r
 const Mgmtgeneral = require('../models/MANAGEMENT/general');    // Adu modelul management
 const logger   = require('../util/logger');
 
+const mongoose = require('mongoose');
+const {kolectordbconfig, kolectordbaddress} = require('../mongoose.config');
+mongoose.connect(kolectordbaddress, kolectordbconfig);
+
 /* === LANDING :: / === */
 let index = require('./controllers/index.ctrl');    // adu funcția `renderPublic` din `/controllers`.
 router.get('/', (req, res, next) => {
@@ -14,7 +18,13 @@ router.get('/', (req, res, next) => {
         
         // Setări în funcție de template
         let filterMgmt = {focus: 'general'};
-        let gensettings = await Mgmtgeneral.findOne(filterMgmt);
+        let gensettings = await Mgmtgeneral.findOne(filterMgmt); // FIXME: MongooseError: Operation `mgmtgenerals.findOne()` buffering timed out after 10000ms
+
+        /*
+        Mongoose lets you start using your models immediately, without waiting for mongoose to establish a connection to MongoDB.
+        That’s because mongoose buffers model function calls internally. This buffering is convenient, but also a common source of confusion. 
+        Mongoose will not throw any errors by default if you use a model without connecting.
+        */
 
         // scripts, modules, styles
         const resurse = [

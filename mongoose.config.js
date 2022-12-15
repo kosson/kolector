@@ -8,11 +8,12 @@ const mongoose = require('mongoose');
 // mongoose.set('useFindAndModify', false);
 
 try {
-    /*
-    Am setat o variabilă de mediu `APP_RUNTIME` care va indica dacă aplicația rulează virtualizat sau local.
-    Valorile pe care această variabilă de mediu le poate avea sunt: `virtual` sau `local`.
-    */
 
+    console.log(`Versiunea de mongoose rulată este ${mongoose.version}`);
+
+    async function checkAndPopulateDB () {
+
+    }
 
     /* Pentru eroarea `MongoParseError: credentials must be an object with 'username' and 'password' properties` următorul obiect este răspunsul corect: */
     const CONFIG = {
@@ -22,22 +23,52 @@ try {
         // useUnifiedTopology: true
     };
     let hostname = process.env.APP_RUNTIME === 'virtual' ? 'mongo' : 'localhost';
+    let address = `mongodb://${hostname}:27017/${process.env.MONGO_DB}`;
 
-    /* === ACTIVEAZĂ DOAR ÎN SCENARIUL VIRTUALIZAT === */
-    if (process.env.APP_RUNTIME === 'virtual') {
-        mongoose.connect(`mongodb://${hostname}:27017/${process.env.MONGO_DB}`, CONFIG).then((token) => {
-            console.log(`Conectare la serviciul MongoDB din container cu succes:\x1b[32m mongodb://${hostname}:27017/${process.env.MONGO_DB}\x1b[37m`);
-            // TODO: Verifică dacă bazele de date sunt create. Dacă nu, instanțiază-le și hidratează-le
-        }).catch((error) => {
-            throw new Error(`Conectarea la serviciul containerizat MongoDB a eșuat`, error);
-        });
-    } else {
-        mongoose.connect(`mongodb://${hostname}:27017/${process.env.MONGO_DB}`, CONFIG).then(() => {
-            console.log(`Conectare cu succes la baza de date mașină gazdă:\x1b[32m mongodb://${hostname}:27017/${process.env.MONGO_DB}\x1b[37m`);
-        }).catch((error) => {
-            throw new Error(`Conectarea la MongoDB a mașinii gazdă a eșuat!`, error);
-        });
+    /* === TESTEAZĂ DACĂ AI CONEXIUNE === */
+    // mongoose.connect(`mongodb://${hostname}:27017/${process.env.MONGO_DB}`, CONFIG).then(() => {
+    //     console.log(`Conectare cu succes la baza de date:\x1b[32m mongodb://${hostname}:27017/${process.env.MONGO_DB}\x1b[37m`);
+    // }).catch((error) => {
+    //     throw new Error(`Conectarea la MongoDB a mașinii gazdă a eșuat!`, error);
+    // });
+
+
+    // https://mongoosejs.com/docs/connections.html
+    // https://mongoosejs.com/docs/api/mongoose.html#mongoose_Mongoose-createConnection
+    let kolectordb = mongoose.createConnection(address, CONFIG);
+    // https://mongoosejs.com/docs/api.html#connection_Connection-readyState
+    switch (kolectordb.readyState) {
+        case 0:
+            console.log(`Nu se conectează la baza de date. Verifică să existe serverul.`);
+            break;
+        case 1:
+            console.log(`Conectare cu succes la baza de date:\x1b[32m mongodb://${hostname}:27017/${process.env.MONGO_DB}\x1b[37m`);
+            break;            
+        case 2:
+            console.log(`Mă conectez la Mongo chiar acum:\x1b[32m mongodb://${hostname}:27017/${process.env.MONGO_DB}\x1b[37m`);
+            break;   
+        case 3:
+            console.log(`M-am deconectat de la server`);
+            break;       
+        default:
+            break;
     }
+
+    kolectordb.on('connected', function clbkOnConnected () {
+        // Extrage informații privind colecțiile existente
+        kolectordb.db.listCollections().toArray((error, names) => {
+            if (error) {
+                throw new Error(`Aceasta este o eroare care a apărut la citirea colecțiilor existente din MongoDB.`);
+              } else {
+                let elem, dbs = [];
+                for (elem of names) {
+                    dbs.push({name: elem.name, uuid: elem.info.uuid, readOnly: elem.info.readOnly});
+                }
+                console.log(`Colecțiile din bază sunt:`);
+                console.table(dbs);
+              }
+        });
+    });
 
     /*
     În cazul în care rulezi cu docker, mai intai avand containerele ruland foloseste `docker ps` și apoi comanda `docker inspect nume_container_mongodb`.
@@ -46,7 +77,8 @@ try {
     */ 
     // sau
     //  mongoose.connect("mongodb://nume_user:parola@ip_container_mongo:27017/?authSource=admin")
-    module.exports = mongoose;
+    // module.exports = mongoose;
+    module.exports = {kolectordbconfig: CONFIG, kolectordbaddress: address};
     
 } catch (error) {
     console.log('A apărut o eroare la conectarea cu MongoDB ', error);

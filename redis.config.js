@@ -17,7 +17,7 @@ try {
         db: 10,
         password: process.env.REDIS_PASSWORD || undefined
     };
-    process.env.APP_RUNTIME === 'virtual' ? CONFIG.host = process.env.REDIS_HOST || 'kolector_redis' : CONFIG.host = '127.0.0.1';
+    process.env.APP_RUNTIME === 'virtual' ? CONFIG.host = 'redis' : CONFIG.host = '127.0.0.1';
 
     let redisClient = redis.createClient(CONFIG);
     // let redisClient = createClient(CONFIG);
