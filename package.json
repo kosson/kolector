@@ -43,7 +43,7 @@
   },
   "homepage": "https://github.com/kosson/kolector#readme",
   "dependencies": {
-    "@editorjs/editorjs": "^2.24.0",
+    "@editorjs/editorjs": "^2.26.0",
     "@elastic/elasticsearch": "^7.17.0",
     "@fortawesome/fontawesome-free": "^6.2.0",
     "archiver": "^5.3.1",
