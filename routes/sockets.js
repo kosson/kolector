@@ -1767,7 +1767,7 @@ function sockets (io) {
                     // scrie datele în bază
                     //mongoose.connection.dropCollection('competentaspecificas'); // Fii foarte atent: șterge toate datele din colecție la fiecare load!.
                     
-                    Competente.insertMany(folded, function cbInsMany (err, result) {
+                    Competente.insertMany(folded, function cbCompetenteInsMany (err, result) {
                         if (err) {
                             console.log(err);
                             logger.error(err);

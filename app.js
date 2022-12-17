@@ -31,6 +31,7 @@ const connectors = {
     }
 }
 
+// Hidratare connectors.elastic.clients
 if (elastClient.connectionPool.connections.length > 0) {
     let elem, no = 0;
     for (elem of elastClient.connectionPool.connections) {

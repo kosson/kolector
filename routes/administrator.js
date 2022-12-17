@@ -72,15 +72,6 @@ router.get('/', (req, res, next) => {
             let modules = [
                 // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // DATATABLES
-                // {module: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-                // {module: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-                // {module: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-                // {module: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-                // {module: `${gensettings.template}/lib/npm/buttons.print.min.js`},
-                // {module: `${gensettings.template}/lib/npm/buttons.html5.min.js`},
-                // {module: `${gensettings.template}/lib/npm/buttons.bootstrap4.min.js`},
-                // {module: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},
                 // LOCALE
                 {module: `${gensettings.template}/js/admin.mjs`}
             ];
@@ -113,15 +104,6 @@ router.get('/', (req, res, next) => {
             let modules = [
                 // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // DATATABLES
-                {module: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.print.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.html5.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},
                 // LOCALE
                 {module: `${gensettings.template}/js/admin.mjs`}
             ];

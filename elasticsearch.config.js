@@ -17,7 +17,7 @@ try {
         sniffOnConnectionFault: true,
         log: 'trace'
     }
-    process.env.APP_RUNTIME === 'virtual' ? CONFIG.node = 'http://localhost:9200' : CONFIG.node = `http://${process.env.DOMAIN_VIRT}/9200`;
+    process.env.APP_RUNTIME === 'virtual' ?  `http://${process.env.DOMAIN_VIRT}:9200` : CONFIG.node = CONFIG.node = 'http://localhost:9200';
     
     // instanțiere client
     const client = new Client(CONFIG);
@@ -35,6 +35,6 @@ try {
     // client.info().then(r => console.log(r)).catch(e => console.error);
     module.exports = client;
 } catch (error) {
-    console.log(`A apărut o eroare de conectare la Elasticsearch`);
+    console.log(`[elasticsearch.config.js] A apărut o eroare de conectare la Elasticsearch`);
     logger.error(error);
 }

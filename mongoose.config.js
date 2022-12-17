@@ -1,4 +1,5 @@
 require('dotenv').config();
+const config = require("config");
 const logger   = require('./util/logger');
 const mongoose = require('mongoose');
 // MONGOOSE - Conectare la MongoDB
@@ -10,10 +11,6 @@ const mongoose = require('mongoose');
 try {
 
     console.log(`Versiunea de mongoose rulată este ${mongoose.version}`);
-
-    async function checkAndPopulateDB () {
-
-    }
 
     /* Pentru eroarea `MongoParseError: credentials must be an object with 'username' and 'password' properties` următorul obiect este răspunsul corect: */
     const CONFIG = {
@@ -43,30 +40,103 @@ try {
             break;
         case 1:
             console.log(`Conectare cu succes la baza de date:\x1b[32m mongodb://${hostname}:27017/${process.env.MONGO_DB}\x1b[37m`);
-            break;            
-        case 2:
-            console.log(`Mă conectez la Mongo chiar acum:\x1b[32m mongodb://${hostname}:27017/${process.env.MONGO_DB}\x1b[37m`);
-            break;   
+            break;
         case 3:
             console.log(`M-am deconectat de la server`);
             break;       
         default:
             break;
     }
+    console.log(`Numărul conexiunilor la MongoDB este \x1b[32m ${mongoose.connections.length}\x1b[37m`);
 
     kolectordb.on('connected', function clbkOnConnected () {
         // Extrage informații privind colecțiile existente
-        kolectordb.db.listCollections().toArray((error, names) => {
+        kolectordb.db.listCollections().toArray(async (error, names) => {
             if (error) {
-                throw new Error(`Aceasta este o eroare care a apărut la citirea colecțiilor existente din MongoDB.`);
-              } else {
+                throw new Error(`[mongoose.config.js] Aceasta este o eroare care a apărut la citirea colecțiilor existente din MongoDB.`);
+            } else if (names.length >= 1) {
                 let elem, dbs = [];
                 for (elem of names) {
                     dbs.push({name: elem.name, uuid: elem.info.uuid, readOnly: elem.info.readOnly});
                 }
                 console.log(`Colecțiile din bază sunt:`);
                 console.table(dbs);
-              }
+            } else {
+
+                let initcollections = config.get('initcollections'); // obține array-ul colecțiilor care trebuie create din fișierul de configurare `default`
+            
+                // Incarca modelele pentru cele de baza
+                let ThingSchema = require('./models/thing'); // adu schema pentru Thing
+                let Competente = require('./models/competenta-specifica'), 
+                    Thing = mongoose.model('thing', ThingSchema),
+                    Mgmtgeneral = require('./models/MANAGEMENT/general') ; // creează modelele necesare
+
+                let collection;
+                for (collection of initcollections) {
+                    switch (collection) {
+                        case 'mgmtgenerals':
+                            // console.log(kolectordb.collection(`mgmtgenerals`));
+                            let mgmtgeneralsdata = require('./initdata/databases/mgmtgenerals.json');
+                            // https://www.tabnine.com/code/javascript/functions/mongoose/Model/insertMany
+                            let datemgmtimportate = await Mgmtgeneral.insertMany(mgmtgeneralsdata.map(function clbkMapMgmtData (elem) {
+                                return {
+                                    _id: mongoose.Types.ObjectId(elem._id.$oid), // aici era eroarea. trebuia transformat din `{ '$oid': '616fd846d40ca748011c12b4' }` în `ObjectId`
+                                    focus:       elem.focus,
+                                    template:    elem.template,
+                                    _v:          elem.__v,
+                                    brand:       elem.brand,
+                                    publisher:   elem.publisher,
+                                    creator:     elem.creator,
+                                    description: elem.description,
+                                    contact:     elem.contact
+                                };
+                            })); 
+                            console.log(`Am importat în colecția mgmtgenerals ${datemgmtimportate.length} înregistrări.`);
+                            break;
+                        case 'competentaspecificas':
+                            let competentaspecificas = require('./initdata/databases/competentaspecificas.json');
+                            let datecompetenteimportate = await Competente.insertMany(competentaspecificas.map(function clbkMapCompeData (elem) {
+                                return {
+                                    _id: mongoose.Types.ObjectId(elem._id.$oid),
+                                    idRED:      elem.idRED,
+                                    ids:        elem.ids,
+                                    activitati: elem.activitati,
+                                    disciplina: elem.disciplina,
+                                    nivel:      elem.nivel,
+                                    ref:        elem.ref,
+                                    REDuri:     elem.REDuri,
+                                    nume:       elem.nume,
+                                    cod:        elem.cod,
+                                    coddisc:    elem.coddisc,
+                                    parteA:     elem.parteA,
+                                    _v:         elem.__v
+                                };
+                            }));
+                            console.log(`Am importat în colecția competentaspecificas ${datecompetenteimportate.length} înregistrări.`);
+                            break;            
+                        case 'things':
+                            let things = require('./initdata/databases/things.json');
+                            let datethingsimportate = await Thing.insertMany(things.map(function clbkMapThingsData (elem) {
+                                return {
+                                    _id: mongoose.Types.ObjectId(elem._id.$oid),
+                                    res:  elem.res,
+                                    arca: elem.arca.map(function clbkArcaInThing (elem) {
+                                        if (elem.$oid) {
+                                            return mongoose.Types.ObjectId(elem.$oid);
+                                        } else {
+                                            return elem;
+                                        } 
+                                    }),
+                                    nota: elem.nota
+                                }
+                            }));
+                            console.log(`Am importat în colecția things ${datethingsimportate.length} înregistrări.`);
+                            break;                                             
+                        default:
+                            break;
+                    }
+                }
+            }
         });
     });
 
