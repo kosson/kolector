@@ -308,7 +308,8 @@ app.use(compression({ filter: shouldCompress }));
 const deps = [
     'jquery', 'jquery-toast-plugin', 'bootstrap', 'bootstrap-icons',
     'datatables.net', 'datatables.net-dt', 'datatables.net-buttons', 'datatables.net-buttons-dt', 'datatables.net-responsive', 'datatables.net-responsive-dt', 'datatables.net-select-dt',
-    'holderjs', 'moment'];
+    'holderjs', 'moment', 'jszip', 'pdfmake', '@knight-lab/timelinejs'
+];
 deps.forEach(dep => {
     app.use(`/${dep}`, express.static(path.resolve(`node_modules/${dep}`)));
 });

@@ -1,3 +1,45 @@
 {
-    "initcollections": ["competentaspecificas", "things", "bodies", "mgmtgenerals"]
+    "initcollections": ["competentaspecificas", "things", "bodies", "mgmtgenerals"],
+    "vendor": {
+        "datatables": {
+            "js": [
+                {"script": "datatables.net/js/jquery.dataTables.min.js"},
+                {"script": "datatables.net-dt/js/dataTables.dataTables.min.js"},
+                {"script": "datatables.net-select-dt/js/select.dataTables.min.js"},
+                {"script": "datatables.net-buttons-dt/js/buttons.dataTables.min.js"},
+                {"script": "datatables.net-responsive-dt/js/responsive.dataTables.min.js"}
+            ],
+            "css": [
+                {"style": "datatables.net-dt/css/jquery.dataTables.min.css"},
+                {"style": "datatables.net-buttons-dt/css/buttons.dataTables.min.css"},
+                {"style": "datatables.net-responsive-dt/css/responsive.dataTables.min.css"},
+                {"style": "datatables.net-select-dt/css/select.dataTables.min.css"}
+            ]
+        },
+        "moment": {
+            "js": {"script": "moment/min/moment-with-locales.min.js"}
+        },
+        "jszip": {
+            "js": {"script": "jszip/dist/jszip.min.js"}
+        },
+        "pdfmake": {
+            "js": [
+                {"script": "pdfmake/build/pdfmake.min.js"},
+                {"script": "pdfmake/build/vfs_fonts.js"}
+            ]
+        },
+        "timeline": {
+            "js": [
+                {"script": "@knight-lab/timelinejs/dist/js/timeline.js"},
+                {"script": "@knight-lab/timelinejs/dist/js/timeline.js.map"}
+            ],
+            "css": [
+                {"style": "@knight-lab/timelinejs/dist/css/fonts/font.default.css"},
+                {"style": "@knight-lab/timelinejs/dist/css/fonts/font.roboto-megrim.css"},
+                {"style": "@knight-lab/timelinejs/dist/css/fonts/font.ubuntu.css"},
+                {"style": "@knight-lab/timelinejs/dist/css/themes/timeline.theme.dark.css"},
+                {"style": "@knight-lab/timelinejs/dist/css/timeline.css"}
+            ]
+        }
+    }
 }

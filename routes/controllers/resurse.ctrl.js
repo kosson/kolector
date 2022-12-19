@@ -464,23 +464,11 @@ exports.describeRED = async function describeRED (req, res, next) {
     ];
 
     let styles = [
-        // FONTAWESOME
-        // {style: `${gensettings.template}/lib/npm/all.min.css`},
-        // JQUERY TOAST
-        // {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`},
-        // BOOTSTRAP
-        // {style: `${gensettings.template}/lib/npm/bootstrap.min.css`},
-        // DATATABLES
         {style: `/datatables.net-dt/css/jquery.dataTables.min.css`},
         {style: `/datatables.net-buttons-dt/css/buttons.dataTables.min.css`},
         {style: `/datatables.net-responsive-dt/css/responsive.dataTables.min.css`},
         {style: `/datatables.net-select-dt/css/select.dataTables.min.css`}
     ];
-
-    let tests = [
-        'acest este un text',
-        'alt text imediat'
-    ]
 
     let data = {
         uuid: uuid,

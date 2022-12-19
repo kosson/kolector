@@ -1,4 +1,5 @@
 require('dotenv').config();
+const config      = require('config');
 const redisClient = require('../redis.config');
 const esClient    = require('../elasticsearch.config');
 const moment      = require('moment');
@@ -15,6 +16,15 @@ const schema      = require('../models/resursa-red-es7');
 // let content2html = require('./controllers/editorJs2HTML');
 let editorJs2TXT  = require('./controllers/editorJs2TXT');
 let archiveRED    = require('./controllers/archiveRED');
+
+// CONFIG - ASSETS
+let vendor_datatables_js = config.get('vendor.datatables.js'); // Adu-mi DATATABLES (sursele js)
+let vendor_datatables_css = config.get('vendor.datatables.css'); // Adu-mi DATATABLES (sursele css)
+let vendor_moment_js = config.get('vendor.moment.js'); // Adu-mi MOMENT (sursa js)
+let vendor_jszip_js = config.get('vendor.jszip.js'); // Adu-mi jszip (sursa js)
+let vendor_pdfmake_js = config.get('vendor.pdfmake.js'); // Adu-mi sursele pdfmake (sursele js)
+let vendor_timeline_js = config.get('vendor.timeline.js'); // Adu-mi sursele timeline (sursele js)
+let vendor_timeline_css = config.get('vendor.timeline.css'); // Adu-mi sursele timeline (sursele css)
 
 // INDECȘII ES7
 let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';
@@ -50,29 +60,19 @@ router.get('/', (req, res, next) => {
         /* === ADMIN === :: Dacă avem un admin, atunci oferă acces neîngrădit */
         if(req.session.passport.user.roles.admin){
             // === SCRIPTURI și STILURI COMUNE ===
-            let scripts = [       
-                // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-                // TIMELINE.JS
-                {script: `${gensettings.template}/lib/timeline3/js/timeline.js`},
-                // ZIP
-                {script: `${gensettings.template}/lib/jszip.min.js`},
-                // PDF
-                {script: `${gensettings.template}/lib/pdfmake.min.js`},
-                {script: `${gensettings.template}/lib/vfs_fonts.js`}
+            let scripts = [
+                ...vendor_timeline_js,
+                vendor_moment_js,
+                ...vendor_datatables_js,
+                vendor_jszip_js,
+                ...vendor_pdfmake_js,  
             ];
             let styles = [
-                // DATATABLES    
-                {style: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.css`},
-                {style: `${gensettings.template}/lib/npm/responsive.dataTables.min.css`},
-                // TIMELINE
-                {style: `${gensettings.template}/lib/timeline3/css/fonts/font.roboto-megrim.css`},
-                {style: `${gensettings.template}/lib/timeline3/css/timeline.css`}
+                ...vendor_datatables_css,
+                ...vendor_timeline_css
             ];
             let modules = [
-                // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // LOCALE
                 {module: `${gensettings.template}/js/admin.mjs`}
             ];
     
@@ -90,30 +90,20 @@ router.get('/', (req, res, next) => {
     
         /* === VALIDATOR === :: Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public */
         } else if (confirmedRoles.includes('validator')) {
-            let scripts = [       
-                // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-                // TIMELINE.JS
-                {script: `${gensettings.template}/lib/timeline3/js/timeline.js`},
-                // ZIP
-                {script: `${gensettings.template}/lib/jszip.min.js`},
-                // PDF
-                {script: `${gensettings.template}/lib/pdfmake.min.js`},
-                {script: `${gensettings.template}/lib/vfs_fonts.js`}
+            let scripts = [    
+                ...vendor_timeline_js,
+                vendor_moment_js,
+                ...vendor_datatables_js,
+                vendor_jszip_js,
+                ...vendor_pdfmake_js,  
             ];
             let modules = [
-                // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // LOCALE
                 {module: `${gensettings.template}/js/admin.mjs`}
             ];
             let styles = [
-                // DATATABLES    
-                {style: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.css`},
-                {style: `${gensettings.template}/lib/npm/responsive.dataTables.min.css`},
-                // TIMELINE
-                {style: `${gensettings.template}/lib/timeline3/css/fonts/font.roboto-megrim.css`},
-                {style: `${gensettings.template}/lib/timeline3/css/timeline.css`}
+                ...vendor_datatables_css,
+                ...vendor_timeline_css
             ];
     
             res.render(`validator_${gensettings.template}`, {
@@ -148,39 +138,20 @@ router.get('/reds', (req, res, next) => {
         if(req.session.passport.user.roles.admin){
 
             let scripts = [       
-                // MOMENT.JS
-                {script: `moment/min/moment-with-locales.min.js`},
-                // DATATABLES
-                {script: `datatables.net/js/jquery.dataTables.min.js`},
-                {script: `datatables.net-dt/js/dataTables.dataTables.min.js`},
-                {script: `datatables.net-select-dt/js/select.dataTables.min.js`},
-                {script: `datatables.net-buttons-dt/js/buttons.dataTables.min.js`},
-                {script: `datatables.net-buttons/js/buttons.print.min.js`},
-                {script: `datatables.net-responsive-dt/js/responsive.dataTables.min.js`},
-                // ZIP
-                {script: `${gensettings.template}/lib/jszip.min.js`},
-                // PDF
-                {script: `${gensettings.template}/lib/pdfmake.min.js`},
-                {script: `${gensettings.template}/lib/vfs_fonts.js`},
-                // TIMELINE.JS
-                {script: `${gensettings.template}/lib/timeline3/js/timeline.js`}
+                ...vendor_timeline_js,
+                vendor_moment_js,
+                ...vendor_datatables_js,
+                vendor_jszip_js,
+                ...vendor_pdfmake_js,  
             ];
 
             let modules = [
-                // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // LOCALE
                 {module: `${gensettings.template}/js/res-visuals.mjs`}
             ];
             let styles = [
-                // DATATABLES    
-                {style: `datatables.net-responsive-dt/css/responsive.dataTables.min.css`},
-                {style: `datatables.net-dt/css/jquery.dataTables.min.css`},
-                {style: `datatables.net-select-dt/css/select.dataTables.min.css`},
-                {style: `datatables.net-buttons-dt/css/buttons.dataTables.min.css`},
-                // TIMELINE
-                {style: `${gensettings.template}/lib/timeline3/css/fonts/font.roboto-megrim.css`},
-                {style: `${gensettings.template}/lib/timeline3/css/timeline.css`}
+                ...vendor_datatables_css,
+                ...vendor_timeline_css
             ];
 
             res.render(`res-data-visuals_${gensettings.template}`, {
@@ -214,7 +185,7 @@ router.get('/reds/:id', (req, res, next) => {
         // const editorJs2html = require('./controllers/editorJs2HTML');
         let scripts = [
             // MOMENT.JS
-            {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
+            vendor_moment_js,
             // {script: '/js/res-shown.js'},
             // HELPER DETECT URLS or PATHS
             {script: `${gensettings.template}/js/check4url.js`},
@@ -245,14 +216,7 @@ router.get('/reds/:id', (req, res, next) => {
             {module: `${gensettings.template}/lib/gitgraph.umd.js`}
         ];
     
-        let styles = [
-            // FONTAWESOME
-            {style: `${gensettings.template}/lib/npm/all.min.css`},
-            // JQUERY TOAST
-            {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`},
-            // BOOTSTRAP
-            {style: `${gensettings.template}/lib/npm/bootstrap.min.css`}
-        ];
+        let styles = [];
     
         let roles = ["admin", "validator"];
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
@@ -428,34 +392,17 @@ router.get('/users', (req, res, next) => {
         /* === ADMIN === :: Dacă avem un admin, atunci oferă acces neîngrădit */
         if(req.session.passport.user.roles.admin){
             let modules = [
+                vendor_moment_js,
+                ...vendor_datatables_js,
                 // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // DATATABLES
-                {module: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.print.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.html5.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},
                 // LOCALE
                 {module: `${gensettings.template}/js/users-visuals.mjs`}
             ];
     
-            let styles = [
-                // DATATABLES    
-                {style: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.css`},
-                {style: `${gensettings.template}/lib/npm/responsive.dataTables.min.css`},
-                // TIMELINE
-                {style: `${gensettings.template}/lib/timeline3/css/fonts/font.roboto-megrim.css`},
-                {style: `${gensettings.template}/lib/timeline3/css/timeline.css`}
-            ];
+            let styles = [...vendor_datatables_css];
 
-            let scripts = [       
-                // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`}
-            ];
+            let scripts = [];
     
             res.render(`users-data-visuals_${gensettings.template}`, {
                 template: `${gensettings.template}`,
@@ -496,36 +443,19 @@ router.get('/users/:id', (req, res, next) => {
         // Dacă avem un admin, atunci oferă acces neîngrădit
         if(req.session.passport.user.roles.admin){
             let scripts = [       
-                // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-                {script: `${gensettings.template}/lib/timeline3/js/timeline.js`},
-                // ZIP
-                {script: `${gensettings.template}/lib/jszip.min.js`},
-                // PDF
-                {script: `${gensettings.template}/lib/pdfmake.min.js`},
-                {script: `${gensettings.template}/lib/vfs_fonts.js`},
-                // DATATABLES
-                {script: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-                {script: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-                {script: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-                {script: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-                {script: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},
-                // TIMELINE 3
-                {script: `${gensettings.template}/lib/timeline3/js/timeline.js`},
-                {script: `${gensettings.template}/js/user.js`}
+                ...vendor_timeline_js,
+                vendor_moment_js,
+                ...vendor_datatables_js,
+                vendor_jszip_js,
+                ...vendor_pdfmake_js,  
             ];
     
             let styles = [
-                // DATATABLES    
-                {style: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.css`},
-                {style: `${gensettings.template}/lib/npm/responsive.dataTables.min.css`},
-                // TIMELINE
-                {style: `${gensettings.template}/lib/timeline3/css/fonts/font.roboto-megrim.css`},
-                {style: `${gensettings.template}/lib/timeline3/css/timeline.css`}
+                ...vendor_datatables_css,
+                ...vendor_timeline_css
             ];
             
             let csrfToken = req.csrfToken();
-            console.log(`CSRF-ul trimis este: `, csrfToken);
 
             res.render(`user-admin_${gensettings.template}`, {
                 template: `${gensettings.template}`,
@@ -539,33 +469,17 @@ router.get('/users/:id', (req, res, next) => {
             });
         // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
         } else if (confirmedRoles.includes('validator')) {
-            let scripts = [       
-                // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-                {script: `${gensettings.template}/lib/timeline3/js/timeline.js`},
-                // ZIP
-                {script: `${gensettings.template}/lib/jszip.min.js`},
-                // PDF
-                {script: `${gensettings.template}/lib/pdfmake.min.js`},
-                {script: `${gensettings.template}/lib/vfs_fonts.js`},
-                // DATATABLES
-                {script: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-                {script: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-                {script: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-                {script: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-                {script: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},
-                // TIMELINE 3
-                {script: `${gensettings.template}/lib/timeline3/js/timeline.js`},
-                {script: `${gensettings.template}/js/validator.js`}
+            let scripts = [ 
+                vendor_moment_js,
+                ...vendor_datatables_js,
+                vendor_jszip_js,
+                ...vendor_pdfmake_js,
+                ...vendor_timeline_js
             ];
-            
+    
             let styles = [
-                // DATATABLES    
-                {style: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.css`},
-                {style: `${gensettings.template}/lib/npm/responsive.dataTables.min.css`},
-                // TIMELINE
-                {style: `${gensettings.template}/lib/timeline3/css/fonts/font.roboto-megrim.css`},
-                {style: `${gensettings.template}/lib/timeline3/css/timeline.css`}
+                ...vendor_datatables_css,
+                ...vendor_timeline_css
             ];
     
             res.render(`validator_${gensettings.template}`, {
@@ -588,45 +502,30 @@ router.get('/users/:id', (req, res, next) => {
     });
 });
 
+
+
 /* === /administrator/compets === */
 router.get('/compets', (req, res, next) => {
     async function clbkAdmCompets (req, res) {
         // Setări în funcție de template
         let filterMgmt = {focus: 'general'};
         let gensettings = await Mgmtgeneral.findOne(filterMgmt);
+
         // DOAR ADMINISTRATORII VAD TOATE COMPETENȚELE SPECIFICE ODATĂ
         if(req.session.passport.user.roles.admin){
-            let scripts = [       
-                // MOMENT.JS
-                {script: `moment/min/moment-with-locales.min.js`},
-                // DATATABLES
-                {script: `datatables.net/js/jquery.dataTables.min.js`},
-                {script: `datatables.net-dt/js/dataTables.dataTables.min.js`},
-                {script: `datatables.net-select-dt/js/select.dataTables.min.js`},
-                {script: `datatables.net-buttons-dt/js/buttons.dataTables.min.js`},
-                {script: `datatables.net-buttons/js/buttons.print.min.js`},
-                {script: `datatables.net-responsive-dt/js/responsive.dataTables.min.js`},
-                // ZIP
-                {script: `${gensettings.template}/lib/jszip.min.js`},
-                // PDF
-                {script: `${gensettings.template}/lib/pdfmake.min.js`},
-                {script: `${gensettings.template}/lib/vfs_fonts.js`}
+            let scripts = [
+                vendor_moment_js,
+                ...vendor_datatables_js,
+                vendor_jszip_js,
+                ...vendor_pdfmake_js
             ];
     
             let modules = [
-                // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // LOCALE
                 {module: `${gensettings.template}/js/comps-visuals.mjs`}
             ];
     
-            let styles = [
-                // DATATABLES    
-                {style: `datatables.net-responsive-dt/css/responsive.dataTables.min.css`},
-                {style: `datatables.net-dt/css/jquery.dataTables.min.css`},
-                {style: `datatables.net-select-dt/css/select.dataTables.min.css`},
-                {style: `datatables.net-buttons-dt/css/buttons.dataTables.min.css`}
-            ];
+            let styles = [...vendor_datatables_css];
     
             res.render(`comps-data-visuals_${gensettings.template}`, {
                 template: `${gensettings.template}`,
@@ -659,32 +558,16 @@ router.get('/compets/new', (req, res, next) => {
         // DOAR ADMINISTRATORII VAD COMPETENȚA SPECIFICĂ
         if(req.session.passport.user.roles.admin){
             let modules = [
-                // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // DATATABLES
-                {module: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.print.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.html5.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},
-                // LOCALE
                 {module: `${gensettings.template}/js/comp-id.mjs`}
             ];
-            let scripts = [       
-                // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-                {script: `${gensettings.template}/lib/timeline3/js/timeline.js`},
-                // ZIP
-                {script: `${gensettings.template}/lib/jszip.min.js`},
-                // PDF
-                {script: `${gensettings.template}/lib/pdfmake.min.js`},
-                {script: `${gensettings.template}/lib/vfs_fonts.js`}
-    
-                // Scripturile caracteristice fiecărei rute vor fi injectate per rută
+            let scripts = [
+                vendor_moment_js,
+                ...vendor_datatables_js,
+                vendor_jszip_js,
+                ...vendor_pdfmake_js
             ];
+            let styles = [...vendor_datatables_css];
     
             res.render(`comp-id-admin_${gensettings.template}`, {         
                 template: `${gensettings.template}`,           
@@ -702,7 +585,8 @@ router.get('/compets/new', (req, res, next) => {
     };
     clbkAdmCompetsID(req, res, next).catch((error) => {
         console.log(error);
-        logger(error);
+        // logger(error);
+        // throw new Error(`[administrator::/compets/new] a apărut o eroare: `, error.stack);
         next(error);
     });
 });
@@ -716,40 +600,21 @@ router.get('/compets/:id', (req, res, next) => {
         // DOAR ADMINISTRATORII VAD COMPETENȚA SPECIFICĂ
         if (req.session.passport.user.roles.admin) {
             let modules = [
+                vendor_moment_js,
+                ...vendor_datatables_js,
                 // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // DATATABLES
-                {module: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.print.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.html5.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},
                 // LOCALE
                 {module: `${gensettings.template}/js/comp-id.mjs`}
             ];
     
             let scripts = [       
-                // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-                {script: `${gensettings.template}/lib/timeline3/js/timeline.js`},
-                // ZIP
-                {script: `${gensettings.template}/lib/jszip.min.js`},
-                // PDF
-                {script: `${gensettings.template}/lib/pdfmake.min.js`},
-                {script: `${gensettings.template}/lib/vfs_fonts.js`}
-    
-                // Scripturile caracteristice fiecărei rute vor fi injectate per rută
+                vendor_jszip_js,
+                ...vendor_pdfmake_js
             ];
             let styles = [
-                // DATATABLES    
-                {style: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.css`},
-                {style: `${gensettings.template}/lib/npm/responsive.dataTables.min.css`},
-                // TIMELINE
-                {style: `${gensettings.template}/lib/timeline3/css/fonts/font.roboto-megrim.css`},
-                {style: `${gensettings.template}/lib/timeline3/css/timeline.css`}
+                ...vendor_datatables_css,
+                ...vendor_timeline_css
             ];        
     
             Competente.findById(req.params.id).populate({path: 'nrREDuri'}).then( (comp) => {
@@ -816,19 +681,13 @@ router.get('/import', (req, res, next) => {
         let gensettings = await Mgmtgeneral.findOne(filterMgmt);
         // DOAR ADMINISTRATORII VAD TOATE COMPETENȚELE SPECIFICE ODATĂ
         if(req.session.passport.user.roles.admin){
-            let scripts = [       
-                // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`}
-            ];
+            let scripts = [vendor_moment_js];
     
             let modules = [
-                // MAIN
                 {module: `${gensettings.template}/js/main.mjs`}
             ];
     
-            let styles = [
-
-            ];
+            let styles = [];
     
             res.render(`administrator-import_${gensettings.template}`, {
                 template: `${gensettings.template}`,
@@ -861,36 +720,20 @@ router.get('/import/red', (req, res, next) => {
 
         if(req.session.passport.user.roles.admin){
             let scripts = [       
-                // MOMENT.JS
-                {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`},
-                // ZIP
-                {script: `${gensettings.template}/lib/jszip.min.js`},
-                // PDF
-                {script: `${gensettings.template}/lib/pdfmake.min.js`},
-                {script: `${gensettings.template}/lib/vfs_fonts.js`}
+                vendor_jszip_js,
+                ...vendor_pdfmake_js
             ];
     
             let modules = [
+                vendor_moment_js,
+                ...vendor_datatables_js,
                 // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
-                // DATATABLES
-                {module: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.print.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.html5.min.js`},
-                {module: `${gensettings.template}/lib/npm/buttons.bootstrap4.min.js`},
-                {module: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},
                 // LOCALE
                 {module: `${gensettings.template}/js/import-red.mjs`}
             ];
     
-            let styles = [
-                // DATATABLES    
-                {style: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.css`},
-                {style: `${gensettings.template}/lib/npm/responsive.dataTables.min.css`}
-            ];
+            let styles = [...vendor_datatables_css];
 
             res.render(`administrator-import-red_${gensettings.template}`, {
                 template: `${gensettings.template}`,

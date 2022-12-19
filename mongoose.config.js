@@ -38,6 +38,9 @@ try {
         case 0:
             console.log(`Nu se conectează la baza de date. Verifică să existe serverul.`);
             break;
+        case 2:
+            console.log(`Mă conectez la Mongo chiar acum:\x1b[32m mongodb://${hostname}:27017/${process.env.MONGO_DB}\x1b[37m`);
+            break; 
         case 1:
             console.log(`Conectare cu succes la baza de date:\x1b[32m mongodb://${hostname}:27017/${process.env.MONGO_DB}\x1b[37m`);
             break;
