@@ -1,6 +1,58 @@
 {
     "initcollections": ["competentaspecificas", "things", "bodies", "mgmtgenerals"],
+    "packages": [
+        "socket-io", "socket.io-client", "socket.io-redis",
+        "jquery", "jquery-toast-plugin", "bootstrap", "bootstrap-icons",
+        "datatables.net", "datatables.net-dt", "datatables.net-buttons", "datatables.net-buttons-dt", "datatables.net-responsive", "datatables.net-responsive-dt", "datatables.net-select-dt",
+        "holderjs", "jszip", "pdfmake", 
+        "@knight-lab", 
+        "@gitgraph", 
+        "@editorjs",         
+        "@codexteam",
+        "@calumk", 
+        "editorjs-alert"
+    ],
     "vendor": {
+        "socket.io": {
+            "client-dist": {
+                "js": [
+                    {"script": "socket-io/client-dist/socket.io.min.js"},
+                    {"script": "socket-io/client-dist/socket.io.msgpack.min.js"}                    
+                ],
+                "esm": {"script": "socket-io/client-dist/socket.io.esm.min.js"}
+            },
+            "dist": {
+                "js": [
+                    {"script": "socket-io/dist/index.js"},
+                    {"script": "socket-io/dist/broadcast-operator.js"},
+                    {"script": "socket-io/dist/client.js"},
+                    {"script": "socket-io/dist/namespace.js"},
+                    {"script": "socket-io/dist/parent-namespace.js"},
+                    {"script": "socket-io/dist/socket.js"},
+                    {"script": "socket-io/dist/typed-events.js"},
+                    {"script": "socket-io/dist/uws.js"}
+                ]
+            }
+        },
+        "socket.io-client": {
+            "js": [
+                {"script": "socket.io-client/dist/socket.io.min.js"}
+            ],
+            "esm": {"script": "socket.io-client/dist/socket.io.esm.min.js"}
+        },
+        "socket.io-redis": {
+            "js": {"script": "socket.io-redis/dist/index.js"}
+        },
+        "gitgraph": {
+            "js": [
+                {"module": "@gitgraph/js/lib/index.js"},
+                {"module": "@gitgraph/js/lib/gitgraph.umd.min.js"},
+                {"module": "@gitgraph/js/lib/svg-elements.js"},
+                {"module": "@gitgraph/js/lib/tag.js"},
+                {"module": "@gitgraph/js/lib/tooltip.js"},
+                {"module": "@gitgraph/js/lib/branch-label.js"}
+            ]
+        },
         "datatables": {
             "js": [
                 {"script": "datatables.net/js/jquery.dataTables.min.js"},
@@ -16,9 +68,6 @@
                 {"style": "datatables.net-select-dt/css/select.dataTables.min.css"}
             ]
         },
-        "moment": {
-            "js": {"script": "moment/min/moment-with-locales.min.js"}
-        },
         "jszip": {
             "js": {"script": "jszip/dist/jszip.min.js"}
         },
@@ -30,8 +79,7 @@
         },
         "timeline": {
             "js": [
-                {"script": "@knight-lab/timelinejs/dist/js/timeline.js"},
-                {"script": "@knight-lab/timelinejs/dist/js/timeline.js.map"}
+                {"script": "@knight-lab/timelinejs/dist/js/timeline.js"}
             ],
             "css": [
                 {"style": "@knight-lab/timelinejs/dist/css/fonts/font.default.css"},
@@ -39,6 +87,31 @@
                 {"style": "@knight-lab/timelinejs/dist/css/fonts/font.ubuntu.css"},
                 {"style": "@knight-lab/timelinejs/dist/css/themes/timeline.theme.dark.css"},
                 {"style": "@knight-lab/timelinejs/dist/css/timeline.css"}
+            ]
+        },
+        "editorjs": {
+            "js": [
+                {"module": "@editorjs/editorjs/dist/editor.js"}
+            ],
+            "plugins": [
+                {"module": "@editorjs/paragraph/dist/bundle.js"},
+                {"module": "@editorjs/header/dist/bundle.js"},
+                {"module": "@editorjs/quote/dist/bundle.js"},
+                {"module": "@editorjs/warning/dist/bundle.js"},
+                {"module": "@editorjs/delimiter/dist/bundle.js"},
+                {"module": "editorjs-alert/dist/bundle.js"},
+                {"module": "@editorjs/list/dist/bundle.js"},
+                {"module": "@editorjs/image/dist/bundle.js"},
+                {"module": "@editorjs/attaches/dist/bundle.js"},
+                {"module": "@editorjs/embed/dist/bundle.js"},
+                {"module": "@editorjs/table/dist/table.js"},
+                {"module": "@editorjs/code/dist/bundle.js"},
+                {"module": "@calumk/editorjs-codeflask/dist/editorjs-codeflask.bundle.js"},
+                {"module": "@editorjs/marker/dist/bundle.js"},
+                {"module": "@editorjs/inline-code/dist/bundle.js"},
+                {"module": "@editorjs/link-autocomplete/dist/link-autocomplete.js"},
+                {"module": "@codexteam/ajax/dist/main.js"},
+                {"module": "@codexteam/icons/dist/index.mjs"}
             ]
         }
     }

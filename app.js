@@ -1,4 +1,5 @@
 require('dotenv').config();
+const config = require('config');
 const process = require('process');
 
 /* === CLIENTS === */
@@ -304,12 +305,8 @@ function shouldCompress (req, res) {
 }
 app.use(compression({ filter: shouldCompress }));
 
-// === ÎNCĂRCAREA DEPENDINȚELOR FĂRĂ A MAI DUBLA ÎN PUBLIC ===
-const deps = [
-    'jquery', 'jquery-toast-plugin', 'bootstrap', 'bootstrap-icons',
-    'datatables.net', 'datatables.net-dt', 'datatables.net-buttons', 'datatables.net-buttons-dt', 'datatables.net-responsive', 'datatables.net-responsive-dt', 'datatables.net-select-dt',
-    'holderjs', 'moment', 'jszip', 'pdfmake', '@knight-lab/timelinejs'
-];
+/* === PACKAGES -> Expunerea publică a pachetelor din `config/default.json::packages` === */
+let deps = config.get('packages');
 deps.forEach(dep => {
     app.use(`/${dep}`, express.static(path.resolve(`node_modules/${dep}`)));
 });

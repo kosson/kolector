@@ -1,5 +1,7 @@
 import {socket, pubComm, createBS5toast, deleteAllBS5toasts, createElement, check4url, decodeCharEntities, datasetToObject} from './main.mjs';
-import {AttachesToolPlus} from './uploader.mjs';
+import {AttachesToolPlus} from './uploader.mjs'; // Clasa extinde pe cea a pachetului `AttachesPlus` de la https://github.com/editor-js/attaches are trebuie să se încarce. Nu este un drop-in
+
+let page_location = document.location; // https://developer.mozilla.org/en-US/docs/Web/API/Location
 
 /* === VARIABILE NECESARE LA NIVEL DE MODUL ȘI MAI DEPARTE === */
 var uuid      = document.querySelector("meta[property='uuid']").getAttribute("content") || '',
@@ -279,6 +281,37 @@ const editorX = new EditorJS({
                 quotePlaceholder: 'Introdu citatul',
                 captionPlaceholder: 'Autorul citatului',
             }
+        },
+        code: editorjsCodeflask,
+        delimiter: Delimiter,
+        warning: {
+            class: Warning,
+            inlineToolbar: true,
+            shortcut: 'CMD+SHIFT+W',
+            config: {
+              titlePlaceholder: 'Title',
+              messagePlaceholder: 'Message',
+            }
+        },
+        alert: {
+            class: Alert,
+            inlineToolbar: true,
+            shortcut: 'CMD+SHIFT+A',
+            config: {
+              defaultType: 'primary',
+              messagePlaceholder: 'Enter something',
+            },
+        },
+        Marker: {
+            class: Marker,
+            shortcut: 'CMD+SHIFT+M',
+        },
+        link: {
+            class: LinkAutocomplete,
+            config: {
+              endpoint: `${page_location.origin}/`,
+              queryParam: 'search'
+            }
         }
     },
     i18n: {
@@ -334,7 +367,16 @@ const editorX = new EditorJS({
                 "moveDown": {
                     "Move down": "Mută mai jos"
                 }
-            }      
+            },
+            tools: {
+                LinkAutocomplete: {
+                    'Paste or search': 'Inserează sau caută',
+                    'Paste a link': 'Inserează un link',
+                    'Cannot process search request because of': 'Nu pot procesa cererea pentru că ',
+                    'Server responded with invalid data': 'Serverul a trimis date incorecte',
+                    'Link URL is invalid': 'URL-ul linkului nu este valid'
+                }
+            }
         }
     },
     onChange: changeContent

@@ -1,4 +1,5 @@
 require('dotenv').config();
+const config = require('config');
 
 /* === DEPENDINȚE === */
 const moment       = require('moment');
@@ -19,6 +20,14 @@ require('./cache.helper');
 const {clearHash} = require('./cache.helper');
 let cookieHelper  = require('./cookie2obj.helper');
 let {getStructure} = require('../../util/es7');
+
+
+// CONFIG - ASSETS
+let vendor_moment_js = config.get('vendor.moment.js'),                  // Adu-mi MOMENT (sursa js)
+    vendor_editor_js = config.get('vendor.editorjs.js'),                // Adu-mi EDITOR.JS (sursa ca modul)
+    vendor_editor_js_plugins = config.get('vendor.editorjs.plugins'),   // Adu-mi pluginurile Editor.js (sursele js ca module)
+    vendor_datatables_js = config.get('vendor.datatables.js'),          // Adu-mi DATATABLES (sursele js)
+    vendor_datatables_css = config.get('vendor.datatables.css');        // Adu-mi DATATABLES (sursele css)
 
 // INDECȘII ES7
 let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';
@@ -50,17 +59,13 @@ exports.loadRootResources = async function loadRootResources (req, res, next) {
     // Adu-mi ultimele 9 resursele validate în ordinea ultimei intrări.
     let resursePublice = Resursa.find({'expertCheck': 'true'}).sort({"date": -1}).limit(9);
 
-    // ===> SCRIPTURI
     let scripts = [       
-        // MOMENT.JS
-        {script: `moment/min/moment-with-locales.min.js`},
+        vendor_moment_js,
         // HOLDERJS
         {script: `holderjs/holder.min.js`}
     ];
-    // ===> MODULE
     let modules = [
         // LOCALE
-        // {module: `${gensettings.template}/js/redincredall.mjs`}
         {module: `${gensettings.template}/js/redincredallcursor.mjs`}
     ];
     // console.log(`Valorile dorite sunt `, RES_IDX_ES7, RES_IDX_ALS);
@@ -222,11 +227,7 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
     let gensettings = await Mgmtgeneral.findOne(filterMgmt);
 
     let scripts = [
-        // MOMENT.JS
-        {script: `moment/min/moment-with-locales.min.js`},
-        // HOLDER.JS
-        // {script: `${gensettings.template}/lib/npm/holder.min.js`},
-        // HELPER DETECT URLS or PATHS
+        vendor_moment_js,
         {script: `${gensettings.template}/js/check4url.js`},
         // DOWNLOADFILE
         {script: `${gensettings.template}/lib/downloadFile.js`},
@@ -235,23 +236,7 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
     ];
 
     let modules = [
-        // EDITOR.JS
-        {module: `${gensettings.template}/lib/editorjs/editor.js`},
-        {module: `${gensettings.template}/lib/editorjs/header.js`},
-        {module: `${gensettings.template}/lib/editorjs/paragraph.js`},
-        {module: `${gensettings.template}/lib/editorjs/checklist.js`},
-        {module: `${gensettings.template}/lib/editorjs/list.js`},
-        {module: `${gensettings.template}/lib/editorjs/image.js`},
-        {module: `${gensettings.template}/lib/editorjs/embed.js`},
-        {module: `${gensettings.template}/lib/editorjs/code.js`},
-        {module: `${gensettings.template}/lib/editorjs/quote.js`},
-        {module: `${gensettings.template}/lib/editorjs/inlinecode.js`},
-        {module: `${gensettings.template}/lib/editorjs/table.js`},
-        {module: `${gensettings.template}/lib/editorjs/attaches.js`},
-        {module: `${gensettings.template}/lib/editorjs/ajax.js`},
-
-        // MOTORUL FORM-ULUI
-        {module: `${gensettings.template}/js/custom.js`},
+        ...vendor_editor_js, ...vendor_editor_js_plugins,
         {module: `${gensettings.template}/js/uploader.mjs`},
         // LOCALE
         {module: `${gensettings.template}/js/cred-res.js`}           
@@ -355,8 +340,7 @@ exports.resourcesPool = async function resourcesPool (req, res, next) {
     let gensettings = await Mgmtgeneral.findOne(filterMgmt);
     // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
     let scripts = [
-        // MOMENT.JS
-        {script: `moment/min/moment-with-locales.min.js`},     
+        vendor_moment_js,     
         // HELPER DETECT URLS or PATHS
         {script: `${gensettings.template}/js/check4url.js`}
     ];
@@ -364,15 +348,6 @@ exports.resourcesPool = async function resourcesPool (req, res, next) {
     let modules = [
         // MOTORUL FORM-ULUI
         {module: `${gensettings.template}/js/custom.js`}      
-    ];
-
-    let styles = [
-        // FONTAWESOME
-        {style: `${gensettings.template}/lib/npm/all.min.css`},
-        // JQUERY TOAST
-        {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`},
-        // BOOTSTRAP
-        {style: `${gensettings.template}/lib/npm/bootstrap.min.css`}
     ];
 
     let data = {
@@ -394,7 +369,6 @@ exports.resourcesPool = async function resourcesPool (req, res, next) {
             user:    req.user,
             logoimg: `${gensettings.template}/${LOGO_IMG}`,
             csrfToken: req.csrfToken(),
-            styles,
             modules,
             scripts,
             data
@@ -408,7 +382,6 @@ exports.resourcesPool = async function resourcesPool (req, res, next) {
             user:      req.user,
             logoimg:   `${gensettings.template}/${LOGO_IMG}`,
             csrfToken: req.csrfToken(),
-            styles,
             modules,
             scripts,
             data
@@ -428,47 +401,20 @@ exports.describeRED = async function describeRED (req, res, next) {
     let uuid = crypto.randomUUID({disableEntropyCache : true});
     // console.log("Sesiunea de la /resurse/adaugă arată așa: ", req.session);
     // pentru evitarea dependințelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
-    let scripts = [
-        // DATATABLES
-        {script: `datatables.net/js/jquery.dataTables.min.js`},
-        {script: `datatables.net-dt/js/dataTables.dataTables.min.js`},
-        {script: `datatables.net-select-dt/js/select.dataTables.min.js`},
-        {script: `datatables.net-buttons-dt/js/buttons.dataTables.min.js`},
-        {script: `datatables.net-responsive-dt/js/responsive.dataTables.min.js`},      
+    let scripts = [    
         // HELPER DETECT URLS or PATHS
         {script: `${gensettings.template}/js/check4url.js`},
         // CUSTOM
         {script: `${gensettings.template}/js/custom.js`}        
     ];
-
     let modules = [
-        // EDITOR.JS
-        {module: `${gensettings.template}/lib/editorjs/editor.js`},
-        {module: `${gensettings.template}/lib/editorjs/header.js`},
-        {module: `${gensettings.template}/lib/editorjs/paragraph.js`},
-        {module: `${gensettings.template}/lib/editorjs/checklist.js`},
-        {module: `${gensettings.template}/lib/editorjs/list.js`},
-        {module: `${gensettings.template}/lib/editorjs/image.js`},
-        {module: `${gensettings.template}/lib/editorjs/embed.js`},
-        {module: `${gensettings.template}/lib/editorjs/code.js`},
-        {module: `${gensettings.template}/lib/editorjs/quote.js`},
-        {module: `${gensettings.template}/lib/editorjs/inlinecode.js`},
-        {module: `${gensettings.template}/lib/editorjs/table.js`},
-        {module: `${gensettings.template}/lib/editorjs/attaches.js`},
-        {module: `${gensettings.template}/lib/editorjs/ajax.js`},
-
+        ...vendor_editor_js, ...vendor_editor_js_plugins,
         // MOTORUL FORM-ULUI
-        {module: `${gensettings.template}/js/custom.js`},
         {module: `${gensettings.template}/js/uploader.mjs`},
         {module: `${gensettings.template}/js/form01adres.mjs`}        
     ];
 
-    let styles = [
-        {style: `/datatables.net-dt/css/jquery.dataTables.min.css`},
-        {style: `/datatables.net-buttons-dt/css/buttons.dataTables.min.css`},
-        {style: `/datatables.net-responsive-dt/css/responsive.dataTables.min.css`},
-        {style: `/datatables.net-select-dt/css/select.dataTables.min.css`}
-    ];
+    let styles = [];
 
     let data = {
         uuid: uuid,
@@ -545,58 +491,19 @@ exports.describeBFMonograph = async function describeBFMonograph (req, res, next
     // console.log("Sesiunea de la /resurse/adaugă arată așa: ", req.session);
     // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
     let scripts = [
-        // MOMENT.JS
-        {script: `${gensettings.template}/lib/npm/moment-with-locales.min.js`}, 
-        // FONTAWESOME
-        {script: `${gensettings.template}/lib/npm/all.min.js`},
-        // Bootstrap 4
-        {script: `${gensettings.template}/lib/npm/bootstrap.bundle.min.js`},
-        // Datatables
-        {script: `${gensettings.template}/lib/npm/jquery.dataTables.min.js`},
-        {script: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.js`},
-        {script: `${gensettings.template}/lib/npm/dataTables.select.min.js`},
-        {script: `${gensettings.template}/lib/npm/dataTables.buttons.min.js`},
-        {script: `${gensettings.template}/lib/npm/dataTables.responsive.min.js`},        
+        vendor_moment_js, ...vendor_datatables_js,      
         // HELPER DETECT URLS or PATHS
         {script: `${gensettings.template}/js/check4url.js`}
     ];
 
     let modules = [
-        // EDITOR.JS
-        {module: `${gensettings.template}/lib/editorjs/editor.js`},
-        {module: `${gensettings.template}/lib/editorjs/header.js`},
-        {module: `${gensettings.template}/lib/editorjs/paragraph.js`},
-        {module: `${gensettings.template}/lib/editorjs/checklist.js`},
-        {module: `${gensettings.template}/lib/editorjs/list.js`},
-        {module: `${gensettings.template}/lib/editorjs/image.js`},
-        {module: `${gensettings.template}/lib/editorjs/embed.js`},
-        {module: `${gensettings.template}/lib/editorjs/code.js`},
-        {module: `${gensettings.template}/lib/editorjs/quote.js`},
-        {module: `${gensettings.template}/lib/editorjs/inlinecode.js`},
-        {module: `${gensettings.template}/lib/editorjs/table.js`},
-        {module: `${gensettings.template}/lib/editorjs/attaches.js`},
-        {module: `${gensettings.template}/lib/editorjs/ajax.js`},
-
+        ...vendor_editor_js, ...vendor_editor_js_plugins,
         // MOTORUL FORM-ULUI
-        {module: `${gensettings.template}/js/custom.js`},
         {module: `${gensettings.template}/js/uploader.mjs`},
         {module: `${gensettings.template}/js/form02admonograph.mjs`}        
     ];
 
-    let styles = [
-        // FONTAWESOME
-        {style: `${gensettings.template}/lib/npm/all.min.css`},
-        // JQUERY TOAST
-        {style: `${gensettings.template}/lib/npm/jquery.toast.min.css`},
-        // BOOTSTRAP
-        {style: `${gensettings.template}/lib/npm/bootstrap.min.css`},
-        // DATATABLES
-        {style: `${gensettings.template}/lib/npm/jquery.dataTables.min.css`},
-        {style: `${gensettings.template}/lib/npm/buttons.dataTables.min.css`},
-        {style: `${gensettings.template}/lib/npm/dataTables.bootstrap4.min.css`},
-        {style: `${gensettings.template}/lib/npm/responsive.dataTables.min.css`},
-        {style: `${gensettings.template}/lib/npm/select.dataTables.min.css`}
-    ];
+    let styles = [...vendor_datatables_css];
 
     let data = {
         uuid: uuid,

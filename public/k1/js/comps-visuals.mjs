@@ -37,7 +37,8 @@ pubComm.on('allComps', (compets) => {
     //_ WORKING: Verifici dacă fiecare obiect are toate proprietățile. 
     let arrPropsNeeded = ['nume', 'ids', 'cod', 'activitati', 'disciplina', 'coddisc', 'nivel', 'nrREDuri'];
     compets.map(function clbkMapResult (obi) {
-        obi.dataRo = moment(obi.date).locale('ro').format('LLL');
+        // obi.dataRo = moment(obi.date).locale('ro').format('LLL');
+        obi.dataRo = obi.date;
         // verifică dacă toate proprietățile există. Dacă nu, adaugă-le cu valoarea zero
         let keys = Object.keys(obi),
             diff = arrPropsNeeded.filter(k => !keys.includes(k)),

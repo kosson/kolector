@@ -18,13 +18,16 @@ let editorJs2TXT  = require('./controllers/editorJs2TXT');
 let archiveRED    = require('./controllers/archiveRED');
 
 // CONFIG - ASSETS
-let vendor_datatables_js = config.get('vendor.datatables.js'); // Adu-mi DATATABLES (sursele js)
-let vendor_datatables_css = config.get('vendor.datatables.css'); // Adu-mi DATATABLES (sursele css)
-let vendor_moment_js = config.get('vendor.moment.js'); // Adu-mi MOMENT (sursa js)
-let vendor_jszip_js = config.get('vendor.jszip.js'); // Adu-mi jszip (sursa js)
-let vendor_pdfmake_js = config.get('vendor.pdfmake.js'); // Adu-mi sursele pdfmake (sursele js)
-let vendor_timeline_js = config.get('vendor.timeline.js'); // Adu-mi sursele timeline (sursele js)
-let vendor_timeline_css = config.get('vendor.timeline.css'); // Adu-mi sursele timeline (sursele css)
+let vendor_datatables_js = config.get('vendor.datatables.js'),   // Adu-mi DATATABLES (sursele js)
+    vendor_datatables_css = config.get('vendor.datatables.css'), // Adu-mi DATATABLES (sursele css)
+    vendor_moment_js = config.get('vendor.moment.js'),           // Adu-mi MOMENT (sursa js)
+    vendor_editor_js = config.get('vendor.editorjs.js'),                // Adu-mi EDITOR.JS (sursa ca modul)
+    vendor_editor_js_plugins = config.get('vendor.editorjs.plugins'),   // Adu-mi pluginurile Editor.js (sursele js ca module)
+    vendor_jszip_js = config.get('vendor.jszip.js'),             // Adu-mi jszip (sursa js)
+    vendor_pdfmake_js = config.get('vendor.pdfmake.js'),         // Adu-mi sursele pdfmake (sursele js)
+    vendor_timeline_js = config.get('vendor.timeline.js'),       // Adu-mi sursele timeline (sursele js)
+    vendor_timeline_css = config.get('vendor.timeline.css'),     // Adu-mi sursele timeline (sursele css)
+    vendor_gitgraph_js = config.get('vendor.gitgraph.js');
 
 // INDECȘII ES7
 let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';
@@ -184,9 +187,7 @@ router.get('/reds/:id', (req, res, next) => {
         let gensettings = await Mgmtgeneral.findOne(filterMgmt);
         // const editorJs2html = require('./controllers/editorJs2HTML');
         let scripts = [
-            // MOMENT.JS
             vendor_moment_js,
-            // {script: '/js/res-shown.js'},
             // HELPER DETECT URLS or PATHS
             {script: `${gensettings.template}/js/check4url.js`},
             // DOWNLOADFILE
@@ -194,26 +195,11 @@ router.get('/reds/:id', (req, res, next) => {
         ];
 
         let modules = [
-            // EDITOR.JS
-            {module: `${gensettings.template}/lib/editorjs/editor.js`},
-            {module: `${gensettings.template}/lib/editorjs/header.js`},
-            {module: `${gensettings.template}/lib/editorjs/paragraph.js`},
-            {module: `${gensettings.template}/lib/editorjs/checklist.js`},
-            {module: `${gensettings.template}/lib/editorjs/list.js`},
-            {module: `${gensettings.template}/lib/editorjs/image.js`},
-            {module: `${gensettings.template}/lib/editorjs/embed.js`},
-            {module: `${gensettings.template}/lib/editorjs/code.js`},
-            {module: `${gensettings.template}/lib/editorjs/quote.js`},
-            {module: `${gensettings.template}/lib/editorjs/inlinecode.js`},
-            {module: `${gensettings.template}/lib/editorjs/table.js`},
-            {module: `${gensettings.template}/lib/editorjs/attaches.js`},
-            {module: `${gensettings.template}/lib/editorjs/ajax.js`},
+            ...vendor_editor_js, ...vendor_editor_js_plugins, ...vendor_gitgraph_js,
             // MAIN
             {module: `${gensettings.template}/js/main.mjs`},
             // LOCALE
-            {module: `${gensettings.template}/js/redincredadmin.mjs`},
-            // GITGRAPH
-            {module: `${gensettings.template}/lib/gitgraph.umd.js`}
+            {module: `${gensettings.template}/js/redincredadmin.mjs`}            
         ];
     
         let styles = [];
@@ -392,8 +378,6 @@ router.get('/users', (req, res, next) => {
         /* === ADMIN === :: Dacă avem un admin, atunci oferă acces neîngrădit */
         if(req.session.passport.user.roles.admin){
             let modules = [
-                vendor_moment_js,
-                ...vendor_datatables_js,
                 // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
                 // LOCALE
@@ -402,7 +386,10 @@ router.get('/users', (req, res, next) => {
     
             let styles = [...vendor_datatables_css];
 
-            let scripts = [];
+            let scripts = [                
+                ...vendor_datatables_js,
+                vendor_jszip_js,
+                ...vendor_pdfmake_js];
     
             res.render(`users-data-visuals_${gensettings.template}`, {
                 template: `${gensettings.template}`,
@@ -502,8 +489,6 @@ router.get('/users/:id', (req, res, next) => {
     });
 });
 
-
-
 /* === /administrator/compets === */
 router.get('/compets', (req, res, next) => {
     async function clbkAdmCompets (req, res) {
@@ -514,7 +499,6 @@ router.get('/compets', (req, res, next) => {
         // DOAR ADMINISTRATORII VAD TOATE COMPETENȚELE SPECIFICE ODATĂ
         if(req.session.passport.user.roles.admin){
             let scripts = [
-                vendor_moment_js,
                 ...vendor_datatables_js,
                 vendor_jszip_js,
                 ...vendor_pdfmake_js

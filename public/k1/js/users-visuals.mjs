@@ -15,6 +15,17 @@ import {pubComm} from './main.mjs';
 //     console.log("Conectat: ", pubComm.connected, " cu id-ul: ", pubComm.id);
 //     pubComm.emit('testconn', 'test');
 // }, 2000);
+const date_options = {
+    dateStyle: 'short',
+    timeStyle: 'full',
+    hour12: true,
+    day: 'numeric',
+    month: 'long',
+    year: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+ };
+const rtf_ro = new Intl.RelativeTimeFormat('ro-RO', date_options);
 
 // Template-ul folosit
 let tmpl = document.getElementById('tmpl').value;
@@ -31,10 +42,11 @@ uResTbl.appendChild(divResurseTabelare);                   // append tabel la di
 pubComm.emit('allUsers');
 pubComm.on('allUsers', (resurse) => {
     let newResultArr = []; // noul array al obiectelor resursă
-
+    
     // reformatează câmpuri din fiecare obiect resursă
     resurse.map(function clbkMapResult (obi) {
-        obi.dataRo = moment(obi.created).locale('ro').format('LLL');
+        // obi.dataRo = rtf_ro.format(Date.parse(obi.created), 'day');
+        obi.dataRo = obi.created;
         // în cazul în care nu ai conturi google, injectează obiectul profilului în datele care nu-l au
         if (obi.hasOwnProperty('googleProfile') === false) {
             obi.googleProfile = {
@@ -48,7 +60,7 @@ pubComm.on('allUsers', (resurse) => {
 
     // https://stackoverflow.com/questions/55647364/datatables-columns-columndefs-and-rowcallback-html5-initialisation
     // https://datatables.net/manual/data/orthogonal-data
-    var table = $('.userResTbl').DataTable({
+    $('.userResTbl').DataTable({
         responsive: true,
         data: newResultArr,
         order: [[ 2, "desc" ]],
