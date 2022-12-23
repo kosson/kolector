@@ -2,7 +2,6 @@ require('dotenv').config();
 const config = require('config');
 
 /* === DEPENDINȚE === */
-const moment       = require('moment');
 const crypto       = require('crypto');
 const logger       = require('../../util/logger');
 /* === LIVRESQ - CONNECTOR === */
@@ -23,8 +22,7 @@ let {getStructure} = require('../../util/es7');
 
 
 // CONFIG - ASSETS
-let vendor_moment_js = config.get('vendor.moment.js'),                  // Adu-mi MOMENT (sursa js)
-    vendor_editor_js = config.get('vendor.editorjs.js'),                // Adu-mi EDITOR.JS (sursa ca modul)
+let vendor_editor_js = config.get('vendor.editorjs.js'),                // Adu-mi EDITOR.JS (sursa ca modul)
     vendor_editor_js_plugins = config.get('vendor.editorjs.plugins'),   // Adu-mi pluginurile Editor.js (sursele js ca module)
     vendor_datatables_js = config.get('vendor.datatables.js'),          // Adu-mi DATATABLES (sursele js)
     vendor_datatables_css = config.get('vendor.datatables.css');        // Adu-mi DATATABLES (sursele css)

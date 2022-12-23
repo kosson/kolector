@@ -31,7 +31,6 @@ pubComm.emit('usrRes', user_id); // emite cerere de date
 pubComm.on('usrRes', (resurse) => {    
     let newResultArr = []; // noul array al obiectelor resursă
     resurse.map(function clbkMapResult (obi) {
-        obi.dataRo = moment(obi.date).locale('ro').format('LLL');
         newResultArr.push(obi);
     });
 
@@ -46,11 +45,11 @@ pubComm.on('usrRes', (resurse) => {
             {
                 title: 'Data',
                 data: {
-                    _: 'dataRo',
+                    _: 'date',
                     sort: 'date'
                 },
                 render: function clbkTimeFormat (data, type, row) {
-                    return `<p>${data}</p>`;
+                    return `<p>${new Intl.DateTimeFormat('ro-RO', { dateStyle: 'full', timeStyle: 'long', timeZone: 'Europe/Bucharest' }).format(Date.parse(data))}</p>`;
                 }
             },
             {

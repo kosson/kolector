@@ -1,8 +1,8 @@
 require('dotenv').config();
+const config      = require('config');
 /* === DEPENDINȚE === */
 const express     = require('express');
 const router      = express.Router();
-const moment      = require('moment');
 const path        = require('path');
 const logger      = require('../util/logger');
 const redisClient = require('../redis.config');
@@ -40,13 +40,16 @@ getStructure().then((val) => {
 // LOGO
 let LOGO_IMG = "img/" + process.env.LOGO;
 
-// console.log(`calea formată este `, path.join(__dirname, `../node_modules/datatables.net`)); 
-// /home/nicolaie/Desktop/DEVELOPMENT/redcolectorcolab/redcolector/node_modules/datatables.net
-
-// router.use(depsLoader);
-// let serveIndex = require('serve-index');
-// router.use(path.join(__dirname, `../node_modules/datatables.net`), serveIndex('files', {icons: true}));
-// router.use(express.static(path.join(__dirname, `../node_modules/datatables.net`)));
+// CONFIG - ASSETS
+let vendor_datatables_js = config.get('vendor.datatables.js'),   // Adu-mi DATATABLES (sursele js)
+    vendor_datatables_css = config.get('vendor.datatables.css'), // Adu-mi DATATABLES (sursele css)
+    vendor_editor_js = config.get('vendor.editorjs.js'),                // Adu-mi EDITOR.JS (sursa ca modul)
+    vendor_editor_js_plugins = config.get('vendor.editorjs.plugins'),   // Adu-mi pluginurile Editor.js (sursele js ca module)
+    vendor_jszip_js = config.get('vendor.jszip.js'),             // Adu-mi jszip (sursa js)
+    vendor_pdfmake_js = config.get('vendor.pdfmake.js'),         // Adu-mi sursele pdfmake (sursele js)
+    vendor_timeline_js = config.get('vendor.timeline.js'),       // Adu-mi sursele timeline (sursele js)
+    vendor_timeline_css = config.get('vendor.timeline.css'),     // Adu-mi sursele timeline (sursele css)
+    vendor_gitgraph_js = config.get('vendor.gitgraph.js');
 
 
 /* === PROFILUL PROPRIU === */
@@ -82,26 +85,13 @@ router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), (req, res, next) => {
     
         /* === RESURSELE NECESARE LA RANDARE === */
         let scripts = [       
-            // MOMENT.JS
-            {script: `moment/min/moment-with-locales.min.js`},
-            // HOLDERJS
-            {script: `holderjs/holder.min.js`},
-            // LOCAL
-            //{script: '/js/form02log.js`},
-            // DATATABLES
-            {script: `datatables.net/js/jquery.dataTables.min.js`},
-            {script: `datatables.net-dt/js/dataTables.dataTables.min.js`},
-            {script: `datatables.net-select-dt/js/select.dataTables.min.js`},
-            {script: `datatables.net-buttons-dt/js/buttons.dataTables.min.js`},
-            {script: `datatables.net-responsive-dt/js/responsive.dataTables.min.js`},
-            // TIMELINE 3
-            {script: `${gensettings.template}/lib/timeline3/js/timeline.js`}            
+            ...vendor_datatables_js,
+            ...vendor_timeline_js
         ];
     
         let styles = [
-            {style: `datatables.net-responsive-dt/css/responsive.dataTables.min.css`},
-            {style: `datatables.net-dt/css/jquery.dataTables.min.css`},
-            {style: `datatables.net-select-dt/css/select.dataTables.min.css`}
+            ...vendor_datatables_css, 
+            ...vendor_timeline_css
         ];
     
         let modules = [
@@ -122,7 +112,6 @@ router.get('/resurse', makeSureLoggedIn.ensureLoggedIn(), (req, res, next) => {
         function clbkMapResult (obi) {
             const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
             // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
-            newObi.dataRo = moment(obi.date).locale('ro').format('LLL');
             // introdu template-ul ca proprietare (necesar stabilirii de linkuri corecte in fiecare element afișat în client)
             newObi.template = `${gensettings.template}`;
             newObi.logo = `${gensettings.template}/${LOGO_IMG}`;
@@ -204,26 +193,13 @@ router.get('/logs', makeSureLoggedIn.ensureLoggedIn(), (req, res, next) => {
     
         /* === RESURSELE NECESARE LA RANDARE === */
         let scripts = [       
-            // MOMENT.JS
-            {script: `moment/min/moment-with-locales.min.js`},
-            // HOLDERJS
-            {script: `holderjs/holder.min.js`},
-            // LOCAL
-            //{script: '/js/form02log.js`},
-            // DATATABLES
-            {script: `datatables.net/js/jquery.dataTables.min.js`},
-            {script: `datatables.net-dt/js/dataTables.dataTables.min.js`},
-            {script: `datatables.net-select-dt/js/select.dataTables.min.js`},
-            {script: `datatables.net-buttons-dt/js/buttons.dataTables.min.js`},
-            {script: `datatables.net-responsive-dt/js/responsive.dataTables.min.js`},
-            // TIMELINE 3
-            {script: `${gensettings.template}/lib/timeline3/js/timeline.js`}            
+            ...vendor_datatables_js,
+            ...vendor_timeline_js
         ];
     
         let styles = [
-            {style: `datatables.net-responsive-dt/css/responsive.dataTables.min.css`},
-            {style: `datatables.net-dt/css/jquery.dataTables.min.css`},
-            {style: `datatables.net-select-dt/css/select.dataTables.min.css`}
+            ...vendor_datatables_css, 
+            ...vendor_timeline_css
         ];
     
         let modules = [
@@ -242,7 +218,6 @@ router.get('/logs', makeSureLoggedIn.ensureLoggedIn(), (req, res, next) => {
         function clbkMapResult (obi) {
             const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
             // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
-            newObi.dataRo = moment(obi.date).locale('ro').format('LLL');
             // introdu template-ul ca proprietare (necesar stabilirii de linkuri corecte in fiecare element afișat în client)
             newObi.template = `${gensettings.template}`;
             // newResultArr.push(newObi);
@@ -304,27 +279,14 @@ async function clbkProfResID (req, res, next) {
     // Adu înregistrarea resursei cu toate câmpurile referință populate deja
     // const editorJs2html = require('./controllers/editorJs2HTML');
     let scripts = [
-        // MOMENT.JS
-        {script: `moment/min/moment-with-locales.min.js`},
+        ...vendor_timeline_js,
         // DOWNLOADFILE
         {script: `${gensettings.template}/lib/downloadFile.js`}
     ];
 
     let modules = [
-        // EDITOR.JS
-        {module: `${gensettings.template}/lib/editorjs/editor.js`},
-        {module: `${gensettings.template}/lib/editorjs/header.js`},
-        {module: `${gensettings.template}/lib/editorjs/paragraph.js`},
-        {module: `${gensettings.template}/lib/editorjs/checklist.js`},
-        {module: `${gensettings.template}/lib/editorjs/list.js`},
-        {module: `${gensettings.template}/lib/editorjs/image.js`},
-        {module: `${gensettings.template}/lib/editorjs/embed.js`},
-        {module: `${gensettings.template}/lib/editorjs/code.js`},
-        {module: `${gensettings.template}/lib/editorjs/quote.js`},
-        {module: `${gensettings.template}/lib/editorjs/inlinecode.js`},
-        {module: `${gensettings.template}/lib/editorjs/table.js`},
-        {module: `${gensettings.template}/lib/editorjs/attaches.js`},
-        {module: `${gensettings.template}/lib/editorjs/ajax.js`},
+        ...vendor_editor_js,
+        ...vendor_editor_js_plugins,
         // MAIN
         {module: `${gensettings.template}/js/main.mjs`},
         // REEDIT RES
@@ -332,6 +294,8 @@ async function clbkProfResID (req, res, next) {
         // GITGRAPH
         {module: `${gensettings.template}/lib/gitgraph.umd.js`}
     ];
+
+    let styles = [ ...vendor_timeline_css ];
 
     let roles = ["user", "cred", "validator"];// userul poate fi unul din roluri
     let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles);
@@ -352,8 +316,7 @@ async function clbkProfResID (req, res, next) {
             // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
             obi.editorContent = JSON.stringify(resursa);
 
-            // resursa._doc.content = editorJs2html(resursa.content);
-            obi.dataRo = moment(obi.date).locale('ro').format('LLL');   // formatarea datei pentru limba română.            
+            // resursa._doc.content = editorJs2html(resursa.content); 
 
             // Array-ul activităților modificat
             obi.activitati = obi.activitati.map((elem) => {
@@ -467,7 +430,8 @@ async function clbkProfResID (req, res, next) {
                 csrfToken: req.csrfToken(),
                 resursa,
                 scripts,
-                modules
+                modules,
+                styles
             });
         /* === VALIDATOR === */
         } else if (confirmedRoles.includes('validator')) {
@@ -499,7 +463,8 @@ async function clbkProfResID (req, res, next) {
                 csrfToken: req.csrfToken(),
                 resursa,
                 scripts,
-                modules
+                modules,
+                styles
             });
         /* === NU FACI PARTE DIN CRED === */
         } else {

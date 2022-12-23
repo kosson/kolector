@@ -31,7 +31,6 @@ pubComm.on('allRes', (resurse) => {
     // console.log('[res-visuals.js] resursele aduse sunt ', resurse);
     let newResultArr = []; // noul array al obiectelor resursă
     resurse.map(function clbkMapResult (obi) {
-        obi.dataRo = moment(obi.date).locale('ro').format('LLL');
         newResultArr.push(obi);
     });
     // RANDEAZĂ TABELUL
@@ -45,11 +44,11 @@ pubComm.on('allRes', (resurse) => {
             {
                 title: 'Data',
                 data: {
-                    _: 'dataRo',
+                    _: 'date',
                     sort: 'date'
                 },
                 render: function clbkTimeFormat (data, type, row) {
-                    return `<p>${data}</p>`;
+                    return `<p>${new Intl.DateTimeFormat('ro-RO', { dateStyle: 'full', timeStyle: 'long', timeZone: 'Europe/Bucharest' }).format(Date.parse(data))}</p>`;
                 }
             },
             {

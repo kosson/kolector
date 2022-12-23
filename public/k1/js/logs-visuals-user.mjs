@@ -31,7 +31,6 @@ pubComm.emit('usrLog', user_id); // emite cerere de date
 pubComm.on('usrLog', (resurse) => {    
     let newResultArr = []; // noul array al obiectelor resursă
     resurse.map(function clbkMapResult (obi) {
-        obi.dataRo = moment(obi.date).locale('ro').format('LLL');
         if(!obi?.title) {
             obi['title'] = 'Fără titlu';
         } 
@@ -48,11 +47,11 @@ pubComm.on('usrLog', (resurse) => {
             {
                 title: 'Data',
                 data: {
-                    _: 'dataRo',
+                    _: 'date',
                     sort: 'date'
                 },
                 render: function clbkTimeFormat (data, type, row) {
-                    return `<p>${data}</p>`;
+                    return `<p>${new Intl.DateTimeFormat('ro-RO', { dateStyle: 'full', timeStyle: 'long', timeZone: 'Europe/Bucharest' }).format(Date.parse(data))}</p>`;
                 }
             },
             {

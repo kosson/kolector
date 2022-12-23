@@ -80,15 +80,6 @@ pubComm.on('allComps', (compets) => {
         ],
         columns: [
             {
-                title: 'Introdus la',
-                data: {
-                    _: 'dataRo'
-                },
-                render: function clbkTimeFormat (data, type, row) {
-                    return `<p>${data}</p>`;
-                }
-            },
-            {
                 title: 'Accesează',
                 data: '_id',
                 render: function clbkId (data, type, row) {

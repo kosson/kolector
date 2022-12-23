@@ -2,7 +2,6 @@ require('dotenv').config();
 const config      = require('config');
 const redisClient = require('../redis.config');
 const esClient    = require('../elasticsearch.config');
-const moment      = require('moment');
 const express     = require('express');
 const router      = express.Router({mergeParams: true});
 const Resursa     = require('../models/resursa-red');
@@ -20,7 +19,6 @@ let archiveRED    = require('./controllers/archiveRED');
 // CONFIG - ASSETS
 let vendor_datatables_js = config.get('vendor.datatables.js'),   // Adu-mi DATATABLES (sursele js)
     vendor_datatables_css = config.get('vendor.datatables.css'), // Adu-mi DATATABLES (sursele css)
-    vendor_moment_js = config.get('vendor.moment.js'),           // Adu-mi MOMENT (sursa js)
     vendor_editor_js = config.get('vendor.editorjs.js'),                // Adu-mi EDITOR.JS (sursa ca modul)
     vendor_editor_js_plugins = config.get('vendor.editorjs.plugins'),   // Adu-mi pluginurile Editor.js (sursele js ca module)
     vendor_jszip_js = config.get('vendor.jszip.js'),             // Adu-mi jszip (sursa js)
@@ -65,7 +63,6 @@ router.get('/', (req, res, next) => {
             // === SCRIPTURI și STILURI COMUNE ===
             let scripts = [
                 ...vendor_timeline_js,
-                vendor_moment_js,
                 ...vendor_datatables_js,
                 vendor_jszip_js,
                 ...vendor_pdfmake_js,  
@@ -95,7 +92,6 @@ router.get('/', (req, res, next) => {
         } else if (confirmedRoles.includes('validator')) {
             let scripts = [    
                 ...vendor_timeline_js,
-                vendor_moment_js,
                 ...vendor_datatables_js,
                 vendor_jszip_js,
                 ...vendor_pdfmake_js,  
@@ -142,7 +138,6 @@ router.get('/reds', (req, res, next) => {
 
             let scripts = [       
                 ...vendor_timeline_js,
-                vendor_moment_js,
                 ...vendor_datatables_js,
                 vendor_jszip_js,
                 ...vendor_pdfmake_js,  
@@ -431,7 +426,6 @@ router.get('/users/:id', (req, res, next) => {
         if(req.session.passport.user.roles.admin){
             let scripts = [       
                 ...vendor_timeline_js,
-                vendor_moment_js,
                 ...vendor_datatables_js,
                 vendor_jszip_js,
                 ...vendor_pdfmake_js,  
@@ -457,7 +451,6 @@ router.get('/users/:id', (req, res, next) => {
         // Dacă ai un validator, oferă aceleași drepturi precum administratorului, dar fără posibilitatea de a trimite în public
         } else if (confirmedRoles.includes('validator')) {
             let scripts = [ 
-                vendor_moment_js,
                 ...vendor_datatables_js,
                 vendor_jszip_js,
                 ...vendor_pdfmake_js,
@@ -546,7 +539,6 @@ router.get('/compets/new', (req, res, next) => {
                 {module: `${gensettings.template}/js/comp-id.mjs`}
             ];
             let scripts = [
-                vendor_moment_js,
                 ...vendor_datatables_js,
                 vendor_jszip_js,
                 ...vendor_pdfmake_js
@@ -584,7 +576,6 @@ router.get('/compets/:id', (req, res, next) => {
         // DOAR ADMINISTRATORII VAD COMPETENȚA SPECIFICĂ
         if (req.session.passport.user.roles.admin) {
             let modules = [
-                vendor_moment_js,
                 ...vendor_datatables_js,
                 // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
@@ -709,7 +700,6 @@ router.get('/import/red', (req, res, next) => {
             ];
     
             let modules = [
-                vendor_moment_js,
                 ...vendor_datatables_js,
                 // MAIN
                 {module: `${gensettings.template}/js/main.mjs`},
