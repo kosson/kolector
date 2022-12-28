@@ -4,8 +4,6 @@ const config = require('config');
 /* === DEPENDINȚE === */
 const crypto       = require('crypto');
 const logger       = require('../../util/logger');
-/* === LIVRESQ - CONNECTOR === */
-const LivresqConnect = require('../../models/livresq-connect').LivresqConnect;
 
 /* === MODELE === */
 const Resursa     = require('../../models/resursa-red');        // Adu modelul resursei
@@ -431,10 +429,6 @@ exports.describeRED = async function describeRED (req, res, next) {
         let given_name =  '' || user.googleProfile?.given_name;
         let family_name = ''  || user.googleProfile?.family_name;
         
-        /* === LIVRESQ CONNECTOR === */
-        let url = new LivresqConnect().prepareProjectRequest(user.email, given_name, family_name);
-        if(!url.startsWith("http")) url = "#";
-
         // Dacă avem un admin, atunci oferă acces neîngrădit
         res.render(`add-red_${gensettings.template}`, {   
             template: `${gensettings.template}`,      
@@ -445,8 +439,7 @@ exports.describeRED = async function describeRED (req, res, next) {
             styles,
             modules,
             scripts,
-            data,
-            livresqProjectRequest: url /* === LIVRESQ CONNECTOR === */
+            data
         });
         // trimite informații despre user care sunt necesare formularului de încărcare pentru autocompletare
     } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
@@ -455,10 +448,6 @@ exports.describeRED = async function describeRED (req, res, next) {
         let given_name = '' || user.googleProfile?.given_name;
         let family_name = '' || user.googleProfile?.family_name;
         
-        /* === LIVRESQ CONNECTOR === */
-        let url = new LivresqConnect().prepareProjectRequest(user.email, given_name, family_name);
-        if(!url.startsWith("http")) url = "#";
-
         // res.render('adauga-res', {            
         //     title:     "Adauga",
         res.render(`add-red_${gensettings.template}`, {
@@ -470,8 +459,7 @@ exports.describeRED = async function describeRED (req, res, next) {
             styles,
             modules,
             scripts,
-            data,
-            livresqProjectRequest: url /* === LIVRESQ CONNECTOR === */
+            data
         });
     } else {
         res.redirect('/errors/403');
