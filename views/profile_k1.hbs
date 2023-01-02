@@ -3,21 +3,22 @@
 
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
 
-<div id="profile">
-    <fieldset>
-        <legend>Detalii profil</legend>       
-        <div id="profile-landing" class="container">
-            <h1>{{user.googleProfile.name}}</h1>
-            {{!-- <img src="{{user.googleProfile.picture}}" alt="Imaginea contului cu care utilizatorul s-a logat" width="50"> --}}
+<div id="profile" class="container">
+    <article id="profile-landing">
+        <header class="d-flex">
+            <img id="avatar" src="{{user.avatar}}" alt="avatar user" width="50">
+            <h1>Detalii profil {{user.name}}</h1>
+        </header>
+        <main>
             <p>ID: {{user._id}}</p>
             <p>Email: {{user.email}}</p>
             <p>Administrator: {{#if user.roles.admin}}confirmat{{else}}încă nu!{{/if}}</p>
             <p>Roluri: {{#each user.roles.rolInCRED}}<span class="badge badge-info"> {{this}}</span> {{/each}}</p>
             <p>Unități: {{#each user.roles.unit}}<span class="badge badge-info">{{this}}</span> {{/each}}</p>
             <p>Ecusoane: {{#each user.ecusoane}}<span class="badge badge-info">{{this}}</span> {{/each}}</p>
-            
-            <a href="/profile/resurse" class="btn btn-warning btn-lg active" role="button" aria-pressed="true">Resursele mele</a>
-            <a href="/profile/logs" class="btn btn-warning btn-lg active" role="button" aria-pressed="true">Articole</a>
-        </div>
-    </fieldset>
+            <p>Încarcă/schimbă o imagine de profil (jpg, png sau gif) <input type="file" onchange="uploadOneFile()" accept="image/x-png,image/gif,image/jpeg"></p>
+        </main>
+        <a href="/profile/resurse" class="btn btn-warning btn-lg active" role="button" aria-pressed="true">Resursele mele</a>
+        <a href="/profile/logs" class="btn btn-warning btn-lg active" role="button" aria-pressed="true">Articole</a>
+    </article>
 </div>

@@ -1,5 +1,17 @@
 {
     "initcollections": ["competentaspecificas", "things", "bodies", "mgmtgenerals"],
+    "logo": "repologo.png",
+    "defaultavatar": "karl-magnuson-85J99sGggnw-unsplash-small.jpg",
+    "roles": {
+        "admin": {"name": "admin"},
+        "default": "cred",
+        "units": {
+            "validator": {
+                "partof": ["default"],
+                "empoweredby": []
+            }
+        }
+    },
     "packages": [
         "socket-io", "socket.io-client", "socket.io-redis",
         "jquery", "jquery-toast-plugin", "bootstrap", "bootstrap-icons",
@@ -58,7 +70,11 @@
                 {"script": "datatables.net/js/jquery.dataTables.min.js"},
                 {"script": "datatables.net-dt/js/dataTables.dataTables.min.js"},
                 {"script": "datatables.net-select-dt/js/select.dataTables.min.js"},
+                {"script": "datatables.net-buttons/js/dataTables.buttons.min.js"},
+                {"script": "datatables.net-buttons/js/buttons.html5.min.js"},
+                {"script": "datatables.net-buttons/js/buttons.print.min.js"},
                 {"script": "datatables.net-buttons-dt/js/buttons.dataTables.min.js"},
+                {"script": "datatables.net-responsive/js/dataTables.responsive.min.js"},
                 {"script": "datatables.net-responsive-dt/js/responsive.dataTables.min.js"}
             ],
             "css": [

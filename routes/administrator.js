@@ -1,5 +1,6 @@
 require('dotenv').config();
 const config      = require('config');
+
 const redisClient = require('../redis.config');
 const esClient    = require('../elasticsearch.config');
 const express     = require('express');
@@ -144,6 +145,7 @@ router.get('/reds', (req, res, next) => {
             ];
 
             let modules = [
+                
                 {module: `${gensettings.template}/js/main.mjs`},
                 {module: `${gensettings.template}/js/res-visuals.mjs`}
             ];
@@ -182,7 +184,6 @@ router.get('/reds/:id', (req, res, next) => {
         let gensettings = await Mgmtgeneral.findOne(filterMgmt);
         // const editorJs2html = require('./controllers/editorJs2HTML');
         let scripts = [
-            vendor_moment_js,
             // HELPER DETECT URLS or PATHS
             {script: `${gensettings.template}/js/check4url.js`},
             // DOWNLOADFILE
@@ -381,10 +382,11 @@ router.get('/users', (req, res, next) => {
     
             let styles = [...vendor_datatables_css];
 
-            let scripts = [                
+            let scripts = [
                 ...vendor_datatables_js,
                 vendor_jszip_js,
-                ...vendor_pdfmake_js];
+                ...vendor_pdfmake_js
+            ];
     
             res.render(`users-data-visuals_${gensettings.template}`, {
                 template: `${gensettings.template}`,
@@ -656,7 +658,7 @@ router.get('/import', (req, res, next) => {
         let gensettings = await Mgmtgeneral.findOne(filterMgmt);
         // DOAR ADMINISTRATORII VAD TOATE COMPETENȚELE SPECIFICE ODATĂ
         if(req.session.passport.user.roles.admin){
-            let scripts = [vendor_moment_js];
+            let scripts = [];
     
             let modules = [
                 {module: `${gensettings.template}/js/main.mjs`}

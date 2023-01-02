@@ -1,5 +1,11 @@
+require('dotenv').config();
+const config   = require('config');
+
 const User     = require('../../models/user');
 const mongoose = require('mongoose');
+
+let roles = config.get('roles.admin.name'),
+    defaultavatar = config.get('defaultavatar');
 
 /**
  * Funcția `googleStrategy` are rolul de a crea înregistrările de utilizatori în MongoDB și de a trimite spre indexare lui Elasticsearch obiectul document creat.
@@ -40,7 +46,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
     if (profile.googleProfile) {
         record.avatar = profile.googleProfile.picture;
     } else {
-        record.avatar = '';
+        record.avatar = defaultavatar;
     }
 
     /* === Crearea primului utilizator [admin] === */
@@ -61,6 +67,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
             record.roles.rolInCRED.push('cred');  // introdu rolul de user cred în array-ul rolurilor
             record.roles.unit.push('global');     // unitatea este necesară pentru a face segregări ulterioare în funcție de apartenența la o unitate orice ar însemna aceasta
             record.roles.admin = true;
+            record.avatar = defaultavatar;
 
             // Constituie documentul Mongoose pentru modelul `UserModel`.
             const userObj = new userModel(record);
@@ -97,6 +104,7 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
                     record.roles.admin = false;
                     // TODO: Elaborează pe conceptul de grupuri, subgrupe, relație formatori-curs-formabili
                     record.roles.unit.push('global'); // unitatea este necesară pentru a face segregări ulterioare în funcție de apartenența la o unitate orice ar însemna aceasta
+                    record.avatar = defaultavatar;
                     
                     // constituie documentul în baza modelului `UserModel` și salvează-l în bază. Atenție, va fi indexat și în Elasticsearch (vezi middleware `save` pe `post`).
                     const newUserObj = new userModel(record);

@@ -44,28 +44,37 @@ pubComm.on('allUsers', (resurse) => {
     let newResultArr = []; // noul array al obiectelor resursă
     
     // reformatează câmpuri din fiecare obiect resursă
-    resurse.map(function clbkMapResult (obi) {
+    resurse.map(async function clbkMapResult (obi) {
         // obi.dataRo = rtf_ro.format(Date.parse(obi.created), 'day');
-        obi.dataRo = obi.created;
+        obi.data = obi.created ? obi.created : new Date(Date.now()).toISOString();
         // în cazul în care nu ai conturi google, injectează obiectul profilului în datele care nu-l au
-        if (obi.hasOwnProperty('googleProfile') === false) {
-            obi.googleProfile = {
-                picture: `/${tmpl}/img/karl-magnuson-85J99sGggnw-unsplash-small.jpg`,
-                // Sursa: https://unsplash.com/photos/85J99sGggnw
-                name: obi.username 
-            };
-        }
+        obi.avatar = obi?.googleProfile?.picture ?? `/${tmpl}/img/karl-magnuson-85J99sGggnw-unsplash-small.jpg`;
+        obi.name = obi?.googleProfile?.name ?? obi.email;
         newResultArr.push(obi);
     });
+
+    // console.log(`[user-visuals.mjs] are următoarea structură: ${JSON.stringify(newResultArr)}`);
 
     // https://stackoverflow.com/questions/55647364/datatables-columns-columndefs-and-rowcallback-html5-initialisation
     // https://datatables.net/manual/data/orthogonal-data
     $('.userResTbl').DataTable({
+        processing: true,
         responsive: true,
         data: newResultArr,
-        order: [[ 2, "desc" ]],
         ordering: true,
         info: true,
+        lengthChange: true,
+        autofill: true,
+        select: true,
+        length: 10,
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'copy',
+                text: 'Copy to clipboard'
+            }, 
+            'csv', 'excel', 'pdf', 'print'
+        ],
         columnDefs: [
             {
                 "targets": 0,
@@ -79,10 +88,17 @@ pubComm.on('allUsers', (resurse) => {
             }
         ],
         columns: [
+            {
+                title: 'Data',
+                data: 'data',
+                render: function clbkTimeFormat (data, type, row) {
+                    return `<p>${new Intl.DateTimeFormat('ro-RO', { dateStyle: 'full', timeStyle: 'long', timeZone: 'Europe/Bucharest' }).format(Date.parse(data))}</p>`;
+                }
+            },
             {   
                 title: 'Avatar',
                 // data: null
-                data: 'googleProfile.picture',
+                data: 'avatar',
                 render: function clbkGPic (data, type, set) {
                     return `<img src="${data}" class="img-fluid rounded-circle" height="80" width="80">`;
                 }
@@ -92,16 +108,6 @@ pubComm.on('allUsers', (resurse) => {
                 data: '_id',
                 render: function clbkId (data, type, row) {
                     return `<a href="/administrator/users/${data}" role="button" title="${data}" class="btn btn-primary btn-sm btn-block">Detalii</a>`;
-                }
-            },
-            {
-                title: 'Data',
-                data: {
-                    _: 'dataRo',
-                    sort: 'created'
-                },
-                render: function clbkTimeFormat (data, type, row) {
-                    return `<p>${data}</p>`;
                 }
             },
             {
@@ -125,7 +131,7 @@ pubComm.on('allUsers', (resurse) => {
             },
             {
                 title: 'Nume',
-                "data": "googleProfile.name",
+                "data": "name",
                 // "data": null,
                 "className": "dt-name",
                 "defaultContent": "",
@@ -157,15 +163,6 @@ pubComm.on('allUsers', (resurse) => {
                 //     }
                 // }
             }
-        ],
-        autofill: true,
-        select: true,
-        length: 10,
-    
-        /*exporting */
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf'
         ],
         language: {
             "sProcessing":   "Procesează...",

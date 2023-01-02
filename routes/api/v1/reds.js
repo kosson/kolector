@@ -1,17 +1,17 @@
 require('dotenv').config();
 const mongoose      = require('mongoose');
 const jwt           = require('jsonwebtoken');
-const RedModel      = require('../../models/resursa-red');
+const RedModel      = require('../../../models/resursa-red');
 const passport      = require('passport');
 const localStrategy = require('passport-local').Strategy;
-const User          = require('../../models/user');
-const {clbkLogin}   = require('../authLocal/authL');
-const logger        = require('../../util/logger');
+const User          = require('../../../models/user');
+const {clbkLogin}   = require('../../authLocal/authL');
+const logger        = require('../../../util/logger');
 
 // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
-let checkRole = require('../controllers/checkRole.helper');
+let checkRole = require('../../controllers/checkRole.helper');
 // Cere wrapper-ul de tratare a funcțiilor async
-let asyncHandler = require('../utils/async_helper');
+let asyncHandler = require('../../utils/async_helper');
 
 // @desc   adu-mi toate RED-urile
 // @route  GET /api/v1/getREDs
@@ -218,7 +218,7 @@ exports.currentUser = function currentUser (req, res, next) {
 // _FIXME: Creează logica pentru refresh token (https://www.youtube.com/watch?v=mbsmsi7l3r4)
 
 // Utilitarele pentru validarea parolei și emiterea JWT-ul!
-let {issueJWT, validPassword} = require('../utils/password');
+let {issueJWT, validPassword} = require('../../utils/password');
 
 // @desc Loghează userul
 // @route POST /api/v1/user/login

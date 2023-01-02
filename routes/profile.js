@@ -58,12 +58,20 @@ async function clbkProfile (req, res) {
     let filterMgmt = {focus: 'general'};
     let gensettings = await Mgmtgeneral.findOne(filterMgmt);
 
+    scripts = [{script: `${gensettings.template}/js/profile-root.js`}];
+
+    let modules = [
+        
+    ];
+
     res.render(`profile_${gensettings.template}`, {
         template:     `${gensettings.template}`,
         title:        "Profil",
         user:         req.user,
         logoimg:      `${gensettings.template}/${LOGO_IMG}`,
         csrfToken:    req.csrfToken(),
+        scripts,
+        modules,
         activePrfLnk: true
     });
 };

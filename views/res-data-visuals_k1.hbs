@@ -1,5 +1,5 @@
 {{!< k1/layout}}
-{{> nav-administrator}}
+{{> nav-administrator_k1}}
 {{!-- {{> messages}} --}}
 <input type="hidden" name="_csrf" value="{{this.csrfToken}}">
 
@@ -14,7 +14,7 @@
 
 {{!-- Tabelul resurselor personale --}}
 <template id="userResTbl" data-sort='[[ 0, "asc" ]]'>
-    <div id="resurseTab" class=""></div>
+    <div id="resurseTab" class="table table-striped"></div>
 </template>
 
 {{#each scripts}}

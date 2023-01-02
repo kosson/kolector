@@ -6,12 +6,16 @@ const passport= require('passport');
 require('./controllers/user.ctrl')(passport); // încarcă strategiile
 
 // Cere gestionarul pentru versiunea 1
-let {getREDs, getRED, postRED, putRED, delRED, currentUser, loginUser} = require('./api/v1');
+let {currentUser, loginUser, postAvatar} = require('./api/v1/users');
+let {getREDs, getRED, postRED, putRED, delRED} = require('./api/v1/reds');
 
+// USER
 router
     .get('/user/current', passport.authenticate('jwt', {session: false}), currentUser)
-    .post('/user/login', passport.authenticate('local'), loginUser);
+    .post('/user/login', passport.authenticate('local'), loginUser)
+    .post('/user/avatar', postAvatar);
 
+// REDS
 router
     .route('/')
     .get(getREDs)

@@ -36,10 +36,20 @@ pubComm.on('allRes', (resurse) => {
     // RANDEAZĂ TABELUL
     // https://datatables.net/manual/data/orthogonal-data
     $('.userResTbl').DataTable({
+        processing: true,
         responsive: true,
         data: newResultArr,
         ordering: true,
         info: true,
+        lengthChange: true,
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'copy',
+                text: 'Copy to clipboard'
+            }, 
+            'csv', 'excel', 'pdf', 'print'
+        ],
         columns: [
             {
                 title: 'Data',
