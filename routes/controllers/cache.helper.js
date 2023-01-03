@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const util = require('util');
 const redisClient = require('../../redis.config');
 
 // fă o referință către funcția originală

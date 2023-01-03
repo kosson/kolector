@@ -1,15 +1,11 @@
 require('dotenv').config();
+const config = require('config');
 const mongoose      = require('mongoose');
-const jwt           = require('jsonwebtoken');
 const RedModel      = require('../../../models/resursa-red');
-const passport      = require('passport');
-const localStrategy = require('passport-local').Strategy;
 const User          = require('../../../models/user');
 const {clbkLogin}   = require('../../authLocal/authL');
 const logger        = require('../../../util/logger');
 
-// Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
-let checkRole = require('../../controllers/checkRole.helper');
 // Cere wrapper-ul de tratare a funcțiilor async
 let asyncHandler = require('../../utils/async_helper');
 
@@ -17,79 +13,87 @@ let asyncHandler = require('../../utils/async_helper');
 // @route  GET /api/v1/getREDs
 // @acces  privat
 exports.getREDs = asyncHandler(async function getREDs (req, res, next) {
-        // ACL
-        let roles = ["user", "validator", "cred"];
+  // ACL
+  let roles = ["user", "validator", "cred"];
 
-        // poți pune în parametrii query criterii de rafinare a rezultatelor,
-        // de ex: /resurse?accesari[lte]=100 sau ?accesari[gt]=10 sau ?accesari[gt]=10& sau ?accesari[gt]=10&util=true
-        // sau poți introduce câmpurile necesare unui select, precum în ?accesari[gt]=10&util=true&select=nume,varsta
-        let query;
-        const reqQuery = {...req.query}; // constituie o copie a obiectului pentru a putea face prelucrări / cereri de filtrare complexe
-        // câmpuri pentru excluderea din rezultat -> sunt părți din query string care sunt folosite pentru rafinarea interogării
-        const removeFields = ['select', 'sort', 'page', 'limit']; // uneori este necesara să pasezi parametri care să nu intre în rezultatul de căutare, dar necesari pentru filtrare folosind mongoose (query.select).
-        // Ia rând pe rând din array-ul câmpurilor pentru excludere și șterge-le din obiectul req.params
-        removeFields.forEach(param => delete reqQuery[param]);
+  // poți pune în parametrii query criterii de rafinare a rezultatelor,
+  // de ex: /resurse?accesari[lte]=100 sau ?accesari[gt]=10 sau ?accesari[gt]=10& sau ?accesari[gt]=10&util=true
+  // sau poți introduce câmpurile necesare unui select, precum în ?accesari[gt]=10&util=true&select=nume,varsta
 
-        let queryStr = JSON.stringify(reqQuery); // transformă obiectul în text.
-        // crearea operatorilor de lucru pentru MongoDB.
+  const reqQuery = {...req.query}; // constituie o copie shallow a obiectului pentru a putea face prelucrări / cereri de filtrare complexe
+  // console.log(`[api/v1/reds.js] req.query este `, JSON.stringify(reqQuery));
 
-        queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`); //întoarce operatorul cu un $ în față necesar query-urilor MongoDB.
-        // căutarea resurselor
-        query = RedModel.find(JSON.parse(queryStr)); // trasformă înapoi în obiect
+  // câmpuri pentru excluderea din rezultat -> sunt părți din query string care sunt folosite pentru rafinarea interogării
+  const removeFields = ['select', 'sort', 'page', 'limit']; // uneori este necesara să pasezi parametri care să nu intre în rezultatul de căutare, dar necesari pentru filtrare folosind mongoose (query.select).
+  // Ia rând pe rând din array-ul câmpurilor pentru excludere și șterge-le din obiectul `req.params`
+  removeFields.forEach(param => delete reqQuery[param]);
 
-        // selectează câmpurile pe care le dorești în înregistrări [`select` pe query]
-        if (req.query.select) {
-                // extragi un array din ceva similar cu select=nume,varsta
-                const fields = req.query.select.split(',').join(' '); // formează baza metodei `select` a lui Mongoose
-                query = query.select(fields); // precizează câmpurile pe care le dorești din întreaga înregistrare
-        }
+  let queryStr = JSON.stringify(reqQuery); // transformă obiectul proiecției de căutare în text.
+  
+  // crearea operatorilor de lucru pentru MongoDB. Dacă ai primit vreun operator, transformă-l într-unu conform MongoDB
+  queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`); //întoarce operatorul cu un $ în față necesar query-urilor MongoDB.
 
-        // selectează câmpurile după care dorești să faci sortarea rezultatelor [`sort` pe query]. Dacă vrei rezultatul inversat, pune un minus la formarea query string-ului din client
-        if (req.query.sort) {
-                // pentru că dorim sortarea după mai multe câmpuri, în sort, la momentul interogării, se pot preciza aceste cu virgule
-                const sortBy = req.query.sort.split(',').join(' ');
-                query.sort(sortBy);
-        } else {
-                // în cazul în care nu ai un criteriu de sortare, este util să faci sortarea după o valoare implicită.
-                query = query.sort('-unCriteriuArbitrarStabilit');
-        }
 
-        // Paginarea rezultatelor
-        let page       = parseInt(req.query.page, 10)  || 1;   // preia pagina iar dacă aceasta nu este menționată, din oficiu va fi 1
-        let limit      = parseInt(req.query.limit, 10) || 100; // numărul de înregistrăru din setul de date, dar nu mai mult de 100
-        let startIndex = (page - 1) * limit;
-        let endIndex   = page * limit;
-        let total      = RedModel.count();
-        // aplicarea lui skip și a limitării
-        query = query.skip(startIndex).limit(limit);
+  // console.log(`[api/v1/reds.js] Obiectul proiecție este `, JSON.parse(queryStr));
 
-        // execută query-ul
-        const reds = await query;
 
-        // Rezultatele paginării
-        const pagination = {};
+  // căutarea resurselor
+  let query = RedModel.find(JSON.parse(queryStr)); // transformă înapoi în obiect și caută
+  // FIXME: Cast to ObjectId failed for value "getREDs" (type string) at path "_id" for model "resursedu"
 
-        // dacă nu avem o pagină anterioară, suntem chiar la început, nu vreau să existe o direcție către aceasta, iar următoarea pagină va fi 2
-        if (endIndex < total) {
-                pagination.next = {
-                        page: page + 1,
-                        limit
-                };
-        }
+  // selectează câmpurile pe care le dorești în înregistrări [`select` pe query]
+  if (req.query.select) {
+    // extragi un array din ceva similar cu select=nume,varsta
+    const fields = req.query.select.split(',').join(' '); // formează baza metodei `select` a lui Mongoose
+    query = query.select(fields); // precizează câmpurile pe care le dorești din întreaga înregistrare
+  }
 
-        if (startIndex > 0) {
-                pagination.prev = {
-                        page: page - 1,
-                        limit
-                };
-        }
+  // selectează câmpurile după care dorești să faci sortarea rezultatelor [`sort` pe query]. Dacă vrei rezultatul inversat, pune un minus la formarea query string-ului din client
+  if (req.query.sort) {
+    // pentru că dorim sortarea după mai multe câmpuri, în sort, la momentul interogării, se pot preciza aceste cu virgule
+    const sortBy = req.query.sort.split(',').join(' ');
+    query.sort(sortBy);
+  } else {
+    // în cazul în care nu ai un criteriu de sortare, este util să faci sortarea după o valoare implicită.
+    query = query.sort('-unCriteriuArbitrarStabilit');
+  }
 
-        res.status(200).send({
-                success: true,
-                count: reds.length,
-                pagination: pagination,
-                data: reds
-        });
+  // Paginarea rezultatelor
+  let page       = req.query?.page ? parseInt(req.query.page, 10) : 1;   // preia pagina iar dacă aceasta nu este menționată, din oficiu va fi 1
+  let limit      = req.query?.limit ? parseInt(req.query.limit, 10) : config.get('api.v1.reds.getREDs.limit'); // numărul de înregistrări din setul de date, dar nu mai mult de cât este setat în configurări
+  let startIndex = (page - 1) * limit;
+  let endIndex   = page * limit;
+  let total      = parseInt(RedModel.estimatedDocumentCount());
+  // aplicarea lui skip și a limitării
+  query = query.skip(startIndex).limit(limit);
+
+  // execută query-ul
+  const reds = await query;
+
+  // Rezultatele paginării
+  const pagination = {};
+
+  // dacă nu avem o pagină anterioară, suntem chiar la început, nu vreau să existe o direcție către aceasta, iar următoarea pagină va fi 2
+  if (endIndex < total) {
+    pagination.next = {
+            page: page + 1,
+            limit
+    };
+  }
+
+  if (startIndex > 0) {
+    pagination.prev = {
+            page: page - 1,
+            limit
+    };
+  }
+
+  res.status(200).send({
+    success: true,
+    count: reds.length,
+    pagination: pagination,
+    data: reds
+  });
 });
 
 // @desc   adu-mi un singur RED
@@ -99,19 +103,20 @@ exports.getRED = asyncHandler(async function getRED (req, res, next) {
         // ACL
         let roles = ["user", "validator", "cred"];
 
-        let resource = await RedModel.findById(req.params.id).populate({
-                path: 'comentarii',
-                select: 'title content user'
-        });
+        // let resource = await RedModel.findById(req.params.id).populate({
+        //         path: 'comentarii',
+        //         select: 'title content user'
+        // });
 
-        if (!resource) {
-                return next(new ErrorRespose(`Nu există resursa cu id-ul ${req.params.id}`), 404);
-        }
+        // if (!resource) {
+        //         return next(new ErrorRespose(`Nu există resursa cu id-ul ${req.params.id}`), 404);
+        // }
 
-        res.status(200).send({
-                success: true,
-                data: resource
-        });
+        // res.status(200).send({
+        //         success: true,
+        //         data: resource
+        // });
+        next();
 });
 
 // @desc   creează un RED
@@ -149,6 +154,7 @@ exports.putRED = asyncHandler(async function putRED (req, res, next) {
                 data: red
         });
         res.status(201).send({creat: true});
+        next();
 });
 
 // @desc   șterge un RED
@@ -159,100 +165,3 @@ exports.delRED = function delRED (req, res, next) {
         let roles = ["user", "validator", "cred"];
         res.status(201).send({creat: true});
 };
-
-// @desc   creează un utilizator
-// @route  POST /api/v1/user/create
-// @access privat
-exports.createUser = function createUser (req, res, next) {
-        // Crearea contului!!!
-        // metoda este atașată de pluginul `passport-local-mongoose` astfel: schema.statics.register
-        User.register(
-                new User({
-                        _id: mongoose.Types.ObjectId(),
-                        username: req.body.email,  // _NOTE: Verifică dacă username și email chiar vin din body
-                        email: req.body.email,
-                        roles: {
-                                admin: false,
-                                public: false,
-                                rolInCRED: ['general']
-                        }
-                }),
-                req.body.password,
-                function clbkAuthLocal (err, user) {
-                        if (err) {
-                                logger.error(err);
-                                console.log('[signup::post]', err);
-                        };
-                        // dacă nu este nicio eroare, testează dacă s-a creat corect contul, făcând o autentificare
-                        var authenticate = User.authenticate();
-                                authenticate(req.body.email, req.body.password, function clbkAuthTest (err, result) {
-                                if (err) {
-                                        logger.error(err);
-                                        console.error('[signup::post::authenticate]', err);
-                                        return next(err);
-                                }
-                                // în cazul în care autentificarea a reușit, trimite userul să se logheze.
-                                if (result) {
-                                        res.status(201).send({user: result});
-                                }
-                        });
-                }
-        );
-}
-
-// @desc Returnează userul curent
-// @route GET /api/v1/user/current
-// @access privat
-exports.currentUser = function currentUser (req, res, next) {
-  res.json({user: {
-    id:            req.user._id,
-    roles:         req.user.roles,
-    ecusoane:      req.user.ecusoane,
-    recomandari:   req.user.recomandari,
-    username:      req.user.username,
-    email:         req.user.email,
-    contributions: req.user.contributions
-  }});
-  // next();
-};
-// _FIXME: Creează logica pentru refresh token (https://www.youtube.com/watch?v=mbsmsi7l3r4)
-
-// Utilitarele pentru validarea parolei și emiterea JWT-ul!
-let {issueJWT, validPassword} = require('../../utils/password');
-
-// @desc Loghează userul
-// @route POST /api/v1/user/login
-// @access privat
-exports.loginUser = async function loginUser (req, res, next) {
-  // Read username and password from request body
-  const { username, password } = req.body;
-  // Caută userul
-  User.findOne({email: username}).lean().then(user => {
-    // verifică dacă există utilizatorul
-    if (!user) {
-      return res.status(404).json({success: false, message: 'user not found'});
-    }
-
-    // Verifică parola
-    if (validPassword(password, user.hash, user.salt)) {
-      // Dacă parola este ok, creează payload-ul JWT-ului
-      const {token} = issueJWT(user);
-      res.json({success: true, token});
-    } else {
-      return res.status(401).json({success:false, message: 'password incorrect'}); // Unauthorized
-    }
-  }).catch(error => {
-    // return res.status(500).json(error.toString());
-    next(error);
-  });
-}
-
-
-// @desc   logout
-// @route  POST /api/v1/user/logout
-// @access privat
-exports.userLogout = function userLogout (req, res, next) {
-  // ACL
-  let roles = ["user", "validator", "cred"];
-  res.status(200).send({logout: true});
-}

@@ -29,6 +29,7 @@ function validPassword (password, hash, salt) {
 // Citește cheia privată
 const path2key = path.join(__dirname, '../../assets/keys/', 'id_rsa_priv.pem');
 const PRIV_KEY = fs.readFileSync(path2key, 'utf8');
+
 /**
  * Funcția generează un JWT pentru a fi trimis userului ca răspuns la autentificarea cu succes
  * @param {*} user Este obiectul `user` din `req.user` pe care-l creează `passport`
@@ -47,6 +48,7 @@ function issueJWT (user, res) {
     // creează JWT-ul semnat folosind cheia privată
     const token = jwt.sign(payload, PRIV_KEY, { algorithm: 'RS256' });
 
+    // Obiectul care ajunge în client
     return {
         token:   token,
         expires: expiresIn

@@ -31,11 +31,19 @@ getStructure().then((val) => {
 let User = new mongoose.Schema({
     created:  Date,
     avatar: String,
+    name: String,
     email: {
         type: String,
         required: true,
+        trim: true,
+        lowercase: true,
         unique: true,
-        index: true
+        index: true,
+        validate(value){
+            if (!validator.isEmail(value)) {
+                throw new Error('Email nevalid');
+            }
+        }
     },
     googleID: String,
     googleProfile: {
@@ -79,6 +87,8 @@ User.post('save', function clbkUsrSave (doc, next) {
     const data = {
         id:              doc._id,
         created:         doc.created,
+        avatar:          doc.avatar,
+        name:            doc.name,
         email:           doc.email,
         roles: {
             admin:       doc.roles.admin,

@@ -71,14 +71,13 @@ const express        = require('express');
 const rateLimit      = require("express-rate-limit");
 const cookies        = require('cookie-parser');
 const session        = require('express-session');
-const csurf          = require('csurf');
+const csurf          = require('@dr.pogodin/csurf');
 const flash          = require('connect-flash');
 const helmet         = require('helmet');
 const passport       = require('passport');
 const LocalStrategy  = require('passport-local').Strategy;
 const responseTime   = require('response-time');
 const RedisStore     = require('connect-redis')(session);
-
 const hbs            = require('express-hbs');
 // const app            = express();
 // const http           = require('http').createServer(app);
@@ -162,7 +161,7 @@ if (process.env.APP_RUNTIME === 'virtual') {
 app.use(cors(corsOptions));
 
 /* === BODY PARSER === */
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: true})); // parsing application/x-www-form-urlencoded
 app.use(express.json());
 
 // introdu mesaje flash
@@ -245,8 +244,10 @@ app.use('/upload', upload);
 app.use('/signup', signupLoco);
 // LOGIN
 app.use('/login', login);
+
 // API v.1
 app.use('/api/v1', api); // accesul la prima versiune a api-ului
+
 
 /* LOGGING CU MORGAN */
 app.use(devlog('dev'));
@@ -262,7 +263,8 @@ const csurfProtection = csurf({
         sameSite: 'strict', // https://www.owaspsafar.org/index.php/SameSite
         maxAge: 24 * 60 * 60 * 1000, // 24 ore
     },
-    ignoreMethods: ['GET', 'HEAD', 'OPTIONS']
+    ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
+    // value: 
 });
 
 app.use(csurfProtection); // activarea protecției la CSRF

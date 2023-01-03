@@ -12,6 +12,15 @@
             }
         }
     },
+    "api": {
+        "v1": {
+            "reds": {
+                "getREDs": {
+                    "limit": 10
+                }
+            }
+        }
+    },
     "packages": [
         "socket-io", "socket.io-client", "socket.io-redis",
         "jquery", "jquery-toast-plugin", "bootstrap", "bootstrap-icons",
