@@ -47,13 +47,14 @@ const avatarstorage = multer.diskStorage({
 const uploadavatar = multer({storage: avatarstorage});
 
 // Cere gestionarul pentru versiunea 1
-let {currentUser, loginUser, patchUser, userLogout, postAvatar} = require('./api/v1/users');
+let {currentUser, createUser, loginUser, patchUser, userLogout, postAvatar} = require('./api/v1/users');
 let {getREDs, getRED, postRED, putRED, delRED} = require('./api/v1/reds');
 
 // USER
 router
     .post('/user/login', passport.authenticate('local'), loginUser)
     .patch('/user/:id', patchUser)
+    .post('/user/create', createUser)
     .get('/user/current', passport.authenticate('jwt', {session: false}), currentUser)
     .post('/user/avatar', uploadavatar.any(), postAvatar)
     .post('/user/logout', userLogout);

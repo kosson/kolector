@@ -413,11 +413,11 @@ function onError(error) {
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
+            console.error(bind + ' are nevoie de privilegii înalte');
             process.exit(1);
             break;
         case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
+            console.error(bind + ' deja folosit de altă aplicație sau de un proces fantomă');
             process.exit(1);
             break;
         default:

@@ -17,19 +17,11 @@ async function clbkLogin (req, res, next) {
     let filterMgmt = {focus: 'general'};
     let gensettings = await Mgmtgeneral.findOne(filterMgmt);
 
-    let scripts = [
-        // FONTAWESOME
-        {script: `${gensettings.template}/lib/npm/all.min.js`},
-    ];
+    let scripts = [];
 
-    let styles = [
-        {style: `${gensettings.template}/lib/npm/all.min.css`}
-    ];
+    let styles = [];
 
-    let modules = [
-        {module: `${gensettings.template}/lib/npm/popper.min.js`},
-        {module: `${gensettings.template}/lib/npm/popper-utils.min.js`}
-    ]
+    let modules = []
     // console.log("Din user.ctrl avem din req.body pe /login: ", req.body);
     res.render(`login_${gensettings.template}`, {
         template: `${gensettings.template}`,
@@ -48,8 +40,6 @@ router.get('/', (req, res, next) => {
     });
 });
 
-// Utilitarele pentru validarea parolei și emiterea JWT-ul!
-let {issueJWT, validPassword} = require('./utils/password');
 /* === LOGIN [POST] ===*/
 router.post('/',  passport.authenticate('local'), async (req, res, next) => {
     // console.log("Din login.js avem din req.body pe /login: ", req.body, 'USER este ', req.user);

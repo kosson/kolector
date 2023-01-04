@@ -3,6 +3,7 @@ const mongoose              = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 const bcrypt                = require('bcrypt');
 const jwt                   = require('jsonwebtoken');
+const validator             = require('validator');
 const esClient              = require('../elasticsearch.config');
 const schema                = require('./user-es7');
 // const ES7Helper             = require('./model-helpers/es7-helper');
@@ -27,23 +28,30 @@ getStructure().then((val) => {
     logger.error(error);
 });
 
+// VALIDATORI
+function validateEmail (value) {
+    return validator.isEmail(value);
+};
+let customMessageEmailValidator = [validateEmail, 'Valoarea {VALUE} din câmpul {PATH} nu este validă'];
+
 // Definirea unei scheme necesare verificării existenței utilizatorului.
 let User = new mongoose.Schema({
     created:  Date,
-    avatar: String,
-    name: String,
-    email: {
+    avatar:   String,
+    name:     {
         type: String,
         required: true,
+        trim: true,
+        index: true
+    },
+    email: {
+        type: String,
+        required: [true, 'trebuie să existe o adresă de email'],
         trim: true,
         lowercase: true,
         unique: true,
         index: true,
-        validate(value){
-            if (!validator.isEmail(value)) {
-                throw new Error('Email nevalid');
-            }
-        }
+        validate: customMessageEmailValidator
     },
     googleID: String,
     googleProfile: {
@@ -71,7 +79,10 @@ let User = new mongoose.Schema({
     },
     token: String,
     salt: String,
-    hash: String
+    hash: {
+        type: String,
+        required: true
+    }
 },{
     toJSON: {
         virtuals: true
@@ -80,6 +91,8 @@ let User = new mongoose.Schema({
         virtuals: true
     }
 });
+
+// User.path('email').validate(validateEmail, 'Valoarea {VALUE} din câmpul {PATH} nu este validă');
 
 // Adăugarea middleware pe `post` pentru a constitui primul index și alias-ul.
 User.post('save', function clbkUsrSave (doc, next) {

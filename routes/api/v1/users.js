@@ -11,46 +11,58 @@ const logger        = require('../../../util/logger');
 // _FIXME: Creează logica pentru refresh token (https://www.youtube.com/watch?v=mbsmsi7l3r4)
 
 // Utilitarele pentru validarea parolei și emiterea JWT-ul!
-let {issueJWT, validPassword} = require('../../utils/password');
+let {issueJWT, generatePassword, validPassword} = require('../../utils/password');
 
 // @desc   creează un utilizator
 // @route  POST /api/v1/user/create
 // @access privat
-exports.createUser = function createUser (req, res, next) {
-  // Crearea contului!!!
-  // metoda este atașată de pluginul `passport-local-mongoose` astfel: schema.statics.register
-  User.register(
-          new User({
-                  _id: mongoose.Types.ObjectId(),
-                  username: req.body.email,  // _NOTE: Verifică dacă username și email chiar vin din body
-                  email: req.body.email,
-                  roles: {
-                          admin: false,
-                          public: false,
-                          rolInCRED: ['general']
-                  }
-          }),
-          req.body.password,
-          function clbkAuthLocal (err, user) {
-                  if (err) {
-                          logger.error(err);
-                          console.log('[signup::post]', err);
-                  };
-                  // dacă nu este nicio eroare, testează dacă s-a creat corect contul, făcând o autentificare
-                  var authenticate = User.authenticate();
-                          authenticate(req.body.email, req.body.password, function clbkAuthTest (err, result) {
-                          if (err) {
-                                  logger.error(err);
-                                  console.error('[signup::post::authenticate]', err);
-                                  return next(err);
-                          }
-                          // în cazul în care autentificarea a reușit, trimite userul să se logheze.
-                          if (result) {
-                                  res.status(201).send({user: result});
-                          }
-                  });
-          }
-  );
+exports.createUser = async function createUser (req, res, next) {
+  let salt   = undefined, 
+      hash   = undefined, 
+      token  = undefined, 
+      expires= undefined, 
+      result = undefined; // variabilă colectoare de date în urma verificărilor, validărilor și salvării
+
+  // doar dacă ai valoarea fă și evaluarea, dacă nu, lasă mongoose să scoată erorile la validare
+  if(req.body.password) {
+    let salt_hash = generatePassword(req.body.password);
+    salt = salt_hash.salt;
+    hash = salt_hash.hash;
+  }
+
+  // doar dacă ai valoarea fă și evaluarea, dacă nu, lasă mongoose să scoată erorile la validare
+  if (req.body.name) {
+    let resultJWT = issueJWT(req.body.name);
+    token = resultJWT.token;
+    expires = resultJWT.expires;
+  }
+
+  let userdoc = new User({
+    name: req.body.name,
+    email: req.body.email,
+    hash,
+    salt,
+    token
+  });
+
+  try {  
+    let existing = await User.findOne({email: req.body.email}).exec(); // Evită crearea dublurilor
+    if (existing) {
+      res.status(409);
+      result = {message: 'Emailul deja există!'};
+    } else {
+      result = await userdoc.save(); // salvează userul
+    }
+  } catch (error) {
+    if (error) {
+      res.status(409);
+      result = error; // colectează eroarea în result
+    } else {
+      res.status(201);
+    }
+  }
+    
+  res.send(result);
 }
 
 // @desc Returnează userul curent
@@ -96,6 +108,9 @@ exports.loginUser = async function loginUser (req, res, next) {
   });
 }
 
+// @desc Modifică userul
+// @route POST /api/v1/user/:id
+// @access privat
 exports.patchUser = async function patchUser (req, res, next) {
   const updates = Object.keys(req.body);
   const allowedUpdates = ['email', 'name'];

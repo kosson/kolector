@@ -32,7 +32,7 @@ const PRIV_KEY = fs.readFileSync(path2key, 'utf8');
 
 /**
  * Funcția generează un JWT pentru a fi trimis userului ca răspuns la autentificarea cu succes
- * @param {*} user Este obiectul `user` din `req.user` pe care-l creează `passport`
+ * @param {*} user Este obiectul `user` din `req.user` pe care-l creează `passport` sau un string: res.body.name
  */
 function issueJWT (user, res) {
     const _id       = user._id;
