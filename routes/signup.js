@@ -22,9 +22,7 @@ async function clbkSignUpGet (req, res, next) {
     let gensettings = await Mgmtgeneral.findOne(filterMgmt);
 
     let scripts = [];
-    let styles = [
-        {style: `${gensettings.template}/lib/npm/all.min.css`}
-    ];
+    let styles = [];
 
     res.render(`signup_${gensettings.template}`, {
         template: `${gensettings.template}`,
@@ -47,26 +45,41 @@ router.post('/', function clbkPostSignUp (req, res, next) {
 
     const {salt, hash} = generatePassword(req.body.password);
 
-    // Crearea contului!!!
-    let user = new User({
-        _id: mongoose.Types.ObjectId(),
-        username: req.body.email, 
-        email:    req.body.email,
-        roles: {
-            admin:     false,
-            public:    false,
-            rolInCRED: ['general']
-        },
-        salt, 
-        hash
+    User.findOne({email: req.body.email}).lean().then((user) => {
+        if (user) {
+            return res.redirect('/signup');
+        }
+
+        let collections = mongoose.connection.collections();
+
+        // Dacă userul nu există deja în bază, va fi creat
+        let userDoc = new User({
+            _id: mongoose.Types.ObjectId(),
+            created: new Date(Date.now()).toISOString(),
+            username: req.body.email, 
+            email:    req.body.email,
+            roles: {
+                admin:     false,
+                public:    false,
+                rolInCRED: ['general']
+            },
+            salt, 
+            hash
+        });
+
+        userDoc.save().then((user) => {
+            // res.json({succes: true, user: user}); // testează dacă se crează contul
+            res.redirect(301, '/login');
+        }).catch((error) => {
+            logger.error(error);
+            return next(error);
+        });
+    }).catch((error) => {
+        console.log(error);
+        logger.error(error);
     });
 
-    user.save().then((user) => {
-        // res.json({succes: true, user: user}); // testează dacă se crează contul
-        res.redirect(301, '/login');
-    }).catch((error) => {
-        return next(error);
-    });
+
     // , req.body.password, function clbkAuthLocal (err, user) {
     //     if (err) {
     //         logger.error(err);

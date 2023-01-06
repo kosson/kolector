@@ -1,6 +1,10 @@
 {
-    "initcollections": ["competentaspecificas", "things", "bodies", "mgmtgenerals"],
+    "initcollections": ["competentaspecificas", "things", "bodies", "mgmtgenerals", "users"],
+    "adminemail": "kosson@gmail.com",
+    "adminpassword": "CHANGE-ME",
+    "adminname": "admin",
     "logo": "repologo.png",
+    "template": "k1",
     "defaultavatar": "karl-magnuson-85J99sGggnw-unsplash-small.jpg",
     "roles": {
         "admin": {"name": "admin"},

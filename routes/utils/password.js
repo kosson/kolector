@@ -13,7 +13,7 @@ function generatePassword (password) {
     let salt = crypto.randomBytes(32).toString('hex');
     let hash = crypto.pbkdf2Sync(password, salt, 25000, 512, 'sha256').toString('hex');
     return { salt, hash };
-}
+};
 
 /**
  * Funcția are rolul de a valida o parolă care vine de la userul care este la etapa de logare
@@ -23,8 +23,8 @@ function generatePassword (password) {
  */
 function validPassword (password, hash, salt) {
     let hashVerify = crypto.pbkdf2Sync(password, salt, 25000, 512, 'sha256').toString('hex');
-    return hash === hashVerify;
-}
+    return hash === hashVerify; // true | false
+};
 
 // Citește cheia privată
 const path2key = path.join(__dirname, '../../assets/keys/', 'id_rsa_priv.pem');
@@ -53,7 +53,7 @@ function issueJWT (user, res) {
         token:   token,
         expires: expiresIn
     };
-}
+};
 
 function authenticateJWT (req, res, next) {
     const authHeader = req.headers.authorization;

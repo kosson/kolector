@@ -1,186 +1,7 @@
 services:
-  redis:
-    # https://docs.docker.com/engine/reference/commandline/run/#configure-namespaced-kernel-parameters-sysctls-at-runtime
-    image: 'redis:latest'
-    restart: always
-    container_name: kolector_redis
-    volumes:
-      - './assets/redis/redisdata:/data:rw'
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-    ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
-    environment:
-      - REDIS_REPLICATION_MODE=master
-    healthcheck:
-      test: redis-cli ping
-      interval: 1s
-      timeout: 3s
-      retries: 30
-    networks:
-      - dockernet
-  es01:
-    # https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docker.html#docker-compose-file
-    # Inspirate configurările din https://github.com/jeroenhendricksen/elasticsearch-docker-cluster
-    # https://github.com/deviantony/docker-elk
-    # https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docker.html#docker-cli-run-prod-mode
-
-    build:
-      # Indică directorul în care este fișierul de build pentru imaginea de la baza containerului
-      context: ./assets/elasticsearch/
-      # Prin `args` pasezi argumente de construcție din `docker-compose` în `Dockerfile`-ul serviciului - Acum am setat în .env
-      args:
-        ELK_VERSION: ${ELK_VERSION:-7.17.7}
-    container_name: kolector_es01
-    volumes:
-      # Copiază fișierul de configurare în containerul care va fi creat
-      - type: "bind"
-        source: "./assets/elasticsearch/elasticsearch.yml"
-        target: "/usr/share/elasticsearch/config/elasticsearch.yml"
-        read_only: true
-      # - type: volume
-      #   source: es1_data
-      #   target: /usr/share/elasticsearch/data    
-      # Asigură persistența datelor din nod pe mașina gazdă (subdirectoarele trebuie să fie create deja)
-      # - './assets/elasticsearch/data01:/usr/share/elasticsearch/data'
-      - type: "bind"
-        source: "./assets/elasticsearch/data01"
-        target: "/usr/share/elasticsearch/data"
-    environment:
-      node.name: 'es01'
-      cluster.name: 'es-docker-cluster'
-      discovery.seed_hosts: 'es02,es03'
-      cluster.initial_master_nodes: 'es01,es02,es03'
-      bootstrap.memory_lock: true
-      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
-      path.repo: '/usr/share/elasticsearch/data'
-    ports:
-      # 9200 este pentru REST API (HOST:CONTAINER)
-      - '9200:9200'
-      # 9300 este pentru comunicarea nodurilor
-      - '9300:9300'
-    # pentru a evita eroarea `Unable to lock JVM Memory: error=12, reason=Cannot allocate memory` cu ieșire din container
-    # Explicație aici: https://support.hpe.com/hpesc/public/docDisplay?docId=emr_na-c02239033
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    healthcheck:
-      # test: 'curl --silent --fail -X GET "localhost:9200/_cluster/health?wait_for_status=green&timeout=1s" || exit 1'
-      test: ["CMD", "curl", "-f", "http://localhost:9200"]
-      interval: 30s
-      timeout: 10s
-      retries: 30
-    deploy:
-      resources:
-        limits:
-          memory: 1500m
-    networks:
-      dockernet: null
-  es02:
-    build:
-      context: ./assets/elasticsearch/
-      args:
-        ELK_VERSION: ${ELK_VERSION:-7.17.7}
-    container_name: kolector_es02
-    volumes:
-      # Copiază fișierul de configurare în containerul care va fi creat
-      - type: "bind"
-        source: "./assets/elasticsearch/elasticsearch.yml"
-        target: "/usr/share/elasticsearch/config/elasticsearch.yml"
-        read_only: true
-      # - type: volume
-      #   source: es2_data
-      #   target: /usr/share/elasticsearch/data  
-      # Asigură persistența datelor din nod pe mașina gazdă (subdirectoarele trebuie să fie create deja)  
-      - type: "bind"
-        source: "./assets/elasticsearch/data02"
-        target: "/usr/share/elasticsearch/data"
-    environment:
-      node.name: 'es02'
-      cluster.name: 'es-docker-cluster'
-      discovery.seed_hosts: 'es01,es03'
-      cluster.initial_master_nodes: 'es01,es02,es03'
-      bootstrap.memory_lock: true
-      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
-      path.repo: '/usr/share/elasticsearch/data'
-    ports:
-      # 9200 este pentru REST API (HOST:CONTAINER); aici 9201 pentru că es01 este 9200
-      - '9201:9200'
-      - '9301:9300'
-    # pentru a evita eroarea `Unable to lock JVM Memory: error=12, reason=Cannot allocate memory` cu ieșire din container 
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    networks:
-      dockernet: null
-  es03:
-    build:
-      context: ./assets/elasticsearch/
-      args:
-        ELK_VERSION: ${ELK_VERSION:-7.17.7}
-    container_name: kolector_es03
-    volumes:
-      # Copiază fișierul de configurare în containerul care va fi creat
-      - type: "bind"
-        source: "./assets/elasticsearch/elasticsearch.yml"
-        target: "/usr/share/elasticsearch/config/elasticsearch.yml"
-        read_only: true
-      # Asigură persistența datelor din nod pe mașina gazdă (subdirectoarele trebuie să fie create deja)
-      - type: "bind"
-        source: "./assets/elasticsearch/data03"
-        target: "/usr/share/elasticsearch/data"
-      # - './assets/elasticsearch/data02:/usr/share/elasticsearch/data'
-    environment:
-      node.name: 'es03'
-      cluster.name: 'es-docker-cluster'
-      discovery.seed_hosts: 'es01,es02'
-      cluster.initial_master_nodes: 'es01,es02,es03'
-      bootstrap.memory_lock: true
-      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
-      path.repo: '/usr/share/elasticsearch/data'
-    ports:
-      # 9200 este pentru REST API (HOST:CONTAINER); aici 9201 pentru că es01 este 9200
-      - '9202:9200'
-      - '9302:9300'
-    # pentru a evita eroarea `Unable to lock JVM Memory: error=12, reason=Cannot allocate memory` cu ieșire din container 
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    networks:
-      dockernet: null
-  kibana:
-    build:
-      context: ./assets/kibana/
-      args:
-        ELK_VERSION: ${ELK_VERSION:-7.17.7}
-    container_name: kolector_kibana
-    links:
-      - es01 
-    volumes:
-      - type: 'bind'
-        source: './assets/kibana/kibana.yml'
-        target: '/usr/share/kibana/config/kibana.yml'
-        read_only: true
-    ports:
-      - 5601:5601
-      # Poți accesa direct cu http://your-host-machine:5601/kibana
-    environment:
-      ELASTICSEARCH_HOSTS: 'http://es01:9200'
-    # healthcheck:
-    #   test: 'curl --silent --fail http://0.0.0.0:5601/login'
-    #   retries: 6
-    depends_on:
-      - es01
-    networks:
-      dockernet: null 
   mongo:
     image: 'mongo:4.4.5-bionic'
-    container_name: kolector_mongo
+    container_name: arachnide_mongo
     env_file:
       - ./.env
     environment:
@@ -190,7 +11,7 @@ services:
       - 'MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWD}'
       - 'MONGO_INITDB_DATABASE=${MONGO_DB}'
     volumes:
-      - 'mongodata:/data/db'
+      - './assets/mongodb/data:/data/db'
     command:
       - '--auth'
     ports:
@@ -206,45 +27,32 @@ services:
       target: devel
       args:
         FRONT_END_PORT: 8080
-    image: 'kolector_devel:${APP_VER:-9.94.0}'
-    container_name: kolector_devel
+    image: 'arachnide_devel:${APP_VER:-0.1.0}'
+    container_name: arachnide_devel
     stdin_open: true
     env_file:
       - ./.env
     volumes:
-      - './repo:/usr/src/kolector/repo'
-      - './:/usr/src/kolector'
-      - /usr/src/kolector/node_modules
+      - './repo:/arachnide/repo'
+      - './:/arachnide'
+      - /arachnide/node_modules
     ports:
       - '8080:8080'
     restart: always
-    command:
-      - node
-      - app.js
+    command: npm run dev
     healthcheck:
       test: 'curl --silent --fail localhost:8080 || exit 1'
       interval: 10s
       timeout: 30s
       retries: 3
-    # links:
-    #   - mongo
-    #   - redis
-    #   - es01
-    # environment:
-    #   REDIS_URL: redis://redis
-    #   REDIS_HOST: redis
-    #   REDIS_PORT: 6379
-    #   REDIS_PASSWORD: PaniZZ12022ErsT33
     depends_on:
       - mongo
-      - redis
-      - es01
     networks:
       dockernet: null
   nginx:
     build:
       context: ./assets/nginx/
-    container_name: kolector_nginx
+    container_name: arachnide_nginx
     restart: always
     # este portul 80 pentru că aplicația având modul de rulare virtualizat, va folosi acest port; 8080 e pentru dezvoltare
     ports:
@@ -265,16 +73,8 @@ services:
     depends_on:
       - nodeapp
 volumes:
-  redis:
-    driver: local
   mongodata:
     driver: local
-  data01:
-    driver: local
-  data02:
-    driver: local
-  data03:
-    driver: local  
 networks:
   dockernet:
     driver: bridge

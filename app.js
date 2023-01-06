@@ -2,14 +2,17 @@ require('dotenv').config();
 const config = require('config');
 const process = require('process');
 
-/* === CLIENTS === */
-const redisClient    = require('./redis.config');
-
 /* === MONGODB::MONGOOSE === */ 
 const mongoose = require('mongoose');
-const {kolectordbconfig, kolectordbaddress} = require('./mongoose.config');
-const mongoConn = mongoose.createConnection(kolectordbaddress, kolectordbconfig);
+mongoose.set('strictQuery', false);
+const mongoosedbconnector = require('./mongoose.config')(mongoose);
+let dbconn = mongoosedbconnector({getinfo: true}); // inițiază conexiunea și creează bazele de date dacă acestea nu există
+
+/* === CLIENTS === */
+const redisClient    = require('./redis.config');
+/* === ELASTICSEARCH === */
 const elastClient    = require('./elasticsearch.config');
+
 /* === MODELE === */
 const Mgmtgeneral = require('./models/MANAGEMENT/general'); // Adu modelul management
 
@@ -24,7 +27,7 @@ const connectors = {
         address: redisClient.address,
         // client: redisClient
     },
-    mongo: mongoConn.version,
+    mongo: dbconn.version,
     elastic: {
         clients: []
         // stare: elastClient.connectionPool.connections
@@ -111,22 +114,28 @@ app.use(express.static(path.join(__dirname, '/public'), {
 app.use('/repo', express.static(path.join(__dirname, 'repo')));
 
 // app.use(fileUpload());
+let default_template = config.get('template');
 
 /**
  * Funcția are rolul de a seta corect faviconul aplicației
  * @param {Object} app 
  * @returns 
  */
-async function setFavicon (app) {
-    // Setări în funcție de template
-    let filterMgmt = {focus: 'general'};
-    let gensettings = await Mgmtgeneral.findOne(filterMgmt);
-    app.use(favicon(path.join(__dirname,  'public', `${gensettings.template}`, 'favicon.ico'))); // original line
+async function setFavicon (app) {    
+    console.log(`Colecțiile asociate acestei conexiuni sunt `, Object.keys(dbconn.collections));
+    let databases = Object.keys(dbconn.collections);
+    if(databases > 0 && databases.includes('mgmtgenerals')) {
+        let gensettings = await Mgmtgeneral.findOne({focus: 'general'});
+        app.use(favicon(path.join(__dirname,  'public', `${gensettings.template}`, 'favicon.ico'))); // original line
+    } else {
+        app.use(favicon(path.join(__dirname,  'public', `${default_template}`, 'favicon.ico')));
+    }
+
     return app;
 }
 setFavicon(app).catch((error) => {
-    console.log(error);
-    logger.error(error)
+    logger.error(`La setarea faviconului ${error}`);
+    throw new Error(`La setarea faviconului ${error}`);
 })
 
 /* === HELMET === */
@@ -434,7 +443,7 @@ process.on('uncaughtException', (err) => {
     // process.kill(process.pid, 'SIGTERM');
     process.nextTick( function exitProcess () {
         // FIXME
-        // mongoConn.disconnect(() => {
+        // dbconn.disconnect(() => {
         //     console.log('Am închis conexiunea la MongoDb!');
         // });
         process.exit(1);
@@ -446,7 +455,7 @@ process.on('unhandledRejection', (reason, promise) => {
     console.log('[app.js] O promisiune a fost respinsă fără a fi tratată respingerea', promise, ` având motivul ${reason}`);
     logger.error(`${promise} ${reason}`);
     process.nextTick( function exitProcess () {
-        // mongoConn.disconnect(() => {
+        // dbconn.disconnect(() => {
         //     console.log('Am închis conexiunea la MongoDb!');
         // });
         process.exit(1);
@@ -455,7 +464,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 process.on('SIGINT', function onSiginit (signal) {
     FIXME:
-    // mongoConn.disconnect(() => {
+    // dbconn.disconnect(() => {
     //     console.log('Am închis conexiunea la MongoDb!');
     // });
     console.info(`Procesul a fost întrerupt (CTRL+C). Închid procesul ${process.pid}! Data: `, new Date().toISOString());
@@ -463,7 +472,7 @@ process.on('SIGINT', function onSiginit (signal) {
 });
 
 process.on('SIGTERM', function onSiginit () {
-    mongoConn.disconnect(() => {
+    dbconn.disconnect(() => {
         console.log('Am închis conexiunea la MongoDb!');
     });
     console.info('Am prins un SIGTERM (stop). Închid procesul! Data: ', new Date().toISOString());

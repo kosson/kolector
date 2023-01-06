@@ -7,8 +7,6 @@ const Mgmtgeneral = require('../models/MANAGEMENT/general');    // Adu modelul m
 const logger   = require('../util/logger');
 
 const mongoose = require('mongoose');
-const {kolectordbconfig, kolectordbaddress} = require('../mongoose.config');
-mongoose.connect(kolectordbaddress, kolectordbconfig);
 
 /* === LANDING :: / === */
 let index = require('./controllers/index.ctrl');    // adu funcția `renderPublic` din `/controllers`.

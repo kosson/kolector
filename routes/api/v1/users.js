@@ -11,7 +11,7 @@ const logger        = require('../../../util/logger');
 // _FIXME: Creează logica pentru refresh token (https://www.youtube.com/watch?v=mbsmsi7l3r4)
 
 // Utilitarele pentru validarea parolei și emiterea JWT-ul!
-let {issueJWT, generatePassword, validPassword} = require('../../utils/password');
+let {issueJWT, authenticateJWT, generatePassword, validPassword} = require('../../utils/password');
 
 // @desc   creează un utilizator
 // @route  POST /api/v1/user/create
@@ -49,7 +49,7 @@ exports.createUser = async function createUser (req, res, next) {
     let existing = await User.findOne({email: req.body.email}).exec(); // Evită crearea dublurilor
     if (existing) {
       res.status(409);
-      result = {message: 'Emailul deja există!'};
+      result = {success: false, message: 'Emailul deja există!'};
     } else {
       result = await userdoc.save(); // salvează userul
     }
@@ -58,7 +58,7 @@ exports.createUser = async function createUser (req, res, next) {
       res.status(409);
       result = error; // colectează eroarea în result
     } else {
-      res.status(201);
+      res.status(201);  // userul a fost creat
     }
   }
     
@@ -79,7 +79,7 @@ exports.currentUser = function currentUser (req, res, next) {
       contributions: req.user.contributions
     }});
     // next();
-  };
+};
   
 // @desc Loghează userul
 // @route POST /api/v1/user/login
@@ -88,21 +88,20 @@ exports.loginUser = async function loginUser (req, res, next) {
   // Read username and password from request body
   const { username, password } = req.body;
   // Caută userul
-  User.findOne({email: username}).lean().then(user => {
+  User.findOne({email: username}).lean().then((user) => {
     // verifică dacă există utilizatorul
     if (!user) {
-      return res.status(404).json({success: false, message: 'user not found'});
+      return res.status(404).json({success: false, message: 'Nu am așa ceva'});
     }
-
     // Verifică parola
     if (validPassword(password, user.hash, user.salt)) {
       // Dacă parola este ok, creează payload-ul JWT-ului
       const {token} = issueJWT(user);
       res.json({success: true, token});
     } else {
-      return res.status(401).json({success:false, message: 'password incorrect'}); // Unauthorized
+      return res.status(401).json({success:false, message: 'Ceva nu este corect'}); // Unauthorized
     }
-  }).catch(error => {
+  }).catch((error) => {
     // return res.status(500).json(error.toString());
     next(error);
   });
