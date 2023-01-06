@@ -335,8 +335,7 @@ exports.resourcesPool = async function resourcesPool (req, res, next) {
     let filterMgmt = {focus: 'general'};
     let gensettings = await Mgmtgeneral.findOne(filterMgmt);
     // pentru evitarea dependițelor din CDN-uri, se vor încărca dinamic scripturile necesare generării editorului
-    let scripts = [
-        vendor_moment_js,     
+    let scripts = [   
         // HELPER DETECT URLS or PATHS
         {script: `${gensettings.template}/js/check4url.js`}
     ];

@@ -17,7 +17,7 @@ try {
         sniffOnConnectionFault: true,
         log: 'trace'
     }
-    process.env.APP_RUNTIME === 'virtual' ?  `http://${process.env.DOMAIN_VIRT}:9200` : CONFIG.node = CONFIG.node = 'http://localhost:9200';
+    process.env.APP_RUNTIME === 'virtual' ?  CONFIG.node = `http://${process.env.DOMAIN_VIRT}/es01:9200` : CONFIG.node = 'http://localhost:9200';
     
     // instanțiere client
     const client = new Client(CONFIG);

@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon --inspect --trace-warnings app.js",
-    "copy": "webpack --config webpack.config.js",
+    "dev": "nodemon app.js",
     "kill": "kill $(lsof -t -i:8080) | exit 0"
   },
   "nodemonConfig": {
