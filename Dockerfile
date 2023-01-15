@@ -39,7 +39,7 @@ RUN npm install --production=false && npm cache clean --force
 # SOURCE: TEST și PRODUCTION nivel comun
 FROM base as source
 COPY  --chown=node:node . .
-CMD ["nodemon", "app.js"]
+# CMD ["nodemon", "app.js"]
 
 # TEST
 #FROM source as test

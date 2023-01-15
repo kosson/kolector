@@ -214,9 +214,11 @@ services:
     volumes:
       - './repo:/arachnide/repo'
       - './:/arachnide'
+      # previne suprascrierea modificarea din containerul Docker a lui node_modules
       - /arachnide/node_modules
     ports:
       - '8080:8080'
+      - '9229:9229'
     restart: always
     command: npm run dev
     healthcheck:

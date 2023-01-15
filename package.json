@@ -5,17 +5,17 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js",
+    "debug": "node --inspect=0.0.0.0 app.js",
+    "dev": "nodemon --inspect=0.0.0.0 app.js",
     "kill": "kill $(lsof -t -i:8080) | exit 0"
   },
   "nodemonConfig": {
     "ignore": [
       "backup/*",
-      "initdata/*",
       "logs/*",
       "repo/*"
     ],
-    "delay": 0
+    "delay": 2500
   },
   "scriptsComments": {
     "dev": "Pentru Windows trebuie rulată comanda nodemon -L app.js"
@@ -28,12 +28,10 @@
     "url": "git+https://github.com/educred/redcolector.git"
   },
   "keywords": [
-    "resurse educaționale deschise",
+    "depozit digital",
     "resurse educaționale",
-    "red",
-    "cred",
-    "colector",
-    "educred"
+    "resurse digitale",
+    "colector"
   ],
   "author": "Nicolaie Constantinescu",
   "license": "GPL-3.0",

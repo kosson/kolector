@@ -67,7 +67,7 @@ public/bundle
 repo
 
 # nu salva configurările debugger-ului de VS Code
-.vscode
+# .vscode
 
 # nu salva configurarea de workspace
 redcolector.code-workspace
