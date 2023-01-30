@@ -170,8 +170,8 @@ if (process.env.APP_RUNTIME === 'virtual') {
 app.use(cors(corsOptions));
 
 /* === BODY PARSER === */
-app.use(express.urlencoded({extended: true})); // parsing application/x-www-form-urlencoded
-app.use(express.json());
+app.use(express.urlencoded({extended: true, limit: '50mb'})); // parsing application/x-www-form-urlencoded
+app.use(express.json({limit: '50mb'}));
 
 // introdu mesaje flash
 app.use(flash()); // acum ai acces în rute la `req.flash()`.
