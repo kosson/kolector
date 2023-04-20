@@ -1,7 +1,8 @@
-const winston         = require('winston');
-const DailyRotateFile = require('winston-daily-rotate-file');
+const winston = require('winston');
+const { combine, colorize, timestamp, align, printf, json, errors, cli } = winston.format;
+require('winston-daily-rotate-file');
 
-/* CONFIGURARE WINSTON */
+/* CONFIGURARE WINSTON ROTATE */
 let config = {
   "port": 3001,
   "logConfig": {
@@ -9,38 +10,61 @@ let config = {
   }
 };
 var env = process.env.NODE_ENV;
-var levels = {
-  product: 1,
-  error: 1,
-  warn: 3,
-  info: 4,
-  debug: 5
+
+/**
+ * nivelurile de logging respectă nivelurile de severitate specificate prin RFC5424
+ * severitatea este indicată numeric și descrescător de la cel mai sever la cel mai puțin
+ * nivelurile npm: { error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5 }
+ */
+let levels = {
+  error: 0,
+  warn: 1,
+  info: 2,
+  verbose: 3,
+  debug: 4,
+  silly: 5
 };
-var colors = {
+
+let colors = {
   product: 'magenta',
   error:   'red',
   warning: 'yellow',
   info:    'green',
   debug:   'blue',
 };
+winston.addColors(colors);
 
-const errorFilter = winston.format( (info, opts) => {
-  return info.level == 'error' ? info : false;
-});
-
-/* FORMATAREA LOGURILOR */
-const logFormat = winston.format.combine(
-  errorFilter(),
-  winston.format.colorize(),
-  winston.format.timestamp({
-    format: 'DD-MM-YYYY HH:mm:ss'
+/* 
+* FORMATAREA LOGURILOR
+* adaugi mai multe formatări pe care le particularizezi în funcție de necesitate
+*/
+const logFormat = combine(
+  // errorFilter(),
+  colorize({ all: true }),
+  timestamp({
+    format: 'YYYY-MM-DD hh:mm:ss.SSS A'
   }),
-  winston.format.align(),
-  winston.format.printf(info => `[${info.timestamp}] [${info.level}] [${info.label}]: ${info.message}`)
+  align(),
+  printf(info => `[${info.timestamp}] [${info.level}] [${info.label}]: ${info.message}`)
 );
 
-/* CONFIGURAREA TRANSPORTULUI */
-const transport = new DailyRotateFile({
+/**
+ * FILTRE DE FORMATARE A LOG-urilor
+ */
+const errorFilter = winston.format((info, opts) => {
+  return info.level === 'error' ? info : false;
+});
+
+const infoFilter = winston.format((info, opts) => {
+  return info.level === 'info' ? info : false;
+});
+
+/* 
+* CONFIGURAREA TRANSPORTULUI PENTru ROTAȚIE
+* un transport este un dispozitiv de stocare pentru log-uri
+* o instanță winston poate avea mai multe transporturi configurate pe diferite niveluri
+*/
+const rotatedtransport = new winston.transports.DailyRotateFile({
   name:          "Error logs",
   filename:      config.logConfig.logFolder + "error-%DATE%.log",
   label:         "ERROR",
@@ -52,22 +76,88 @@ const transport = new DailyRotateFile({
   level:         "error"
 });
 
-/* ÎN CAZ DE SERVICII EXTERNE */
-// transport.on("rotate", function (oldFilename, newFilename) {
-  // apel către servicii online precum s3 sau alt cloud
-// });
-
+/* 
+* Nivelurile pentru winston.config.syslog.levels
+{
+  emerg: 0,
+  alert: 1,
+  crit: 2,
+  error: 3,
+  warning: 4,
+  notice: 5,
+  info: 6,
+  debug: 7
+}
+EX:
+winston.emerg("Emergency");
+winston.crit("Critical");
+winston.warning("Warning");
+*/
 const logger = winston.createLogger({
-  levels: levels,
-  format: logFormat,
   transports: [
-    transport,
-    new winston.transports.Console({level: "info"}),
-    new winston.transports.Console({level: "warn"})
+    rotatedtransport,
+    new (winston.transports.Console)({
+      level: 'http',
+      showLevel: true,
+      colorize: true,
+      showLevel: true,
+      format: combine(
+        timestamp({
+          format: 'YYYY-MM-DD hh:mm:ss.SSS A',
+        }),
+        json()
+      )
+    }),
+    new (winston.transports.Console)({
+      level: "error",
+      levels: levels,
+      colorize: true,
+      handleExceptions: true,
+      humanReadableUnhandledException: true,
+      showLevel: true,
+      format: combine(errors({ stack: true }), timestamp()),
+      exitOnError: false
+    }),
+    new (winston.transports.Console)({
+      level: "warn",
+      levels: levels,
+      format: logFormat,
+      colorize: true,
+      handleExceptions: true,
+      humanReadableUnhandledException: true,
+      showLevel: true
+    }),
+    new (winston.transports.Console)({
+      level: "info",
+      levels: levels,
+      format: logFormat,
+      colorize: true,
+      showLevel: true
+    }),
+    new (winston.transports.Console)({
+      level: "verbose",
+      levels: levels,
+      format: logFormat,
+      colorize: true,
+      showLevel: true
+    }),
+    new (winston.transports.Console)({
+      level: "silly",
+      levels: levels,
+      format: logFormat,
+      colorize: true,
+      showLevel: true
+    }),
+    new (winston.transports.Console)({
+      levels: winston.config.syslog.levels,
+      format: combine(winston.format.cli()),
+      colorize: true,
+      handleExceptions: true,
+      humanReadableUnhandledException: true,
+      showLevel: true
+    })
   ]
 });
-
-winston.addColors(colors);
 
 /* ÎN DEZVOLTARE ADAUGĂ NIVEL DE LOGGING SUPLIMENTAR */
 // if (env !== 'development') {

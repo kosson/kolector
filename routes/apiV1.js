@@ -9,7 +9,7 @@ const multer  = require('multer');
 
 const avatarstorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log(`[api] BAU`);
+    // console.log(`[api] BAU`);
 
     let calea = `${process.env.REPO_REL_PATH}${req.user.id}/util`;
 

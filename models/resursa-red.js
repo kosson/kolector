@@ -123,12 +123,7 @@ var ResursaSchema = Schema({
         ref: 'badge'
     }],
     ratingTotal: Number, // este numarul la care se adaugă valoarea pentru care a optat un utilizator
-    rating: {
-        type: Number,
-        min: 0,
-        max: 5,
-        default: 0
-    }
+    rating: []
 },
 {
     toJSON:   { virtuals: true },  // So `res.json()` and other `JSON.stringify()` functions include virtuals

@@ -3,13 +3,6 @@ require('dotenv').config();
 const logger = require('./logger');
 const redisClient  = require('../redis.config');
 
-/* INDECȘII ES7 */
-var ESIDXS = {
-    RES_IDX_ES7: '', 
-    RES_IDX_ALS: '', 
-    USR_IDX_ES7: '', 
-    USR_IDX_ALS: ''
-};
 
 /*
 De fiecare dată când se realizează o conexiune, vezi `elasticsearch.config.js`, sunt setate valorile numelor în Redis.
@@ -17,7 +10,16 @@ De fiecare dată când se realizează o conexiune, vezi `elasticsearch.config.js
 */
 exports.getStructure = async function getStructure () {
     try {
-        let val = await redisClient.hgetall(process.env.APP_NAME + ":es"); // redcolector:es
+
+        /* INDECȘII ES7 */
+        let ESIDXS = {
+            RES_IDX_ES7: '', 
+            RES_IDX_ALS: '', 
+            USR_IDX_ES7: '', 
+            USR_IDX_ALS: ''
+        };
+
+        let val = await redisClient.hgetall(process.env.APP_NAME + ":es"); // kolector:es
 
         // console.log(`Valorile obținute de la Redis`, val);
         let k = Object.keys(val), i;
@@ -26,7 +28,6 @@ exports.getStructure = async function getStructure () {
         };
         return ESIDXS;
     } catch (error) {
-        console.log(error);
         logger.error(error);
     }
 };

@@ -2,8 +2,8 @@ require('dotenv').config();
 const config = require('config');
 
 /* === DEPENDINȚE === */
-const crypto       = require('crypto');
-const logger       = require('../../util/logger');
+const crypto      = require('crypto');
+const logger      = require('../../util/logger');
 
 /* === MODELE === */
 const Resursa     = require('../../models/resursa-red');        // Adu modelul resursei
@@ -28,6 +28,7 @@ let vendor_editor_js = config.get('vendor.editorjs.js'),                // Adu-m
 // INDECȘII ES7
 let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';
 getStructure().then((val) => {
+    logger.info(JSON.stringify(val));
     // console.log(`Am obținut `, val);
     USR_IDX_ALS = val.USR_IDX_ALS;
     USR_IDX_ES7 = val.USR_IDX_ES7;
@@ -41,179 +42,140 @@ getStructure().then((val) => {
 // LOGO
 let LOGO_IMG = "img/" + process.env.LOGO;
 
-/* === AFIȘAREA RESURSELOR :: /resurse === */
-exports.loadRootResources = async function loadRootResources (req, res, next) {
-    // Setări în funcție de template
-    let filterMgmt = {focus: 'general'};
-    let gensettings = await Mgmtgeneral.findOne(filterMgmt);
-    //  ACL
-    let roles = ["user", "validator", "cred"];
-    // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
-    let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles); 
-    // console.log("Am următoarele roluri (resurse.ctrl) din req.session.passport: ", req.session.passport.user.roles.rolInCRED);
+/* === AFIȘAREA TUTUROR RESURSELOR VALIDATE :: /exposed (expuse intern în sistem) === */
+exports.exposed = async function exposed (req, res, next) {
+    try {
+        // logger.info(req);
+        // Setări în funcție de template
+        let filterMgmt = {focus: 'general'};
+        let gensettings = await Mgmtgeneral.findOne(filterMgmt);
+        //  ACL
+        let roles = ["user", "validator", "cred"];
+        // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
+        let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles); 
+        // console.log("Am următoarele roluri (resurse.ctrl) din req.session.passport: ", req.session.passport.user.roles.rolInCRED);
 
-    // Adu-mi ultimele 9 resursele validate în ordinea ultimei intrări.
-    let resursePublice = Resursa.find({'expertCheck': 'true'}).sort({"date": -1}).limit(9);
+        // Adu-mi ultimele 9 resursele validate în ordinea ultimei intrări.
+        let resursePublice = Resursa.find({'expertCheck': 'true'}).sort({"date": -1}).limit(9).lean();
 
-    let scripts = [       
-        vendor_moment_js,
-        // HOLDERJS
-        {script: `holderjs/holder.min.js`}
-    ];
-    let modules = [
-        // LOCALE
-        {module: `${gensettings.template}/js/redincredallcursor.mjs`}
-    ];
-    // console.log(`Valorile dorite sunt `, RES_IDX_ES7, RES_IDX_ALS);
-    if (!RES_IDX_ALS) {
-        let err = new Error('[resurse.ctrl.js]::Verificarea existenței alias-ului a dat chix');
-        next(err);
-    }
-    
-    /* ===> VERIFICAREA CREDENȚIALELOR <=== */
-    if(req.session.passport.user.roles.admin){
-        resursePublice.then((result) => {
+        let scripts = [];
+        let modules = [
+            // LOCALE
+            {module: `${gensettings.template}/js/redincredallcursor.mjs`},
+            {module: `${gensettings.template}/js/resources-exposed.mjs`}
+        ];
+        let styles = [
+            {style: `${gensettings.template}/css/resource_unit_exposed.css`},
+            {style: `${gensettings.template}/css/rating.css`}
+        ];
 
-            let fullstar = `<i class="bi bi-star-fill"></i>`,
-                emptystart = `<i class="bi bi-star"></i>`,
-                halfempty = `<i class="bi bi-star-half"></i>`;
+        // if (!RES_IDX_ALS) {
+        //     throw new Error('[resurse.ctrl.js]::Verificarea existenței alias-ului a dat chix');
+        // }
+        
+        /* ===> VERIFICAREA CREDENȚIALELOR <=== */
+        if(req.session.passport.user.roles.admin){
+            let dataArray = await resursePublice;
 
-            let newResultArr = result.map(function clbkMapResult (obi) {
-                const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
-                // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
-                newObi.dataRo = moment(obi.date).locale('ro').format('LLL');
-                // introdu template-ul ca proprietare (necesar stabilirii de linkuri corecte in fiecare element afișat în client)
-                newObi.template = `${gensettings.template}`;
-                newObi.logo = `${gensettings.template}/${LOGO_IMG}`;
-
-                newObi.ratingrepresentation = '';
-                let kontor = newObi.contorRating ?? 0;
-                let lastRating = newObi.rating ?? 0;
-                let ratingTotal = newObi.ratingTotal ?? 0;
-                let presentRating = ratingTotal / kontor;
-
-                // 0 - 0.5 | 0.5 - 1 | 1 - 1.5 | 1.5 - 2 | 2 - 2.5 | 2.5 - 3 | 3 - 3.5 | 3.5 - 4 | 4 - 4.5 | 4.5 - 5
-                if (isNaN(presentRating)) {
-                    newObi.ratingrepresentation = `${emptystart}${emptystart}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 0 && presentRating < 0.5) {
-                    newObi.ratingrepresentation = `${halfempty}${emptystart}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 0.6 && presentRating <= 1) {
-                    newObi.ratingrepresentation = `${fullstar}${emptystart}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 1 && presentRating <= 1.5) {
-                    newObi.ratingrepresentation = `${fullstar}${halfempty}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 1.6 && presentRating <= 2) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 2 && presentRating <= 2.5) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${halfempty}${emptystart}${emptystart}`;
-                } else if (presentRating > 2.6 && presentRating <= 3) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${emptystart}${emptystart}`;
-                } else if (presentRating > 3 && presentRating <= 3.5) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${halfempty}${emptystart}`;
-                } else if (presentRating > 3.6 && presentRating <= 4) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${emptystart}`;
-                } else if (presentRating > 4 && presentRating <= 4.5) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${halfempty}`;
-                } else if (presentRating > 4.6 && presentRating <= 5) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${fullstar}`;
-                }
-                // newResultArr.push(newObi);
-                return newObi;
+            let newDataArray = dataArray.map(function clbkMapResult (obi) {
+                obi['template'] = `${gensettings.template}`;
+                obi['logo'] = `${gensettings.template}/${LOGO_IMG}`;
+                return obi;
             });
 
             let user = req.user;
             let csrfToken = req.csrfToken();
 
-            res.render(`resurse_${gensettings.template}`, {
+            res.render(`resources_exposed_${gensettings.template}`, {
                 template:     `${gensettings.template}`,
                 title:        "interne",
                 user,
                 logoimg:      `${gensettings.template}/${LOGO_IMG}`,
                 csrfToken,
-                resurse:      newResultArr,
+                resurse:      newDataArray,
                 activeResLnk: true,
                 resIdx:       RES_IDX_ES7,
+                styles,
                 scripts,
-                modules
+                modules,
             });
-        }).catch((err) => {
-            if (err) {
-                console.log(JSON.stringify(err.body, null, 2));
-                logger.error(err);
-                next(err);
-            }
-        });
-    } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
-        // promiseResPub.then((result) => {
-        resursePublice.then(function (result) {
+        } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
+            // promiseResPub.then((result) => {
+            resursePublice.then(function (result) {
 
-            let fullstar = `<i class="bi bi-star-fill"></i>`,
-                emptystart = `<i class="bi bi-star"></i>`,
-                halfempty = `<i class="bi bi-star-half"></i>`;
+                let fullstar = `<i class="bi bi-star-fill"></i>`,
+                    emptystart = `<i class="bi bi-star"></i>`,
+                    halfempty = `<i class="bi bi-star-half"></i>`;
 
-            let newResultArr = result.map(function clbkMapResult (obi) {
-                const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
-                // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
-                newObi.dataRo = moment(obi.date).locale('ro').format('LLL');
-                newObi.template = `${gensettings.template}`;
-                newObi.logo = `${gensettings.template}/${LOGO_IMG}`;
+                let newResultArr = result.map(function clbkMapResult (obi) {
+                    const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+                    // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
+                    newObi.dataRo = moment(obi.date).locale('ro').format('LLL');
+                    newObi.template = `${gensettings.template}`;
+                    newObi.logo = `${gensettings.template}/${LOGO_IMG}`;
 
-                newObi.ratingrepresentation = '';
-                let kontor = newObi.contorRating ?? 0;
-                let lastRating = newObi.rating ?? 0;
-                let ratingTotal = newObi.ratingTotal ?? 0;
-                let presentRating = ratingTotal / kontor;
+                    newObi.ratingrepresentation = '';
+                    let kontor = newObi.contorRating ?? 0;
+                    let lastRating = newObi.rating ?? 0;
+                    let ratingTotal = newObi.ratingTotal ?? 0;
+                    let presentRating = ratingTotal / kontor;
 
-                // 0 - 0.5 | 0.5 - 1 | 1 - 1.5 | 1.5 - 2 | 2 - 2.5 | 2.5 - 3 | 3 - 3.5 | 3.5 - 4 | 4 - 4.5 | 4.5 - 5
-                if (isNaN(presentRating)) {
-                    newObi.ratingrepresentation = `${emptystart}${emptystart}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 0 && presentRating < 0.5) {
-                    newObi.ratingrepresentation = `${halfempty}${emptystart}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 0.6 && presentRating <= 1) {
-                    newObi.ratingrepresentation = `${fullstar}${emptystart}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 1 && presentRating <= 1.5) {
-                    newObi.ratingrepresentation = `${fullstar}${halfempty}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 1.6 && presentRating <= 2) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${emptystart}${emptystart}${emptystart}`;
-                } else if (presentRating > 2 && presentRating <= 2.5) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${halfempty}${emptystart}${emptystart}`;
-                } else if (presentRating > 2.6 && presentRating <= 3) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${emptystart}${emptystart}`;
-                } else if (presentRating > 3 && presentRating <= 3.5) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${halfempty}${emptystart}`;
-                } else if (presentRating > 3.6 && presentRating <= 4) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${emptystart}`;
-                } else if (presentRating > 4 && presentRating <= 4.5) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${halfempty}`;
-                } else if (presentRating > 4.6 && presentRating <= 5) {
-                    newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${fullstar}`;
-                }                
-                // newResultArr.push(newObi);
-                return newObi;
+                    // 0 - 0.5 | 0.5 - 1 | 1 - 1.5 | 1.5 - 2 | 2 - 2.5 | 2.5 - 3 | 3 - 3.5 | 3.5 - 4 | 4 - 4.5 | 4.5 - 5
+                    if (isNaN(presentRating)) {
+                        newObi.ratingrepresentation = `${emptystart}${emptystart}${emptystart}${emptystart}${emptystart}`;
+                    } else if (presentRating > 0 && presentRating < 0.5) {
+                        newObi.ratingrepresentation = `${halfempty}${emptystart}${emptystart}${emptystart}${emptystart}`;
+                    } else if (presentRating > 0.6 && presentRating <= 1) {
+                        newObi.ratingrepresentation = `${fullstar}${emptystart}${emptystart}${emptystart}${emptystart}`;
+                    } else if (presentRating > 1 && presentRating <= 1.5) {
+                        newObi.ratingrepresentation = `${fullstar}${halfempty}${emptystart}${emptystart}${emptystart}`;
+                    } else if (presentRating > 1.6 && presentRating <= 2) {
+                        newObi.ratingrepresentation = `${fullstar}${fullstar}${emptystart}${emptystart}${emptystart}`;
+                    } else if (presentRating > 2 && presentRating <= 2.5) {
+                        newObi.ratingrepresentation = `${fullstar}${fullstar}${halfempty}${emptystart}${emptystart}`;
+                    } else if (presentRating > 2.6 && presentRating <= 3) {
+                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${emptystart}${emptystart}`;
+                    } else if (presentRating > 3 && presentRating <= 3.5) {
+                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${halfempty}${emptystart}`;
+                    } else if (presentRating > 3.6 && presentRating <= 4) {
+                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${emptystart}`;
+                    } else if (presentRating > 4 && presentRating <= 4.5) {
+                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${halfempty}`;
+                    } else if (presentRating > 4.6 && presentRating <= 5) {
+                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${fullstar}`;
+                    }                
+                    // newResultArr.push(newObi);
+                    return newObi;
+                });
+
+                res.render(`resurse_${gensettings.template}`, {
+                    template:     `${gensettings.template}`,
+                    title:        "interne",
+                    user:         req.user,
+                    logoimg:      `${gensettings.template}/${LOGO_IMG}`,
+                    csrfToken:    req.csrfToken(),                
+                    resurse:      newResultArr,
+                    activeResLnk: true,
+                    resIdx:       RES_IDX_ES7,
+                    scripts,
+                    modules
+                });
+            }).catch((err) => {
+                if (err) {
+                    // console.log(JSON.stringify(err.body, null, 2));
+                    logger.error(err);
+                    res.redirect('/500');
+                    // next(err);
+                }
             });
-
-            res.render(`resurse_${gensettings.template}`, {
-                template:     `${gensettings.template}`,
-                title:        "interne",
-                user:         req.user,
-                logoimg:      `${gensettings.template}/${LOGO_IMG}`,
-                csrfToken:    req.csrfToken(),                
-                resurse:      newResultArr,
-                activeResLnk: true,
-                resIdx:       RES_IDX_ES7,
-                scripts,
-                modules
-            });
-        }).catch((err) => {
-            if (err) {
-                console.log(JSON.stringify(err.body, null, 2));
-                logger.error(err);
-                next(err);
-            }
-        });
-    } else {
-        res.redirect('/401');
+        } else {
+            res.redirect('/401');
+        }
+        // console.log(req.session.passport.user.roles); // { rolInCRED: [], unit: [], admin: true }
+    } catch (error) {
+        logger.error(error);
+        next(error);
     }
-    // console.log(req.session.passport.user.roles); // { rolInCRED: [], unit: [], admin: true }
 };
 
 /* AFIȘAREA UNEI SINGURE RESURSE / ȘTERGERE / EDITARE :: /resurse/:id */
@@ -223,19 +185,17 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
     let gensettings = await Mgmtgeneral.findOne(filterMgmt);
 
     let scripts = [
-        vendor_moment_js,
+        // vendor_moment_js,
         {script: `${gensettings.template}/js/check4url.js`},
         // DOWNLOADFILE
-        {script: `${gensettings.template}/lib/downloadFile.js`},
-        // STAR RATING
-        {script: `${gensettings.template}/lib/jquery.star-rating-svg.js`}
+        {script: `${gensettings.template}/lib/downloadFile.js`}
     ];
 
     let modules = [
         ...vendor_editor_js, ...vendor_editor_js_plugins,
         {module: `${gensettings.template}/js/uploader.mjs`},
         // LOCALE
-        {module: `${gensettings.template}/js/cred-res.js`}           
+        {module: `${gensettings.template}/js/resource-internal.js`}           
     ];
 
     function renderRED (resursa) {
@@ -265,47 +225,12 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
             
             obi.activitati = activitatiRehashed;
 
-            let fullstar = `<i class="bi bi-star-fill"></i>`,
-                emptystart = `<i class="bi bi-star"></i>`,
-                halfempty = `<i class="bi bi-star-half"></i>`;
-
-            obi.ratingrepresentation = '';
-            let kontor = obi.contorRating ?? 0;
-            let lastRating = obi.rating ?? 0;
-            let ratingTotal = obi.ratingTotal ?? 0;
-            let presentRating = ratingTotal / kontor;
-
-            // 0 - 0.5 | 0.5 - 1 | 1 - 1.5 | 1.5 - 2 | 2 - 2.5 | 2.5 - 3 | 3 - 3.5 | 3.5 - 4 | 4 - 4.5 | 4.5 - 5
-            if (isNaN(presentRating)) {
-                obi.ratingrepresentation = `${emptystart}${emptystart}${emptystart}${emptystart}${emptystart}`;
-            } else if (presentRating > 0 && presentRating < 0.5) {
-                obi.ratingrepresentation = `${halfempty}${emptystart}${emptystart}${emptystart}${emptystart}`;
-            } else if (presentRating > 0.6 && presentRating <= 1) {
-                obi.ratingrepresentation = `${fullstar}${emptystart}${emptystart}${emptystart}${emptystart}`;
-            } else if (presentRating > 1 && presentRating <= 1.5) {
-                obi.ratingrepresentation = `${fullstar}${halfempty}${emptystart}${emptystart}${emptystart}`;
-            } else if (presentRating > 1.6 && presentRating <= 2) {
-                obi.ratingrepresentation = `${fullstar}${fullstar}${emptystart}${emptystart}${emptystart}`;
-            } else if (presentRating > 2 && presentRating <= 2.5) {
-                obi.ratingrepresentation = `${fullstar}${fullstar}${halfempty}${emptystart}${emptystart}`;
-            } else if (presentRating > 2.6 && presentRating <= 3) {
-                obi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${emptystart}${emptystart}`;
-            } else if (presentRating > 3 && presentRating <= 3.5) {
-                obi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${halfempty}${emptystart}`;
-            } else if (presentRating > 3.6 && presentRating <= 4) {
-                obi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${emptystart}`;
-            } else if (presentRating > 4 && presentRating <= 4.5) {
-                obi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${halfempty}`;
-            } else if (presentRating > 4.6 && presentRating <= 5) {
-                obi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${fullstar}`;
-            }
-
             let data = {
                 uuid: obi.uuid,
                 publisher: gensettings.publisher
             };            
 
-            res.render(`resursa-interna_${gensettings.template}`, {   
+            res.render(`resource-internal_${gensettings.template}`, {   
                 template: `${gensettings.template}`,             
                 title:     obi.title,
                 user:      req.user,
@@ -322,9 +247,9 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
     Resursa.findById(req.params.id).populate({path: 'competenteS'})
             .then(renderRED).catch(err => {
                 if (err) {
-                    console.log(JSON.stringify(err.body, null, 2));
+                    // console.log(JSON.stringify(err.body, null, 2));
                     logger.error(err);
-                    next(err);
+                    // next(err);
                 }
             });
 };

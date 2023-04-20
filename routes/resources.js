@@ -10,14 +10,13 @@ const resurseCtrl = require('./controllers/resurse.ctrl');
 // helper de caching
 const cleanCache = require('./controllers/cacheClear.helper');
 
-/* GET::/resurse */
-// console.log(typeof(resurseCtrl.loadRootResources));
-router.get('/', (req, res, next) => {
-    resurseCtrl.loadRootResources(req, res, next).catch((error) => {
-        console.log(error);
-        logger(error);
+/* GET::/resources/exposed */
+router.get('/exposed', (req, res, next) => {
+    resurseCtrl.exposed(req, res, next).catch((error) => {
+        logger.error(error);
         next(error);
-    })
+    });
+    // res.status(200).json({"message": "OK"});
 });
 
 /* GET::/resurse/adauga - Pe această rută se obține formularul de adăugare a resurselor doar dacă ești logat, având rolurile menționate */
@@ -39,7 +38,7 @@ router.get('/adauga/monografie', (req, res, next) => {
     });
 });
 
-/* GET::/resurse/adauga/red - Adaugă resurse educaționale deschise */
+/* GET::/resources/adauga/red - Adaugă resurse educaționale deschise */
 router.get('/adauga/red', (req, res, next) => {
     resurseCtrl.describeRED(req, res, next).catch((error) => {
         console.log(error);
@@ -49,7 +48,7 @@ router.get('/adauga/red', (req, res, next) => {
     })
 });
 
-/* GET::/resurse/:id */
+/* GET::/resources/:id */
 router.get('/:id', (req, res, next) => {
     resurseCtrl.loadOneResource(req, res, next).catch((error) => {
         console.log(error);

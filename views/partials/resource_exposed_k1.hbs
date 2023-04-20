@@ -1,0 +1,61 @@
+                <div class="unit">
+                    <div class="unit-header">
+                        <h3 class="unit-title">
+                            <a href="/resources/{{this._id}}" maxlength="4">{{this.title}}</a>
+                        </h3>
+                        <div class="row mb-2 text-muted">
+                            <p class="card-subtitle col-sm-6 text-muted">{{this.autori}}</p>
+                            <p class="card-subtitle col-sm-6 text-muted">{{this.dataRo}}</p>
+                        </div>
+                    </div>
+                    {{!-- <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}"> --}}
+                    <div class="unit-body">
+                        <main class="unit-description">
+                            <aside>
+                                {{!-- Dacă există copertă, afișeaz-o --}}
+                                {{#if this.coperta}}
+                                    <div class="res-ilustration">
+                                        <img src="{{this.coperta}}" class="unit-img-top" alt="{{this.title}}">
+                                    </div>
+                                {{else}}
+                                    <div class="res-ilustration res-ilustration-substitute">
+                                        {{this.logoimg}}
+                                        <img src="/{{logo}}" class="res-ilustration-substitute__logo" alt="logo">
+                                        <img src="/{{template}}/img/black-1072366_1920.jpg" class="res-ilustration-coperta" alt="{{resursa.title}}" height="200px">
+                                    </div>
+                                {{/if}}
+                            </aside>
+
+                            <div>
+                                <p class="unit-description-text">{{this.description}}</p>
+                            </div>
+
+                            <div class="rating-system">
+
+                                <input class='rating-input' type="radio" name='rate' id="star1" />
+                                <label class='rating-label' for="star1"></label>
+
+                                <input class='rating-input' type="radio" name='rate' id="star2" />
+                                <label class='rating-label' for="star2"></label>
+
+                                <input class='rating-input' type="radio" name='rate' id="star3" />
+                                <label class='rating-label' for="star3"></label>
+
+                                <input class='rating-input' type="radio" name='rate' id="star4" />
+                                <label class='rating-label' for="star4"></label>
+
+                                <input class='rating-input' type="radio" name='rate' id="star5" />
+                                <label class='rating-label' for="star5"></label>
+                                
+                                <div class="rating-text"></div>
+                            </div>
+                        </main>  
+                    </div>
+                    <div class="unit-footer">
+                        {{#each this.etichete}}
+                            <a href="/tag/{{this}}">
+                                <span class="badge badge-info">{{this}}</span>
+                            </a>
+                        {{/each}}
+                    </div>
+                </div>

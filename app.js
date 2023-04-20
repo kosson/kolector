@@ -59,8 +59,6 @@ elastClient.info().then((r) => {
     return new Error(`La conectarea cu Elasticsearch a apărut eroarea `, error);
 });
 
-// console.log(JSON.stringify(connectors));
-
 global.CronJob = require('./util/cron'); // CRON -> programarea side ops-urilor
 global.__basedir = __dirname;
 
@@ -257,9 +255,60 @@ app.use('/login', login);
 // API v.1
 app.use('/api/v1', api); // accesul la prima versiune a api-ului
 
+/* 
+* LOGGING CU MORGAN 
+* Creează un middleware prin care să transformi mesajele în JSON format
+* vezi: https://betterstack.com/community/guides/logging/how-to-install-setup-and-use-winston-and-morgan-to-log-node-js-applications/
+*/
+const morganDevMiddleware = devlog(
+    function morganMiddleware (tokens, req, res) {
+      return JSON.stringify({
+        method: tokens.method(req, res),
+        url: tokens.url(req, res),
+        status: Number.parseFloat(tokens.status(req, res)),
+        content_length: tokens.res(req, res, 'content-length'),
+        response_time: Number.parseFloat(tokens['response-time'](req, res)),
+      });
+    },
+    {
+      stream: {
+        // Configure Morgan to use our custom logger with the http severity
+        write: (message) => {
+          const data = JSON.parse(message);
+          logger.http(`incoming-request`, data);
+        },
+      },
+    }
+);
+// logging după regimul aplicației
+if (process.env.NODE_ENV !== 'production') {
+    app.use(morganDevMiddleware); // logging la toate cererile în format JSON
+} else {
+    app.use(devlog('combined', {
+        skip: function(req, res) {
+            return res.statusCode >= 400;
+        },
+        stream: process.stdout
+    })); // logging în consolă pentru tot ce este peste 400
+}
 
-/* LOGGING CU MORGAN */
-app.use(devlog('dev'));
+// TRATARE ERORI - MODUL GENERAL
+// Trimite toate erorile în client ca JSON
+app.use((err, req, res, next) => {
+    // Fallback la handler-ul Node-ului
+    if (res.headersSent) {
+        next(err);
+        return;
+    }
+
+    logger.error(err.message, {url: req.originalUrl});
+
+    res.status(500);
+    res.json({ error: err.message });
+    // res.redirect(`/errors/500`);
+    
+});
+
 
 /* === CSRF - Cross Site Request Forgery - expressjs.com/en/resources/middleware/csurf.html === */
 const csurfProtection = csurf({
@@ -329,7 +378,7 @@ let callbackG      = require('./routes/authGoogle/callbackG');
 let logout         = require('./routes/logout');
 let administrator  = require('./routes/administrator');
 let tertium        = require('./routes/tertium');
-let resurse        = require('./routes/resurse');
+let resources      = require('./routes/resources');
 let log            = require('./routes/log');
 let publice        = require('./routes/public');
 let profile        = require('./routes/profile');
@@ -348,26 +397,12 @@ app.use('/resursepublice', csurfProtection, publice);
 app.use('/tertium',        csurfProtection, tertium);
 app.use('/help',           csurfProtection, help);
 app.use('/administrator',  csurfProtection, UserPassport.ensureAuthenticated, administrator);
-app.use('/resurse',        csurfProtection, UserPassport.ensureAuthenticated, resurse);
+app.use('/resources',      csurfProtection, UserPassport.ensureAuthenticated, resources);
 app.use('/log',            csurfProtection, UserPassport.ensureAuthenticated, log);
 app.use('/profile',        csurfProtection, profile);
 app.use('/tag',            csurfProtection, tags);
 app.use('/errors',         csurfProtection, errors);
 app.use('/devnull',        csurfProtection, devnull);
-
-// CONSTANTE
-const LOGO_IMG = "img/" + process.env.LOGO;
-
-// colectarea erorilor de pe toate middleware-urile
-app.use( async function catchAllMiddleware (err, req, res, next) {
-    // Setări în funcție de template
-    let filterMgmt = {focus: 'general'};
-    let gensettings = await Mgmtgeneral.findOne(filterMgmt);
-
-    console.error('Aplicația a crăpat cu următoarele detalii: ', err.stack);
-    logger.error(err);
-    res.redirect(`/errors/500`);
-});
 
 /**
  * Funcția are rolul de a transforma numărul de bytes într-o valoare human readable

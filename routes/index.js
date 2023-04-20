@@ -38,10 +38,13 @@ router.get('/', (req, res, next) => {
             ],
             [
                 {module: `${gensettings.template}/lib/npm/popper.min.js`},
-                {module: `${gensettings.template}/js/main.mjs`}
+                {module: `${gensettings.template}/js/main.mjs`},
+                {module: `${gensettings.template}/js/resources-exposed.mjs`}
             ],
             [
-                {style: `${gensettings.template}/lib/npm/all.min.css`}
+                {style: `${gensettings.template}/lib/npm/all.min.css`},
+                {style: `${gensettings.template}/css/resource_unit_exposed.css`},
+                {style: `${gensettings.template}/css/rating.css`}
             ]
         ];
 
