@@ -4,6 +4,7 @@ const config = require('config');
 /* === DEPENDINȚE === */
 const crypto      = require('crypto');
 const logger      = require('../../util/logger');
+const calcAverageRating = require('../../util/rating'); // încarcă funcția de rating pentru resursă
 
 /* === MODELE === */
 const Resursa     = require('../../models/resursa-red');        // Adu modelul resursei
@@ -75,23 +76,27 @@ exports.exposed = async function exposed (req, res, next) {
         
         /* ===> VERIFICAREA CREDENȚIALELOR <=== */
         if(req.session.passport.user.roles.admin){
-            let dataArray = await resursePublice;
+            let dataArray = await resursePublice; // datele celor nouă înregistrări aduse din bază
 
+            // înjectează proprietăți utile clientului când datele sunt la dispoziția sa
             let newDataArray = dataArray.map(function clbkMapResult (obi) {
                 obi['template'] = `${gensettings.template}`;
                 obi['logo'] = `${gensettings.template}/${LOGO_IMG}`;
+                // pentru fiecare resursă, fă calculul rating-ului de cinci stele și trimite o valoare în client
+               if (obi?.metrics?.fiveStars) {
+                console.log(`Datele găsite sunt: ${obi.metrics.fiveStars}, de tipul ${Array.isArray(obi.metrics.fiveStars)}`);
+                obi['rating5stars'] = calcAverageRating(obi.metrics.fiveStars.map(n => Number(n)), config.metrics.values4levels);
+               }
+
                 return obi;
             });
-
-            let user = req.user;
-            let csrfToken = req.csrfToken();
 
             res.render(`resources_exposed_${gensettings.template}`, {
                 template:     `${gensettings.template}`,
                 title:        "interne",
-                user,
+                user:         req.user,
                 logoimg:      `${gensettings.template}/${LOGO_IMG}`,
-                csrfToken,
+                csrfToken:    req.csrfToken(),
                 resurse:      newDataArray,
                 activeResLnk: true,
                 resIdx:       RES_IDX_ES7,

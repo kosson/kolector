@@ -143,5 +143,8 @@
                 {"module": "@codexteam/icons/dist/index.mjs"}
             ]
         }
+    },
+    "metrics": {
+        "values4levels": [33, 29, 40, 124, 252]
     }
 }

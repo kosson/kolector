@@ -33,7 +33,7 @@ function dbconnection (mongoose) {
             mongoose.connect(address, CONFIG); // conectarea la bază
         
             mongoose.connection.on('error', (err) => {
-                logger.error(error);
+                logger.error(err);
                 throw new Error(`[mongoose.congfig.js] Nu mă pot conecta: ${err}`);
             });
 

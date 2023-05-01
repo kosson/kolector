@@ -45,6 +45,7 @@
 
     <template id="recordRED"></template>
 
+    {{!-- CÂMPUL DE CĂUTARE --}}
     <div id="searchinternal" class="searchfield">
         <form id="searchResInCRED" class="mx-auto col-sm-8">
             {{!-- trebui musai `onSubmit="return false;"`. E bug de Bootstrap 4 --}}
@@ -1030,7 +1031,6 @@
 
         {{!-- Ultimele resurse afișate --}}
         <div id="primare" class="units container">
-
             {{!-- Randează ultimele 9 resurse create --}}
             {{#each resurse}}
                 {{> resource_exposed_k1}}

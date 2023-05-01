@@ -595,7 +595,7 @@ function getPagedResultsES7 (evt) {
 
 }
 
-/* === PRIMESC DATELE DIN SERVER === */
+/* === PRIMESC DATELE PAGINATE DIN SERVER === */
 pubComm.on('pagedRes', function clbkPagedRes (dataset) {
     removeAllChildren(primare);
     paginare(dataset);
@@ -777,7 +777,6 @@ let searchCriteria = {
         ["expertCheck", true]
     ]
 };
-
 
 /* === Căutarea în ELASTICSEARCH === */
 

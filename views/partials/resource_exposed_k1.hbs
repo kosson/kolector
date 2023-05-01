@@ -1,3 +1,4 @@
+                {{!-- O ÎNREGISTRARE în /resources/exposed --}}
                 <div class="unit">
                     <div class="unit-header">
                         <h3 class="unit-title">
@@ -29,6 +30,9 @@
                             <div>
                                 <p class="unit-description-text">{{this.description}}</p>
                             </div>
+                            {{!-- Modul de rating --}}
+
+<p>Ar fi: {{this.rating5stars}}</p>
 
                             <div class="rating-system">
 
@@ -46,6 +50,8 @@
 
                                 <input class='rating-input' type="radio" name='rate' id="star5" />
                                 <label class='rating-label' for="star5"></label>
+
+                                
                                 
                                 <div class="rating-text"></div>
                             </div>
