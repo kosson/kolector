@@ -75,41 +75,8 @@
                                 </a> <span>{{resursa.autori}}</span>
                             </p>
 
-                            {{!-- APRECIERE --}}
-                            <div class="apreciere">
-                                <div class="star-rating" style="width: 200px;height: 100px"></div>
-                                <script>
-
-                                     $(".star-rating").starRating({
-                                        starSize: 25,
-                                        activeColor: '#FDCB0B',
-                                        callback: function(currentRating, $el){
-                                            // Creează event în server
-                                            console.log(currentRating);
-                                        }
-                                    });
-                                </script>
-                                <!-- 
-                                <div>
-                                    <p>{{{resursa.ratingrepresentation}}}</p>
-                                </div>
-                                                                
-                                <div>
-                                    <label for="evalstars" class="form-label"></label>            
-                                    <input id="evalstars" type="range" min="0" max="5" step="0.1" value="0" list="stars">
-                                    <datalist id="stars">
-                                        {{!-- https://css-tricks.com/sliding-nightmare-understanding-range-input/ --}}
-                                        <option value="0" label="0">0</option>
-                                        <option value="1" label="1">1</option>
-                                        <option value="2" label="2">2</option>
-                                        <option value="3" label="3">3</option>
-                                        <option value="4" label="4">4</option>
-                                        <option value="5" label="5">5</option>
-                                    </datalist>
-                                </div>
-                                -->
-                            </div>
-                            
+                            {{!-- Modul de rating --}}
+                            {{> resource_rating_5s_k1}}                            
                         </div>
 
                         {{!-- Dacă există titluri alternative, afișează-le --}}

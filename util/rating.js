@@ -2,7 +2,7 @@
  * Funcția calculează media aritmetică a unor valori dintr-un array ce reprezintă 
  * de câte ori s-a optat pentru un anumit nivel de apreciere din cinci. Valorile
  * ce contabilizează de câte ori s-a optat pentru un anumit nivel sunt în Array-ul
- * `ratings` ca prim argument. Cel de-al doilea argument esteun array al valorii 
+ * `ratings` ca prim argument. Cel de-al doilea argument este un array al valorii 
  * pentru fiecare nivel. Această valoare vine dintr-o setare fixă - din config.
  * @param {Array} ratings 
  * @param {Array} values valorile sunt fixe în default.json (config): `"values4levels": [33, 29, 40, 124, 252]`
@@ -22,8 +22,8 @@ function calcAverageRating(ratings, values) {
   
     const averageRating = totalVotesValue / totalVotes; // valoarea calculată a tuturor aprecierilor / toți votanții
   
-    // return Math.round(averageRating.toFixed(2));
-    return averageRating.toFixed(2); // 52.63
+    return Math.round(averageRating.toFixed(2));
+    // return averageRating.toFixed(2);
   };
 
   module.exports = calcAverageRating;

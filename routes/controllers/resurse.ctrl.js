@@ -82,11 +82,12 @@ exports.exposed = async function exposed (req, res, next) {
             let newDataArray = dataArray.map(function clbkMapResult (obi) {
                 obi['template'] = `${gensettings.template}`;
                 obi['logo'] = `${gensettings.template}/${LOGO_IMG}`;
+                
                 // pentru fiecare resursă, fă calculul rating-ului de cinci stele și trimite o valoare în client
-               if (obi?.metrics?.fiveStars) {
-                console.log(`Datele găsite sunt: ${obi.metrics.fiveStars}, de tipul ${Array.isArray(obi.metrics.fiveStars)}`);
-                obi['rating5stars'] = calcAverageRating(obi.metrics.fiveStars.map(n => Number(n)), config.metrics.values4levels);
-               }
+                if (obi?.metrics?.fiveStars) {
+                    console.log(`Datele găsite sunt: ${obi.metrics.fiveStars}, de tipul ${Array.isArray(obi.metrics.fiveStars)}`);
+                    obi['rating5stars'] = calcAverageRating(obi.metrics.fiveStars.map(n => Number(n)), config.metrics.values4levels);
+                }
 
                 return obi;
             });
@@ -185,40 +186,44 @@ exports.exposed = async function exposed (req, res, next) {
 
 /* AFIȘAREA UNEI SINGURE RESURSE / ȘTERGERE / EDITARE :: /resurse/:id */
 exports.loadOneResource = async function loadOneResource (req, res, next) {
-    // Setări în funcție de template
-    let filterMgmt = {focus: 'general'};
-    let gensettings = await Mgmtgeneral.findOne(filterMgmt);
+    try {
+        // Setări în funcție de template
+        let filterMgmt = {focus: 'general'};
+        let gensettings = await Mgmtgeneral.findOne(filterMgmt);
 
-    let scripts = [
-        // vendor_moment_js,
-        {script: `${gensettings.template}/js/check4url.js`},
-        // DOWNLOADFILE
-        {script: `${gensettings.template}/lib/downloadFile.js`}
-    ];
+        let scripts = [
+            // vendor_moment_js,
+            {script: `${gensettings.template}/js/check4url.js`},
+            // DOWNLOADFILE
+            {script: `${gensettings.template}/lib/downloadFile.js`}
+        ];
 
-    let modules = [
-        ...vendor_editor_js, ...vendor_editor_js_plugins,
-        {module: `${gensettings.template}/js/uploader.mjs`},
-        // LOCALE
-        {module: `${gensettings.template}/js/resource-internal.js`}           
-    ];
+        let modules = [
+            ...vendor_editor_js, ...vendor_editor_js_plugins,
+            {module: `${gensettings.template}/js/uploader.mjs`},
+            // LOCALE
+            {module: `${gensettings.template}/js/resource-internal.js`}           
+        ];
 
-    function renderRED (resursa) {
-        if (resursa.id) {
-            // transformă obiectul document de Mongoose într-un obiect normal.
-            const obi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+        let styles = [
+            {style: `${gensettings.template}/css/rating.css`}
+        ];
+
+        function renderRED (resursa) {
+            // creează din `resursa` un alt POJO
+            const obi = Object.assign({}, resursa);
 
             // obiectul competenței specifice cu toate datele sale trebuie curățat.
             obi.competenteS = obi.competenteS.map(obi => {
-                return Object.assign({}, obi._doc);
+                return Object.assign({}, obi);
             });
 
             // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
             obi.editorContent = JSON.stringify(resursa);
 
             // resursa._doc.content = editorJs2html(resursa.content);
-            let localizat = moment(obi.date).locale('ro').format('LLL');
-            obi.dataRo = `${localizat}`; // formatarea datei pentru limba română.            
+            // let localizat = moment(obi.date).locale('ro').format('LLL');
+            // obi.dataRo = `${localizat}`; // formatarea datei pentru limba română.            
 
             // Array-ul activităților modificat
             let activitatiRehashed = obi.activitati.map((elem) => {
@@ -244,19 +249,23 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
                 resursa:   obi,
                 data,
                 scripts,
-                modules                
+                modules,
+                styles
             });
-        }
-    };
+        };
 
-    Resursa.findById(req.params.id).populate({path: 'competenteS'})
-            .then(renderRED).catch(err => {
-                if (err) {
-                    // console.log(JSON.stringify(err.body, null, 2));
-                    logger.error(err);
-                    // next(err);
-                }
-            });
+        let resursa = await Resursa.findById(req.params.id).populate({path: 'competenteS'}).lean();
+
+        if (resursa) {
+            renderRED(resursa);
+        }
+    } catch (error) {
+        if (error) {
+            // console.log(JSON.stringify(err.body, null, 2));
+            logger.error(error);
+            next(error);
+        }       
+    }
 };
 
 /* Afișarea meniului de selecție pentru tipologia de resurse posibile */

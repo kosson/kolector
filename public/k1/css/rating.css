@@ -1,90 +1,72 @@
 .rating-system {
-    /* width: auto; */
-    display: block;
-    margin: 1rem, 1rem;
-    /* position: relative; */
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
 }
-.rating-text {
+
+.radio-input {
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.radio-label {
+    cursor: pointer;
+    font-size: 0;
+    color: rgba(0,0,0,0.2);
+    transition: color 0.1s ease-in-out;
+}
+
+.radio-label:before {
+    content: "★";
+    display: inline-block;
+    font-size: 32px;
+}
+
+.radio-input:checked ~ .radio-label {
+    color: #ffc700;
+    color: gold;
+}
+
+.radio-label:hover,
+.radio-label:hover ~ .radio-label {
+    color: goldenrod;
+}
+
+.radio-input:checked + .radio-label:hover,
+.radio-input:checked + .radio-label:hover ~ .radio-label,
+.radio-input:checked ~ .radio-label:hover,
+.radio-input:checked ~ .radio-label:hover ~ .radio-label,
+.radio-label:hover ~ .radio-input:checked ~ .radio-label {
+    color: darkgoldenrod;
+}
+
+.average-rating {
+    position: relative;
+    appearance: none;
+    color: transparent;
     width: auto;
     display: inline-block;
+    vertical-align: baseline;
+    font-size: 1.4rem;
 }
 
-input.rating-input {
-    display: none;
-}
-
-label.rating-label {
-    float: right;
-    display: inline-block;
-    width: 20px;
-    height: 5px;
-    background: #ccc;
-    margin: 4px;
-    position: relative;
-    transition: all .3s;
-}
-.rating-system label.rating-label {
-    width: 10px;
-    height: 10px;
-    margin: 0 10px;
-}
-.rating-system label.rating-label:hover,
-.rating-system label.rating-label:hover ~ label.rating-label {
-    background:crimson;
-    border-radius: 100%
-}
-
-.rating-system input.rating-input:checked ~ label.rating-label {
-    border-radius: 100%;
-    background: crimson;
-    box-shadow: 6px 0 crimson, 3px 1px 0 7px #ffffff,3px 1px 0 9px crimson;
-}
-.rating-system input.rating-input:checked ~ label.rating-label:after {
-    content: '';  
-    width: 100%;
-    height: 100%;
+/* 
+    Responsabil pentru afișarea aprecierilor.
+    Variabila se creează inline pe element și preia din datele primite în client
+*/
+.average-rating::before {
+    --percent: calc(var(--rating) / 5 * 100%);
+    content: '★★★★★';
     position: absolute;
-    background: crimson;
-    transform: rotate(-45deg);
-    border-bottom-left-radius: 15%;
-    top: 30%;
-    left: 3px;
+    top: 0;
+    left: 0;
+    color: rgba(0,0,0,0.2);
+    background: linear-gradient(90deg, rgb(198, 81, 228) var(--percent), rgba(0,0,0,0.2) var(--percent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-/*selecting*/
-input.rating-input:nth-of-type(5):checked  ~ .rating-text:before{
-    content:"Are potențial";
-}
-
-label.rating-label:nth-of-type(5):hover  ~ .rating-text:before {
-    content:"Are potențial"!important;
-}
-input.rating-input:nth-of-type(4):checked  ~ .rating-text:before {
-    content:"Merge";
-}
-
-label.rating-label:nth-of-type(4):hover  ~ .rating-text:before {
-    content:"Merge"!important;
-}
-
-input.rating-input:nth-of-type(3):checked  ~ .rating-text:before {
-    content:"Bunișoară";
-}
-
-label.rating-label:nth-of-type(3):hover  ~ .rating-text:before {
-    content:"Bunișoară"!important;
-}
-
-input.rating-input:nth-of-type(2):checked  ~ .rating-text:before {
-    content: "Foarte bună";
-}
-label.rating-label:nth-of-type(2):hover  ~ .rating-text:before {
-    content: "Foarte bună"!important;
-}
-
-input.rating-input:nth-of-type(1):checked  ~ .rating-text:before {
-    content: "Excelentă";
-}
-label.rating-label:nth-of-type(1):hover  ~ .rating-text:before{
-    content:"Excelentă"!important;
+form {
+    margin: 0 0 1rem;
 }

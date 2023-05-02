@@ -24,7 +24,7 @@ router.get('/exposed', (req, res, next) => {
 router.get('/adauga', (req, res, next) => {
     resurseCtrl.resourcesPool(req, res, next).catch((error) => {
         console.log(error);
-        logger(error);
+        logger.error(error);
         next(error);
     })
 });
@@ -33,7 +33,7 @@ router.get('/adauga', (req, res, next) => {
 router.get('/adauga/monografie', (req, res, next) => {
     resurseCtrl.describeBFMonograph(req, res, next).catch((error) => {
         console.log(error);
-        logger(error);
+        logger.error(error);
         next(error);
     });
 });
@@ -41,18 +41,16 @@ router.get('/adauga/monografie', (req, res, next) => {
 /* GET::/resources/adauga/red - Adaugă resurse educaționale deschise */
 router.get('/adauga/red', (req, res, next) => {
     resurseCtrl.describeRED(req, res, next).catch((error) => {
-        console.log(error);
-        console.log(typeof(logger));
-        // logger(error);
+        logger.error(error);
         next(error);
     })
 });
 
-/* GET::/resources/:id */
+/* ÎNCARCĂ O SINGURĂ RESURSĂ GET::/resources/:id */
 router.get('/:id', (req, res, next) => {
     resurseCtrl.loadOneResource(req, res, next).catch((error) => {
         console.log(error);
-        logger(error);
+        logger.error(error);
         next(error);
     })
 });

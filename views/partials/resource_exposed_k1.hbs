@@ -7,6 +7,12 @@
                         <div class="row mb-2 text-muted">
                             <p class="card-subtitle col-sm-6 text-muted">{{this.autori}}</p>
                             <p class="card-subtitle col-sm-6 text-muted">{{this.dataRo}}</p>
+                            <p>
+                                <meter class="average-rating" 
+                                        min="0" 
+                                        max="5" 
+                                        value="{{this.rating5stars}}" style="--rating: {{this.rating5stars}}"></meter>
+                            </p>
                         </div>
                     </div>
                     {{!-- <img class="card-img-top" src="{{this.coperta}}" alt="{{this.title}}"> --}}
@@ -29,31 +35,6 @@
 
                             <div>
                                 <p class="unit-description-text">{{this.description}}</p>
-                            </div>
-                            {{!-- Modul de rating --}}
-
-<p>Ar fi: {{this.rating5stars}}</p>
-
-                            <div class="rating-system">
-
-                                <input class='rating-input' type="radio" name='rate' id="star1" />
-                                <label class='rating-label' for="star1"></label>
-
-                                <input class='rating-input' type="radio" name='rate' id="star2" />
-                                <label class='rating-label' for="star2"></label>
-
-                                <input class='rating-input' type="radio" name='rate' id="star3" />
-                                <label class='rating-label' for="star3"></label>
-
-                                <input class='rating-input' type="radio" name='rate' id="star4" />
-                                <label class='rating-label' for="star4"></label>
-
-                                <input class='rating-input' type="radio" name='rate' id="star5" />
-                                <label class='rating-label' for="star5"></label>
-
-                                
-                                
-                                <div class="rating-text"></div>
                             </div>
                         </main>  
                     </div>
