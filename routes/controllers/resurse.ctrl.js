@@ -85,7 +85,7 @@ exports.exposed = async function exposed (req, res, next) {
                 
                 // pentru fiecare resursă, fă calculul rating-ului de cinci stele și trimite o valoare în client
                 if (obi?.metrics?.fiveStars) {
-                    console.log(`Datele găsite sunt: ${obi.metrics.fiveStars}, de tipul ${Array.isArray(obi.metrics.fiveStars)}`);
+                    // console.log(`Datele găsite sunt: ${obi.metrics.fiveStars}, de tipul ${Array.isArray(obi.metrics.fiveStars)}`);
                     obi['rating5stars'] = calcAverageRating(obi.metrics.fiveStars.map(n => Number(n)), config.metrics.values4levels);
                 }
 
@@ -213,10 +213,19 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
             // creează din `resursa` un alt POJO
             const obi = Object.assign({}, resursa);
 
+            obi['template'] = `${gensettings.template}`;
+            obi['logo'] = `${gensettings.template}/${LOGO_IMG}`;
+            
+            // pentru fiecare resursă, fă calculul rating-ului de cinci stele și trimite o valoare în client
+            if (obi?.metrics?.fiveStars) {
+                // console.log(`Datele găsite sunt: ${obi.metrics.fiveStars}, de tipul ${Array.isArray(obi.metrics.fiveStars)}`);
+                obi['rating5stars'] = calcAverageRating(obi.metrics.fiveStars.map(n => Number(n)), config.metrics.values4levels);
+            }
+
             // obiectul competenței specifice cu toate datele sale trebuie curățat.
-            obi.competenteS = obi.competenteS.map(obi => {
-                return Object.assign({}, obi);
-            });
+            // obi.competenteS = obi.competenteS.map(obi => {
+            //     return Object.assign({}, obi);
+            // });
 
             // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
             obi.editorContent = JSON.stringify(resursa);
@@ -244,7 +253,7 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
                 template: `${gensettings.template}`,             
                 title:     obi.title,
                 user:      req.user,
-                logoimg:   `${gensettings.template}/${LOGO_IMG}`,
+                logoimg:      `${gensettings.template}/${LOGO_IMG}`,
                 csrfToken: req.csrfToken(),
                 resursa:   obi,
                 data,
@@ -258,6 +267,8 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
 
         if (resursa) {
             renderRED(resursa);
+        } else {
+            logger.error(`Resursa ${req.params.id} nu mai există.`);
         }
     } catch (error) {
         if (error) {

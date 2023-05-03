@@ -23,7 +23,6 @@ function calcAverageRating(ratings, values) {
     const averageRating = totalVotesValue / totalVotes; // valoarea calculată a tuturor aprecierilor / toți votanții
   
     return Math.round(averageRating.toFixed(2));
-    // return averageRating.toFixed(2);
   };
 
   module.exports = calcAverageRating;

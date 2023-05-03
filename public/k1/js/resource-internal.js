@@ -203,3 +203,18 @@ zipdownloadbtn.addEventListener('click', (evt) => {
         console.log(error);
     });
 });
+
+// Tratarea modulului de apreciere a resursei (5 stele)
+let votesArr = RED?.metrics?.fiveStars || [0,0,0,0,0]; // cazul în care nu am array de aprecieri
+let idx = undefined, votes = undefined, lblClassName = undefined;
+
+for (idx = 0; idx < votesArr.length; idx++) {
+    votes = votesArr[idx];
+    lblClassName = `star${idx + 1}`;
+    document.querySelector(`label.${lblClassName}`).setAttribute('title', votes);
+}
+const starRatingForm = document.querySelector(".rating-system");
+// starRatingForm.addEventListener("change", (e) => {
+//     pubComm.emit('rating5s', value);
+//     return e.target.value;
+// });
