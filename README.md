@@ -33,3 +33,7 @@ Următoarele biblioteci de cod și dependințe sunt integrate după cum urmează
 [] Modelararea API-ului pentru cereri 303.
 [] Trecerea la motorul de templating https://mozilla.github.io/nunjucks/
 [] Version 1.0
+
+## Sidetracked
+
+[] IPFS integration
