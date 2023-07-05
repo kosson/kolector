@@ -4,6 +4,7 @@ import {tcp} from '@libp2p/tcp';
 import {noise} from '@chainsafe/libp2p-noise';
 import {yamux} from '@chainsafe/libp2p-yamux';
 import { bootstrap } from '@libp2p/bootstrap';
+import { webSockets } from '@libp2p/websockets';
 import { identifyService } from 'libp2p/identify';
 import {MemoryBlockstore} from 'blockstore-core';
 import {MemoryDatastore} from 'datastore-core';
@@ -13,18 +14,27 @@ import { strings } from '@helia/strings';
 import { logger } from '@libp2p/logger';
 import last from 'it-last';
 
+// Importă frameworkul Fastify și creează o instanță
+import Fastify from 'fastify'
+const fastify = Fastify({
+  logger: true
+});
+
 async function createNode () {
     try {
         // creează un blockstore nou
         const blockstore = new MemoryBlockstore();
         // creează un datastore nou
-        const datastore = new MemoryDatastore();
+        const datastore = new MemoryDatastore(); // necesar pentru a stoca info specifice (căutări DHT, etc)
     
         const libp2p = await createLibp2p({
             addresses: {
-                listen: ['/ip4/0.0.0.0/tcp/0']
+                listen: ['/ip4/0.0.0.0/tcp/0'] // a public P2P swarm port
             },
-            transports: [tcp()],
+            transports: [
+                webSockets(),
+                tcp()
+            ],
             connectionEncryption:[noise()],
             streamMuxers: [yamux()],
             datastore,
@@ -65,7 +75,7 @@ async function createNode () {
     }
 };
 
-// creează un nod
+// creează un nod nou
 const knode = await createNode();
 
 // creează un sistem de fișiere suport pentru nodul Helia, care în acest caz este UnixFS
@@ -73,21 +83,36 @@ const fs = unixfs(knode);
 
 // folosește TextEncoder pentru a transforma string-urile în Uint8Arrays
 const encoder = new TextEncoder();
-
-// creează un content identifier
-const identificatorDeTest = await fs.addBytes(encoder.encode('Salutare, prietene!'));
-
-console.log('Adaug datelele identificate prin:', identificatorDeTest.toString());
-
 // this decoder will turn Uint8Arrays into strings
-const decoder = new TextDecoder()
-let text = ''
+const decoder = new TextDecoder();
 
-// use the second Helia node to fetch the file from the first Helia node
-for await (const chunk of fs.cat(identificatorDeTest)) {
-  text += decoder.decode(chunk, {
-    stream: true
-  })
-}
+// Creează prima rută
+fastify.get('/test', async function handlerRoot (request, reply) {
+    // creează un content identifier
+    const identificatorDeTest = await fs.addBytes(encoder.encode('Salutare, prietene!'));
 
-console.log('Conținutul este:', text);
+    console.log('Adaug datelele identificate prin:', identificatorDeTest.toString());
+    let text = '';
+
+    // use the second Helia node to fetch the file from the first Helia node
+    for await (const chunk of fs.cat(identificatorDeTest)) {
+        text += decoder.decode(chunk, {
+            stream: true
+        })
+    }
+    return { 
+        CID: identificatorDeTest,
+        content: text 
+    };
+});
+
+async function runServer () {
+    try {
+        await fastify.listen({ port: 3300 });
+    } catch (err) {
+        fastify.log.error(err);
+        process.exit(1);
+    }
+};
+
+await runServer();
