@@ -4,7 +4,8 @@
   "description": "Acesta este un modul care pregătește integrarea helia pentru access la ipfs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "nodemon index.js"
   },
   "keywords": [
     "orchestrator",
@@ -16,6 +17,7 @@
   "dependencies": {
     "@chainsafe/libp2p-noise": "^12.0.1",
     "@chainsafe/libp2p-yamux": "^4.0.2",
+    "@fastify/multipart": "^7.7.0",
     "@helia/json": "^1.0.0",
     "@helia/strings": "^1.0.0",
     "@helia/unixfs": "^1.4.0",
