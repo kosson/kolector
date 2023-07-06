@@ -13,6 +13,9 @@ import { json } from '@helia/json';
 import { strings } from '@helia/strings';
 import { logger } from '@libp2p/logger';
 import last from 'it-last';
+import * as kubo from 'kubo';
+
+
 async function createNode () {
     try {
         // creează un blockstore nou
@@ -25,7 +28,7 @@ async function createNode () {
                 listen: ['/ip4/0.0.0.0/tcp/0'] // a public P2P swarm port
             },
             transports: [
-                webSockets(),
+                // webSockets(),
                 tcp()
             ],
             connectionEncryption:[noise()],
@@ -68,4 +71,17 @@ async function createNode () {
     }
 };
 
+
 export const knode = await createNode();
+
+// const input = Uint8Array.from([1,2,4]);
+// const {cid} = await kubo.api.add({content: input}, {
+//     cidVersion: 1,
+//     rawLeaves: true
+// })
+
+// const output = await knode.blockstore.get(cid);
+
+// if (input == output) {
+//     console.log("A funcționat");
+// }
