@@ -1,0 +1,10 @@
+import {createHelia} from 'helia';
+import {createLibp2p} from 'libp2p';
+import {tcp} from '@libp2p/tcp';
+import {noise} from '@chainsafe/libp2p-noise';
+import {yamux} from '@chainsafe/libp2p-yamux';
+import { bootstrap } from '@libp2p/bootstrap';
+import { webSockets } from '@libp2p/websockets';
+import { identifyService } from 'libp2p/identify';
+import {MemoryBlockstore} from 'blockstore-core';
+import {MemoryDatastore} from 'datastore-core';
