@@ -13,8 +13,6 @@ import { json } from '@helia/json';
 import { strings } from '@helia/strings';
 import { logger } from '@libp2p/logger';
 import last from 'it-last';
-import * as kubo from 'kubo';
-
 
 async function createNode () {
     try {

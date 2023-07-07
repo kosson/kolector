@@ -61,6 +61,11 @@ app.get('/test', {
             stream: true
         })
     }
+
+    // adu datele care identifică nodul de kubo care rulează
+    let {agentVersion, publicKey, protocolVersion, protocols} = await kuboClient.id();
+    console.dir({agentVersion, publicKey, protocolVersion, protocols});
+
     return reply.code(200).send({ 
       CID: identificatorDeTest,
       content: text 
@@ -140,6 +145,8 @@ app.post('/pin', async function pinClbk (request, reply) {
     for await (const file of kuboClient.addAll(globSource('/tmp', '**/*'))) {
       console.log(`Am adăugat în kubo: ${file}`);
     }
+
+    // vezi https://docs.ipfs.tech/reference/kubo/rpc/#api-v0-add
 
     reply.send();
   } catch (error) {
