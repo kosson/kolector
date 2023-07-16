@@ -130,7 +130,7 @@
     "serve-favicon": "^2.5.0",
     "serve-index": "^1.9.1",
     "socket.io": "^4.5.2",
-    "socket.io-client": "^4.5.2",
+    "socket.io-client": "^4.7.0",
     "socket.io-redis": "^6.1.1",
     "stream": "0.0.2",
     "supertest": "^6.2.4",
