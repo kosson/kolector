@@ -123,7 +123,7 @@ var ResursaSchema = Schema({
         ref: 'badge'
     }],
     metrics: {
-        fiveStars: []
+        fiveStars: [0,0,0,0,0] // aici sunt cinci numere întregi care indică de câte ori a fost dat click pe un anumit nivel
     },
     type: []
 },

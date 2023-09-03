@@ -7,11 +7,18 @@
                         <div class="row mb-2 text-muted">
                             <p class="card-subtitle col-sm-6 text-muted">{{this.autori}}</p>
                             <p class="card-subtitle col-sm-6 text-muted">{{this.dataRo}}</p>
-                            <p>
+                            <p id="{{this._id}}">
                                 <meter class="average-rating" 
                                         min="0" 
                                         max="5" 
                                         value="{{this.rating5stars}}" style="--rating: {{this.rating5stars}}"></meter>
+                                <ul class="five-stars-rate nav justify-content-center d-none">
+                                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-star"></i></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-star"></i></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-star"></i></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-star"></i></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-star"></i></a></li>
+                                </ul>
                             </p>
                         </div>
                     </div>
