@@ -1,60 +1,62 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-resurse">
-    <a class="navbar-brand" href="/">
-        <img id="logo-small" src="/{{{logoimg}}}" alt="logo">
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        {{!-- Tratează cazul când este cont local. Altceva decât Google --}}
-        {{#if user.googleProfile}}
-            <span class="salut">Salut, {{user.googleProfile.name}} <img class="avatar rounded-circle" data-email="{{user.email}}" data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" src="{{user.googleProfile.picture}}" alt="Imagine cont"/></span>
-        {{else}}
-            <span class="salut">Salut, {{user.username}}</span>
-        {{/if}}
-        
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/">Acasă<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/resources/exposed">Resurse expuse<span class="sr-only">(current)</span></a>
-            </li>
-            {{#if user}}
-                <li class="nav-item">
-                    <a class="nav-link" href="/profile">Profil</a>
-                </li>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-resurse">
+        <a class="navbar-brand" href="/">
+            <img id="logo-small" src="/{{{logoimg}}}" alt="logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            {{!-- Tratează cazul când este cont local. Altceva decât Google --}}
+            {{#if user.googleProfile}}
+                <span class="salut">Salut, {{user.googleProfile.name}} <img class="avatar rounded-circle" data-email="{{user.email}}" data-username="{{user.googleProfile.name}}" data-familyname="{{user.googleProfile.family_name}}" src="{{user.googleProfile.picture}}" alt="Imagine cont"/></span>
+            {{else}}
+                {{#if user.username}}
+                    <span class="salut">Salut, {{user.username}}</span>
+                {{/if}}
             {{/if}}
-            {{#if user.roles.admin}}
+            
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/administrator">Administrare</a>
+                    <a class="nav-link" href="/">Acasă<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/log">Noutăți</a>
-                </li>    
-                <li class="nav-item">
-                    <a class="nav-link" href="/log/new">Conținut nou</a>
-                </li>                
-            {{/if}}
-            {{#if user}}
-                <li class="nav-item">
-                    <a class="nav-link" href="/resources/adauga">Adaugă</a>
-                </li>
-            {{/if}}
-            {{!-- {{#if user}}
-                <li class="nav-item">
-                    <a class="nav-link {{#if activeResLnk}}active{{/if}}" href="/resurse">Resurse</a>
-                </li>
-            {{/if}} --}}
-            {{#if user}}
-                <li class="nav-item">
-                    <a class="nav-link" href="/help">Asistență</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
-                </li>
-            {{/if}}
-        </ul>
-    </div>
-</nav>
+                {{!-- <li class="nav-item">
+                    <a class="nav-link" href="/resources/exposed">Resurse expuse<span class="sr-only">(current)</span></a>
+                </li> --}}
+                {{#if user}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Profil</a>
+                    </li>
+                {{/if}}
+                {{#if user.roles.admin}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/administrator">Administrare</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/log">Noutăți</a>
+                    </li>    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/log/new">Conținut nou</a>
+                    </li>                
+                {{/if}}
+                {{#if user}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resources/adauga">Adaugă</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{#if activeResLnk}}active{{/if}}" href="/resources/exposed">Resurse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/help">Asistență</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                {{else}}                                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Loghează-te</a>
+                    </li>               
+                {{/if}}
+            </ul>
+        </div>
+    </nav>

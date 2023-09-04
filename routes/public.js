@@ -99,7 +99,7 @@ async function clbkResPublicaID (req, res, next) {
             const newObi = Object.assign({}, resursa._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
 
             // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
-            newObi.dataRo = moment(newObi.date).locale('ro').format('LLL');
+            // newObi.dataRo = moment(newObi.date).locale('ro').format('LLL');
             newObi.content = content2html(resursa.content);
             // obiectul competenței specifice cu toate datele sale trebuie curățat.
             newObi.competenteS = newObi.competenteS.map(obi => {

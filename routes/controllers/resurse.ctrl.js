@@ -9,6 +9,7 @@ const calcAverageRating = require('../../util/rating'); // încarcă funcția de
 /* === MODELE === */
 const Resursa     = require('../../models/resursa-red');        // Adu modelul resursei
 const Mgmtgeneral = require('../../models/MANAGEMENT/general'); // Adu modelul management
+
 /* === HELPERE === */
 // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
 let checkRole     = require('./checkRole.helper');
@@ -146,7 +147,6 @@ exports.exposed = async function exposed (req, res, next) {
         next(error);
     }
 };
-
 /* AFIȘAREA UNEI SINGURE RESURSE / ȘTERGERE / EDITARE :: /resurse/:id */
 exports.loadOneResource = async function loadOneResource (req, res, next) {
     try {
@@ -172,9 +172,10 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
             {style: `${gensettings.template}/css/rating.css`}
         ];
 
-        function renderRED (resursa) {
+        function renderRED (obi) {
             // creează din `resursa` un alt POJO
-            const obi = Object.assign({}, resursa);
+            // const obi = Object.assign({}, resursa);
+            console.log(`Obiectul primit este`, obi);
 
             obi['template'] = `${gensettings.template}`;
             obi['logo'] = `${gensettings.template}/${LOGO_IMG}`;
@@ -193,9 +194,7 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
             // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
             obi.editorContent = JSON.stringify(resursa);
 
-            // resursa._doc.content = editorJs2html(resursa.content);
-            // let localizat = moment(obi.date).locale('ro').format('LLL');
-            // obi.dataRo = `${localizat}`; // formatarea datei pentru limba română.            
+            // resursa._doc.content = editorJs2html(resursa.content);       
 
             // Array-ul activităților modificat
             let activitatiRehashed = obi.activitati.map((elem) => {
@@ -212,7 +211,7 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
                 publisher: gensettings.publisher
             };            
 
-            res.render(`resource-internal_${gensettings.template}`, {   
+            return res.render(`resource-internal_${gensettings.template}`, {   
                 template: `${gensettings.template}`,             
                 title:     obi.title,
                 user:      req.user,
@@ -228,11 +227,21 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
 
         let resursa = await Resursa.findById(req.params.id).populate({path: 'competenteS'}).lean();
 
-        if (resursa) {
-            renderRED(resursa);
-        } else {
-            logger.error(`Resursa ${req.params.id} nu mai există.`);
-        }
+        //  ACL
+        let roles = ["user", "validator", "cred"];
+        // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
+        let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles); 
+
+
+        renderRED(resursa);
+
+        // verifică ca userului să-i fie randată versiunea proprie.
+        // if (resursa || confirmedRoles.length > 0) {
+        //     renderRED(resursa);
+        // } else if (resursa) {
+        //     renderRED(resursa);
+        //     // logger.error(`Resursa ${req.params.id} nu mai există.`);
+        // }
     } catch (error) {
         if (error) {
             // console.log(JSON.stringify(err.body, null, 2));
