@@ -9,6 +9,7 @@ const calcAverageRating = require('../../util/rating'); // încarcă funcția de
 /* === MODELE === */
 const Resursa     = require('../../models/resursa-red');        // Adu modelul resursei
 const Mgmtgeneral = require('../../models/MANAGEMENT/general'); // Adu modelul management
+
 /* === HELPERE === */
 // Cere helperul `checkRole` cu care verifică dacă există rolurile necesare accesului
 let checkRole     = require('./checkRole.helper');
@@ -46,7 +47,6 @@ let LOGO_IMG = "img/" + process.env.LOGO;
 /* === AFIȘAREA TUTUROR RESURSELOR VALIDATE :: /exposed (expuse intern în sistem) === */
 exports.exposed = async function exposed (req, res, next) {
     try {
-        // logger.info(req);
         // Setări în funcție de template
         let filterMgmt = {focus: 'general'};
         let gensettings = await Mgmtgeneral.findOne(filterMgmt);
@@ -54,10 +54,11 @@ exports.exposed = async function exposed (req, res, next) {
         let roles = ["user", "validator", "cred"];
         // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
         let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles); 
-        // console.log("Am următoarele roluri (resurse.ctrl) din req.session.passport: ", req.session.passport.user.roles.rolInCRED);
 
-        // Adu-mi ultimele 9 resursele validate în ordinea ultimei intrări.
+        // Adu-mi ultimele 9 resursele validate în ordinea ultimei intrări. Resursele trebuie validate într-o procedură de examinare. 
+        // Creatorul trimite id-urile resurselor celui care le va valida. Dacă nu sunt validate, nu vor apărea altcuiva decât adminilor și creatorului.
         let resursePublice = Resursa.find({'expertCheck': 'true'}).sort({"date": -1}).limit(9).lean();
+        let dataArray = await resursePublice; // datele celor nouă înregistrări aduse din bază
 
         let scripts = [];
         let modules = [
@@ -69,16 +70,14 @@ exports.exposed = async function exposed (req, res, next) {
             {style: `${gensettings.template}/css/resource_unit_exposed.css`},
             {style: `${gensettings.template}/css/rating.css`}
         ];
-
-        // if (!RES_IDX_ALS) {
-        //     throw new Error('[resurse.ctrl.js]::Verificarea existenței alias-ului a dat chix');
-        // }
         
         /* ===> VERIFICAREA CREDENȚIALELOR <=== */
         if(req.session.passport.user.roles.admin){
-            let dataArray = await resursePublice; // datele celor nouă înregistrări aduse din bază
+            let fullstar = `<i class="bi bi-star-fill"></i>`,
+                emptystart = `<i class="bi bi-star"></i>`,
+                halfempty = `<i class="bi bi-star-half"></i>`;
 
-            // înjectează proprietăți utile clientului când datele sunt la dispoziția sa
+            // înjectează proprietăți utile clientului în obiectul existent pentru a realiza UX și comportament când datele sunt la dispoziția sa
             let newDataArray = dataArray.map(function clbkMapResult (obi) {
                 obi['template'] = `${gensettings.template}`;
                 obi['logo'] = `${gensettings.template}/${LOGO_IMG}`;
@@ -86,15 +85,18 @@ exports.exposed = async function exposed (req, res, next) {
                 // pentru fiecare resursă, fă calculul rating-ului de cinci stele și trimite o valoare în client
                 if (obi?.metrics?.fiveStars) {
                     // console.log(`Datele găsite sunt: ${obi.metrics.fiveStars}, de tipul ${Array.isArray(obi.metrics.fiveStars)}`);
-                    obi['rating5stars'] = calcAverageRating(obi.metrics.fiveStars.map(n => Number(n)), config.metrics.values4levels);
+                    obi['rating5stars'] = calcAverageRating(obi.metrics.fiveStars.map(n => Number(n)), config?.metrics?.values4levels);
+                } else if (obi?.metrics?.fiveStars === undefined || obi.metrics.fiveStars.reduce((v) => v += v) === 0) {
+                    // în cazul în care nu există propritățile în obiect sau array-ul are numai zero, crează un array de inițializare cu toate valorile la zero
+                    obi['rating5stars'] = 0;
+                    // completează înregistrarea cu valori goale în array
                 }
-
                 return obi;
             });
 
             res.render(`resources_exposed_${gensettings.template}`, {
                 template:     `${gensettings.template}`,
-                title:        "interne",
+                title:        "validated",
                 user:         req.user,
                 logoimg:      `${gensettings.template}/${LOGO_IMG}`,
                 csrfToken:    req.csrfToken(),
@@ -106,73 +108,35 @@ exports.exposed = async function exposed (req, res, next) {
                 modules,
             });
         } else if (confirmedRoles.length > 0) { // când ai cel puțin unul din rolurile menționate în roles, ai acces la formularul de trimitere a resursei.
-            // promiseResPub.then((result) => {
-            resursePublice.then(function (result) {
-
-                let fullstar = `<i class="bi bi-star-fill"></i>`,
-                    emptystart = `<i class="bi bi-star"></i>`,
-                    halfempty = `<i class="bi bi-star-half"></i>`;
-
-                let newResultArr = result.map(function clbkMapResult (obi) {
-                    const newObi = Object.assign({}, obi._doc); // Necesar pentru că: https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
-                    // https://github.com/wycats/handlebars.js/blob/master/release-notes.md#v460---january-8th-2020
-                    newObi.dataRo = moment(obi.date).locale('ro').format('LLL');
-                    newObi.template = `${gensettings.template}`;
-                    newObi.logo = `${gensettings.template}/${LOGO_IMG}`;
-
-                    newObi.ratingrepresentation = '';
-                    let kontor = newObi.contorRating ?? 0;
-                    let lastRating = newObi.rating ?? 0;
-                    let ratingTotal = newObi.ratingTotal ?? 0;
-                    let presentRating = ratingTotal / kontor;
-
-                    // 0 - 0.5 | 0.5 - 1 | 1 - 1.5 | 1.5 - 2 | 2 - 2.5 | 2.5 - 3 | 3 - 3.5 | 3.5 - 4 | 4 - 4.5 | 4.5 - 5
-                    if (isNaN(presentRating)) {
-                        newObi.ratingrepresentation = `${emptystart}${emptystart}${emptystart}${emptystart}${emptystart}`;
-                    } else if (presentRating > 0 && presentRating < 0.5) {
-                        newObi.ratingrepresentation = `${halfempty}${emptystart}${emptystart}${emptystart}${emptystart}`;
-                    } else if (presentRating > 0.6 && presentRating <= 1) {
-                        newObi.ratingrepresentation = `${fullstar}${emptystart}${emptystart}${emptystart}${emptystart}`;
-                    } else if (presentRating > 1 && presentRating <= 1.5) {
-                        newObi.ratingrepresentation = `${fullstar}${halfempty}${emptystart}${emptystart}${emptystart}`;
-                    } else if (presentRating > 1.6 && presentRating <= 2) {
-                        newObi.ratingrepresentation = `${fullstar}${fullstar}${emptystart}${emptystart}${emptystart}`;
-                    } else if (presentRating > 2 && presentRating <= 2.5) {
-                        newObi.ratingrepresentation = `${fullstar}${fullstar}${halfempty}${emptystart}${emptystart}`;
-                    } else if (presentRating > 2.6 && presentRating <= 3) {
-                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${emptystart}${emptystart}`;
-                    } else if (presentRating > 3 && presentRating <= 3.5) {
-                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${halfempty}${emptystart}`;
-                    } else if (presentRating > 3.6 && presentRating <= 4) {
-                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${emptystart}`;
-                    } else if (presentRating > 4 && presentRating <= 4.5) {
-                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${halfempty}`;
-                    } else if (presentRating > 4.6 && presentRating <= 5) {
-                        newObi.ratingrepresentation = `${fullstar}${fullstar}${fullstar}${fullstar}${fullstar}`;
-                    }                
-                    // newResultArr.push(newObi);
-                    return newObi;
-                });
-
-                res.render(`resurse_${gensettings.template}`, {
-                    template:     `${gensettings.template}`,
-                    title:        "interne",
-                    user:         req.user,
-                    logoimg:      `${gensettings.template}/${LOGO_IMG}`,
-                    csrfToken:    req.csrfToken(),                
-                    resurse:      newResultArr,
-                    activeResLnk: true,
-                    resIdx:       RES_IDX_ES7,
-                    scripts,
-                    modules
-                });
-            }).catch((err) => {
-                if (err) {
-                    // console.log(JSON.stringify(err.body, null, 2));
-                    logger.error(err);
-                    res.redirect('/500');
-                    // next(err);
+            // înjectează proprietăți utile clientului în obiectul existent pentru a realiza UX și comportament când datele sunt la dispoziția sa
+            let newDataArray = dataArray.map(function clbkMapResult (obi) {
+                obi['template'] = `${gensettings.template}`;
+                obi['logo'] = `${gensettings.template}/${LOGO_IMG}`;
+                
+                // pentru fiecare resursă, fă calculul rating-ului de cinci stele și trimite o valoare în client
+                if (obi?.metrics?.fiveStars) {
+                    // console.log(`Datele găsite sunt: ${obi.metrics.fiveStars}, de tipul ${Array.isArray(obi.metrics.fiveStars)}`);
+                    obi['rating5stars'] = calcAverageRating(obi.metrics.fiveStars.map(n => Number(n)), config?.metrics?.values4levels);
+                } else if (obi?.metrics?.fiveStars === undefined || obi.metrics.fiveStars.reduce((v) => v += v) === 0) {
+                    // în cazul în care nu există propritățile în obiect sau array-ul are numai zero, crează un array de inițializare cu toate valorile la zero
+                    obi['rating5stars'] = 0;
+                    // completează înregistrarea cu valori goale în array
                 }
+                return obi;
+            });
+
+            res.render(`resources_exposed_${gensettings.template}`, {
+                template:     `${gensettings.template}`,
+                title:        "validated",
+                user:         req.user,
+                logoimg:      `${gensettings.template}/${LOGO_IMG}`,
+                csrfToken:    req.csrfToken(),
+                resurse:      newDataArray,
+                activeResLnk: true,
+                resIdx:       RES_IDX_ES7,
+                styles,
+                scripts,
+                modules,
             });
         } else {
             res.redirect('/401');
@@ -183,7 +147,6 @@ exports.exposed = async function exposed (req, res, next) {
         next(error);
     }
 };
-
 /* AFIȘAREA UNEI SINGURE RESURSE / ȘTERGERE / EDITARE :: /resurse/:id */
 exports.loadOneResource = async function loadOneResource (req, res, next) {
     try {
@@ -209,9 +172,10 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
             {style: `${gensettings.template}/css/rating.css`}
         ];
 
-        function renderRED (resursa) {
+        function renderRED (obi) {
             // creează din `resursa` un alt POJO
-            const obi = Object.assign({}, resursa);
+            // const obi = Object.assign({}, resursa);
+            console.log(`Obiectul primit este`, obi);
 
             obi['template'] = `${gensettings.template}`;
             obi['logo'] = `${gensettings.template}/${LOGO_IMG}`;
@@ -230,9 +194,7 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
             // adaug o nouă proprietate la rezultat cu o proprietate a sa serializată [injectare în client a întregii înregistrări serializate]
             obi.editorContent = JSON.stringify(resursa);
 
-            // resursa._doc.content = editorJs2html(resursa.content);
-            // let localizat = moment(obi.date).locale('ro').format('LLL');
-            // obi.dataRo = `${localizat}`; // formatarea datei pentru limba română.            
+            // resursa._doc.content = editorJs2html(resursa.content);       
 
             // Array-ul activităților modificat
             let activitatiRehashed = obi.activitati.map((elem) => {
@@ -249,7 +211,7 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
                 publisher: gensettings.publisher
             };            
 
-            res.render(`resource-internal_${gensettings.template}`, {   
+            return res.render(`resource-internal_${gensettings.template}`, {   
                 template: `${gensettings.template}`,             
                 title:     obi.title,
                 user:      req.user,
@@ -265,11 +227,21 @@ exports.loadOneResource = async function loadOneResource (req, res, next) {
 
         let resursa = await Resursa.findById(req.params.id).populate({path: 'competenteS'}).lean();
 
-        if (resursa) {
-            renderRED(resursa);
-        } else {
-            logger.error(`Resursa ${req.params.id} nu mai există.`);
-        }
+        //  ACL
+        let roles = ["user", "validator", "cred"];
+        // Constituie un array cu rolurile care au fost setate pentru sesiunea în desfășurare. Acestea vin din coockie-ul clientului.
+        let confirmedRoles = checkRole(req.session.passport.user.roles.rolInCRED, roles); 
+
+
+        renderRED(resursa);
+
+        // verifică ca userului să-i fie randată versiunea proprie.
+        // if (resursa || confirmedRoles.length > 0) {
+        //     renderRED(resursa);
+        // } else if (resursa) {
+        //     renderRED(resursa);
+        //     // logger.error(`Resursa ${req.params.id} nu mai există.`);
+        // }
     } catch (error) {
         if (error) {
             // console.log(JSON.stringify(err.body, null, 2));

@@ -26,7 +26,7 @@ router.get('/adauga', (req, res, next) => {
         console.log(error);
         logger.error(error);
         next(error);
-    })
+    });
 });
 
 /* GET::/resurse/adauga/monografie - Adaugă o monografie */
@@ -43,7 +43,7 @@ router.get('/adauga/red', (req, res, next) => {
     resurseCtrl.describeRED(req, res, next).catch((error) => {
         logger.error(error);
         next(error);
-    })
+    });
 });
 
 /* ÎNCARCĂ O SINGURĂ RESURSĂ GET::/resources/:id */
@@ -52,7 +52,7 @@ router.get('/:id', (req, res, next) => {
         console.log(error);
         logger.error(error);
         next(error);
-    })
+    });
 });
 
 /* === DESCĂRCARE ZIP === */

@@ -67,6 +67,14 @@
     -webkit-text-fill-color: transparent;
 }
 
+.average-rating:hover {
+    opacity: 0.5;
+    filter:alpha(opacity=0.5);
+    -webkit-transition:opacity 0.2s ease;
+    -moz-transition:opacity 0.2s ease;
+    -o-transition:opacity 0.2s ease;
+}
+
 form {
     margin: 0 0 1rem;
 }
