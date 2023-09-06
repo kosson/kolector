@@ -3,7 +3,7 @@ services:
     # https://docs.docker.com/engine/reference/commandline/run/#configure-namespaced-kernel-parameters-sysctls-at-runtime
     image: 'redis:latest'
     restart: always
-    container_name: arachnide_redis
+    container_name: kolector_redis
     volumes:
       - './assets/redis/redisdata:/data:rw'
     deploy:
@@ -33,7 +33,7 @@ services:
       # Prin `args` pasezi argumente de construcție din `docker-compose` în `Dockerfile`-ul serviciului - Acum am setat în .env
       args:
         ELK_VERSION: ${ELK_VERSION:-7.17.7}
-    container_name: arachnide_es01
+    container_name: kolector_es01
     volumes:
       # Copiază fișierul de configurare în containerul care va fi creat
       - type: "bind"
@@ -84,7 +84,7 @@ services:
       context: ./assets/elasticsearch/
       args:
         ELK_VERSION: ${ELK_VERSION:-7.17.7}
-    container_name: arachnide_es02
+    container_name: kolector_es02
     volumes:
       # Copiază fișierul de configurare în containerul care va fi creat
       - type: "bind"
@@ -122,7 +122,7 @@ services:
       context: ./assets/elasticsearch/
       args:
         ELK_VERSION: ${ELK_VERSION:-7.17.7}
-    container_name: arachnide_es03
+    container_name: kolector_es03
     volumes:
       # Copiază fișierul de configurare în containerul care va fi creat
       - type: "bind"
@@ -158,7 +158,7 @@ services:
       context: ./assets/kibana/
       args:
         ELK_VERSION: ${ELK_VERSION:-7.17.7}
-    container_name: arachnide_kibana
+    container_name: kolector_kibana
     links:
       - es01 
     volumes:
@@ -180,7 +180,7 @@ services:
       dockernet: null       
   mongo:
     image: 'mongo:4.4.5-bionic'
-    container_name: arachnide_mongo
+    container_name: kolector_mongo
     env_file:
       - ./.env
     environment:
@@ -206,16 +206,16 @@ services:
       target: devel
       args:
         FRONT_END_PORT: 8080
-    image: 'arachnide_devel:${APP_VER:-0.1.0}'
-    container_name: arachnide_devel
+    image: 'kolector_devel:${APP_VER}'
+    container_name: kolector_devel
     stdin_open: true
     env_file:
       - ./.env
     volumes:
-      - './repo:/arachnide/repo'
-      - './:/arachnide'
+      - './repo:/kolector/repo'
+      - './:/kolector'
       # previne suprascrierea modificarea din containerul Docker a lui node_modules
-      - /arachnide/node_modules
+      - /kolector/node_modules
     ports:
       - '8080:8080'
       - '9229:9229'
@@ -235,7 +235,7 @@ services:
   nginx:
     build:
       context: ./assets/nginx/
-    container_name: arachnide_nginx
+    container_name: kolector_nginx
     restart: always
     # este portul 80 pentru că aplicația având modul de rulare virtualizat, va folosi acest port; 8080 e pentru dezvoltare
     ports:

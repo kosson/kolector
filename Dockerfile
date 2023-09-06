@@ -3,7 +3,7 @@ ARG APP_VER
 ## Argumentul este pasat din fișierul docker-compose.yaml
 ARG FRONT_END_PORT
 # BASE 
-## Pornești adăugând to ce este nevoie pentru mediul de producție. 
+## Pornești adăugând ce este nevoie pentru mediul de producție. 
 FROM node:19.3.0-bullseye as base
 ENV NODE_ENV=production
 
@@ -18,8 +18,8 @@ RUN npm install -g nodemon
 EXPOSE ${FRONT_END_PORT}
 
 ## modifică permisiunile la un user care nu este root. Astfel poți controla și permisiunile pe director
-RUN mkdir /arachnide && chown -R node:node /arachnide
-WORKDIR /arachnide
+RUN mkdir /kolector && chown -R node:node /kolector
+WORKDIR /kolector
 USER node
 
 ## copiere care setează corect permisiunile. Folosirea lui * previne erorile

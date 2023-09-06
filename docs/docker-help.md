@@ -22,7 +22,7 @@ sau
 docker inspect --format "{{json .State.Health }}" $(docker-compose ps -q) | jq
 ```
 
-`docker-compose up` in the first terminal window, and docker-compose logs -f in another. This will display all logs from docker-compose-managed containers.
+`docker-compose up` in the first terminal window, and `docker-compose logs -f` in another. This will display all logs from docker-compose-managed containers.
 
 ## Erori de citire
 
@@ -64,25 +64,25 @@ docker-compose up --buid -d
 ## pornește doar aplicația node fără dependințe
 
 ```bash
-docker compose -f docker-compose.yml up -d --no-deps redcolector
+docker compose -f docker-compose.yml up -d --no-deps kolector_devel
 ```
 
 sau
 
 ```bash
-docker compose -f docker-compose.yml up -d --no-deps redcolectordevel
+docker compose -f docker-compose.yml up -d --no-deps kolector_devel
 ```
 
 ## Ridică două instanțe ale aplicației
 
 ```bash
-docker compose -f docker-compose.yml up -d redcolectordevel=2
+docker compose -f docker-compose.yml up -d kolector_devel=2
 ```
 
 ## Cand modifici aplicatia sau configurările, pentru a nu mai face docker-compose down, apoi build
 
 ```bash
-docker-compose -f docker-compose.yml up -d --build -V redcolectordevel=2
+docker-compose -f docker-compose.yml up -d --build -V kolector_devel=2
 ```
 
 -V este pentru a șterge volumele anonime in care sunt, de fapt `node_modules`

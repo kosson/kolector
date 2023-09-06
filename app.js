@@ -306,7 +306,6 @@ app.use((err, req, res, next) => {
     res.status(500);
     res.json({ error: err.message });
     // res.redirect(`/errors/500`);
-    
 });
 
 

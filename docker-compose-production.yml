@@ -1,6 +1,5 @@
 version: '3.9'
 services:
-
     redis:
         image: redis:latest
         container_name: redis-repo
@@ -16,13 +15,12 @@ services:
             timeout: 3s
             retries: 30
         networks: 
-            dockernet:
-    
+            dockernet:    
     es01:
         build:
             context: ./assets/elasticsearch/
             args:
-              ELK_VERSION: ${ELK_VERSION:-7.12.0}
+              ELK_VERSION: ${ELK_VERSION:-7.17.7}
         container_name: es01
         volumes:
             - type: bind
@@ -30,6 +28,7 @@ services:
               target: /usr/share/elasticsearch/config/elasticsearch.yml
               read_only: true
             - ${ELASTICSEARCH_DATA:-/assets/elasticsearch}/es01:/usr/share/elasticsearch/data
+            - data01:/usr/share/elasticsearch/data
         environment:
             - node.name=es01
             - cluster.name=es-docker-cluster
@@ -41,8 +40,6 @@ services:
             # HOST:CONTAINER
             - "9200:9200"
             - "9300:9300"
-        volumes:
-            - data01:/usr/share/elasticsearch/data
         ulimits:
             memlock:
                 soft: -1
@@ -54,12 +51,11 @@ services:
             retries: 3
         networks: 
             dockernet:
-
     es02:
         build:
             context: ./assets/elasticsearch/
             args:
-              ELK_VERSION: ${ELK_VERSION:-7.12.0}
+              ELK_VERSION: ${ELK_VERSION:-7.17.7}
         container_name: es02
         volumes:
             - type: bind
@@ -67,6 +63,7 @@ services:
               target: /usr/share/elasticsearch/config/elasticsearch.yml
               read_only: true
             - ${ELASTICSEARCH_DATA:-/assets/elasticsearch}/es02:/usr/share/elasticsearch/data
+            - data02:/usr/share/elasticsearch/data
         environment:
             - node.name=es02
             - cluster.name=es-docker-cluster
@@ -77,8 +74,6 @@ services:
         ports:
             - "9201:9200"
             - "9301:9300"
-        volumes:
-            - data02:/usr/share/elasticsearch/data
         ulimits:
             memlock:
                 soft: -1
@@ -90,12 +85,11 @@ services:
             retries: 3
         networks: 
             dockernet:
-
     kibana:
         build:
             context: ./assets/kibana/
             args:
-              ELK_VERSION: ${ELK_VERSION:-7.12.0}
+              ELK_VERSION: ${ELK_VERSION:-7.17.7}
         container_name: kibana
         volumes:
             - type: bind 
@@ -112,7 +106,6 @@ services:
             - es02
         networks: 
             dockernet:
-
     mongo:
         image: mongo:4.4.5-bionic
         container_name: mongo
@@ -133,7 +126,6 @@ services:
             test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
         networks: 
             dockernet:
-
     nginx:
         # build:
         #     context: ./assets/nginx/
@@ -158,8 +150,7 @@ services:
             dockernet:
         # depends_on:
         #     nodeapp:
-        #         condition: service_healthy
-    
+        #         condition: service_healthy    
     nodeapp:
         build:
             context: .
@@ -167,16 +158,16 @@ services:
             target: prod
             args:
                 FRONT_END_PORT: 8080
-        image: "redcolector:${APP_VER}"
-        container_name: redcolectorproduction
+        image: "kolector:${APP_VER}"
+        container_name: kolector_production
         # working_dir: /redcolector
         stdin_open: true
         env_file: 
             - ./.env
         volumes:
-            - ./repo:/usr/src/redcolector/repo
-            - ./:/usr/src/redcolector
-            - /usr/src/redcolector/node_modules
+            - ./repo:/usr/src/kolector/repo
+            - ./:/usr/src/kolector
+            - /usr/src/kolector/node_modules
         ports:
             - "8080:8080"
         restart: always
