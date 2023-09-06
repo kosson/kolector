@@ -12,15 +12,20 @@ Software necesar:
 - Node.js
 - Redis
 
-### Pregătirea sistemului de operare gazdă (Ubuntu)
-
-Modifici fișierul `/etc/sysctl.conf` la care adaugi linia `vm.max_map_count=262144`. Este necesar pentru lucrul cu instanțele dockerizate de Elasticsearch. Este modul de a persista o setare temporară prin `sysctl -w vm.max_map_count=262144`.
-
-## Detalii configurare Softwarevm.max_map_count=262144
+## Detalii privind componentele folosite
 
 Strategia Passport pentru Google: http://www.passportjs.org/packages/passport-google-oauth20/
 Motorul de templating:https://www.npmjs.com/package/express-hbs
 
+
+### Pregătirea sistemului de operare gazdă (Ubuntu)
+
+Modifici fișierul `/etc/sysctl.conf` la care adaugi linia `vm.max_map_count=262144`. Este necesar pentru lucrul cu instanțele dockerizate de Elasticsearch. Este modul de a persista o setare temporară prin `sysctl -w vm.max_map_count=262144`.
+
+
+## Cerințe pentru crearea și utilizarea soluției containerizată
+
+Pentru crearea imaginilor și mai apoi rularea containerelor, trebuie să existe subdirectorul `assets` în care există subdirectoare ce poartă fișiere de configurare sau doar stabilesc o structură de subdirectoare necesară rulării containerizate. 
 ## Pornirea containerizată cu Docker
 
 Pentru a evita erorile Elasticsearch de tipul

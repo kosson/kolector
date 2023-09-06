@@ -190,7 +190,7 @@ services:
       - 'MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWD}'
       - 'MONGO_INITDB_DATABASE=${MONGO_DB}'
     volumes:
-      - './assets/mongodb/data:/data/db'
+      - './assets/mongodb/data:/data/db:rw'
     command:
       - '--auth'
     ports:
@@ -212,7 +212,8 @@ services:
     env_file:
       - ./.env
     volumes:
-      - './repo:/kolector/repo'
+      - './repo:/kolector/repo:rw'
+      - './logs:/kolector/logs:rw'
       - './:/kolector'
       # previne suprascrierea modificarea din containerul Docker a lui node_modules
       - /kolector/node_modules
