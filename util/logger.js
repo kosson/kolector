@@ -45,7 +45,7 @@ const logFormat = combine(
     format: 'YYYY-MM-DD hh:mm:ss.SSS A'
   }),
   align(),
-  printf(info => `[${info.timestamp}] [${info.level}] [${info.label}]: ${info.message}`)
+  printf(info => `[${info.timestamp}] [${info.level}]: ${info.message}`)
 );
 
 /**
@@ -94,6 +94,7 @@ winston.crit("Critical");
 winston.warning("Warning");
 */
 const logger = winston.createLogger({
+  format: logFormat,
   transports: [
     rotatedtransport,
     new (winston.transports.Console)({

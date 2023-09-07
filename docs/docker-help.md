@@ -58,7 +58,7 @@ docker-compose down -v
 ## Cand modifici lucruri în aplicație trebuie să reconstruiești imaginea
 
 ```bash
-docker-compose up --buid -d
+docker-compose up --build -d
 ```
 
 ## pornește doar aplicația node fără dependințe
@@ -131,6 +131,7 @@ docker-compose exec mongo redcolector
 ## Desfacerea serviciilor
 
 ```bash
+docker-compose -f docker-compose.yml down -v --remove-orphans
 docker-compose -f docker-compose.yml -f docker-compose-development.yml down -v --remove-orphans
 ```
 
@@ -231,3 +232,9 @@ docker run -v $(pwd):/var/www/redcolector -p 8080:8080 -d name nume_container nu
 docker run -v %cd%:/var/www/redcolector -p 8080:8080 -d name nume_container nume_imagine
 ### Windows PowerShell
 docker run -v ${pwd}:/var/www/redcolector -p 8080:8080 -d name nume_container nume_imagine
+
+## Rulare cu Docker Desktop
+
+Problema este că Docker Desktop folosește portul 8080. Din acest motiv, a trebuit să folosesc 8081 pentru app.
+
+Poți accesa cAdvisor pe http://localhost:8080/containers/ dacă ai nevoie de o inspectare a proceselor care rulează și nu numai.

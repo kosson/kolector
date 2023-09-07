@@ -18,10 +18,10 @@ RUN npm install -g nodemon
 EXPOSE ${FRONT_END_PORT}
 
 ## modifică permisiunile la un user care nu este root. Astfel poți controla și permisiunile pe director
-RUN mkdir /kolector && chown -R node:node /kolector
-WORKDIR /kolector
+RUN mkdir /home/node/kolector && chown -R node:node /home/node/kolector
+WORKDIR /home/node/kolector
 USER node
-
+RUN chown -R node:node /home/node/kolector
 ## copiere care setează corect permisiunile. Folosirea lui * previne erorile
 COPY --chown=node:node package*.json yarn*.lock ./
 ## ci este folosit pentru a instala pachetele din fișierele .lock
@@ -36,6 +36,7 @@ FROM base as devel
 ENV NODE_ENV=development
 ENV PATH=/app/node_modules/.bin:$PATH
 RUN npm install --production=false && npm cache clean --force
+
 # SOURCE: TEST și PRODUCTION nivel comun
 FROM base as source
 COPY  --chown=node:node . .

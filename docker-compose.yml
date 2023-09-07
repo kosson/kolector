@@ -1,17 +1,18 @@
 services:
   redis:
     # https://docs.docker.com/engine/reference/commandline/run/#configure-namespaced-kernel-parameters-sysctls-at-runtime
-    image: 'redis:latest'
-    restart: always
+    image: 'redis/redis-stack:latest'
+    restart: unless-stopped
     container_name: kolector_redis
     volumes:
       - './assets/redis/redisdata:/data:rw'
+      - './assets/redis/config:/usr/local/etc/redis/redis.conf'
     deploy:
       placement:
         constraints: [node.role == manager]
     ports:
       - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
+    command: redis-server /usr/local/etc/redis/redis.conf && redis-server --save 20 1 --loglevel warning
     environment:
       - REDIS_REPLICATION_MODE=master
     healthcheck:
@@ -205,20 +206,18 @@ services:
       dockerfile: Dockerfile
       target: devel
       args:
-        FRONT_END_PORT: 8080
+        FRONT_END_PORT: 8081
     image: 'kolector_devel:${APP_VER}'
     container_name: kolector_devel
     stdin_open: true
     env_file:
       - ./.env
     volumes:
-      - './repo:/kolector/repo:rw'
-      - './logs:/kolector/logs:rw'
-      - './:/kolector'
+      - './:/home/node/kolector'
       # previne suprascrierea modificarea din containerul Docker a lui node_modules
-      - /kolector/node_modules
+      - /home/node/kolector/node_modules
     ports:
-      - '8080:8080'
+      - '8081:8081'
       - '9229:9229'
     restart: always
     command: npm run dev
@@ -240,7 +239,7 @@ services:
     restart: always
     # este portul 80 pentru că aplicația având modul de rulare virtualizat, va folosi acest port; 8080 e pentru dezvoltare
     ports:
-      - 80:8080
+      - 80:8081
       - 443:443
     volumes:
       - './assets/nginx/logs:/var/log/nginx'
