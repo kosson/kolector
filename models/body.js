@@ -9,7 +9,7 @@ const ThingSchema = require('./thing');
 const Thing = mongoose.model('Thing', ThingSchema);
 
 /* INDECȘII ES7 */
-let {getStructure} = require('../util/es7');
+let getStructure = require('../util/es7');
 let RES_IDX_ES7 = '';
 let RES_IDX_ALS = '';
 let USR_IDX_ES7 = ''; 

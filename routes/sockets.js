@@ -26,7 +26,7 @@ const git         = require('isomorphic-git');
 const { gitToJs } = require('git-parse');
 const logger      = require('../util/logger');
 const objectsOps  = require('../util/objectsOps');
-let {getStructure} = require('../util/es7');
+let getStructure  = require('../util/es7');
 
 // INDECȘII ES7
 let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';
@@ -1040,14 +1040,15 @@ function sockets (io) {
                 // console.log(`sockets.js::pit ID-ul creat în urma solicitării este: `, result.body.id);
 
                 // CAZUL în care un pit deja a fost creat și este în REDIS
-                if (redisClient.get('pit')) {
-                    socket.emit('pit', redisClient.get('pit')); // trimite-l pe cel mai recent
+                // await redisClient.connect();
+                if (await redisClient.get('pit')) {
+                    socket.emit('pit', await redisClient.get('pit')); // trimite-l pe cel mai recent
                 }
 
                 // CAZUL în care nu ai niciun PIT și îl creezi pe primul
                 let result = await esClient.openPointInTime(data.conf);
                 // setează în Redis id-ul PIT-ului cu același timp de expirare
-                redisClient.set( "pit", result.body.id, "EX", 60); // https://github.com/NodeRedis/node-redis/issues/1000
+                await redisClient.set( "pit", result.body.id, "EX", 60); // https://github.com/NodeRedis/node-redis/issues/1000
 
                 // CAZUL în care ștergi PIT-ul în mod voit.
                 if (data.del === true) {

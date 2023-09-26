@@ -3,9 +3,7 @@ const config      = require('config');
 /* === DEPENDINȚE === */
 const express     = require('express');
 const router      = express.Router();
-const path        = require('path');
 const logger      = require('../util/logger');
-const redisClient = require('../redis.config');
 
 // Încarcă mecanismele de verificare ale rolurilor
 let makeSureLoggedIn = require('connect-ensure-login');
@@ -22,7 +20,7 @@ const ES7Helper   = require('../models/model-helpers/es7-helper');
 let editorJs2para = require('./controllers/editorJs2para');
 let editorJs2imgs = require('./controllers/editorJs2imgs');
 let archiveRED    = require('./controllers/archiveRED');
-let {getStructure} = require('../util/es7');
+let getStructure  = require('../util/es7');
 
 // INDECȘII ES7
 let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';

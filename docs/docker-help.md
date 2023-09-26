@@ -29,7 +29,7 @@ docker inspect --format "{{json .State.Health }}" $(docker-compose ps -q) | jq
 Și dacă ai o eroare de citire de socket:
 Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/64467f7e2e99/json: dial unix /var/run/docker.sock: connect: permission denied
 
-Atunci e o groblemă pentru că folosești docker drept root!!!
+Atunci e o problemă pentru că folosești docker drept root!!!
 Vezi: https://docs.docker.com/engine/install/linux-postinstall/
 Vezi: https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket
 
@@ -146,7 +146,7 @@ Vezi: https://docs.docker.com/compose/environment-variables/
 
 ## Verifică ce va fi construit
 
-Folosește următoare comandă pentru a vedea exect care este șablonul de construcție a serviciilor.
+Folosește următoarea comandă pentru a vedea exect care este șablonul de construcție a serviciilor.
 
 ```bash
 docker-compose config

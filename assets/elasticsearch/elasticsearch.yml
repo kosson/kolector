@@ -1,12 +1,3 @@
-# Cu ajutorul acestui fișier configurezi nodul Elasticsearch
-# https://www.elastic.co/guide/en/elasticsearch/reference/7.17/settings.html
-
 # Aceste prime două setări sunt necesare pentru conectare la cluster
 cluster.name: "es-docker-cluster"
 network.host: 0.0.0.0
-path.repo: ["/home/elastic/mount/backups"]
-# License
-# basic: access only the free and open-source features of Elasticsearch
-xpack.license.self_generated.type: basic
-# Monitoring
-xpack.monitoring.collection.enabled: true

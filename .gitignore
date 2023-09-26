@@ -98,9 +98,13 @@ initdata
 assets/ssl_keys
 
 # ignoră tot ce este elasticsearch date locale pe care docker compose le creează
-assets/elasticsearch/data01/nodes
-assets/elasticsearch/data02/nodes
-assets/elasticsearch/data03/nodes
+assets/elasticsearch/esdata01/nodes
+assets/elasticsearch/esdata02/nodes
+assets/elasticsearch/esdata03/nodes
+assets/elasticsearch/certs
+assets/elasticsearch/filebeat-ingest
+assets/elasticsearch/logstash-ingest
+assets/kibanadata
 
 assets/mongodb/data
 

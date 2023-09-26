@@ -26,7 +26,7 @@ const editorJs2TXT = require('../../routes/controllers/editorJs2TXT');
 const resursaRedES7 = require('../resursa-red-es7'); // '-es7' indică faptul că sunt setările și mappingul noului index
 const userES7       = require('../user-es7');
 // utilități pentru Elasticsearch
-// let {getStructure}  = require('../../util/es7'); // `getStructure()` este o promisiune a cărui rezultat sunt setările indecșilor și ale alias-urilor (vezi `elasticsearch.config.js`, unde sunt setați)
+// let getStructure  = require('../../util/es7'); // `getStructure()` este o promisiune a cărui rezultat sunt setările indecșilor și ale alias-urilor (vezi `elasticsearch.config.js`, unde sunt setați)
 
 /*
 Această structură are scopul de a oferi informație pentru fiecare index ES7
@@ -40,7 +40,6 @@ const col2idx = {
 }
 // contorul pentru ținerea evidenței documentelor care au fost deja procesate.
 var procesate = 0;
-
 
 // stabilirea denumirii indexului zero pentru resurse și a alias-ului.
 let primeREDidx   = process.env.MONGO_REDS + '0';
@@ -499,7 +498,7 @@ function createIdxAls (data) {
         }
     */
     
-    // CREEAZĂ INDEXUL nou pasând la index, numele noului index, iar la body, mapping-ul indexului. Ori de câte ori modiffice mappingul, reindexezi
+    // CREEAZĂ INDEXUL nou pasând la index, numele noului index, iar la body, mapping-ul indexului. Ori de câte ori modifici mappingul, reindexezi
     esClient.indices.create({
         index: data.idx,
         body:  data.mpg

@@ -18,7 +18,7 @@ let content2html  = require('./editorJs2HTML');
 require('./cache.helper');
 const {clearHash} = require('./cache.helper');
 let cookieHelper  = require('./cookie2obj.helper');
-let {getStructure} = require('../../util/es7');
+let getStructure  = require('../../util/es7');
 
 
 // CONFIG - ASSETS

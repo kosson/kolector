@@ -6,10 +6,9 @@ const moment  = require('moment');
 const logger  = require('../util/logger');
 const Resursa = require('../models/resursa-red'); // Adu modelul resursei
 const Mgmtgeneral = require('../models/MANAGEMENT/general'); // Adu modelul management
-let {getStructure} = require('../util/es7');
+let getStructure  = require('../util/es7');
 
 var content2html = require('./controllers/editorJs2HTML');
-const redisClient = require('../redis.config');
 let archiveRED   = require('./controllers/archiveRED');
 
 // LOGO

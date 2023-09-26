@@ -1,14 +1,11 @@
 require('dotenv').config();
 const config      = require('config');
-
-const redisClient = require('../redis.config');
-const esClient    = require('../elasticsearch.config');
 const express     = require('express');
 const router      = express.Router({mergeParams: true});
 const Resursa     = require('../models/resursa-red');
 const Mgmtgeneral = require('../models/MANAGEMENT/general'); // Adu modelul management
 const Competente  = require('../models/competenta-specifica');
-let {getStructure} = require('../util/es7');
+let getStructure  = require('../util/es7');
 
 // HELPERI
 const ES7Helper   = require('../models/model-helpers/es7-helper');

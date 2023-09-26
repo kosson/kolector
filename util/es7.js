@@ -1,33 +1,44 @@
 require('dotenv').config();
-// const esClient     = require('../elasticsearch.config');
 const logger = require('./logger');
-const redisClient  = require('../redis.config');
 
+// const {redisCachedInstance, redisClients} = require('../redis.config');
+const redisCachedInstance = require('../redis.config');
 
-/*
-De fiecare dată când se realizează o conexiune, vezi `elasticsearch.config.js`, sunt setate valorile numelor în Redis.
-În cazul în care ne aflăm chiar la instalarea aplicației, aceste valori n-au de unde să fie setate. Inițial sunt luate de aici
-*/
-exports.getStructure = async function getStructure () {
+/**
+ * De fiecare dată când se realizează o conexiune, vezi `elasticsearch.config.js`, sunt setate valorile numelor în Redis.
+ * @returns 
+ */
+async function getStructure () {
     try {
+        // console.log(`[util/es7.js] Răspuns server Redis: ${await redisCachedInstance.ping()}`);
 
-        /* INDECȘII ES7 */
+        /* INDECȘII PREZENȚI ÎN ElasticSearch 7 */
+
+        /** @type {object}*/
         let ESIDXS = {
-            RES_IDX_ES7: '', 
-            RES_IDX_ALS: '', 
-            USR_IDX_ES7: '', 
-            USR_IDX_ALS: ''
+            RES_IDX_ES7: 'resursedus0', 
+            RES_IDX_ALS: 'resursedus', 
+            USR_IDX_ES7: 'users0', 
+            USR_IDX_ALS: 'users'
         };
 
-        let val = await redisClient.hgetall(process.env.APP_NAME + ":es"); // kolector:es
+        // console.log(`[util/es7.js] Cheia hash-ului ar trebui să fie: ${process.env.APP_NAME}:es`);
+        // let val = await redisCachedInstance.hGetAll(`${process.env.APP_NAME}:es`); // Rezultă un string similar cu: kolector:es
+        let val = await redisCachedInstance.hgetall(`${process.env.APP_NAME}:es`); // Rezultă un string similar cu: kolector:es
 
-        // console.log(`Valorile obținute de la Redis`, val);
         let k = Object.keys(val), i;
         for (i = 0; i < k.length; i++) {
-            ESIDXS[k[i]] = val[k[i]];
+            if (val[k[i]]) {
+                ESIDXS[k[i]] = val[k[i]];
+            }
         };
+        // console.log(`[util/es7.js] Obiectul indecșilor este ${JSON.stringify(ESIDXS)}`);
+        
+        /** @type {object}*/
         return ESIDXS;
     } catch (error) {
         logger.error(error);
+        throw new Error(`[util/es7.js] Eroarea este: ${error}`)
     }
 };
+module.exports = getStructure;

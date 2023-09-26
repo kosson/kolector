@@ -1,7 +1,6 @@
 require('dotenv').config();
-const httpserver = require('./httpserver');
 
-module.exports = function sockets (http,sessionMiddleware) {
+module.exports = function sockets (http, sessionMiddleware, redisCachedInstance) {
     // #1 Creează server prin atașarea celui existent
     const corsOptsSockets = {
         origin: "",
@@ -9,8 +8,14 @@ module.exports = function sockets (http,sessionMiddleware) {
         allowedHeaders: ["_csrf"],
         credentials: true
     };
+    
     // conectează-te cu Redis
-    const adapter = require('socket.io-redis');
+    // const adapter = require('socket.io-redis');
+    const { createAdapter } = require('@socket.io/redis-adapter');
+    /*
+    This package has been renamed to '@socket.io/redis-adapter', please see the migration guide here: https://socket.io/docs/v4/redis-adapter/#migrating-from-socketio-redis
+    https://www.npmjs.com/package/@socket.io/redis-adapter
+    */
     const CONFIG_ADAPTER = {
         host: '',
         port: 6379
@@ -24,6 +29,9 @@ module.exports = function sockets (http,sessionMiddleware) {
         CONFIG_ADAPTER.host = '127.0.0.1'
     }
 
+    const pubClient = redisCachedInstance;
+    const subClient = pubClient.duplicate();
+
     const io = require('socket.io')(http, {
         cors: corsOptsSockets,
         maxHttpBufferSize: 1e8,
@@ -31,9 +39,16 @@ module.exports = function sockets (http,sessionMiddleware) {
         transports: [ "websocket", "polling" ]
     });
 
+    io.adapter(createAdapter(pubClient, subClient));
+
+    // Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+    //     io.adapter(createAdapter(pubClient, subClient));
+        // io.listen(3000);
+    // });
+
     // #2 conectarea cu Redis
-    const redisAdapter = adapter(CONFIG_ADAPTER);
-    io.adapter(redisAdapter);
+    // const redisAdapter = adapter(CONFIG_ADAPTER);
+    // io.adapter(redisAdapter);
 
     // #3 Creează un wrapper de middleware Express pentru Socket.io
     function wrap (middleware) {

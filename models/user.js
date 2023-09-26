@@ -9,16 +9,12 @@ const schema                = require('./user-es7');
 // const ES7Helper             = require('./model-helpers/es7-helper');
 const logger                = require('../util/logger');
 
-/* INDECȘII ES7 */
-let {getStructure} = require('../util/es7');
-let RES_IDX_ES7 = '';
-let RES_IDX_ALS = '';
-let USR_IDX_ES7 = ''; 
-let USR_IDX_ALS = '';
-
-// console.log("AVEM", getStructure());
-getStructure().then((val) => {
-    // creează valori default pentru nume   le indecșilor ES7 necesari în cazul în care indexul și alias-ul său nu au fost create încă
+/* EXTRAGEREA VALORILOR INDECȘILOR ES7 DIN REDIS */
+const redisClient = require('../redis.config');
+let getStructure = require('../util/es7')(redisClient);
+let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';
+getStructure.then((val) => {
+    // creează valori default pentru numele indecșilor ES7 necesari în cazul în care indexul și alias-ul său nu au fost create încă
     USR_IDX_ALS = val.USR_IDX_ALS ?? 'users';
     USR_IDX_ES7 = val.USR_IDX_ES7 ?? 'users0';
     RES_IDX_ALS = val.RES_IDX_ALS ?? 'resursedus';
@@ -27,6 +23,9 @@ getStructure().then((val) => {
     console.log(`Schema mongoose pentru resurse`, error);
     logger.error(error);
 });
+// (async function giveMeTheES7IdxsStructure () {
+//     await redisClient.disconnect();
+// })()
 
 // VALIDATORI
 function validateEmail (value) {

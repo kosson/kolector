@@ -12,7 +12,7 @@ const Resursa     = require('../models/resursa-red');        // Adu modelul resu
 const Mgmtgeneral = require('../models/MANAGEMENT/general'); // Adu modelul management
 
 /* === HELPERE === */
-let {getStructure} = require('../util/es7');
+let getStructure  = require('../util/es7');
 
 // INDECȘII ES7
 let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';

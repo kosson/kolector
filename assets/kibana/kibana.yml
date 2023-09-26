@@ -1,14 +1,6 @@
-server:
-  name: "kibana"
-  # Poate fi numele mașinii folosind IP-ul sau numele domeniului unde rulează Kibana. Pentru că facem reverse proxy cu Nginx, pui 0.0.0.0 sau localhost. Default e localhost
-  host: "kibana"
-  # Portul containerului de pe care va fi servit Kibana
-  port: 5601
-  # Forțăm Kibana să onoreze răspunsurile pe segmentul de path specificat. Necesar lucrului de după proxy sau când servim Kibana laolaltă cu alte servicii frontend.
-  # basePath: /kibana
-  # Onorează basePath-ul modificat
-  # rewriteBasePath: true
-# Necesar pentru că folosești Kibana cu un sistem containerizat Elasticsearch (https://www.elastic.co/guide/en/kibana/current/monitoring-settings-kb.html#monitoring-ui-cgroup-settingss)
-xpack.monitoring.ui.container.elasticsearch.enabled: true
-# https://www.elastic.co/guide/en/kibana/7.10/production.html#csp-strict-mode
-csp.strict: true
+# If your Elasticsearch is protected with basic authentication, these settings provide
+# the username and password that the Kibana server uses to perform maintenance on the Kibana
+# index at startup. Your Kibana users still need to authenticate with Elasticsearch, which
+# is proxied through the Kibana server.
+elasticsearch.username: "kibana"
+elasticsearch.password: "i43dr55n0w"

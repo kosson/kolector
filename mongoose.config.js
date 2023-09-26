@@ -1,6 +1,6 @@
 require('dotenv').config();
 const config = require("config");
-const logger   = require('./util/logger');
+const logger = require('./util/logger');
 
 /**
  * Funcția joacă rol de inițiator al conexiunii cu baza de date.
@@ -12,7 +12,6 @@ const logger   = require('./util/logger');
 function dbconnection (mongoose) {
     return function mongoosedbconnectorguest ({getinfo}) {
         try {
-
             console.log(`Versiunea de mongoose rulată este ${mongoose.version}`);
         
             /* Pentru eroarea `MongoParseError: credentials must be an object with 'username' and 'password' properties` următorul obiect este răspunsul corect: */
@@ -32,9 +31,9 @@ function dbconnection (mongoose) {
             // console.log(`adresa folosită este ${address} iar CONFIG este ${JSON.stringify(CONFIG)}`)
             mongoose.connect(address, CONFIG); // conectarea la bază
         
-            mongoose.connection.on('error', (err) => {
-                logger.error(err);
-                throw new Error(`[mongoose.congfig.js] Nu mă pot conecta: ${err}`);
+            mongoose.connection.on('error', (error) => {
+                logger.error(error);
+                throw new Error(`[mongoose.congfig.js] Nu mă pot conecta: ${error}`);
             });
 
             // doar dacă există vreo solicitare pentru afișarea în consolă a informațiilor de conectare, acesea vor fi oferite

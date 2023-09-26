@@ -2,25 +2,24 @@ require('dotenv').config();
 const mongoose      = require('mongoose');
 const validator     = require('validator');
 const Schema        = mongoose.Schema;
-const redisClient   = require('../redis.config');
 const schema        = require('./resursa-red-es7'); // aceasta este schema de mapping pentru indexul din Elasticsearch (necesar pe hook save)
 const editorJs2TXT  = require('../routes/controllers/editorJs2TXT'); 
 const ES7Helper     = require('./model-helpers/es7-helper');
 const logger        = require('../util/logger');
 
-/* INDECȘII ES7 */
-let {getStructure}  = require('../util/es7');
+/* EXTRAGEREA VALORILOR INDECȘILOR ES7 DIN REDIS */
+let getStructure = require('../util/es7');
 let RES_IDX_ES7 = '', RES_IDX_ALS = '', USR_IDX_ES7 = '', USR_IDX_ALS = '';
-getStructure().then((val) => {
-    // creează valori default pentru numele indecșilor ES7 necesari în cazul în care indexul și alias-ul său nu au fost create încă
-    USR_IDX_ALS = val.USR_IDX_ALS ?? 'users';
-    USR_IDX_ES7 = val.USR_IDX_ES7 ?? 'users0';
-    RES_IDX_ALS = val.RES_IDX_ALS ?? 'resursedus';
-    RES_IDX_ES7 = val.RES_IDX_ES7 ?? 'resursedus0';
-}).catch((error) => {
-    console.log(`Schema mongoose pentru resurse`, error);
-    logger.error(error);
-});
+
+(async () => {
+    let es8IdsInRedis = await getStructure(); // {"RES_IDX_ES7":"resursedus0","RES_IDX_ALS":"resursedus","USR_IDX_ES7":"users0","USR_IDX_ALS":"users"}
+    // console.log(`[models/resursa-red] Structura din Redis este: ${JSON.stringify(es8IdsInRedis)}`);
+
+    USR_IDX_ALS = es8IdsInRedis.USR_IDX_ALS;
+    USR_IDX_ES7 = es8IdsInRedis.USR_IDX_ES7;
+    RES_IDX_ALS = es8IdsInRedis.RES_IDX_ALS;
+    RES_IDX_ES7 = es8IdsInRedis.RES_IDX_ES7;
+})();
 
 var softwareSchema = new mongoose.Schema({
     nume:     {

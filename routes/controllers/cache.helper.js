@@ -29,8 +29,8 @@ mongoose.Query.prototype.exec = async function newExec () {
 
         // vezi dacă există cheia generată în cache deja. Dacă există, returnează valoarea sa imediat.
         // let cacheValue = await redisClient.get(key).then(data => data).catch(error => console.error);
-        let client = await redisClient; // mai întâi rezolvă clientul!
-        let cacheValue = client.hmget(this.hashKey, key, function clbkHGET (error, rezultat) {
+
+        let cacheValue = await redisClient.hmget(this.hashKey, key, function clbkHGET (error, rezultat) {
             if (error) console.error;
             // console.log('Rezultatul oferit de cache este ', rezultat);
         });
@@ -46,7 +46,7 @@ mongoose.Query.prototype.exec = async function newExec () {
         const dateDinBaza = await exec.apply(this, arguments); // nu uita că ceea ce este adus din bază sunt documente Mongoose. Acum ai documente.
         
         // introdu datele în Redis
-        client.hmset(this.hashKey, key, JSON.stringify(dateDinBaza), function clbkHMSET (error, raspuns) {
+        await client.hmset(this.hashKey, key, JSON.stringify(dateDinBaza), function clbkHMSET (error, raspuns) {
             if (error) {console.error};
             // console.log(raspuns); // dacă totul este în regulă, răspunsul este OK.
         }); // Este introdus hash-ul în REDIS.
@@ -59,7 +59,6 @@ mongoose.Query.prototype.exec = async function newExec () {
 };
 
 async function utilityFunctions () {
-    let client = await redisClient; // mai întâi rezolvă clientul!
     return {
         clear4Id: async function clrId (id) {
             client.del(id);

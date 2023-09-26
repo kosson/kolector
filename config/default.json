@@ -1,5 +1,11 @@
 {
     "initcollections": ["competentaspecificas", "things", "bodies", "mgmtgenerals", "users"],
+    "esindexes": {
+        "RES_IDX_ES7": "resursedus0", 
+        "RES_IDX_ALS": "resursedus", 
+        "USR_IDX_ES7": "users0", 
+        "USR_IDX_ALS": "users"
+    },
     "adminemail": "kosson@gmail.com",
     "adminpassword": "CHANGE-ME",
     "adminname": "admin",
