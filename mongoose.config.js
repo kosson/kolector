@@ -36,7 +36,8 @@ function dbconnection (mongoose) {
                 throw new Error(`[mongoose.congfig.js] Nu mă pot conecta: ${error}`);
             });
 
-            // doar dacă există vreo solicitare pentru afișarea în consolă a informațiilor de conectare, acesea vor fi oferite
+            // doar dacă există vreo solicitare pentru afișarea în consolă a informațiilor de conectare, 
+            // acestea vor fi oferite din următorul decizional
             if (getinfo) {
                 console.log(`Numărul conexiunilor la MongoDB este \x1b[32m ${mongoose.connections.length}\x1b[37m`);
                 switch (mongoose.connection.readyState) {
@@ -65,6 +66,7 @@ function dbconnection (mongoose) {
                     for (elem of databases) {
                         dbs.push({name: elem.name, uuid: elem.info.uuid, readOnly: elem.info.readOnly});
                     }
+                    // TODO: Afișează aici informația privind câte înregistrări se află în fiecare colecție.
                     console.log(`Colecțiile din bază sunt:`);
                     console.table(dbs);
                 } else {
@@ -81,6 +83,7 @@ function dbconnection (mongoose) {
                     for (collection of initcollections) {
                         switch (collection) {
                             case 'users':
+                                //FIXME: doar dacă fișierul userilor există în initdata
                                 let {generatePassword} = require('./routes/utils/password');
                                 let {hash, salt} = generatePassword(config.get('adminpassword'));
                                 let user = new User({
@@ -172,12 +175,13 @@ function dbconnection (mongoose) {
         
             mongoose.connection.on('error', function clbkOnError (error) {
                 console.error(`[mongoose.config.js] Eroarea apărută este `, error);
+                throw new Error(`[mongoose.config.js] La conectarea MongoDB a apărut o eroare`);
             });
 
             return mongoose.connection;
         } catch (error) {
-            logger.error(`A apărut o eroare la conectarea cu MongoDB ${error}`);
-            console.log('A apărut o eroare la conectarea cu MongoDB ', error);
+            logger.error(`A apărut o eroare la conectarea cu MongoDB`,error);
+            console.log('A apărut o eroare la conectarea cu MongoDB', error);
         }
     }
 }
