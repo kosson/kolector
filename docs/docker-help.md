@@ -91,6 +91,7 @@ docker-compose -f docker-compose.yml up -d --build -V kolector_devel=2
 
 ```bash
 docker-compose -f docker-compose.yml up -d --build --no-deps -V nume_serviciu
+docker-compose -f docker-compose-os.yml up -d --build --no-deps -V os01
 ```
 
 ## Push doar pentru un singur serviciu
