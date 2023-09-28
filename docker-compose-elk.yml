@@ -1,4 +1,4 @@
-version: "2.2"
+version: "3.0"
 
 services:
   setup:
@@ -302,6 +302,8 @@ services:
       - mongo
       - redis
       - es01
+      - es02
+      - es03
     networks:
       - dockernet
       - elk
