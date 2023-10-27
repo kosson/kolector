@@ -61,7 +61,7 @@ docker-compose down -v
 docker-compose up --build -d
 ```
 
-## pornește doar aplicația node fără dependințe
+## Pornește doar aplicația node fără dependințe
 
 ```bash
 docker compose -f docker-compose.yml up -d --no-deps kolector_devel
