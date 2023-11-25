@@ -2,7 +2,6 @@ services:
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      # - certs:/usr/share/elasticsearch/config/certs
       - ./assets/elasticsearch/certs:/usr/share/elasticsearch/config/certs
     user: "0"
     command: >
@@ -68,11 +67,8 @@ services:
       setup:
         condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-    labels:
-        co.elastic.logs/module: elasticsearch
     volumes:
       - ./assets/elasticsearch/certs:/usr/share/elasticsearch/config/certs
-      # - certs:/usr/share/elasticsearch/config/certs
       - esdata01:/usr/share/elasticsearch/data
     ports:
       - ${ES_PORT}:9200
@@ -117,7 +113,6 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - ./assets/elasticsearch/certs:/usr/share/elasticsearch/config/certs
-      # - certs:/usr/share/elasticsearch/config/certs
       - esdata02:/usr/share/elasticsearch/data
     environment:
       - node.name=es02
@@ -159,7 +154,6 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - ./assets/elasticsearch/certs:/usr/share/elasticsearch/config/certs
-      # - certs:/usr/share/elasticsearch/config/certs
       - esdata03:/usr/share/elasticsearch/data
     environment:
       - node.name=es03
@@ -206,7 +200,6 @@ services:
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     volumes:
       - ./assets/elasticsearch/certs:/usr/share/kibana/config/certs
-      # - certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
     ports:
       - 5601:5601
@@ -289,9 +282,6 @@ services:
       - ./.env
     volumes:
       - './:/home/node/kolector'
-      # previne suprascrierea/modificarea din containerul Docker a lui node_modules originale
-      # - /home/node/kolector/node_modules
-      # - /home/node/kolector
     ports:
       - '8081:8081'
       - '9229:9229'
