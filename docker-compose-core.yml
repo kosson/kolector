@@ -1,0 +1,91 @@
+services:
+  redis:
+    image: redis:7.2-bookworm
+    restart: unless-stopped
+    container_name: kolector_redis
+    volumes:
+      - './assets/redis/redisdata:/root/redis'
+      - './assets/redis/config/redis.conf:/usr/local/etc/redis/redis.conf'
+      - './assets/redis/config/users.acl:/usr/local/etc/redis/users.acl'
+    ports:
+      - '6379:6379'
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--loglevel", "warning"]
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  mongo:
+    image: 'mongo:4.4.5-bionic'
+    container_name: kolector_mongo
+    env_file:
+      - ./.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - 'MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}'
+      - 'MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWD}'
+      - 'MONGO_INITDB_DATABASE=${MONGO_DB}'
+    volumes:
+      - './assets/mongodb/data:/data/db'
+    command:
+      - '--auth'
+    ports:
+      - '27017:27017'
+    healthcheck:
+      test: 'echo ''db.runCommand("ping").ok'' | mongo localhost:27017/test --quiet'
+
+  nodeapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: devel
+      tags:
+        - ${APP_NAME}:${APP_VER}
+      args:
+        FRONT_END_PORT: ${PORT}
+    container_name: kolector_app_${APP_VER}
+    stdin_open: true
+    labels:
+      title: ${APP_NAME}
+      creator: ${CREATOR}
+      version: ${APP_VER}
+      description: ${DESCRIPTION}
+    env_file:
+      - ./.env
+    volumes:
+      - './:/home/node/kolector'
+    ports:
+      - ${PORT}:${PORT}
+      - '9229:9229'
+    restart: always
+    # entrypoint: ./entrypoint.sh
+    command: npm run dev
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --silent --fail localhost:8080 || exit 1",
+        ]
+      interval: 10s
+      timeout: 30s
+      retries: 20
+    depends_on:
+      - mongo
+      - redis
+      - es01
+      - kibana
+
+volumes:
+  esdata01:
+    driver: local
+  esdata02:
+    driver: local
+  esdata03:
+    driver: local
+  kibanadata:
+    driver: local
+
+# https://discuss.elastic.co/t/trouble-setting-up-tls-in-kibana-with-docker/250041
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html

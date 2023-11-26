@@ -45,14 +45,6 @@ services:
           bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
           unzip config/certs/certs.zip -d config/certs;
         fi;
-        echo "Copy a set of certs for the app to use"
-        if [ -d config/certs4conf ]; then
-          echo "Directory already exists";
-          cp config/certs/ca.zip config;
-        else
-          mkdir -p config/certs4conf;
-          cp -R config/certs config/certs4conf;
-        fi;
         echo "Setting file permissions";
         chown -R root:root config/certs;
         find . -type d -exec chmod 750 \{\} \;;
@@ -99,7 +91,8 @@ services:
       - xpack.security.transport.ssl.certificate=certs/es01/es01.crt
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
-    mem_limit: 1g
+      - xpack.license.self_generated.type=${LICENSE}
+    mem_limit: ${MEM_LIMIT}
     ulimits:
       memlock:
         soft: -1
@@ -140,7 +133,7 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
-    mem_limit: 1g
+    mem_limit: ${MEM_LIMIT}
     ulimits:
       memlock:
         soft: -1
@@ -181,7 +174,7 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
-    mem_limit: 1g
+    mem_limit: ${MEM_LIMIT}
     ulimits:
       memlock:
         soft: -1
@@ -217,7 +210,7 @@ services:
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
-    mem_limit: 1g
+    mem_limit: ${MEM_LIMIT}
     healthcheck:
       test:
         [
@@ -228,84 +221,6 @@ services:
       timeout: 10s
       retries: 120
 
-  redis:
-    image: redis:7.2-bookworm
-    restart: unless-stopped
-    container_name: kolector_redis
-    volumes:
-      - './assets/redis/redisdata:/root/redis'
-      - './assets/redis/config/redis.conf:/usr/local/etc/redis/redis.conf'
-      - './assets/redis/config/users.acl:/usr/local/etc/redis/users.acl'
-    ports:
-      - '6379:6379'
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--loglevel", "warning"]
-    healthcheck:
-      test: redis-cli ping
-      interval: 1s
-      timeout: 3s
-      retries: 30
-
-  mongo:
-    image: 'mongo:4.4.5-bionic'
-    container_name: kolector_mongo
-    env_file:
-      - ./.env
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - 'MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}'
-      - 'MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWD}'
-      - 'MONGO_INITDB_DATABASE=${MONGO_DB}'
-    volumes:
-      - './assets/mongodb/data:/data/db'
-    command:
-      - '--auth'
-    ports:
-      - '27017:27017'
-    healthcheck:
-      test: 'echo ''db.runCommand("ping").ok'' | mongo localhost:27017/test --quiet'
-
-  nodeapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: devel
-      tags:
-        - ${APP_NAME}:${APP_VER}
-      args:
-        FRONT_END_PORT: ${PORT}
-    container_name: kolector_app_${APP_VER}
-    stdin_open: true
-    labels:
-      title: ${APP_NAME}
-      creator: ${CREATOR}
-      version: ${APP_VER}
-      description: ${DESCRIPTION}
-    env_file:
-      - ./.env
-    volumes:
-      - './:/home/node/kolector'
-    ports:
-      - ${PORT}:${PORT}
-      - '9229:9229'
-    restart: always
-    # entrypoint: ./entrypoint.sh
-    command: npm run dev
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl --silent --fail localhost:8080 || exit 1",
-        ]
-      interval: 10s
-      timeout: 30s
-      retries: 20
-    depends_on:
-      - mongo
-      - redis
-      - es01
-      - kibana
-
 volumes:
   esdata01:
     driver: local
@@ -315,6 +230,3 @@ volumes:
     driver: local
   kibanadata:
     driver: local
-
-# https://discuss.elastic.co/t/trouble-setting-up-tls-in-kibana-with-docker/250041
-# https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html

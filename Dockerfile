@@ -39,6 +39,7 @@ RUN npm install --production=false && npm cache clean --force
 FROM base as source
 COPY  --chown=node:node . .
 # CMD ["nodemon", "app.js"]
+# ENTRYPOINT [ "/entrypoint.sh" ]
 
 # TEST
 #FROM source as test

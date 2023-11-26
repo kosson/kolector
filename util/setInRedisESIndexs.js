@@ -3,7 +3,7 @@ require('dotenv').config();
 /**
  * Funcția setează datele privind indecșii disponibili în Elasticsearch în Redis
  * Este cerută din `elasticsearch.config`
- * @param {object} es7client Este obiectul client de conexiune la Elasticsearch
+ * @param {object} es8client Este obiectul client de conexiune la Elasticsearch
  * @param {object} redisClient Este clientul neinițializat pentru Redis
  */
 module.exports = async function setInRedisESIndexes (es8client, redisClient) {

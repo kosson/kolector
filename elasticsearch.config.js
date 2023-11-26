@@ -7,7 +7,7 @@ const {searchIdxAndCreateIfNotExists} = require('./util/es8-utils');
 
 /**
  * Funcția are rolul de a inițializa un client Elasticsearch
- * Cere ./util/setInRedisESIndexs căruia îi pasează (es7client, redisClient)
+ * Cere ./util/setInRedisESIndexs căruia îi pasează (es8client, redisClient)
  * @param {object} redisClient Este clientul de Redis neinițializat
  * @returns {object} es7client care este clietul inițializat de elasticsearch
  */
@@ -23,18 +23,20 @@ async function createEs8Client (redisClient) {
     */
     try {
         const CONFIG = {
-            node: `https://es01:9200`,
+            // node: `https://es01:9200`,
+            node: '',
             auth: {
                 username: 'elastic',
                 password: 'i43dr54n0w'
             },
             tls: {
-              ca: fs.readFileSync('./assets/elasticsearch/certs/ca/ca.crt'),
+            //   ca: fs.readFileSync('./assets/elasticsearch/certs/ca/ca.crt'),
+              ca: fs.readFileSync('./assets/elasticsearch/ca/ca.crt'),
               rejectUnauthorized: false
             }
         }
         // configurarea clientului în funcție de modul în care rulează aplicația
-        // process.env.APP_RUNTIME === 'virtual' ?  CONFIG['node'] = `https://elastic:${process.env.ELASTIC_PASSWORD}@localhost:9200` : CONFIG.node = 'http://localhost:9200';
+        process.env.APP_RUNTIME === 'virtual' ?  CONFIG['node'] = `https://elastic:${process.env.ELASTIC_PASSWORD}@es01:9200` : CONFIG.node = 'http://localhost:9200';
         
         // instanțiere client
         const es8client = new Client(CONFIG);
@@ -43,7 +45,8 @@ async function createEs8Client (redisClient) {
         es8client.ping()
             .then(response => console.log("[elasticsearch.config.js] Te-ai conectat la Elasticsearch!"))
             .catch((error) => {
-                throw new Error(`[elsaticsearch.config] Eroare la ping() pe ES!`)
+                console.log(error);
+                throw new Error(`[elsaticsearch.config] Eroare la ping() pe ES!`, error);
             });
 
         // Testează dacă există date
@@ -65,15 +68,20 @@ async function createEs8Client (redisClient) {
 
         // Setează indeșii și alias-urile atunci când ești la momentul primei inițializări a aplicației
         let initialDescriptors = config.get('esindexes');
-        indexAndSchemaDescriptorNames = [initialDescriptors?.RES_IDX_ALS, initialDescriptors?.USR_IDX_ALS];        
-        for (let descriptor of indexAndSchemaDescriptorNames) {
-            let opResult = await searchIdxAndCreateIfNotExists({
-                esClient: es8client, 
-                schema:   descriptor,
-                idx:      descriptor
-            });
-            // console.log(`[elasticsearch.config.js] Răspuns de la crearea indecșilor`, JSON.stringify(opResult));
+
+        if (initialDescriptors?.RES_IDX_ALS !== undefined || initialDescriptors?.USR_IDX_ALS !== undefined) {
+            indexAndSchemaDescriptorNames = [initialDescriptors?.RES_IDX_ALS, initialDescriptors?.USR_IDX_ALS];        
+            for (let descriptor of indexAndSchemaDescriptorNames) {
+                let opResult = await searchIdxAndCreateIfNotExists({
+                    esClient: es8client, 
+                    schema:   descriptor,
+                    idx:      descriptor
+                });
+                // console.log(`[elasticsearch.config.js] Răspuns de la crearea indecșilor`, JSON.stringify(opResult));
+            }
         }
+
+
 
         // populare date în Redis cu cele culese din Elasticsearch
         const setInRedisESIndexs = await require('./util/setInRedisESIndexs')(es8client, redisClient);

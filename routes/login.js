@@ -1,7 +1,5 @@
 require('dotenv').config();
 /* === DEPENDINȚE === */
-const path     = require('path');
-const fs       = require('fs');
 const express  = require('express');
 const router   = express.Router();
 const passport = require('passport');
@@ -11,7 +9,6 @@ const Mgmtgeneral = require('../models/MANAGEMENT/general'); // Adu modelul mana
 // LOGO
 let LOGO_IMG = "img/" + process.env.LOGO;
 
-/* === LOGIN [GET] === */
 async function clbkLogin (req, res, next) {
     // Setări în funcție de template
     let filterMgmt = {focus: 'general'};
@@ -21,8 +18,8 @@ async function clbkLogin (req, res, next) {
 
     let styles = [];
 
-    let modules = []
-    // console.log("Din user.ctrl avem din req.body pe /login: ", req.body);
+    let modules = [];
+    
     res.render(`login_${gensettings.template}`, {
         template: `${gensettings.template}`,
         title:   "login",
@@ -32,15 +29,17 @@ async function clbkLogin (req, res, next) {
         styles
     });
 };
+
+/* === LOGIN [GET] Încărcarea paginii de login ===*/
 router.get('/', (req, res, next) => {
     clbkLogin(req, res, next).catch((error) => {
         console.log(error);
-        logger(error);
+        logger.error(error);
         next(error);
     });
 });
 
-/* === LOGIN [POST] ===*/
+/* === LOGIN [POST] Strategie locală ===*/
 router.post('/',  passport.authenticate('local'), async (req, res, next) => {
     // console.log("Din login.js avem din req.body pe /login: ", req.body, 'USER este ', req.user);
     res.redirect(301, '/');

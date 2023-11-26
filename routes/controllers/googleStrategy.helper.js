@@ -2,7 +2,11 @@ const User = require('../../models/user');
 const mongoose  = require('mongoose');
 
 /**
- * Funcția `googleStrategy` are rolul de a crea înregistrările de utilizatori în MongoDB și de a trimite spre indexare lui Elasticsearch obiectul document creat.
+ * Funcția `googleStrategy` are rolul de a crea înregistrările de utilizatori în MongoDB 
+ * și de a trimite spre indexare lui Elasticsearch obiectul document creat.
+ * Joacă rol de callback pentru o strategie passport.
+ * Dacă în MongoDB nu găsește vreo înregistrare, atunci prima pe care o introduce are rol
+ * de administrator al aplicației.
  * @param {String} request Este chiar `process.env.GOOGLE_CLIENT_ID`
  * @param {String} accessToken Este chiar `process.env.GOOGLE_CLIENT_SECRET`
  * @param {String} refreshToken Este calea: `process.env.BASE_URL + "/callback"`
@@ -57,13 +61,11 @@ function googleStrategy (request, accessToken, refreshToken, params, profile, do
             const userObj = new User(record);
             try {
                 // Salvează documentul în bază! 
-                // _FIXME: Indexează în Elasticsearch!!!.
                 await userObj.save(function clbkSaveFromGStrat (err, user) {                
                     if (err) throw new Error('Eroarea la salvarea userului este: ', err.message);
-                    console.log("Salvez user în bază!");
-                    // console.log(user);
                     done(null, user.toObject({ virtuals: true }));
                 });
+                // FIXME: Indexează în Elasticsearch!!!.
             } catch (error) {
                 console.log(error);
             }
