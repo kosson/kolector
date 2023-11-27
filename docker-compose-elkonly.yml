@@ -67,12 +67,15 @@ services:
         condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     container_name: kolector_es01_${STACK_VERSION}
-    restart: always
+    hostname: es01
+    restart: unless-stopped
     volumes:
       - ./assets/elasticsearch/certs:/usr/share/elasticsearch/config/certs
+      - ./assets/elasticsearch/shared_folder:/shared_folder
       - esdata01:/usr/share/elasticsearch/data
     ports:
-      - ${ES_PORT}:9200
+      - 9200:9200
+      - 9300:9300
     environment:
       - node.name=es01
       - cluster.name=${CLUSTER_NAME}
@@ -92,6 +95,8 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.index.number_of_replicas=0 -Des.enforce.bootstrap.checks=true
+      - path.repo=/shared_folder
     mem_limit: ${MEM_LIMIT}
     ulimits:
       memlock:
@@ -103,19 +108,23 @@ services:
           "CMD-SHELL",
           "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
         ]
-      interval: 10s
-      timeout: 10s
+      interval: 20s
+      timeout: 20s
       retries: 120
+    networks:
+      - elk
 
   es02:
-    depends_on:
-      - es01
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     container_name: kolector_es02_${STACK_VERSION}
-    restart: always
+    hostname: es02
+    restart: unless-stopped
     volumes:
       - ./assets/elasticsearch/certs:/usr/share/elasticsearch/config/certs
+      - ./assets/elasticsearch/shared_folder:/shared_folder
       - esdata02:/usr/share/elasticsearch/data
+    ports: 
+      - "9201:9200"
     environment:
       - node.name=es02
       - cluster.name=${CLUSTER_NAME}
@@ -133,6 +142,8 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
+      - path.repo=/shared_folder
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.index.number_of_replicas=0 -Des.enforce.bootstrap.checks=true
     mem_limit: ${MEM_LIMIT}
     ulimits:
       memlock:
@@ -144,18 +155,20 @@ services:
           "CMD-SHELL",
           "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
         ]
-      interval: 10s
-      timeout: 10s
+      interval: 20s
+      timeout: 20s
       retries: 120
+    networks:
+      - elk
 
   es03:
-    depends_on:
-      - es01
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     container_name: kolector_es03_${STACK_VERSION}
-    restart: always
+    hostname: es03
+    restart: unless-stopped
     volumes:
       - ./assets/elasticsearch/certs:/usr/share/elasticsearch/config/certs
+      - ./assets/elasticsearch/shared_folder:/shared_folder
       - esdata03:/usr/share/elasticsearch/data
     environment:
       - node.name=es03
@@ -174,6 +187,8 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
+      - path.repo=/shared_folder
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.index.number_of_replicas=0 -Des.enforce.bootstrap.checks=true
     mem_limit: ${MEM_LIMIT}
     ulimits:
       memlock:
@@ -188,6 +203,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+    networks:
+      - elk
 
   kibana:
     depends_on:
@@ -199,6 +216,7 @@ services:
         condition: service_healthy
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     container_name: kolector_kibana_${STACK_VERSION}
+    restart: unless-stopped
     volumes:
       - ./assets/elasticsearch/certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
@@ -217,9 +235,11 @@ services:
           "CMD-SHELL",
           "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
         ]
-      interval: 10s
-      timeout: 10s
+      interval: 20s
+      timeout: 20s
       retries: 120
+    networks:
+      - elk
 
 volumes:
   esdata01:
@@ -230,3 +250,7 @@ volumes:
     driver: local
   kibanadata:
     driver: local
+
+networks:
+  elk:
+    driver: bridge

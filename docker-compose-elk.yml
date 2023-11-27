@@ -80,7 +80,7 @@ services:
       - ./assets/elasticsearch/certs:/usr/share/elasticsearch/config/certs
       - esdata01:/usr/share/elasticsearch/data
     ports:
-      - ${ES_PORT}:9200
+      - 9200:9200
     environment:
       - node.name=es01
       - cluster.name=${CLUSTER_NAME}

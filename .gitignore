@@ -105,6 +105,7 @@ assets/elasticsearch/certs
 assets/elasticsearch/filebeat-ingest
 assets/elasticsearch/logstash-ingest
 assets/kibanadata
+shared_folder/
 
 assets/mongodb/data
 
