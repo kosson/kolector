@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/kosson/kolector#readme",
   "dependencies": {
-    "@calumk/editorjs-codeflask": "^1.0.9",
+    "@calumk/editorjs-codeflask": "^1.0.10",
     "@codexteam/ajax": "^4.2.0",
     "@codexteam/icons": "^0.3.0",
     "@dr.pogodin/csurf": "^1.13.0",
