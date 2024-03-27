@@ -92,7 +92,7 @@
     "dotenv": "^16.3.1",
     "editorjs-alert": "^1.1.3",
     "elasticdump": "^6.103.1",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "express-hbs": "^2.4.2",
     "express-rate-limit": "^6.11.0",
     "express-session": "^1.17.3",
