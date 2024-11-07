@@ -122,7 +122,7 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^7.1.2",
     "passport-oauth": "^1.0.0",
-    "pdfmake": "^0.2.7",
+    "pdfmake": "^0.2.15",
     "pm2": "^5.3.0",
     "popper.js": "^1.16.1",
     "querystring": "^0.2.1",
